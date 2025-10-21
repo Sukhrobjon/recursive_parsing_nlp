@@ -1,0 +1,13 @@
+[project]
+name = "recursive-parsing"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "google-auth>=2.41.1",
+    "google-cloud-bigquery>=3.38.0",
+    "openai>=2.6.0",
+    "pandas>=2.3.3",
+    "pandas-gbq>=0.29.2",
+]

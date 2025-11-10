@@ -10,6 +10,8 @@ import logging
 from datetime import datetime
 from tqdm import tqdm
 from utils import TablesAnalyzer
+from dotenv import load_dotenv
+load_dotenv()
 
 import json
 
@@ -20,7 +22,7 @@ def load_jsonl(file_path):
     
 
 class MultiTableRecursiveSemanticParser:
-    def __init__(self, openai_api_key: str = None, temp_dataset: str = "temp_recursive_parser", project_id: str = "spider-471218"):
+    def __init__(self, openai_api_key: str = None, temp_dataset: str = "temp_recursive_parser", project_id: str = "cs224v-recursive-parsing"):
         """
         Initialize the recursive semantic parser for multiple tables.
         
@@ -528,7 +530,7 @@ def main():
     # Initialize the parser
     parser = MultiTableRecursiveSemanticParser(
         temp_dataset="temp_recursive_parser",
-        project_id="spider-471218"
+        project_id="cs224v-recursive-parsing"
     )    
     
     dataset = load_jsonl("spider2-lite.jsonl")

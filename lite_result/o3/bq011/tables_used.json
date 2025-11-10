@@ -1,0 +1,11 @@
+{
+  "tables": [
+    "bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_20210101",
+    "bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_20210102",
+    "bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_20210103",
+    "bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_20210104",
+    "bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_20210105",
+    "bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_20210106",
+    "bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_20210107"
+  ]
+}

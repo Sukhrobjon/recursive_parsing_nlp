@@ -1,0 +1,15 @@
+{
+  "instance_id": "bq011",
+  "db": "ga4",
+  "question": "How many distinct pseudo users had positive engagement time  in the 7-day period ending on January 7, 2021 at 23:59:59, but had no positive engagement time in the 2-day period ending on the same date (January 7, 2021 at 23:59:59) ?",
+  "external_knowledge": "ga4_obfuscated_sample_ecommerce.events.md",
+  "gold_tables": [
+    "bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_20210101",
+    "bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_20210102",
+    "bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_20210103",
+    "bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_20210104",
+    "bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_20210105",
+    "bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_20210106",
+    "bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_20210107"
+  ]
+}

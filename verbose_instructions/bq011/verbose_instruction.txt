@@ -1,0 +1,107 @@
+1. First, open the BigQuery console (https://console.cloud.google.com/bigquery) and make sure the project that contains the public GA4 sample dataset is selected.  
+2. Navigate to the dataset `bigquery-public-data.ga4_obfuscated_sample_ecommerce` in the Explorer panel on the left.  
+3. Verify the seven daily partitioned tables are present: `events_20210101` through `events_20210107`.  
+4. Identify the key columns we will need:  
+   • `event_name` – to isolate the `user_engagement` event.  
+   • `event_params` – a repeated RECORD that contains the parameter `engagement_time_msec`.  
+   • `pseudo_user_id` – the user identifier we will count.  
+   • `event_timestamp` – to confirm date boundaries if needed (each table already represents a single day, but we still reference it in the CTE for clarity).  
+5. Click the “+ Compose new query” button to open a blank query editor.  
+6. Write a Common Table Expression (CTE) that unions the seven daily tables and extracts only those events with a positive `engagement_time_msec`. Start typing:  
+```sql
+WITH positive_engagement AS (
+  SELECT
+    pseudo_user_id,
+    -- Extract engagement_time_msec from the nested event_params array
+    (SELECT value.int_value
+       FROM UNNEST(event_params)
+      WHERE key = 'engagement_time_msec') AS engagement_time_msec,
+    _TABLE_SUFFIX AS event_date   -- Each table’s suffix is the yyyymmdd date
+  FROM
+    `bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*`
+  WHERE
+    _TABLE_SUFFIX BETWEEN '20210101' AND '20210107'       -- 7-day window
+    AND event_name = 'user_engagement'
+)
+```  
+7. Check the CTE logic by clicking the “Run” button with the cursor inside the CTE block; confirm the query preview returns rows and the `engagement_time_msec` column is populated.  
+8. Add a WHERE clause inside the CTE (or an outer SELECT) to keep only rows where `engagement_time_msec > 0`:  
+```sql
+AND (SELECT value.int_value
+       FROM UNNEST(event_params)
+      WHERE key = 'engagement_time_msec') > 0
+```  
+   (If you already included the extraction as a column, apply `WHERE engagement_time_msec > 0` instead.)  
+9. Create two derived CTEs to separate the 7-day users and the 2-day users:  
+```sql
+, seven_day_users AS (
+  SELECT DISTINCT pseudo_user_id
+  FROM positive_engagement
+  WHERE event_date BETWEEN '20210101' AND '20210107'
+)
+, two_day_users AS (
+  SELECT DISTINCT pseudo_user_id
+  FROM positive_engagement
+  WHERE event_date BETWEEN '20210106' AND '20210107'
+)
+```  
+10. Write the final SELECT to count users who appear in `seven_day_users` but not in `two_day_users`:  
+```sql
+SELECT
+  COUNT(*) AS distinct_users_7d_not_2d
+FROM
+  seven_day_users s
+LEFT JOIN
+  two_day_users t
+ON
+  s.pseudo_user_id = t.pseudo_user_id
+WHERE
+  t.pseudo_user_id IS NULL;
+```  
+11. Combine everything into one complete query in the editor:  
+```sql
+WITH positive_engagement AS (
+  SELECT
+    pseudo_user_id,
+    (SELECT value.int_value
+       FROM UNNEST(event_params)
+      WHERE key = 'engagement_time_msec') AS engagement_time_msec,
+    _TABLE_SUFFIX AS event_date
+  FROM
+    `bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*`
+  WHERE
+    _TABLE_SUFFIX BETWEEN '20210101' AND '20210107'
+    AND event_name = 'user_engagement'
+),
+filtered_engagement AS (
+  SELECT *
+  FROM positive_engagement
+  WHERE engagement_time_msec > 0
+),
+seven_day_users AS (
+  SELECT DISTINCT pseudo_user_id
+  FROM filtered_engagement
+  WHERE event_date BETWEEN '20210101' AND '20210107'
+),
+two_day_users AS (
+  SELECT DISTINCT pseudo_user_id
+  FROM filtered_engagement
+  WHERE event_date BETWEEN '20210106' AND '20210107'
+)
+SELECT
+  COUNT(*) AS distinct_users_7d_not_2d
+FROM
+  seven_day_users s
+LEFT JOIN
+  two_day_users t
+ON
+  s.pseudo_user_id = t.pseudo_user_id
+WHERE
+  t.pseudo_user_id IS NULL;
+```  
+12. Click the “Run” button to execute the full query.  
+13. Review the Results panel; the value in `distinct_users_7d_not_2d` is the number of pseudo users who had positive engagement time during Jan 1-7 but none on Jan 6-7.  
+14. (Optional) Validate by spot-checking a few `pseudo_user_id`s:  
+    a. Modify the final SELECT to list `s.pseudo_user_id` instead of counting.  
+    b. Run the query again and manually inspect some of those users in the raw tables to confirm they meet the criteria.  
+15. Document the final count and save the query to a saved query folder for future reference.

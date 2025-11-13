@@ -1,26 +1,27 @@
-WITH engagement_events AS (
-  SELECT
-    user_pseudo_id,
-    PARSE_DATE('%Y%m%d', event_date) AS event_dt,
-    (SELECT SAFE_CAST(param.value.int_value AS INT64)
-     FROM UNNEST(event_params) AS param
-     WHERE param.key = 'engagement_time_msec') AS engagement_time_msec
-  FROM `bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*`
+WITH seven_day_engaged AS (
+  SELECT DISTINCT user_pseudo_id
+  FROM `bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_202101*`,
+  UNNEST(event_params) AS ep
   WHERE _TABLE_SUFFIX BETWEEN '20210101' AND '20210107'
+    AND ep.key = 'engagement_time_msec'
+    AND (
+      (ep.value.int_value IS NOT NULL AND ep.value.int_value > 0) OR
+      (ep.value.double_value IS NOT NULL AND ep.value.double_value > 0) OR
+      (ep.value.float_value IS NOT NULL AND ep.value.float_value > 0)
+    )
 ),
-user_engagement AS (
-  SELECT
-    user_pseudo_id,
-    SUM(CASE WHEN event_dt BETWEEN DATE '2021-01-01' AND DATE '2021-01-07'
-             THEN engagement_time_msec ELSE 0 END) AS engagement_7d,
-    SUM(CASE WHEN event_dt BETWEEN DATE '2021-01-06' AND DATE '2021-01-07'
-             THEN engagement_time_msec ELSE 0 END) AS engagement_2d
-  FROM engagement_events
-  WHERE engagement_time_msec IS NOT NULL
-        AND engagement_time_msec > 0
-  GROUP BY user_pseudo_id
+two_day_engaged AS (
+  SELECT DISTINCT user_pseudo_id
+  FROM `bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_202101*`,
+  UNNEST(event_params) AS ep
+  WHERE _TABLE_SUFFIX BETWEEN '20210106' AND '20210107'
+    AND ep.key = 'engagement_time_msec'
+    AND (
+      (ep.value.int_value IS NOT NULL AND ep.value.int_value > 0) OR
+      (ep.value.double_value IS NOT NULL AND ep.value.double_value > 0) OR
+      (ep.value.float_value IS NOT NULL AND ep.value.float_value > 0)
+    )
 )
 SELECT COUNT(*) AS distinct_users
-FROM user_engagement
-WHERE engagement_7d > 0
-  AND engagement_2d = 0
+FROM seven_day_engaged
+WHERE user_pseudo_id NOT IN (SELECT user_pseudo_id FROM two_day_engaged)

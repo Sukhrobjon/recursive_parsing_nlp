@@ -1,107 +1,63 @@
-1. First, open the BigQuery console (https://console.cloud.google.com/bigquery) and make sure the project that contains the public GA4 sample dataset is selected.  
-2. Navigate to the dataset `bigquery-public-data.ga4_obfuscated_sample_ecommerce` in the Explorer panel on the left.  
-3. Verify the seven daily partitioned tables are present: `events_20210101` through `events_20210107`.  
-4. Identify the key columns we will need:  
-   • `event_name` – to isolate the `user_engagement` event.  
-   • `event_params` – a repeated RECORD that contains the parameter `engagement_time_msec`.  
-   • `pseudo_user_id` – the user identifier we will count.  
-   • `event_timestamp` – to confirm date boundaries if needed (each table already represents a single day, but we still reference it in the CTE for clarity).  
-5. Click the “+ Compose new query” button to open a blank query editor.  
-6. Write a Common Table Expression (CTE) that unions the seven daily tables and extracts only those events with a positive `engagement_time_msec`. Start typing:  
+1) Navigate to console.cloud.google.com/bigquery in your browser and, if prompted, log in with the Google account that has BigQuery access.  
+2) In the Explorer panel on the left, click the triangle ▸ next to “bigquery-public-data” to expand the public datasets list.  
+3) Scroll down and click the triangle ▸ beside “ga4_obfuscated_sample_ecommerce”; the seven daily tables for January 1-7 2021 appear.  
+4) Click the table name events_20210101; in the main pane, switch to the Schema tab so we can review the columns.  
+5) Scroll until you locate these two columns, noting their data types:  
+   • user_pseudo_id (STRING) – the anonymous user identifier we will count.  
+   • event_params (RECORD REPEATED) – an array that stores key/value pairs such as engagement_time_msec. We’ll extract its int_value later.  
+6) Still on this table, glance at the event_name field—this will let us restrict to rows where event_name = "user_engagement". We will use that filter to make sure the event actually carries engagement_time_msec.  
+7) At the top of the BigQuery pane, click the + COMPOSE NEW QUERY button (paper-and-pencil icon). A blank query editor tab opens.  
+8) Paste the following SQL into the editor. It builds two sub-queries, one for the 7-day window (Jan 1-7 2021) and one for the 2-day window (Jan 6-7 2021), then returns users who appear only in the larger window.  
+
 ```sql
-WITH positive_engagement AS (
-  SELECT
-    pseudo_user_id,
-    -- Extract engagement_time_msec from the nested event_params array
-    (SELECT value.int_value
-       FROM UNNEST(event_params)
-      WHERE key = 'engagement_time_msec') AS engagement_time_msec,
-    _TABLE_SUFFIX AS event_date   -- Each table’s suffix is the yyyymmdd date
-  FROM
-    `bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*`
-  WHERE
-    _TABLE_SUFFIX BETWEEN '20210101' AND '20210107'       -- 7-day window
+-- Distinct pseudo-users with positive engagement time in Jan 1-7 2021
+-- but NOT in Jan 6-7 2021
+WITH seven_day AS (
+  SELECT DISTINCT user_pseudo_id
+  FROM `bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*`
+  WHERE _TABLE_SUFFIX BETWEEN '20210101' AND '20210107'   -- 7-day period
     AND event_name = 'user_engagement'
-)
-```  
-7. Check the CTE logic by clicking the “Run” button with the cursor inside the CTE block; confirm the query preview returns rows and the `engagement_time_msec` column is populated.  
-8. Add a WHERE clause inside the CTE (or an outer SELECT) to keep only rows where `engagement_time_msec > 0`:  
-```sql
-AND (SELECT value.int_value
-       FROM UNNEST(event_params)
-      WHERE key = 'engagement_time_msec') > 0
-```  
-   (If you already included the extraction as a column, apply `WHERE engagement_time_msec > 0` instead.)  
-9. Create two derived CTEs to separate the 7-day users and the 2-day users:  
-```sql
-, seven_day_users AS (
-  SELECT DISTINCT pseudo_user_id
-  FROM positive_engagement
-  WHERE event_date BETWEEN '20210101' AND '20210107'
-)
-, two_day_users AS (
-  SELECT DISTINCT pseudo_user_id
-  FROM positive_engagement
-  WHERE event_date BETWEEN '20210106' AND '20210107'
-)
-```  
-10. Write the final SELECT to count users who appear in `seven_day_users` but not in `two_day_users`:  
-```sql
-SELECT
-  COUNT(*) AS distinct_users_7d_not_2d
-FROM
-  seven_day_users s
-LEFT JOIN
-  two_day_users t
-ON
-  s.pseudo_user_id = t.pseudo_user_id
-WHERE
-  t.pseudo_user_id IS NULL;
-```  
-11. Combine everything into one complete query in the editor:  
-```sql
-WITH positive_engagement AS (
-  SELECT
-    pseudo_user_id,
-    (SELECT value.int_value
-       FROM UNNEST(event_params)
-      WHERE key = 'engagement_time_msec') AS engagement_time_msec,
-    _TABLE_SUFFIX AS event_date
-  FROM
-    `bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*`
-  WHERE
-    _TABLE_SUFFIX BETWEEN '20210101' AND '20210107'
+    AND (
+      SELECT value.int_value
+      FROM UNNEST(event_params)
+      WHERE key = 'engagement_time_msec'
+    ) > 0                                               -- positive engagement
+),
+two_day AS (
+  SELECT DISTINCT user_pseudo_id
+  FROM `bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*`
+  WHERE _TABLE_SUFFIX BETWEEN '20210106' AND '20210107'   -- 2-day period
     AND event_name = 'user_engagement'
-),
-filtered_engagement AS (
-  SELECT *
-  FROM positive_engagement
-  WHERE engagement_time_msec > 0
-),
-seven_day_users AS (
-  SELECT DISTINCT pseudo_user_id
-  FROM filtered_engagement
-  WHERE event_date BETWEEN '20210101' AND '20210107'
-),
-two_day_users AS (
-  SELECT DISTINCT pseudo_user_id
-  FROM filtered_engagement
-  WHERE event_date BETWEEN '20210106' AND '20210107'
+    AND (
+      SELECT value.int_value
+      FROM UNNEST(event_params)
+      WHERE key = 'engagement_time_msec'
+    ) > 0
 )
-SELECT
-  COUNT(*) AS distinct_users_7d_not_2d
-FROM
-  seven_day_users s
-LEFT JOIN
-  two_day_users t
-ON
-  s.pseudo_user_id = t.pseudo_user_id
-WHERE
-  t.pseudo_user_id IS NULL;
-```  
-12. Click the “Run” button to execute the full query.  
-13. Review the Results panel; the value in `distinct_users_7d_not_2d` is the number of pseudo users who had positive engagement time during Jan 1-7 but none on Jan 6-7.  
-14. (Optional) Validate by spot-checking a few `pseudo_user_id`s:  
-    a. Modify the final SELECT to list `s.pseudo_user_id` instead of counting.  
-    b. Run the query again and manually inspect some of those users in the raw tables to confirm they meet the criteria.  
-15. Document the final count and save the query to a saved query folder for future reference.
+
+SELECT COUNT(*) AS distinct_users_no_recent_engagement
+FROM seven_day
+WHERE user_pseudo_id NOT IN (SELECT user_pseudo_id FROM two_day);
+```
+
+9) Review the date filters: note we reference the pseudo-column _TABLE_SUFFIX to limit which daily shard tables participate—this is faster than scanning the entire wildcard.  
+10) Confirm the subquery in the SELECT list counts only those user_pseudo_id values present in seven_day but absent from two_day.  
+11) Click the blue ▸ RUN button in the query toolbar.  
+12) Watch the Job Information panel on the right; once “Results” appears, the query has finished.  
+13) In the bottom “Query results” grid, verify a single row with the column distinct_users_no_recent_engagement shows the answer (e.g., 1 234).  
+14) Click SAVE RESULTS (upper-right of the results grid) and choose “CSV (local file)”.  
+15) In the file-save dialog that opens, leave format CSV, click Download, and save the file to your default Downloads folder.  
+16) Open your computer’s terminal (or Finder/Explorer) and go to the Downloads directory:  
+    ```bash
+    cd ~/Downloads
+    ```  
+17) Rename the downloaded file to result.csv so it is easy to locate:  
+    ```bash
+    mv *.csv result.csv
+    ```  
+18) Verify the file exists by listing the directory:  
+    ```bash
+    ls -l result.csv
+    ```  
+19) If you need to share the output, attach or upload ~/Downloads/result.csv as required.  
+20) You have now successfully identified the count of distinct pseudo-users with positive engagement in the 7-day window but none in the final 2-day window and saved the result locally.

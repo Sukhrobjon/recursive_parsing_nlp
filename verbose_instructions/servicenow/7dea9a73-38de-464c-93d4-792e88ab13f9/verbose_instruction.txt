@@ -1,0 +1,25 @@
+1. Open your browser and navigate to https://console.cloud.google.com/bigquery so the BigQuery Web UI loads.  
+2. Verify you are in the correct GCP project (look at the blue project-name drop-down in the top bar). If not, click the drop-down and pick the intended project.  
+3. In the left “Explorer” panel, locate the dataset that contains the table named catalog_items. If the dataset list is collapsed, click the small gray triangle ▸ next to your project name to expand it.  
+4. Click the gray ▸ triangle to the left of that dataset so all its tables appear.  
+5. Click once on catalog_items. The schema tab opens on the right; quickly confirm the three columns we will sort on exist (Created_by, Flow, Classic_Mobile_Picture_Type). Note the exact spelling—BigQuery is case-sensitive for column names.  
+6. Click the +COMPOSE NEW QUERY button (just above the schema panel). A new blank query editor tab appears in the main workspace.  
+7. Type the following SQL exactly into the editor:  
+
+```sql
+SELECT
+  *
+FROM
+  `your_project.your_dataset.catalog_items`
+ORDER BY
+  Created_by DESC,
+  Flow DESC,
+  Classic_Mobile_Picture_Type DESC;
+```  
+
+   • Replace your_project.your_dataset with the actual project and dataset names you saw in Step 3.  
+   • We use ORDER BY with DESC after every column to enforce descending order, matching the requested priority: first by Created by, then within that by Flow, and finally by Classic Mobile_Picture_Type.  
+8. Click the blue ▷ RUN button in the toolbar (or press Ctrl+Enter) to execute the query.  
+9. Watch the “Query results” panel that appears at the bottom. When the green check-mark and timing information show up, we know the query finished successfully. We can see the rows now sorted exactly as specified.  
+10. (Optional) To keep the results, click the SAVE RESULTS button on the right side of the “Query results” header. Choose “CSV (local file)” if you need a download, or “Save to a table” if you want to store it back in BigQuery for later use. Follow the on-screen prompts, naming the file or destination table appropriately.  
+11. If you expect to reuse this query, click the floppy-disk icon (Save) in the query editor’s top bar, give the script a name like “catalog_items_sorted_desc”, and click SAVE so teammates can find it later in the Saved Queries pane.

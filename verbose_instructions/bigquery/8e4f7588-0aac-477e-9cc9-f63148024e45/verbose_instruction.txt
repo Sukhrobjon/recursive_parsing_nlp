@@ -1,0 +1,25 @@
+1) Navigate to https://console.cloud.google.com/bigquery so the BigQuery console opens in your browser.  
+2) Look at the left-side Resources panel and locate the public project bigquery-public-data.  
+3) Click the grey triangle ▸ to the left of bigquery-public-data to expand its datasets list.  
+4) Scroll down and click the grey triangle ▸ beside covid19_open_data to reveal its tables.  
+5) Click the table name covid19_open_data (it appears as bigquery-public-data › covid19_open_data › covid19_open_data) to display its Schema tab in the main window—confirm that the column cumulative_confirmed and the date column exist; we will need them shortly.  
+6) Click the blue + Compose Query button near the top-right of the console to open a new Query editor tab.  
+7) Write the SQL below into the blank editor pane:  
+
+```sql
+-- Total confirmed COVID-19 cases worldwide on 2020-04-15
+SELECT
+  SUM(cumulative_confirmed) AS total_cases_worldwide
+FROM
+  `bigquery-public-data.covid19_open_data.covid19_open_data`
+WHERE
+  date = "2020-04-15";
+```  
+
+8) Click the blue ▷ Run button (top-center of the editor toolbar) to execute the query.  
+9) Wait a few seconds; in the Query results pane that appears below, verify one row returns with the column total_cases_worldwide.  
+10) Click the SAVE RESULTS button on the right side of the Query results header.  
+11) In the drop-down menu, choose CSV (local file); a file download dialog appears.  
+12) When prompted, save the file to your local machine’s default download folder.  
+13) Open your system’s file explorer, navigate to the Downloads folder, and locate the newly downloaded .csv file (its default name will look like covid19_open_data_....csv).  
+14) Rename that file to result.csv so the final path is ~/Downloads/result.csv—this is the file containing the worldwide total of confirmed COVID-19 cases on April 15 2020.

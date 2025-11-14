@@ -1,0 +1,68 @@
+1) Launch JupyterLab and double-click notebook.ipynb to open it.  
+2) Scroll to the first empty area and Click the grey “+ Code” button to insert a new code cell.  
+3) Type the import and database-connector code below to ensure we can query the Snowflake table. Replace the placeholder credentials if your environment does not inject them automatically.  
+```python
+import os, pandas as pd, sqlalchemy as sa
+
+# Build Snowflake connection string (assumes credentials are in env vars)
+snowflake_uri = (
+    f"snowflake://{os.getenv('SF_USER')}:{os.getenv('SF_PASSWORD')}"
+    f"@{os.getenv('SF_ACCOUNT')}/{os.getenv('SF_DATABASE')}/{os.getenv('SF_SCHEMA')}"
+)
+engine = sa.create_engine(snowflake_uri)
+conn = engine.connect()
+```
+4) Click “Run” (triangle icon) to execute the cell and establish the connection. Verify there is no error output (“We should see only an empty result after the cell finishes”).  
+5) Insert another code cell by clicking “+ Code”.  
+6) Write an SQL query that:  
+   • Selects only the five extensions of interest (.py, .c, .ipynb, .java, .js)  
+   • Calculates directory depth (number of “/” in the full_path minus 1)  
+   • Filters rows where depth > 10  
+   • Aggregates the count per extension  
+```python
+query = """
+SELECT  LOWER(REGEXP_SUBSTR(full_path, '\\.[^./]+$'))      AS extension,
+        COUNT(*)                                           AS file_count
+FROM    GITHUB_REPOS.GITHUB_REPOS.SAMPLE_FILES
+WHERE   LOWER(REGEXP_SUBSTR(full_path, '\\.[^./]+$')) IN ('.py', '.c', '.ipynb', '.java', '.js')
+  AND   (
+            LENGTH(full_path) - LENGTH(REPLACE(full_path, '/', ''))
+        )  > 10      -- directory depth > 10
+GROUP BY extension
+ORDER BY file_count DESC;
+"""
+df_counts = pd.read_sql(query, conn)
+df_counts
+```
+7) Press the triangle “Run” icon again. The resulting DataFrame should display two columns: ‘extension’ and ‘file_count’, sorted highest to lowest.  
+8) Confirm the depth calculation worked by sampling a few paths. Insert a new cell and run:  
+```python
+sample_check = pd.read_sql("""
+SELECT full_path
+FROM GITHUB_REPOS.GITHUB_REPOS.SAMPLE_FILES
+WHERE LOWER(REGEXP_SUBSTR(full_path, '\\.[^./]+$')) = '{}'
+  AND (LENGTH(full_path) - LENGTH(REPLACE(full_path, '/', ''))) > 10
+LIMIT 5
+""".format(df_counts.iloc[0,0]), conn)
+sample_check.head()
+```
+We should see 5 example paths whose slash count is at least 11, verifying the logic.  
+9) Identify the top row in df_counts. Insert another cell and run:  
+```python
+top_ext = df_counts.iloc[0]
+print(f"The file type with the most deeply nested files is {top_ext.extension} with {top_ext.file_count} files.")
+```
+10) Execute the cell. The printed sentence completes the task requirement.  
+11) Optionally export the result for reporting. Add one more cell:  
+```python
+df_counts.to_csv('deep_file_type_counts.csv', index=False)
+print("Saved counts to deep_file_type_counts.csv")
+```
+12) Click “Run” to generate the CSV and verify it appears in the left-hand File Browser.  
+13) Close the database connection in a final cell to tidy up:  
+```python
+conn.close()
+engine.dispose()
+```  
+14) Run the cell; no output means it closed cleanly.  
+15) Save the notebook (File > Save Notebook) so that all steps and results are preserved.

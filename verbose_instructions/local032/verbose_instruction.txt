@@ -1,0 +1,125 @@
+1) Open your browser and log in to the data-warehouse web console that hosts the Olist dataset (e.g., BigQuery, Snowflake Web UI, Redshift Query Editor).  
+2) Click the “SQL workspace” (sometimes labelled “Query editor” or “Compose new query”) to open a blank SQL tab.  
+3) Copy the entire SQL script below, which is already split into logical CTE blocks so you can easily follow each metric, and paste it into the editor:
+
+```sql
+/* STEP-0 :  Prepare a reusable view of delivered orders */
+WITH delivered_orders AS (
+    SELECT
+        order_id,
+        customer_id
+    FROM
+        olist_orders
+    WHERE
+        order_status = 'delivered'
+),
+
+/* STEP-1 :  Bring order-item rows that belong to delivered orders */
+order_items_delivered AS (
+    SELECT
+        oi.*,
+        d.customer_id           -- we keep the customer_id for later counts
+    FROM
+        olist_order_items AS oi
+    JOIN delivered_orders AS d
+      ON oi.order_id = d.order_id
+),
+
+/* STEP-2 :  Seller with most distinct customers */
+customer_leader AS (
+    SELECT
+        seller_id,
+        COUNT(DISTINCT customer_id) AS distinct_customers
+    FROM
+        order_items_delivered
+    GROUP BY
+        seller_id
+    ORDER BY
+        distinct_customers DESC
+    LIMIT 1
+),
+
+/* STEP-3 :  Seller with highest profit (price – freight_value) */
+profit_leader AS (
+    SELECT
+        seller_id,
+        SUM(price - freight_value) AS total_profit
+    FROM
+        order_items_delivered
+    GROUP BY
+        seller_id
+    ORDER BY
+        total_profit DESC
+    LIMIT 1
+),
+
+/* STEP-4 :  Seller with most delivered orders */
+order_leader AS (
+    SELECT
+        seller_id,
+        COUNT(DISTINCT order_id) AS distinct_orders
+    FROM
+        order_items_delivered
+    GROUP BY
+        seller_id
+    ORDER BY
+        distinct_orders DESC
+    LIMIT 1
+),
+
+/* STEP-5 :  Seller with most 5-star reviews (again, delivered orders only) */
+five_star_leader AS (
+    SELECT
+        oi.seller_id,
+        COUNT(*) AS five_star_reviews
+    FROM
+        order_items_delivered AS oi
+    JOIN olist_order_reviews AS r
+      ON oi.order_id = r.order_id
+    WHERE
+        r.review_score = 5
+    GROUP BY
+        oi.seller_id
+    ORDER BY
+        five_star_reviews DESC
+    LIMIT 1
+)
+
+/* STEP-6 :  Compile all four winners into one tidy result set */
+SELECT
+    'Most distinct customers (delivered orders)' AS achievement,
+    seller_id,
+    distinct_customers        AS metric_value
+FROM customer_leader
+
+UNION ALL
+SELECT
+    'Highest profit (delivered orders)',
+    seller_id,
+    total_profit
+FROM profit_leader
+
+UNION ALL
+SELECT
+    'Most distinct orders (delivered orders)',
+    seller_id,
+    distinct_orders
+FROM order_leader
+
+UNION ALL
+SELECT
+    'Most 5-star reviews (on delivered orders)',
+    seller_id,
+    five_star_reviews
+FROM five_star_leader;
+```
+
+4) Click the blue “Run” (or “Execute”) button in the top-right corner of the editor to launch the query.  
+5) Wait until the status bar shows “Query complete” and a results grid appears.  
+6) Verify each row:  
+   a) Row 1 description should read “Most distinct customers (delivered orders)” and show one seller_id and a customer count > 0.  
+   b) Row 2 description should read “Highest profit (delivered orders)” and display a numeric total_profit.  
+   c) Row 3 description should read “Most distinct orders (delivered orders)” and display an order count.  
+   d) Row 4 description should read “Most 5-star reviews (on delivered orders)” and display the review count.  
+7) Click the “Save Results” icon (down-arrow on the results grid) if you need a CSV/JSON copy, or click “Save view” on the query tab to store the SQL as a reusable view inside your project.  
+8) Share the final output or saved view link with stakeholders so they can independently validate the winning sellers.

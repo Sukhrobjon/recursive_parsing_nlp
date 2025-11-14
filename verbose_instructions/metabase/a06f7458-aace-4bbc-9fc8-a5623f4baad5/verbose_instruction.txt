@@ -1,0 +1,42 @@
+1. Click the blue New button in the upper-right corner of the Metabase home screen.  
+2. Choose Question from the drop-down list that appears.  
+3. In the Pick your starting data modal, click Sample Database then single-click Orders so it turns blue, and press Next.  
+4. Under the Summarize panel that opens, click the first gray box labeled Add a metric.  
+5. In the metric picker, hover over Sum and click Subtotal. A blue chip “Sum of Subtotal” now appears in the summary bar—this will be our measure.  
+6. Click the gray box labeled Add a grouping.  
+7. In the field list, expand Created At, scroll, and click Year. The chip “Created At: Year” is added.  
+8. Click + to the right of the new chip, expand Product, and select Category. The chip “Product → Category” is added.  
+9. Click + again, expand User, and select State. The chip “User → State” is added.  
+10. Verify that the summary bar now shows:  
+    • Metric: Sum of Subtotal  
+    • Group by: Created At: Year, Product → Category, User → State  
+11. Click the blue Visualize button in the top-right corner.  
+12. In the Visualization selector that appears above the results table, click the drop-down that currently says Table and choose Pivot Table. The grid reorganizes with “Created At: Year” on rows, “Product → Category” on columns, and “User → State” nested.  
+13. Hover over the lower-right corner of the screen and click the dark-blue button Download full results.  
+14. In the download modal, click the .xlsx option. Metabase starts generating the file; wait until the browser downloads query_result.xlsx (default name will be something like Orders-*.xlsx).  
+15. Switch to the terminal (press Ctrl+Alt+T).  
+16. Type the following to move into the default download directory:  
+```bash
+cd ~/Downloads
+```  
+17. Execute ls and confirm you see a file ending in .xlsx (e.g., Orders-2024-05-28.xlsx).  
+18. Rename it to the required filename:  
+```bash
+mv Orders-*.xlsx query_result.xlsx
+```  
+19. Copy the renamed file to /home/user:  
+```bash
+cp query_result.xlsx /home/user/
+```  
+20. Change to the destination directory:  
+```bash
+cd /home/user
+```  
+21. Open the workbook with LibreOffice Calc (or Excel if available):  
+```bash
+libreoffice --calc query_result.xlsx &
+```  
+22. Once the sheet opens, click any cell in the “Sum of Subtotal” column so Calc knows which column to sort by.  
+23. Click the Data menu in the top toolbar and choose Sort….  
+24. In the Sort dialog, set Sort key 1 to “Sum of Subtotal”, set Order to Ascending, and click OK. The rows rearrange so the smallest “Sum of Subtotal” is at the top—confirm the first numeric cell is the lowest value.  
+25. Press Ctrl+S to save, then close Calc. The pivot table is now stored as /home/user/query_result.xlsx sorted ascendingly by Sum of Subtotal.

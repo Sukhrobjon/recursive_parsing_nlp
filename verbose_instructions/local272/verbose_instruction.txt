@@ -1,0 +1,157 @@
+1. Click the “+ Worksheet” button in the upper-right of Snowsight to open a new SQL worksheet.  
+2. Type and run the role and warehouse commands so we can query inventory and sales data:  
+```sql
+USE ROLE analytics_engineer;
+USE WAREHOUSE compute_wh;
+```
+
+3. Execute a quick sanity check to confirm the order really exists and see its lines:  
+```sql
+SELECT *
+FROM orderlines
+WHERE order_id = 423
+ORDER BY line_number;
+```
+ We will copy the column names we need (product_id, qty_ordered, line_number, etc.) for later joins.
+
+4. Verify that we can see inventory for warehouse 1. Run:  
+```sql
+SELECT *
+FROM inventory
+WHERE warehouse_id = 1
+LIMIT 20;
+```
+You should see columns such as product_id, aisle, position, qty_on_hand, purchased_date.  
+Note that purchased_date will be our “FIFO” tie-breaker, and qty_on_hand will allow the “smallest-lot-first” rule.
+
+5. Create a Common Table Expression (CTE) that restates the order lines only for order 423 and carries a running cumulative quantity per product. Paste the query below and execute it:  
+```sql
+WITH order_423 AS (
+    SELECT
+        order_id,
+        line_number,
+        product_id,
+        qty_ordered,
+        SUM(qty_ordered)     OVER (PARTITION BY product_id
+                                   ORDER BY line_number
+                                   ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) 
+                                   AS cum_order_qty
+    FROM orderlines
+    WHERE order_id = 423
+)
+SELECT * FROM order_423
+ORDER BY product_id, line_number;
+```
+We can see the cumulative demand sequence; we will join this to inventory next.
+
+6. Build a second CTE that returns inventory for warehouse 1 ordered by the two priority criteria: first by purchased_date (oldest first) and then by qty_on_hand (smallest lots first). Run:  
+```sql
+, inv_wh1 AS (
+    SELECT
+        warehouse_id,
+        product_id,
+        aisle,
+        position,
+        qty_on_hand,
+        purchased_date,
+        ROW_NUMBER() OVER (PARTITION BY product_id 
+                           ORDER BY purchased_date, qty_on_hand) AS inv_rank
+    FROM inventory
+    WHERE warehouse_id = 1
+      AND qty_on_hand > 0
+)
+```
+(The leading comma “, inv_wh1” assumes you append it directly under the first CTE. Everything will be stitched together in step 7.)
+
+7. Append a third CTE that explodes inventory rows to “unit level” so we can allocate properly. In the same worksheet, continue building the query:  
+```sql
+, inv_exploded AS (
+    SELECT
+        product_id,
+        aisle,
+        position,
+        purchased_date,
+        1 AS unit_qty,                -- each row = 1 unit
+        ROW_NUMBER() OVER (PARTITION BY product_id
+                           ORDER BY purchased_date, qty_on_hand) AS per_unit_rank
+    FROM inv_wh1,
+         TABLE(GENERATOR(ROWCOUNT => qty_on_hand)) g
+)
+```
+Note: We use Snowflake’s GENERATOR table function to create one row per available unit, allowing exact pick allocation.
+
+8. Add the main SELECT that matches the exploded inventory to the cumulative order demand, using a windowed cumulative sum over inventory units, then filter only what is needed. Complete the full query now:  
+```sql
+SELECT
+    o.order_id,
+    o.line_number,
+    i.product_id,
+    i.aisle,
+    i.position,
+    COUNT(*)          AS pick_qty
+FROM order_423 o
+JOIN (
+        SELECT
+            product_id,
+            aisle,
+            position,
+            purchased_date,
+            per_unit_rank,
+            SUM(1) OVER (PARTITION BY product_id 
+                         ORDER BY per_unit_rank) AS cum_inv_units
+        FROM inv_exploded
+     ) i
+  ON i.product_id = o.product_id
+WHERE i.cum_inv_units <= o.cum_order_qty      -- stop once demand satisfied
+GROUP BY
+    o.order_id,
+    o.line_number,
+    i.product_id,
+    i.aisle,
+    i.position
+ORDER BY
+    o.line_number,
+    i.purchased_date,
+    pick_qty;
+```
+
+9. Click the blue “Run” ► button. In the result grid you should see a list like:  
+order_id | line_number | product_id | aisle | position | pick_qty
+
+10. Cross-check totals to guarantee we did not over-allocate any product. Immediately below, run this verification query:  
+```sql
+WITH picks AS (
+    -- reuse the previous SELECT statement (step 8) here or wrap it in a CTE
+)
+SELECT
+    p.product_id,
+    SUM(p.pick_qty)          AS total_picked,
+    o.total_ordered
+FROM (
+        SELECT product_id,
+               SUM(qty_ordered) total_ordered
+        FROM orderlines
+        WHERE order_id = 423
+        GROUP BY product_id
+     ) o
+LEFT JOIN picks p
+       ON p.product_id = o.product_id
+GROUP BY p.product_id, o.total_ordered;
+```
+The columns total_picked and total_ordered must match for each product_id; if any row shows a mismatch, re-inspect inventory quantities.
+
+11. Save the pick list as a table for downstream fulfillment:  
+```sql
+CREATE OR REPLACE TABLE picklist_order_423 AS
+SELECT *
+FROM (
+     -- paste the final SELECT from step 8 here
+);
+```
+“Query successfully executed” in the result pane confirms the table is now stored in Snowflake.
+
+12. Download or share the pick list. In Snowsight’s left sidebar, expand “Tables”, click picklist_order_423, then click “Download as CSV” (down-arrow icon) so the warehouse team can upload it to scanners.
+
+13. Notify the operations team that the pick list for order 423 is ready and has been validated against on-hand inventory in warehouse 1.
+
+We have now produced an exact, FIFO-compliant, quantity-balanced pick plan for order 423.

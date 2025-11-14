@@ -1,0 +1,78 @@
+1. Open the terminal and cd into the root of your dbt project directory (e.g. `my_dbt_project`):  
+   ```bash
+   cd ~/projects/my_dbt_project
+   ```
+
+2. Run a dry-run of the snapshot to see the exact error message and confirm which source is missing:  
+   ```bash
+   dbt snapshot --select orders_snapshot --log-level=debug
+   ```  
+   Note that the run will fail, but the stack trace shows something like:  
+   ```
+   'orders_snapshot' depends on source('ecommerce','orders') which was not found in the source registry
+   ```
+
+3. Copy the schema (database) and table names from the error message. In our example they are `ecommerce` (database / schema) and `orders` (table). We will use these values in the source declaration.
+
+4. Switch to VS Code (or your editor of choice) and expand the `models/` folder in the Explorer pane.
+
+5. Create (or open) a YAML file that stores source definitions. Common names are `src_ecommerce.yml` or simply `sources.yml`. Right-click on the `models/` folder → New File → type `sources.yml` → press Enter.
+
+6. Type the following YAML block to declare the missing source. Make sure indentation is two spaces, not tabs:  
+   ```yaml
+   version: 2
+
+   sources:
+     - name: ecommerce          # schema/database that holds the raw tables
+       database: "{{ target.database }}"   # optional, keeps it environment-agnostic
+       schema: ecommerce
+       tables:
+         - name: orders          # raw table referenced in orders_snapshot
+           identifier: orders    # physical table name (omit if logical = physical)
+           freshness:            # optional – enables dbt source freshness checks
+             warn_after: {count: 12, period: hour}
+             error_after: {count: 24, period: hour}
+   ```  
+   We declared a single source called `ecommerce` with one table, `orders`. You can add other tables later if needed.
+
+7. Press Ctrl+S (Cmd+S on Mac) to save `sources.yml`.
+
+8. Return to the terminal and validate the YAML syntax plus connectivity by running `dbt parse`:  
+   ```bash
+   dbt parse
+   ```  
+   If the command finishes with “All checks passed!”, the source definition is syntactically correct.
+
+9. (Optional) Run a source freshness test to double-check that `dbt` can locate the new source:  
+   ```bash
+   dbt source freshness --select source:ecommerce.orders
+   ```  
+   You should see “PASS source freshness” in the summary. If it fails, confirm the database/schema/table names are correct.
+
+10. Execute your full project to rebuild models and snapshots with the newly declared source:  
+    ```bash
+    dbt deps        # in case your project uses packages
+    dbt seed        # only if you have seed data
+    dbt run         # build models that snapshots might rely on
+    dbt test        # run tests to ensure integrity
+    dbt snapshot    # finally run the snapshots
+    ```  
+    Observe the console; `orders_snapshot` should now succeed and appear in the “Completed successfully” list.
+
+11. Verify the snapshot table in your warehouse. For example, in Snowflake:  
+    ```sql
+    SELECT *
+    FROM analytics.orders_snapshot
+    ORDER BY dbt_valid_from DESC
+    LIMIT 10;
+    ```  
+    You should see rows with valid `dbt_valid_from` and `dbt_valid_to` columns, confirming the snapshot executed correctly.
+
+12. Commit the new `sources.yml` file to version control so teammates have the declaration:  
+    ```bash
+    git add models/sources.yml
+    git commit -m "feat: add ecommerce.orders source for orders_snapshot"
+    git push origin main
+    ```
+
+13. Celebrate—your project is now fully declarative, and `orders_snapshot` runs without missing source errors!

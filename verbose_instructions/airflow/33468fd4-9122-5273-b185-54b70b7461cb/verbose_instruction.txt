@@ -1,0 +1,124 @@
+1. Open the Terminal application on your workstation.
+
+2. Update the APT catalog so we work with the latest package list:
+   ```bash
+   echo 'password' | sudo -S apt-get update -y
+   ```
+
+3. Install prerequisite tools (curl, gnupg, lsb-release, ca-certificates) that both Docker and Astronomer CLI need:
+   ```bash
+   echo 'password' | sudo -S apt-get install -y \
+     curl \
+     gnupg \
+     lsb-release \
+     ca-certificates
+   ```
+
+4. Add Docker’s official GPG key, then set up the stable Docker repository:
+   ```bash
+   curl -fsSL https://download.docker.com/linux/$(lsb_release -is | tr 'A-Z' 'a-z')/gpg | \
+     sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+
+   echo \
+     "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] \
+     https://download.docker.com/linux/$(lsb_release -is | tr 'A-Z' 'a-z') \
+     $(lsb_release -cs) stable" | \
+     sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+   ```
+
+5. Update APT again to include Docker packages:
+   ```bash
+   echo 'password' | sudo -S apt-get update -y
+   ```
+
+6. Install Docker Engine, CLI, and containerd:
+   ```bash
+   echo 'password' | sudo -S apt-get install -y docker-ce docker-ce-cli containerd.io
+   ```
+
+7. Enable Docker service to auto-start on every boot:
+   ```bash
+   echo 'password' | sudo -S systemctl enable docker
+   ```
+
+8. Start Docker immediately so we can keep working:
+   ```bash
+   echo 'password' | sudo -S systemctl start docker
+   ```
+
+9. Create the docker group if it doesn’t exist and add your current user to it so we can run docker without sudo:
+   ```bash
+   echo 'password' | sudo -S groupadd -f docker
+   echo 'password' | sudo -S usermod -aG docker $USER
+   ```
+
+10. Apply the new group membership in the current session:
+    ```bash
+    newgrp docker
+    ```
+
+11. Verify you can run Docker without sudo by pulling the Hello-World image:
+    ```bash
+    docker run --rm hello-world
+    ```
+    Note that seeing the “Hello from Docker!” message confirms your user permissions are correct.
+
+12. Install PostgreSQL server and client packages:
+    ```bash
+    echo 'password' | sudo -S apt-get install -y postgresql postgresql-contrib
+    ```
+
+13. Enable PostgreSQL service to start on boot and launch it now:
+    ```bash
+    echo 'password' | sudo -S systemctl enable postgresql
+    echo 'password' | sudo -S systemctl start postgresql
+    ```
+
+14. Verify PostgreSQL is running:
+    ```bash
+    sudo -u postgres psql -c "SELECT version();"
+    ```
+    We should see the version string; this also confirms local connectivity.
+
+15. Switch back to the Terminal prompt (we are still in Terminal) and install the Astronomer CLI (astro) via the official install script:
+    ```bash
+    curl -sSL https://install.astronomer.io | sudo -E bash -
+    ```
+
+16. Verify Astro CLI installed correctly:
+    ```bash
+    astro version
+    ```
+    The command should print both the Astro CLI and Docker Engine versions; no sudo required here.
+
+17. Confirm that both auto-start services are properly enabled:
+    ```bash
+    systemctl is-enabled docker
+    systemctl is-enabled postgresql
+    ```
+    Each command should return the word `enabled`.
+
+18. Reboot your machine to test auto-start and permission changes:
+    ```bash
+    echo 'password' | sudo -S reboot
+    ```
+
+19. After the system boots back up, open Terminal again and verify everything works without sudo:
+    a) Check Docker:
+       ```bash
+       docker ps
+       ```
+       An empty list of containers (or currently running ones) shows the Docker daemon came up automatically.
+
+    b) Check PostgreSQL:
+       ```bash
+       psql -U postgres -c "SELECT 1;"
+       ```
+       This should return `?column? ─ 1`, confirming the database server started automatically.
+
+    c) Check Astro CLI again:
+       ```bash
+       astro version
+       ```
+
+20. Celebrate—we now have Docker, Astro, and PostgreSQL installed, auto-starting, and Docker can be used without typing sudo each time.

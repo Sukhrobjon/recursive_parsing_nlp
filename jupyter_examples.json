@@ -1,0 +1,42 @@
+{
+  "examples": [
+    {
+      "task_type": "data_analysis",
+      "instruction": "Determine the total number of Games held for both the Summer and Winter Olympics, and record this information in 'allGames.csv'.",
+      "verbose_instruction": "Determine the total number of Games held for both the Summer and Winter Olympics, and record this information in \"allGames.csv\". In details,\n1. First, we need to check the predefined \"allGames.csv\", which displays the target format, double-click \"allGames.csv\".\n2. Double-click \"Athletes_summer_games.csv\", to preview the data.\n3. Double-click \"Athletes_winter_games.csv\", to preview the data.\n4. Double-click \"notebook.ipynb\".\n5. Keep scrolling down to the blank area.\n5. Click button \"Click to add a cell.\"\n6. Copy the code to this cell:\n```\ndf_winter = pd.read_csv('./Athletes_winter_games.csv')\ndf_sum_win = pd.concat([df_summer, df_winter])\ntotal_games = pd.DataFrame(columns=['Total # of Games'])\ntotal_games.loc['Winter'] = len(df_winter['Games'].drop_duplicates())\ntotal_games.loc['Summer'] = len(df_summer['Games'].drop_duplicates())\n\ntotal_games = total_games.reset_index().rename(columns={'index':'Season'})\ntotal_games_path = './allGames.csv'\ntotal_games.to_csv(total_games_path, index=False)\n```\n7. Click \"Run this cell and advance\"\n8. If fails, click \"Run > Restart the kernel and run all cells\".\n9. Click \"Restart\" in the pop-up window.",
+      "action_number": 9
+    },
+    {
+      "task_type": "notebook_creation",
+      "instruction": "Help me create a new jupyter notebook named tensor.ipynb on the current website and copy the code in the code.py file on the desktop to this notebook. Note that all code should be in one cell and you don't need to run it.",
+      "verbose_instruction": "This task is to create jupyter notebook from its website. To finish the task, follow steps below:\n1. In the middle of the Launcher page, click \"Python 3 (ipykernel)\".\n2. On the left side panel, double click code.py.\n3. Copy the code in code.py and return to the previous ipynb file.\n4. Paste the code to the first cell.\n5. Enter \"Ctrl-S\".\n6. In the pop-up window, type in \"tensor\" to the \"Rename file\" field.\n7. Click button \"Rename\".",
+      "action_number": 7
+    }
+  ],
+  "common_patterns": {
+    "opening": [
+      "In details,",
+      "To finish the task, follow steps below",
+      "This task is to"
+    ],
+    "ui_navigation": [
+      "Double-click",
+      "Click button",
+      "Click",
+      "In the middle of",
+      "On the left side panel"
+    ],
+    "jupyter_specific": [
+      "Click to add a cell",
+      "Run this cell and advance",
+      "Python 3 (ipykernel)",
+      "Restart the kernel",
+      "Launcher page"
+    ],
+    "code_execution": [
+      "Copy the code to this cell",
+      "Paste the code",
+      "Run >"
+    ]
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "examples": [
+    {
+      "task_type": "data_loading",
+      "instruction": "My work today is to load data from a remote Amazon S3 bucket into a snowflake database. The concrete tasks are introduced in the opened file on Desktop.",
+      "verbose_instruction": "Given the to-do list, we will finish all tasks following these detailed steps:\n1. Click the \"+ >> SQL Worksheet\" button on the top right of the main page.\n2. In the opened blanked page, first set the role to \"accountadmin\" via typing:\n`USE ROLE accountadmin;`\n3. Click the button with icon \"►\" in the upper-right corner of the worksheet;\n4. Next, select the warehouse and run it:\n`USE WAREHOUSE compute_wh;`\n5. The first task is to create a Snowflake database \"tasty_bytes\" with schema \"food\", we type in:\n`CREATE OR REPLACE DATABASE tasty_bytes;`\nand run it to construct the database;\n6. As for the schema, similarly, we write down and run the following code in the worksheet:\n`CREATE OR REPLACE SCHEMA tasty_bytes.food;`\n7. Then, we create the target table \"menu\" in schema \"food\" to store the source data. Copy the following codes into the opened worksheet and run it:\n```\nCREATE OR REPLACE TABLE tasty_bytes.food.menu\n(\n    menu_id NUMBER,\n    menu_type_id NUMBER,\n    menu_type STRING,\n    truck_brand_name STRING,\n    menu_item_id NUMBER,\n    menu_item_name STRING,\n    item_category STRING,\n    item_subcategory STRING,\n    cost_of_goods_usd NUMBER,\n    sale_price_usd NUMBER,\n    menu_item_health_metrics_obj OBJECT\n);\n```\n8. Now, we have created the database, schema and table to store the data. We are going to create a stage that holds data files from Amazon S3. Type in:\n`CREATE OR REPLACE STAGE tasty_bytes.food.awsstage\nurl = 's3://sfquickstarts/tastybytes/raw_pos/menu/menu.csv.gz'\nfile_format = (type = csv);`\nRemember to execute it via clicking \"Run\" button in the upper-right corner of this worksheet.\n9. To load the data into the target table, we will use the COPY INTO command\n`COPY INTO tasty_bytes.food.menu\nFROM @tasty_bytes.food.awsstage;`\n, then select Run.\n10. After waiting for some seconds, we will see the results table with status \"LOADED\" and 100 rows loaded.\nTill now, we have finished all jobs in the to-do list.",
+      "action_number": 10
+    },
+    {
+      "task_type": "visualization",
+      "instruction": "Please open a new SQL worksheet and run the code in code.txt. After the execution, please select the line chart type and modify the chart title to \"Number of Orders in the First 10 Days\". Finally, download the chart and rename it to chart.png.",
+      "verbose_instruction": "To download the chart, please follow theses steps:\n1. Copy the code in the opened \"code.txt\" file.\n2. Switch to the webpage and click the \"+\" button on the top right;\n3. Choose \"SQL Worksheet\" in the drop-down panel;\n4. Paste the code in the opened blank worksheet;\n5. In the upper-right corner of the worksheet, select \"Run\" (icon ►) to execute the command.\n6. After the execution, choose \"Chart\" on the right side of \"Results\";\n7. Choose \"Line\" for the chart type on the right of the panel;\n8. Click the chart title, modify it as \"Number of Orders in the First 10 Days\", and press Enter to save it;\n9. Click the download button on the top right of the panel;\n10. Open the local path \"/home/user/Downloads\";\n11. Rename the chart file as \"chart.png\".",
+      "action_number": 11
+    }
+  ],
+  "common_patterns": {
+    "opening": [
+      "Given the to-do list, we will finish all tasks following these detailed steps",
+      "To download the chart, please follow theses steps"
+    ],
+    "ui_navigation": [
+      "Click the",
+      "Choose",
+      "Switch to",
+      "Copy",
+      "Paste"
+    ],
+    "snowflake_specific": [
+      "SQL Worksheet",
+      "USE ROLE",
+      "USE WAREHOUSE",
+      "Run button",
+      "icon ►",
+      "Snowsight"
+    ],
+    "sql_operations": [
+      "CREATE OR REPLACE",
+      "COPY INTO",
+      "type in:",
+      "run it"
+    ]
+  }
+}

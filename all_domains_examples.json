@@ -1,0 +1,77 @@
+{
+  "domains": {
+    "bigquery": {
+      "description": "Google BigQuery data warehouse and SQL query tasks",
+      "task_types": ["web_ui_query_writing", "code_based_querying", "schema_modification", "data_analysis"],
+      "tools": ["bigquery_console", "sql", "python", "terminal"],
+      "patterns": ["Navigate to BigQuery console", "Click triangle", "Write SQL query", "Execute and save results"]
+    },
+    "dbt": {
+      "description": "dbt (data build tool) for data transformation",
+      "task_types": ["project_initialization", "source_declaration", "model_creation", "test_configuration"],
+      "tools": ["terminal", "vscode", "yaml", "sql"],
+      "patterns": ["dbt init", "dbt seed", "dbt run", "Edit YAML files", "vi editor operations"]
+    },
+    "airbyte": {
+      "description": "Airbyte data integration and pipeline tasks",
+      "task_types": ["data_pipeline_setup", "connection_configuration", "data_comparison", "source_destination_setup"],
+      "tools": ["airbyte_ui", "terminal", "docker", "snowflake", "postgres"],
+      "patterns": ["Create connection", "Configure source/destination", "Switch between UI and terminal", "Environment variables"]
+    },
+    "airflow": {
+      "description": "Apache Airflow workflow orchestration",
+      "task_types": ["dag_creation", "environment_setup", "connection_configuration", "task_scheduling"],
+      "tools": ["terminal", "python", "docker", "astro", "postgres"],
+      "patterns": ["Create DAG", "Define tasks", "Set up connections", "Docker operations", "Astro CLI"]
+    },
+    "dagster": {
+      "description": "Dagster data orchestration platform",
+      "task_types": ["asset_definition", "pipeline_creation", "resource_configuration", "schedule_setup"],
+      "tools": ["terminal", "python", "vscode", "dagster_ui"],
+      "patterns": ["Define assets", "Create pipelines", "Configure resources", "dagster dev", "Python code"]
+    },
+    "excel": {
+      "description": "Microsoft Excel spreadsheet operations",
+      "task_types": ["formula_creation", "data_manipulation", "pivot_table", "chart_creation", "macro_automation"],
+      "tools": ["excel", "vba", "formulas"],
+      "patterns": ["Click cell", "Enter formula", "Create pivot table", "Insert chart", "Use functions"]
+    },
+    "jupyter": {
+      "description": "Jupyter Notebook data analysis and visualization",
+      "task_types": ["notebook_creation", "data_analysis", "visualization", "code_execution"],
+      "tools": ["jupyter", "python", "pandas", "matplotlib", "terminal"],
+      "patterns": ["Create notebook", "Import libraries", "Write code cells", "Execute cells", "Create visualizations"]
+    },
+    "metabase": {
+      "description": "Metabase business intelligence and dashboarding",
+      "task_types": ["question_creation", "dashboard_creation", "database_connection", "visualization_setup"],
+      "tools": ["metabase_ui", "sql", "browser"],
+      "patterns": ["Create question", "Build dashboard", "Connect database", "Select visualization", "Filter data"]
+    },
+    "servicenow": {
+      "description": "ServiceNow IT service management",
+      "task_types": ["incident_management", "workflow_creation", "table_configuration", "report_generation"],
+      "tools": ["servicenow_ui", "workflow_editor", "table_builder"],
+      "patterns": ["Navigate to module", "Create record", "Configure workflow", "Build report", "Set permissions"]
+    },
+    "snowflake": {
+      "description": "Snowflake data warehouse operations",
+      "task_types": ["database_creation", "table_operations", "query_execution", "data_loading"],
+      "tools": ["snowflake_ui", "sql", "terminal", "python"],
+      "patterns": ["Create database", "Execute SQL", "Load data", "Configure warehouse", "Manage schemas"]
+    },
+    "superset": {
+      "description": "Apache Superset data visualization and dashboarding",
+      "task_types": ["chart_creation", "dashboard_creation", "dataset_configuration", "sql_query"],
+      "tools": ["superset_ui", "sql", "browser"],
+      "patterns": ["Create chart", "Build dashboard", "Configure dataset", "Write SQL", "Apply filters"]
+    }
+  },
+  "common_patterns": {
+    "ui_navigation": ["Click", "Navigate to", "Open", "Select", "Switch to"],
+    "terminal_commands": ["Run", "Execute", "Type", "Enter command", "cd"],
+    "code_editing": ["Write", "Edit", "Create file", "Append", "Save"],
+    "configuration": ["Configure", "Set up", "Define", "Specify", "Enter values"],
+    "data_operations": ["Query", "Load", "Transform", "Analyze", "Export"]
+  }
+}

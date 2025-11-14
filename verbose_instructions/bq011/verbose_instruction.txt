@@ -1,42 +1,68 @@
-1. Navigate to https://console.cloud.google.com/bigquery in your browser and make sure you are in the project where you have BigQuery access.  
-2. Click the triangle to the left of bigquery-public-data in the Explorer pane so its list of datasets expands.  
-3. Click the triangle next to ga4_obfuscated_sample_ecommerce to reveal all daily partitioned tables whose names start with events_202101. You should see events_20210101 through events_20210107.  
-4. Click events_20210101 once; the Table details panel opens on the right. Scroll the Schema tab and note the repeated column event_params (this contains key / value pairs such as engagement_time_msec) and the scalar columns user_pseudo_id, event_name, and event_date. We are interested in these columns for our query.  
-5. Click the + COMPOSE NEW QUERY button at the top of the main BigQuery window; a new blank query editor tab appears.  
-6. Write the following SQL into the editor (copy/paste everything inside the code block):  
+1) Open your web browser and Navigate to https://console.cloud.google.com/bigquery to launch the BigQuery console.
+
+2) In the left-hand Explorer panel, Locate the project bigquery-public-data. Click the ▸ triangle next to it to expand the list of datasets.
+
+3) Click the ▸ triangle next to the dataset ga4_obfuscated_sample_ecommerce so we can inspect its tables. You will see seven daily partitioned tables such as events_20210101, events_20210102 … events_20210107.
+
+4) Click the table name events_20210107. In the right-hand panel, Select the Schema tab to view the columns (e.g., user_pseudo_id, event_name, event_params, event_timestamp, etc.). Note that engagement_time is stored in the repeated RECORD column event_params with key = "engagement_time_msec"—we will unnest this later.
+
+5) Click the + Compose new query button (white sheet icon) at the top of the BigQuery console to open a blank query editor.
+
+6) Write the following SQL into the editor. The query:
+   • Unnests event_params to extract engagement_time_msec.  
+   • Builds two sets of users:  
+       – last7  → users with positive engagement time from 2021-01-01 00:00:00 to 2021-01-07 23:59:59 (7-day window)  
+       – last2  → users with positive engagement time from 2021-01-06 00:00:00 to 2021-01-07 23:59:59 (2-day window)  
+   • Uses EXCEPT DISTINCT to keep only users in last7 who are not in last2.  
+   • Counts the remaining distinct pseudo users.
+
 ```sql
--- Step 1: Collect users with positive engagement time anywhere in the 7-day window
-WITH seven_day_users AS (
-  SELECT DISTINCT
-         user_pseudo_id
-  FROM  `bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_202101*`,
-        UNNEST(event_params) AS ep
-  WHERE event_date BETWEEN '20210101' AND '20210107'                -- 7-day window
-    AND event_name = 'user_engagement'                               -- only engagement events
-    AND ep.key = 'engagement_time_msec'                              -- locate the parameter
-    AND ep.int_value > 0                                             -- positive engagement
+-- How many pseudo users had positive engagement time in the 7-day window
+-- ending 2021-01-07 23:59:59, but none in the final 2-day window?
+
+WITH base AS (
+  SELECT
+    user_pseudo_id,
+    _TABLE_SUFFIX AS event_date,                       -- e.g. '20210105'
+    (SELECT ep.value.int_value
+       FROM UNNEST(event_params) AS ep
+       WHERE ep.key = 'engagement_time_msec') AS engagement_ms
+  FROM
+    `bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*`
+  WHERE
+    _TABLE_SUFFIX BETWEEN '20210101' AND '20210107'    -- 7-day range
+    AND event_name = 'user_engagement'                 -- only engagement events
 ),
 
--- Step 2: Collect users with positive engagement time in the last 2 days
-two_day_users AS (
-  SELECT DISTINCT
-         user_pseudo_id
-  FROM  `bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_202101*`,
-        UNNEST(event_params) AS ep
-  WHERE event_date BETWEEN '20210106' AND '20210107'                 -- 2-day window
-    AND event_name = 'user_engagement'
-    AND ep.key = 'engagement_time_msec'
-    AND ep.int_value > 0
+last7 AS (
+  SELECT DISTINCT user_pseudo_id
+  FROM   base
+  WHERE  engagement_ms IS NOT NULL
+         AND engagement_ms > 0                        -- positive engagement
+),
+
+last2 AS (
+  SELECT DISTINCT user_pseudo_id
+  FROM   base
+  WHERE  event_date BETWEEN '20210106' AND '20210107' -- 2-day range
+         AND engagement_ms IS NOT NULL
+         AND engagement_ms > 0
 )
 
--- Step 3: Find 7-day users who are NOT in the 2-day set
-SELECT COUNT(*) AS distinct_users_only_7day_not_2day
-FROM   seven_day_users
-WHERE  user_pseudo_id NOT IN (SELECT user_pseudo_id FROM two_day_users);
-```  
-7. First, quickly scan the SQL to confirm the two CTEs (seven_day_users and two_day_users) and the final COUNT statement match the business question: “users active in 7 days but not active in final 2 days.”  
-8. Click the blue ▷ RUN button in the toolbar above the editor to execute the query. Notice the job progress indicator in the bottom-right corner; when it turns green the query is finished.  
-9. After execution, look beneath the editor in the Query results panel. The single row result shows the answer in the column distinct_users_only_7day_not_2day.  
-10. Click the SAVE RESULTS button (on the right side of the Query results header).  
-11. In the dropdown choose CSV (local file); BigQuery will start a download of a file named something like query_results.csv.  
-12. Once the download completes, open your system’s file browser, move the file into your ~/Downloads directory, and rename it to result.csv so it is easy to reference later.
+SELECT COUNT(*) AS distinct_pseudo_users
+FROM (
+  SELECT user_pseudo_id FROM last7
+  EXCEPT DISTINCT
+  SELECT user_pseudo_id FROM last2
+);
+```
+
+7) Click the blue ▶︎ RUN button above the editor to execute the query. Wait until the “Query results” panel shows the output; you should see a single row labeled distinct_pseudo_users.
+
+8) Verify the results. (We expect a small integer—this is the number of users active in the full week but inactive in the final two days.)
+
+9) Click the SAVE RESULTS button on the right side of the Query results pane.
+
+10) Choose CSV (local file) from the drop-down. In the dialog that appears, Leave the default file name or rename it, then Click Download to save the file to your local machine (it will usually land in your Downloads folder).
+
+11) (Optional) Open your file manager, Navigate to ~/Downloads, and confirm that the CSV file contains the single value produced by the query—we now have the answer stored locally.

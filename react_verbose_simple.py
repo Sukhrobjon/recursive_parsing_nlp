@@ -32,11 +32,10 @@ class VerboseInstructionGenerator:
     - Few-shot learning from example patterns
     """
 
-    def __init__(self, openai_api_key: str = None, examples_file: str = "bigquery_examples.json"):
+    def __init__(self, openai_api_key: str = None):
         """
         Args:
             openai_api_key: Optional OpenAI API key. If None, reads from env variable.
-            examples_file: Path to JSON file with few-shot examples.
         """
         # Initialize Azure OpenAI client
         self.client = AzureOpenAI(
@@ -45,12 +44,33 @@ class VerboseInstructionGenerator:
             azure_endpoint="https://ovalnairr.openai.azure.com/",
         )
 
-        # Load few-shot examples
-        self.examples = self._load_examples(examples_file)
+        # Load domain-specific examples for all 11 domains
+        self.domain_examples = {
+            "bigquery": self._load_examples("bigquery_examples.json"),
+            "dbt": self._load_examples("dbt_examples.json"),
+            "airbyte": self._load_examples("airbyte_examples.json"),
+            "airflow": self._load_examples("airflow_examples.json"),
+            "dagster": self._load_examples("dagster_examples.json"),
+            "excel": self._load_examples("excel_examples.json"),
+            "jupyter": self._load_examples("jupyter_examples.json"),
+            "metabase": self._load_examples("metabase_examples.json"),
+            "servicenow": self._load_examples("servicenow_examples.json"),
+            "snowflake": self._load_examples("snowflake_examples.json"),
+            "superset": self._load_examples("superset_examples.json"),
+        }
 
-        print("Initialized Enhanced VerboseInstructionGenerator")
-        print(f"  - Loaded {len(self.examples.get('examples', []))} few-shot examples")
-        print(f"  - Schema-aware generation: Enabled")
+        # Load all domains metadata
+        self.all_domains_config = self._load_examples("all_domains_examples.json")
+
+        # Get list of all supported domains
+        all_domains = list(self.all_domains_config.get("domains", {}).keys())
+
+        total_examples = sum(len(ex.get('examples', [])) for ex in self.domain_examples.values())
+
+        print("Initialized Enhanced Multi-Domain VerboseInstructionGenerator")
+        print(f"  - Loaded {total_examples} few-shot examples across all 11 domains")
+        print(f"  - Supported domains: {', '.join(all_domains)}")
+        print(f"  - Schema-aware generation: Enabled (BigQuery)")
 
     def _load_examples(self, examples_file: str) -> Dict[str, Any]:
         """Load few-shot examples from JSON file."""
@@ -58,8 +78,57 @@ class VerboseInstructionGenerator:
             with open(examples_file, 'r') as f:
                 return json.load(f)
         except FileNotFoundError:
-            print(f"Warning: Examples file '{examples_file}' not found. Using basic generation.")
+            print(f"Warning: Examples file '{examples_file}' not found.")
             return {"examples": [], "common_patterns": {}}
+
+    def _detect_domain(self, task_description: str, tables: List[str]) -> str:
+        """
+        Detect the domain based on task description and tables using keyword matching.
+
+        Args:
+            task_description: Task description text
+            tables: List of table names
+
+        Returns:
+            Domain name (default: "bigquery")
+        """
+        task_lower = task_description.lower()
+
+        # Domain-specific keyword mappings (ordered by specificity)
+        domain_keywords = {
+            "dbt": ["dbt", "snapshot", "seed", "dbt_project", "dbt run", "dbt debug", "jaffle"],
+            "airbyte": ["airbyte", "faker", "sync now", "connection"],
+            "airflow": ["airflow", "dag", "astro", "airflow ui", "task"],
+            "dagster": ["dagster", "asset", "dagster dev", "materialization"],
+            "excel": ["excel", "spreadsheet", "pivot table", "formula", "workbook", "cell"],
+            "jupyter": ["jupyter", "notebook", "ipynb", ".ipynb", "kernel"],
+            "metabase": ["metabase", "question", "metabase ui"],
+            "servicenow": ["servicenow", "incident", "service catalog", "cmdb"],
+            "snowflake": ["snowflake", "snowsight", "warehouse", "snowflake account"],
+            "superset": ["superset", "apache superset", "superset dashboard"],
+            "bigquery": ["bigquery", "bq ", "google cloud", "bigquery-public-data"]
+        }
+
+        # Check tables for BigQuery-specific patterns
+        table_indicators = {
+            "bigquery": any("bigquery-public-data" in table.lower() or "." in table for table in tables)
+        }
+
+        # Score each domain based on keyword matches
+        scores = {}
+        for domain, keywords in domain_keywords.items():
+            score = sum(1 for keyword in keywords if keyword in task_lower)
+            if domain in table_indicators and table_indicators[domain]:
+                score += 2  # Boost score if table patterns match
+            if score > 0:
+                scores[domain] = score
+
+        # Return domain with highest score
+        if scores:
+            return max(scores, key=scores.get)
+
+        # Default to bigquery for SQL-related tasks
+        return "bigquery"
 
     def _classify_task(self, task_description: str, tables: List[str]) -> Dict[str, Any]:
         """
@@ -150,34 +219,43 @@ Return ONLY the JSON object, nothing else."""
 
     def generate_verbose_instruction(self, task_description: str, tables: list) -> str:
         """
-        Generate enhanced verbose step-by-step instructions.
+        Generate enhanced verbose step-by-step instructions with multi-domain support.
 
         Pipeline:
-        1. Classify task type
-        2. Fetch table schemas
-        3. Select relevant few-shot examples
-        4. Generate instructions with context
+        1. Detect domain (bigquery, dbt, airbyte)
+        2. Classify task type
+        3. Fetch table schemas (for bigquery only)
+        4. Select relevant few-shot examples from domain
+        5. Generate instructions with context
 
         Args:
             task_description: The high-level task to accomplish
-            tables: List of BigQuery table names available
+            tables: List of table names available (may be empty for non-BigQuery tasks)
 
         Returns:
             Formatted verbose instruction as string
         """
+        # Detect domain
+        print("  - Detecting domain...")
+        domain = self._detect_domain(task_description, tables)
+        print(f"    Domain: {domain}")
+
+        # Classify task type
         print("  - Classifying task type...")
         task_classification = self._classify_task(task_description, tables)
         print(f"    Task type: {task_classification['task_type']}")
         print(f"    Complexity: {task_classification['complexity']}")
 
-        # Get schema information
-        schema_info = self._get_table_schemas(tables)
+        # Get schema information (only for bigquery)
+        schema_info = None
+        if domain == "bigquery" and tables:
+            schema_info = self._get_table_schemas(tables)
 
-        # Build few-shot examples section
-        few_shot_examples = self._build_few_shot_section(task_classification['task_type'])
+        # Build few-shot examples section from appropriate domain
+        few_shot_examples = self._build_few_shot_section(domain, task_classification['task_type'])
 
         # Build enhanced prompt
-        system_prompt = self._build_system_prompt(task_classification, few_shot_examples)
+        system_prompt = self._build_system_prompt(domain, task_classification, few_shot_examples)
         user_prompt = self._build_user_prompt(task_description, tables, schema_info, task_classification)
 
         print("  - Generating verbose instructions...")
@@ -197,31 +275,35 @@ Return ONLY the JSON object, nothing else."""
             print(f"Error generating verbose instruction: {e}")
             raise
 
-    def _build_few_shot_section(self, task_type: str) -> str:
-        """Build few-shot examples section based on task type."""
-        if not self.examples.get('examples'):
+    def _build_few_shot_section(self, domain: str, task_type: str) -> str:
+        """Build few-shot examples section based on domain and task type."""
+        domain_examples = self.domain_examples.get(domain, {})
+        if not domain_examples.get('examples'):
             return ""
 
-        # Find matching example
+        # Find matching example by task type
         matching_example = None
-        for ex in self.examples['examples']:
-            if ex['task_type'] == task_type:
+        for ex in domain_examples['examples']:
+            if ex.get('task_type') == task_type:
                 matching_example = ex
                 break
 
-        # If no exact match, use first example
-        if not matching_example and self.examples['examples']:
-            matching_example = self.examples['examples'][0]
+        # If no exact match, use first example from domain
+        if not matching_example and domain_examples['examples']:
+            matching_example = domain_examples['examples'][0]
 
         if not matching_example:
             return ""
 
+        # Format based on domain (BigQuery has tables, others might not)
+        tables_line = ""
+        if 'tables' in matching_example:
+            tables_line = f"\nTables: {', '.join(matching_example.get('tables', []))}"
+
         return f"""
 EXAMPLE REFERENCE:
 
-Task: {matching_example['instruction']}
-
-Tables: {', '.join(matching_example['tables'])}
+Task: {matching_example['instruction']}{tables_line}
 
 Verbose Instruction:
 {matching_example['verbose_instruction']}
@@ -230,62 +312,118 @@ Verbose Instruction:
 Your task should follow a similar detailed, step-by-step format.
 """
 
-    def _build_system_prompt(self, task_classification: Dict[str, Any], few_shot_examples: str) -> str:
-        """Build enhanced system prompt with task context."""
+    def _build_system_prompt(self, domain: str, task_classification: Dict[str, Any], few_shot_examples: str) -> str:
+        """Build enhanced system prompt with domain and task context."""
         task_type = task_classification['task_type']
 
-        # Base instructions
-        base_instructions = """You are an expert data analyst creating step-by-step instructions for BigQuery tasks.
+        # Get domain info from config or use defaults
+        domain_config = self.all_domains_config.get("domains", {}).get(domain, {})
+        domain_description = domain_config.get("description", f"{domain} tasks")
 
-Your job is to break down a high-level task into detailed, actionable steps that another analyst could follow, similar to a tutorial or walkthrough."""
+        # Domain-specific base instructions
+        domain_instructions = {
+            "bigquery": "You are an expert data analyst creating step-by-step instructions for BigQuery data warehouse and SQL query tasks.",
+            "dbt": "You are an expert data engineer creating step-by-step instructions for dbt (data build tool) transformation tasks.",
+            "airbyte": "You are an expert data engineer creating step-by-step instructions for Airbyte data integration and pipeline tasks.",
+            "airflow": "You are an expert data engineer creating step-by-step instructions for Apache Airflow workflow orchestration tasks.",
+            "dagster": "You are an expert data engineer creating step-by-step instructions for Dagster data orchestration tasks.",
+            "excel": "You are an expert analyst creating step-by-step instructions for Microsoft Excel spreadsheet operations.",
+            "jupyter": "You are an expert data scientist creating step-by-step instructions for Jupyter Notebook data analysis tasks.",
+            "metabase": "You are an expert analyst creating step-by-step instructions for Metabase business intelligence and dashboarding tasks.",
+            "servicenow": "You are an expert IT professional creating step-by-step instructions for ServiceNow IT service management tasks.",
+            "snowflake": "You are an expert data engineer creating step-by-step instructions for Snowflake data warehouse operations.",
+            "superset": "You are an expert analyst creating step-by-step instructions for Apache Superset data visualization and dashboarding tasks."
+        }
 
-        # Task-specific guidelines
-        task_guidelines = {
-            "web_ui_query_writing": """
-For Web UI Query Writing tasks:
+        base_instructions = domain_instructions.get(domain, f"You are an expert creating step-by-step instructions for {domain_description}.")
+        base_instructions += "\n\nYour job is to break down a high-level task into detailed, actionable steps that another person could follow, similar to a tutorial or walkthrough."
+
+        # Domain and task-specific guidelines
+        domain_guidelines = {
+            "bigquery": {
+                "web_ui_query_writing": """
+For BigQuery Web UI Query Writing tasks:
 - Start with navigating to BigQuery console
 - Include steps to explore table schemas
 - Provide complete SQL query in a code block
 - Include steps to execute and save results
 - Reference specific UI elements (buttons, panels, menus)""",
-            "code_based_querying": """
-For Code-based Querying tasks:
+                "code_based_querying": """
+For BigQuery Code-based Querying tasks:
 - Include steps to open/navigate to code editor
 - Reference switching between browser and IDE
 - Explain schema exploration before coding
-- Provide complete, runnable code in code blocks
+- Provide complete, runnable Python code in code blocks
 - Include column-level reasoning and business logic
 - Add terminal execution steps""",
-            "schema_modification": """
-For Schema Modification tasks:
-- Navigate to specific table in project
-- Reference exact UI elements for schema editing
-- Be precise about field names and types
-- Include save/commit steps""",
-            "data_analysis": """
-For Data Analysis tasks:
-- Break down into logical analytical steps
-- Include data exploration phases
-- Show intermediate verification steps
-- Explain reasoning behind each step"""
+            },
+            "dbt": {
+                "project_initialization": """
+For dbt Project Initialization tasks:
+- Include terminal commands for dbt init
+- Reference configuration files (profiles.yml, dbt_project.yml)
+- Show vi/editor operations if needed
+- Include dbt debug, seed, and run commands
+- Mention directory navigation (cd commands)""",
+                "source_declaration": """
+For dbt Source Declaration tasks:
+- Open relevant YAML files in editor
+- Show exact YAML configuration to append
+- Include dbt seed and dbt run commands
+- Reference schema and model structure""",
+            },
+            "airbyte": {
+                "data_pipeline_setup": """
+For Airbyte Data Pipeline Setup tasks:
+- Include both UI navigation (Airbyte, Snowflake, etc.) and terminal operations
+- Reference switching between browser tabs/apps
+- Show configuration steps for sources and destinations
+- Include environment variable retrieval (echo $VAR)
+- Show dbt configuration if part of pipeline
+- Include sync/run commands""",
+                "data_comparison": """
+For Airbyte Data Comparison tasks:
+- Include connection configuration exploration
+- Show terminal commands for data manipulation
+- Reference docker commands if needed
+- Include data-diff or comparison tool usage
+- Show how to save results to files""",
+            }
         }
 
-        guidelines = task_guidelines.get(task_type, task_guidelines["web_ui_query_writing"])
+        # Get guidelines for this domain and task type
+        domain_specific = domain_guidelines.get(domain, {})
+
+        # If no specific guidelines, generate generic ones based on domain config
+        if not domain_specific or task_type not in domain_specific:
+            tools = domain_config.get("tools", [])
+            tools_str = ", ".join(tools[:3]) if tools else "relevant tools"
+            guidelines = f"""
+For {domain} tasks:
+- Break down into clear, sequential numbered steps
+- Include specific commands and configurations where applicable
+- Reference UI elements, buttons, and menu items by name
+- Provide complete code/SQL/configuration in markdown code blocks
+- Mention tool switching if using multiple tools ({tools_str})
+- Include verification steps to confirm success"""
+        else:
+            guidelines = domain_specific.get(task_type)
 
         format_rules = """
 FORMAT RULES:
-- Use numbered steps (1, 2, 3, etc.)
-- Start each step with an action verb (Click, Navigate, Write, Execute, etc.)
-- Be specific about table names and column names
-- Include exact SQL queries or code in markdown code blocks
+- Use numbered steps (1, 2, 3, etc.) or numbered with parentheses (1), 2), 3))
+- Start each step with an action verb (Click, Navigate, Write, Execute, Type, Run, etc.)
+- Be specific about table/database/file names
+- Include exact SQL queries, code, or configuration in markdown code blocks
 - Reference specific UI elements (triangles, buttons, panels by name)
-- Add reasoning where helpful ("Note that...", "We are interested in...")
-- Use collaborative tone occasionally ("First, we check...")
+- Add reasoning where helpful ("Note that...", "We will use this later...")
+- Use collaborative tone occasionally ("First, we check...", "we can see...")
 - Start directly with the task overview or step 1 - NO section headers
+- For multi-tool tasks, explicitly mention switching between apps ("Switch to", "Go to", "Change to")
 
 DO NOT include:
 - Section headers like "TASK:", "THOUGHT:", "STEPS:"
-- Bullet points or dashes (use numbered lists)
+- Bullet points or dashes for main steps (use numbered lists)
 - Generic placeholders without specific guidance
 """
 

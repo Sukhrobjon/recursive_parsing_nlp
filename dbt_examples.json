@@ -1,0 +1,40 @@
+{
+  "examples": [
+    {
+      "task_type": "project_initialization",
+      "instruction": "Create a dbt project jaffle_shop in ~/projects, connect it to duckdb at jaffle_shop.duckdb for both dev and prod targets, and load data from jaffle-shop-data.zip with dbt seed.",
+      "verbose_instruction": "This is a common dbt-core initialization task. To complete this, you need to:\n1. Switch to the terminal.\n2. Run ``dbt init jaffle_shop`` to initiate a project named \"jaffle_shop\".\n3. If the terminal asks you which database to use, enter \"1\" to choose duckdb.\n4. Run ``unzip jaffle-shop-data.zip`` to unzip the data files.\n5. Run ``mv jaffle-shop-data/* jaffle_shop/seeds`` to move the seeds to the folder \"/jaffle_shop/seeds\".\n6. Run ``vi ~/.dbt/profiles.yml`` to open the project profile in VI editor.\n7. Switch to the insert mode in VI editor by pressing the key \"i\".\n8. Replace the default values for both ``dev`` and ``prod`` fields to \"jaffle_shop.duckdb\".\n9. Back to the normal mode by pressing the key \"esc\".\n10. Enter the command ``:wq`` to save the changes.\n11. Run ``cd jaffle_shop`` to navigate into the project directory.\n12. Run ``dbt debug`` to connect to the database at jaffle_shop.duckdb.\n13. Run ``dbt seed`` to load the seeds.",
+      "action_number": 13
+    },
+    {
+      "task_type": "source_declaration",
+      "instruction": "I have noticed that the snapshot \"orders_snapshot\" depends on on an undeclared source. Help me add the source declaration and then re-run the entire project, so that \"dbt snapshot\" command could be executed successfully.",
+      "verbose_instruction": "This task requires you to declare sources for dbt snapshot reference.\n1. Open \"models/schema.yml\" in the VSCode editor.\n2. Append the following codes into the YML file.\n```yml\nsources:\n  - name: analytics\n    schema: analytics\n    tables:\n      - name: orders\n```\n3. Switch to the terminal.\n4. Run ``dbt seed`` to load the seeds.\n5. Run ``dbt run`` to execute the models.",
+      "action_number": 5
+    }
+  ],
+  "common_patterns": {
+    "opening": [
+      "This is a common dbt-core",
+      "This task requires you to",
+      "To complete this"
+    ],
+    "terminal_commands": [
+      "Switch to the terminal",
+      "Run ``dbt",
+      "Type in",
+      "Enter the command"
+    ],
+    "editor_operations": [
+      "Open",
+      "in the VSCode editor",
+      "Append the following codes",
+      "Replace the default values"
+    ],
+    "vi_editor": [
+      "Switch to the insert mode",
+      "Back to the normal mode",
+      "pressing the key"
+    ]
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "examples": [
+    {
+      "task_type": "visualization_creation",
+      "instruction": "Can you help me make a line chart out of Orders in Sample Database? Please summarize the data by \"Sum of Total\" and group by \"Created At -> by month\". Customize the line chart by adding a goal line with the value of 40,000 and a trend line. Download the visualization as a PNG file, and keep it as \"line_chart.png\" on the Desktop.",
+      "verbose_instruction": "To complete the visualization, please follow these steps:\n\n1. Click the \"New\" button on the top right;\n2. Choose \"Question\" in the drop-down panel;\n3. Choose Raw Data > Sample Database, then pick the Orders table. \n4. Click Visualize.\n5. Then click the Visualization button at the bottom to bring up the Visualization sidebar.\n6. Choose the \"Line\" visualization type;\n7. Click on the Summarize button on the top right corner.\n8. Under Summarize by, delete \"Count\" and add a metric of \"Sum of Total\".\n9. Under Group by, choose \"Created At - by month\".\n10. Click \"Done\".\n11. Click the Visualization button at the bottom to bring up the Visualization sidebar.\n12. Click \"Line\" to bring up the Line options.\n13. Click on Display.\n14. Click on Goal line, and type 40000 under Goal value.\n15. Click on Trend line.\n16. Click Done.\n17. Click the \"Download full results\" button (cloud icon) on the bottom right;\n18. Choose \".png\" in the panel;\n19. Open the local path \"/home/user/Downloads\";\n20. Rename the visualization file as \"line_chart.png\".\n21. Copy and paste it to the Desktop.",
+      "action_number": 21
+    },
+    {
+      "task_type": "dashboard_creation",
+      "instruction": "I want to build my first dashboard in the Metabase application and put a question into it. Help me set up a question with the SQL query in the opened 'question1.sql'. Create a new dashboard and add this question to it, named 'New Dashboard' and 'question1' respectively.",
+      "verbose_instruction": "To finish this task, please follow these steps:\n\n1. Click the \"New\" button on the top right;\n2. Choose \"SQL Query\" in the drop-down panel;\n3. Copy the SQL query in 'question1.sql' file and paste it in input panel.\n4. Click the \"Run query\" button on the right side, and check the output data.\n5. Click on \"Save\" button on the top right corner;\n6. Type in \"question1\" under \"name\", and click \"Save\".\n7. Click on \"Yes please!\".\n8. Click on the button \"Create a new dashboard\";\n9. Type in \"New Dashboard\" under \"name\", and click \"Create\".\n10. Click on \"Save\" button on the top right corner;",
+      "action_number": 10
+    }
+  ],
+  "common_patterns": {
+    "opening": [
+      "To complete the visualization, please follow these steps",
+      "To finish this task, please follow these steps"
+    ],
+    "ui_navigation": [
+      "Click the",
+      "Choose",
+      "Click on",
+      "Type in"
+    ],
+    "metabase_specific": [
+      "New button",
+      "Visualization button",
+      "Sample Database",
+      "Run query",
+      "Create a new dashboard"
+    ],
+    "data_operations": [
+      "Summarize by",
+      "Group by",
+      "SQL Query"
+    ]
+  }
+}

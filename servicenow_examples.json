@@ -1,0 +1,41 @@
+{
+  "examples": [
+    {
+      "task_type": "hardware_order",
+      "instruction": "Go to the hardware store and order 1 \"iPad pro\" with configuration {'Choose the colour': 'Silver', 'Choose the storage': '512'}",
+      "verbose_instruction": "Let's buy one iPad pro in the hardware store.\n1. Click the \"Hardware\" panel and wait for page loading.\n2. In the search bar on the top-right (with text \"Search catalog\"), click it and type in \"iPad Pro\".\n3. Press Enter to filter the items. We will see the desired item panel. Click it.\n4. In the order configuration page, for the option \"Choose the colour\", we click the radio box with text \"Silver\".\n5. As for the storage choice, we click the radio box starting with text \"512 GB\".\n6. Then, we come to the panel \"Order this item\" on the right, click and choose the \"Quantity\" selection bar with value \"1\".\n7. Finally, click the button \"Order Now\" in this panel and wait to web page response.",
+      "action_number": 7
+    },
+    {
+      "task_type": "hardware_order_bulk",
+      "instruction": "Go to the hardware store and order 8 \"iPad mini\" with configuration {'Choose the colour': 'Purple', 'Choose the storage': '256'}",
+      "verbose_instruction": "In the hardware store, we want to order 8 iPad mini:\n1. Click the \"Hardware\" panel and wait for page loading.\n2. Click the item panel for \"iPad mini\" (which should be the seond item) and wait for page response.\n3. In the directed new page, click the box in front of \"Purple\".\n4. As for storage, click the option starting with \"256 GB\".\n5. Come to the right panel, for Quantity, click the selection bar and choose \"8\".\n6. Click the button \"Order Now\" under it and we will see the order request has been made in the new page.",
+      "action_number": 6
+    }
+  ],
+  "common_patterns": {
+    "opening": [
+      "Let's buy",
+      "In the hardware store, we want to"
+    ],
+    "ui_navigation": [
+      "Click the",
+      "Click it and type in",
+      "Press Enter",
+      "Wait for page loading",
+      "Wait for page response"
+    ],
+    "servicenow_specific": [
+      "Hardware panel",
+      "Search catalog",
+      "Order Now",
+      "Order this item",
+      "radio box"
+    ],
+    "configuration": [
+      "Choose the colour",
+      "Choose the storage",
+      "Quantity selection bar"
+    ]
+  }
+}

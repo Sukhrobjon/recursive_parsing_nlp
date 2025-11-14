@@ -468,39 +468,171 @@ DO NOT include:
         print(f"Saved verbose instruction to: {output_path}")
 
 
+def process_datasets_by_task_type(generator: VerboseInstructionGenerator, per_task_type: int = 2):
+    """
+    Process N examples per domain from spider2-v-extended-dataset.
+
+    Args:
+        generator: VerboseInstructionGenerator instance
+        per_task_type: Number of examples to process per domain (default: 2)
+    """
+    base_path = "spider2-v-extended-dataset"
+
+    if not os.path.exists(base_path):
+        print(f"Error: {base_path} directory not found")
+        return
+
+    # Group examples by domain
+    print(f"Loading examples from {base_path}...")
+    domain_groups = {}
+
+    # Get all domain directories
+    domain_dirs = [d for d in os.listdir(base_path)
+                   if os.path.isdir(os.path.join(base_path, d)) and not d.startswith('.')]
+
+    for domain in sorted(domain_dirs):
+        domain_path = os.path.join(base_path, domain)
+
+        # Get all example directories in this domain
+        example_dirs = [d for d in os.listdir(domain_path)
+                       if os.path.isdir(os.path.join(domain_path, d)) and not d.startswith('.')]
+
+        domain_groups[domain] = []
+
+        for example_id in example_dirs:
+            example_dir = os.path.join(domain_path, example_id)
+            json_file = os.path.join(example_dir, f"{example_id}.json")
+
+            if not os.path.exists(json_file):
+                continue
+
+            try:
+                with open(json_file, 'r') as f:
+                    example_data = json.load(f)
+
+                # Extract instruction
+                instruction = example_data.get('instruction', '')
+
+                # Add to domain group
+                domain_groups[domain].append({
+                    'instance_id': example_id,
+                    'domain': domain,
+                    'question': instruction,
+                    'example_data': example_data
+                })
+            except Exception as e:
+                print(f"Warning: Could not load {json_file}: {e}")
+                continue
+
+    # Show statistics
+    print(f"\nFound {len(domain_groups)} domains:")
+    for domain, examples_list in sorted(domain_groups.items()):
+        print(f"  - {domain}: {len(examples_list)} examples")
+
+    # Process N examples per domain
+    print(f"\nProcessing {per_task_type} example(s) per domain...")
+    print("=" * 80)
+
+    total_success = 0
+    total_fail = 0
+
+    for domain, examples_list in sorted(domain_groups.items()):
+        examples_to_process = examples_list[:per_task_type]
+
+        print(f"\n{'=' * 80}")
+        print(f"DOMAIN: {domain.upper()} ({len(examples_to_process)}/{len(examples_list)} examples)")
+        print("=" * 80)
+
+        for idx, example_data in enumerate(examples_to_process, 1):
+            instance_id = example_data['instance_id']
+            domain_name = example_data['domain']
+            question = example_data['question']
+
+            print(f"\n[{idx}/{len(examples_to_process)}] Processing: {instance_id}")
+            print(f"Question: {question[:100]}..." if len(question) > 100 else f"Question: {question}")
+
+            try:
+                # For BigQuery tasks, we might have tables in the example_data
+                # For other domains, pass empty list
+                tables = []
+                if 'tables' in example_data['example_data']:
+                    tables = example_data['example_data']['tables']
+
+                verbose_instruction = generator.generate_verbose_instruction(question, tables)
+
+                # Save to new path format: verbose_instructions/{domain}/{instance_id}/verbose_instruction.txt
+                output_path = f"./verbose_instructions/{domain_name}/{instance_id}/verbose_instruction.txt"
+                generator.save_verbose_instruction(verbose_instruction, output_path)
+
+                print(f"✓ Success! Saved to {output_path}")
+                total_success += 1
+
+            except Exception as e:
+                print(f"✗ Failed: {e}")
+                total_fail += 1
+
+    print("\n" + "=" * 80)
+    print(f"COMPLETE!")
+    print(f"Domains processed: {len(domain_groups)}")
+    print(f"Successfully processed: {total_success}")
+    print(f"Failed: {total_fail}")
+    print("=" * 80)
+
+
 def process_datasets(generator: VerboseInstructionGenerator, num_datasets: int = None):
     """
-    Process examples from spider2-lite.jsonl.
+    Process examples from spider2-v-extended-dataset sequentially.
 
     Args:
         generator: VerboseInstructionGenerator instance
         num_datasets: Number of datasets to process. If None, process all datasets.
     """
-    # Load all examples from the dataset
-    try:
-        with open('spider2-lite.jsonl', 'r') as f:
-            examples = [json.loads(line) for line in f]
-    except FileNotFoundError:
-        print("Error: spider2-lite.jsonl not found")
+    base_path = "spider2-v-extended-dataset"
+
+    if not os.path.exists(base_path):
+        print(f"Error: {base_path} directory not found")
         return
 
-    # Load gold tables for all examples
-    try:
-        with open('gold_tables.jsonl', 'r') as f:
-            gold_tables_data = [json.loads(line) for line in f]
-    except FileNotFoundError:
-        print("Error: gold_tables.jsonl not found")
-        return
+    # Collect all examples from all domains
+    print(f"Loading examples from {base_path}...")
+    all_examples = []
 
-    gold_tables_dict = {item['instance_id']: item['gold_tables'] for item in gold_tables_data}
+    domain_dirs = [d for d in os.listdir(base_path)
+                   if os.path.isdir(os.path.join(base_path, d)) and not d.startswith('.')]
+
+    for domain in sorted(domain_dirs):
+        domain_path = os.path.join(base_path, domain)
+        example_dirs = [d for d in os.listdir(domain_path)
+                       if os.path.isdir(os.path.join(domain_path, d)) and not d.startswith('.')]
+
+        for example_id in example_dirs:
+            example_dir = os.path.join(domain_path, example_id)
+            json_file = os.path.join(example_dir, f"{example_id}.json")
+
+            if not os.path.exists(json_file):
+                continue
+
+            try:
+                with open(json_file, 'r') as f:
+                    example_data = json.load(f)
+
+                all_examples.append({
+                    'instance_id': example_id,
+                    'domain': domain,
+                    'question': example_data.get('instruction', ''),
+                    'example_data': example_data
+                })
+            except Exception as e:
+                print(f"Warning: Could not load {json_file}: {e}")
+                continue
 
     # Determine how many examples to process
     if num_datasets is None:
-        examples_to_process = examples
-        print(f"Processing ALL {len(examples)} examples...")
+        examples_to_process = all_examples
+        print(f"Processing ALL {len(all_examples)} examples...")
     else:
-        examples_to_process = examples[:num_datasets]
-        print(f"Processing {len(examples_to_process)} out of {len(examples)} examples...")
+        examples_to_process = all_examples[:num_datasets]
+        print(f"Processing {len(examples_to_process)} out of {len(all_examples)} examples...")
 
     print("=" * 80)
 
@@ -508,32 +640,31 @@ def process_datasets(generator: VerboseInstructionGenerator, num_datasets: int =
     fail_count = 0
     show_preview = (num_datasets == 1)  # Show preview only when processing 1 example
 
-    for idx, example in enumerate(examples_to_process, 1):
-        instance_id = example['instance_id']
-        question = example['question']
-        tables = gold_tables_dict.get(instance_id, [])
+    for idx, example_data in enumerate(examples_to_process, 1):
+        instance_id = example_data['instance_id']
+        domain = example_data['domain']
+        question = example_data['question']
 
-        if not tables:
-            print(f"[{idx}/{len(examples_to_process)}] Skipping {instance_id}: No gold tables found")
-            fail_count += 1
-            continue
-
-        print(f"\n[{idx}/{len(examples_to_process)}] Processing: {instance_id}")
+        print(f"\n[{idx}/{len(examples_to_process)}] Processing: {instance_id} (domain: {domain})")
         if show_preview:
             print(f"Question: {question}")
         else:
             print(f"Question: {question[:100]}..." if len(question) > 100 else f"Question: {question}")
-        print(f"Tables: {len(tables)} tables")
 
         # Generate verbose instruction
         if show_preview:
             print("Generating verbose instruction...")
 
         try:
+            # Extract tables if available
+            tables = []
+            if 'tables' in example_data['example_data']:
+                tables = example_data['example_data']['tables']
+
             verbose_instruction = generator.generate_verbose_instruction(question, tables)
 
-            # Save to file
-            output_path = f"./verbose_instructions/{instance_id}/verbose_instruction.txt"
+            # Save to new path format: verbose_instructions/{domain}/{instance_id}/verbose_instruction.txt
+            output_path = f"./verbose_instructions/{domain}/{instance_id}/verbose_instruction.txt"
             generator.save_verbose_instruction(verbose_instruction, output_path)
 
             # Show preview for single example
@@ -572,19 +703,20 @@ def main():
     Main function with CLI argument parsing.
 
     Usage:
-        python react_verbose_simple.py --num 1      # Run 1 example for testing
-        python react_verbose_simple.py --num 10     # Run 10 examples
-        python react_verbose_simple.py --all        # Run all datasets
+        python react_verbose_simple.py --num 1              # Run 1 example for testing
+        python react_verbose_simple.py --num 10             # Run 10 examples
+        python react_verbose_simple.py --all                # Run all datasets
+        python react_verbose_simple.py --per-task-type 2    # Run 2 per domain/task type
     """
     parser = argparse.ArgumentParser(
-        description="Generate verbose instructions for BigQuery tasks",
+        description="Generate verbose instructions for multi-domain tasks",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
   # Test with a single example (shows preview)
   python react_verbose_simple.py --num 1
 
-  # Process 10 examples
+  # Process 10 examples sequentially
   python react_verbose_simple.py --num 10
 
   # Process first 100 examples
@@ -592,6 +724,12 @@ Examples:
 
   # Process all datasets
   python react_verbose_simple.py --all
+
+  # Process 2 examples per domain/task type
+  python react_verbose_simple.py --per-task-type 2
+
+  # Process 5 examples per domain/task type
+  python react_verbose_simple.py --per-task-type 5
         """
     )
 
@@ -600,22 +738,31 @@ Examples:
         '--num',
         type=int,
         metavar='N',
-        help='Number of datasets to process (e.g., 1, 10, 100)'
+        help='Number of datasets to process sequentially (e.g., 1, 10, 100)'
     )
     group.add_argument(
         '--all',
         action='store_true',
         help='Process all datasets'
     )
+    group.add_argument(
+        '--per-task-type',
+        type=int,
+        metavar='N',
+        help='Process N examples per domain/task type (e.g., 2, 5, 10)'
+    )
 
     args = parser.parse_args()
 
-    # Initialize generator (same setup as main.py)
+    # Initialize generator
     generator = VerboseInstructionGenerator()
 
     if args.all:
         print("Running in ALL mode...")
         process_datasets(generator, num_datasets=None)
+    elif args.per_task_type:
+        print(f"Running with {args.per_task_type} example(s) per domain/task type...")
+        process_datasets_by_task_type(generator, per_task_type=args.per_task_type)
     else:
         print(f"Running with {args.num} dataset(s)...")
         process_datasets(generator, num_datasets=args.num)

@@ -1,0 +1,6 @@
+1. Click the “Settings” cog icon in the upper-right corner of the Superset web page.  
+2. Select the menu item labeled “Annotation layers” from the dropdown; the “Annotation Layers” list view opens.  
+3. Click the blue “+ ANNOTATION LAYER” button in the top-right corner of the list; a modal titled “Add Annotation Layer” appears.  
+4. Type Myannotation into the field labeled “Annotation Layer Name”.  
+5. Click the “ADD” button at the bottom of the modal; the dialog closes and the list view reappears.  
+6. Verify the creation by locating the new row whose “Layer name” column shows Myannotation; confirm the Status column displays “Available”.

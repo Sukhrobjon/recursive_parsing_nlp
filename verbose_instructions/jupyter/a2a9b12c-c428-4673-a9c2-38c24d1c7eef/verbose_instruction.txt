@@ -1,0 +1,12 @@
+1. Navigate to the left-hand “Files” sidebar and locate the top-right blue button labeled “New”.  
+2. Click the “New” button and select “Python 3 (ipykernel)” (or the default Python kernel shown) from the drop-down list. A new untitled notebook opens in a separate tab.  
+3. Click the current notebook title “Untitled” at the top center; a rename dialog appears.  
+4. Type `tensor.ipynb` into the text box and press Enter (or click “Rename”). The notebook tab now shows “tensor.ipynb”.  
+5. Switch back to the “Files” sidebar by clicking the browser tab or panel where you can see your directory tree.  
+6. Double-click the file `code.py` located in the Desktop folder (`Desktop/code.py`). Its contents open in a text preview pane.  
+7. Press Ctrl + A (Cmd + A on macOS) to select the entire code, then press Ctrl + C (Cmd + C) to copy it to the clipboard.  
+8. Switch to the “tensor.ipynb” notebook tab we just created.  
+9. Click inside the first (empty) code cell so you see the blue vertical cursor bar.  
+10. Paste the copied code by pressing Ctrl + V (Cmd + V on macOS). All lines from `code.py` now appear in this single cell.  
+11. Verify that the pasted code starts with the first line of `code.py` and ends with the last line to confirm nothing is missing.  
+12. Skip running the cell—no execution is required for this task; simply leave the code as-is.

@@ -1,68 +1,63 @@
-1) Open your web browser and Navigate to https://console.cloud.google.com/bigquery to launch the BigQuery console.
-
-2) In the left-hand Explorer panel, Locate the project bigquery-public-data. Click the ▸ triangle next to it to expand the list of datasets.
-
-3) Click the ▸ triangle next to the dataset ga4_obfuscated_sample_ecommerce so we can inspect its tables. You will see seven daily partitioned tables such as events_20210101, events_20210102 … events_20210107.
-
-4) Click the table name events_20210107. In the right-hand panel, Select the Schema tab to view the columns (e.g., user_pseudo_id, event_name, event_params, event_timestamp, etc.). Note that engagement_time is stored in the repeated RECORD column event_params with key = "engagement_time_msec"—we will unnest this later.
-
-5) Click the + Compose new query button (white sheet icon) at the top of the BigQuery console to open a blank query editor.
-
-6) Write the following SQL into the editor. The query:
-   • Unnests event_params to extract engagement_time_msec.  
-   • Builds two sets of users:  
-       – last7  → users with positive engagement time from 2021-01-01 00:00:00 to 2021-01-07 23:59:59 (7-day window)  
-       – last2  → users with positive engagement time from 2021-01-06 00:00:00 to 2021-01-07 23:59:59 (2-day window)  
-   • Uses EXCEPT DISTINCT to keep only users in last7 who are not in last2.  
-   • Counts the remaining distinct pseudo users.
+1) Navigate to console.cloud.google.com/bigquery in your browser and, if prompted, log in with the Google account that has BigQuery access.  
+2) In the Explorer panel on the left, click the triangle ▸ next to “bigquery-public-data” to expand the public datasets list.  
+3) Scroll down and click the triangle ▸ beside “ga4_obfuscated_sample_ecommerce”; the seven daily tables for January 1-7 2021 appear.  
+4) Click the table name events_20210101; in the main pane, switch to the Schema tab so we can review the columns.  
+5) Scroll until you locate these two columns, noting their data types:  
+   • user_pseudo_id (STRING) – the anonymous user identifier we will count.  
+   • event_params (RECORD REPEATED) – an array that stores key/value pairs such as engagement_time_msec. We’ll extract its int_value later.  
+6) Still on this table, glance at the event_name field—this will let us restrict to rows where event_name = "user_engagement". We will use that filter to make sure the event actually carries engagement_time_msec.  
+7) At the top of the BigQuery pane, click the + COMPOSE NEW QUERY button (paper-and-pencil icon). A blank query editor tab opens.  
+8) Paste the following SQL into the editor. It builds two sub-queries, one for the 7-day window (Jan 1-7 2021) and one for the 2-day window (Jan 6-7 2021), then returns users who appear only in the larger window.  
 
 ```sql
--- How many pseudo users had positive engagement time in the 7-day window
--- ending 2021-01-07 23:59:59, but none in the final 2-day window?
-
-WITH base AS (
-  SELECT
-    user_pseudo_id,
-    _TABLE_SUFFIX AS event_date,                       -- e.g. '20210105'
-    (SELECT ep.value.int_value
-       FROM UNNEST(event_params) AS ep
-       WHERE ep.key = 'engagement_time_msec') AS engagement_ms
-  FROM
-    `bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*`
-  WHERE
-    _TABLE_SUFFIX BETWEEN '20210101' AND '20210107'    -- 7-day range
-    AND event_name = 'user_engagement'                 -- only engagement events
-),
-
-last7 AS (
+-- Distinct pseudo-users with positive engagement time in Jan 1-7 2021
+-- but NOT in Jan 6-7 2021
+WITH seven_day AS (
   SELECT DISTINCT user_pseudo_id
-  FROM   base
-  WHERE  engagement_ms IS NOT NULL
-         AND engagement_ms > 0                        -- positive engagement
+  FROM `bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*`
+  WHERE _TABLE_SUFFIX BETWEEN '20210101' AND '20210107'   -- 7-day period
+    AND event_name = 'user_engagement'
+    AND (
+      SELECT value.int_value
+      FROM UNNEST(event_params)
+      WHERE key = 'engagement_time_msec'
+    ) > 0                                               -- positive engagement
 ),
-
-last2 AS (
+two_day AS (
   SELECT DISTINCT user_pseudo_id
-  FROM   base
-  WHERE  event_date BETWEEN '20210106' AND '20210107' -- 2-day range
-         AND engagement_ms IS NOT NULL
-         AND engagement_ms > 0
+  FROM `bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_*`
+  WHERE _TABLE_SUFFIX BETWEEN '20210106' AND '20210107'   -- 2-day period
+    AND event_name = 'user_engagement'
+    AND (
+      SELECT value.int_value
+      FROM UNNEST(event_params)
+      WHERE key = 'engagement_time_msec'
+    ) > 0
 )
 
-SELECT COUNT(*) AS distinct_pseudo_users
-FROM (
-  SELECT user_pseudo_id FROM last7
-  EXCEPT DISTINCT
-  SELECT user_pseudo_id FROM last2
-);
+SELECT COUNT(*) AS distinct_users_no_recent_engagement
+FROM seven_day
+WHERE user_pseudo_id NOT IN (SELECT user_pseudo_id FROM two_day);
 ```
 
-7) Click the blue ▶︎ RUN button above the editor to execute the query. Wait until the “Query results” panel shows the output; you should see a single row labeled distinct_pseudo_users.
-
-8) Verify the results. (We expect a small integer—this is the number of users active in the full week but inactive in the final two days.)
-
-9) Click the SAVE RESULTS button on the right side of the Query results pane.
-
-10) Choose CSV (local file) from the drop-down. In the dialog that appears, Leave the default file name or rename it, then Click Download to save the file to your local machine (it will usually land in your Downloads folder).
-
-11) (Optional) Open your file manager, Navigate to ~/Downloads, and confirm that the CSV file contains the single value produced by the query—we now have the answer stored locally.
+9) Review the date filters: note we reference the pseudo-column _TABLE_SUFFIX to limit which daily shard tables participate—this is faster than scanning the entire wildcard.  
+10) Confirm the subquery in the SELECT list counts only those user_pseudo_id values present in seven_day but absent from two_day.  
+11) Click the blue ▸ RUN button in the query toolbar.  
+12) Watch the Job Information panel on the right; once “Results” appears, the query has finished.  
+13) In the bottom “Query results” grid, verify a single row with the column distinct_users_no_recent_engagement shows the answer (e.g., 1 234).  
+14) Click SAVE RESULTS (upper-right of the results grid) and choose “CSV (local file)”.  
+15) In the file-save dialog that opens, leave format CSV, click Download, and save the file to your default Downloads folder.  
+16) Open your computer’s terminal (or Finder/Explorer) and go to the Downloads directory:  
+    ```bash
+    cd ~/Downloads
+    ```  
+17) Rename the downloaded file to result.csv so it is easy to locate:  
+    ```bash
+    mv *.csv result.csv
+    ```  
+18) Verify the file exists by listing the directory:  
+    ```bash
+    ls -l result.csv
+    ```  
+19) If you need to share the output, attach or upload ~/Downloads/result.csv as required.  
+20) You have now successfully identified the count of distinct pseudo-users with positive engagement in the 7-day window but none in the final 2-day window and saved the result locally.

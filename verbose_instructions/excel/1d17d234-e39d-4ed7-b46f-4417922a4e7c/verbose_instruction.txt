@@ -1,0 +1,20 @@
+1. Right-click the “Sheet1” tab (or any existing sheet tab) at the bottom of the Excel window.  
+2. Click “Insert” (if you are in older versions) or choose “Insert ➜ Insert Sheet”; in modern Excel simply click the “+” icon to add a new sheet.  
+3. Type Sheet2 in the sheet-name field and press ENTER so the new tab now shows “Sheet2”. Confirm we have switched to this blank sheet.
+
+4. Click cell A1 to make it the active cell.  
+5. Hold the left mouse button and drag right to cell C1 so that the range A1:C1 is highlighted.  
+6. On the Ribbon, click the “Home” tab, then click the “Merge & Center” button in the Alignment group. Excel will merge A1:C1 and place the cursor in the merged cell.  
+7. Type Investment Summary and press ENTER. You should now see the text centered across the merged A1:C1 range.
+
+8. Click cell A2.  
+9. While holding the mouse button, drag right to cell B2 so A2:B2 is selected.  
+10. Click the “Merge & Center” button again to merge those two cells.  
+11. Type High Interest Rate and press ENTER. Verify that the phrase appears centered across A2:B2.
+
+12. Click cell C2.  
+13. Drag right to cell D2 so C2:D2 is highlighted.  
+14. Click “Merge & Center” to merge these two cells.  
+15. Type Low Interest Rate and press ENTER. Confirm that “Low Interest Rate” is centered across C2:D2.
+
+16. Review: Row 1 should show the single merged header “Investment Summary”; row 2 should display two side-by-side merged cells labeled “High Interest Rate” and “Low Interest Rate.” Save the workbook with Ctrl+S to keep your changes.

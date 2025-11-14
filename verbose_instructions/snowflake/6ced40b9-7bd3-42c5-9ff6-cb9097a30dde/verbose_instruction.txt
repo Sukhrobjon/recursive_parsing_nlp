@@ -1,0 +1,9 @@
+1) Open your web browser, go to the Snowsight URL for your Snowflake account, and sign in with the credentials that give you visibility to account-level query history.  
+2) Look at the dark-blue left navigation rail and click the “Activity” icon (it looks like a bar chart).  
+3) In the Activity sub-menu that expands, click “Query History.” Snowsight now displays the Query History grid for the last 24 hours by default.  
+4) Click the “Time” filter pill located directly above the grid (it currently shows “Last 24 hours”).  
+5) In the time-range pop-up, click “Custom range.”  
+6) In the calendar control, set the start date to ‘3 days ago’ (you can either pick the calendar day three days prior or type the date). Leave the end date as today, then click the blue “Apply” button. We now see queries from the last three days.  
+7) Click the “Status” filter pill (it usually shows “All”). From the drop-down list, uncheck everything except “Failed” and then click “Apply.” The grid now refreshes to show only failed queries.  
+8) Verify that the “User” filter pill reads “All users.” If it does not, click the pill, select “All users” from the list, and press “Apply.” This ensures we are not limiting the result set to just our own username.  
+9) Confirm success: look at the grid header—there should be “Status: Failed” and “Time: [custom range]” pills visible, and every row in the “Status” column should display “Failed.” The results now list all failed queries executed by any user during the last three days.

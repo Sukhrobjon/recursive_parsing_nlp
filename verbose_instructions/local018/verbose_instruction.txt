@@ -1,0 +1,85 @@
+1. Log in to the instance and click the application picker (waffle icon); type “Analytics Center” and press Enter so the Analytics Center homepage loads.  
+2. Click the blue “New → SQL Query” button in the upper-right corner to open the SQL editor panel.  
+3. Type the following query to find which primary_collision_factor_violation_category produced the largest number of crashes in 2021:  
+```sql
+SELECT
+       primary_collision_factor_violation_category,
+       COUNT(*)            AS collision_count_2021
+FROM   collisions
+WHERE  YEAR(date) = 2021
+GROUP  BY primary_collision_factor_violation_category
+ORDER  BY collision_count_2021 DESC
+LIMIT  1;
+```  
+4. Press Ctrl + Enter (or click “Run”) to execute the query; wait for the result grid to appear.  
+5. Hover over the single row returned and copy the value in the primary_collision_factor_violation_category column (we will call it `<TOP_CATEGORY>` in the next steps).  
+6. Without closing the editor, highlight the previous SQL statement, delete it, and paste the next block to compute the 2021 share of that same category (replace `<TOP_CATEGORY>` with the value you copied):  
+```sql
+WITH
+    tot_2021 AS (
+        SELECT COUNT(*) AS total_2021
+        FROM   collisions
+        WHERE  YEAR(date) = 2021
+    ),
+    cat_2021 AS (
+        SELECT COUNT(*) AS cat_count_2021
+        FROM   collisions
+        WHERE  YEAR(date) = 2021
+          AND  primary_collision_factor_violation_category = '<TOP_CATEGORY>'
+    )
+SELECT
+    '<TOP_CATEGORY>'                               AS category,
+    ROUND(100.0 * cat_count_2021 / total_2021, 2)  AS share_2021_pct
+FROM cat_2021, tot_2021;
+```  
+7. Run the query and note the numeric value shown in column share_2021_pct (for example, 18.37).  
+8. Highlight the entire SQL again, delete it, and paste the next block to calculate the same category’s share for the year 2011:  
+```sql
+WITH
+    tot_2011 AS (
+        SELECT COUNT(*) AS total_2011
+        FROM   collisions
+        WHERE  YEAR(date) = 2011
+    ),
+    cat_2011 AS (
+        SELECT COUNT(*) AS cat_count_2011
+        FROM   collisions
+        WHERE  YEAR(date) = 2011
+          AND  primary_collision_factor_violation_category = '<TOP_CATEGORY>'
+    )
+SELECT
+    '<TOP_CATEGORY>'                               AS category,
+    ROUND(100.0 * cat_count_2011 / total_2011, 2)  AS share_2011_pct
+FROM cat_2011, tot_2011;
+```  
+9. Click “Run” and write down the share_2011_pct value shown in the result grid (e.g., 22.45).  
+10. Replace the SQL in the editor with the final combined query below to calculate the exact percentage-point change in one shot (again, substitute `<TOP_CATEGORY>` with the copied category value):  
+```sql
+WITH
+    top_cat        AS (SELECT '<TOP_CATEGORY>' AS category),
+    tot_2021       AS (SELECT COUNT(*) AS total_2021  FROM collisions WHERE YEAR(date)=2021),
+    tot_2011       AS (SELECT COUNT(*) AS total_2011  FROM collisions WHERE YEAR(date)=2011),
+    cat_2021       AS (SELECT COUNT(*) AS cat_count_2021 FROM collisions c JOIN top_cat t
+                        ON c.primary_collision_factor_violation_category = t.category
+                       WHERE YEAR(c.date)=2021),
+    cat_2011       AS (SELECT COUNT(*) AS cat_count_2011 FROM collisions c JOIN top_cat t
+                        ON c.primary_collision_factor_violation_category = t.category
+                       WHERE YEAR(c.date)=2011)
+SELECT
+    t.category,
+    ROUND(100.0 * c21.cat_count_2021 / tot21.total_2021, 2) AS share_2021_pct,
+    ROUND(100.0 * c11.cat_count_2011 / tot11.total_2011, 2) AS share_2011_pct,
+    ROUND( (100.0 * c21.cat_count_2021 / tot21.total_2021)
+         - (100.0 * c11.cat_count_2011 / tot11.total_2011), 2) AS pct_point_change
+FROM top_cat t
+CROSS JOIN cat_2021 c21
+CROSS JOIN cat_2011 c11
+CROSS JOIN tot_2021 tot21
+CROSS JOIN tot_2011 tot11;
+```  
+11. Execute the query and view the four-column result row; confirm:  
+    • Column category equals the value from step 5.  
+    • Column pct_point_change is negative (indicating a decrease) and equals share_2021_pct ‑ share_2011_pct.  
+12. Copy the pct_point_change value (e.g., ‑4.08) – this is the number of percentage points by which the category’s share fell from 2011 to 2021.  
+13. Click the “Save as → Notebook” dropdown, choose “Save as View,” name it “Top Collision Factor Pct-Pt Change 2011-2021,” and press Save so the calculation can be reused later.  
+14. Navigate back to the Analytics Center homepage and verify the new view appears under “My Saved Queries” with the correct last-run timestamp, confirming the task was completed successfully.

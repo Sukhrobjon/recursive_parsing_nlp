@@ -6,6 +6,7 @@ without executing them, matching the format from Spider2-V verbose_instruction.t
 
 import os
 import json
+import argparse
 from openai import AzureOpenAI
 from dotenv import load_dotenv
 
@@ -20,9 +21,6 @@ class VerboseInstructionGenerator:
 
     def __init__(self, openai_api_key: str = None):
         """
-        Initialize the Azure OpenAI client.
-        Matches the exact setup from main.py.
-
         Args:
             openai_api_key: Optional OpenAI API key. If None, reads from env variable.
         """
@@ -92,7 +90,7 @@ Please provide detailed step-by-step instructions for completing this task. Star
 
         try:
             response = self.client.chat.completions.create(
-                model="o3",  # Same as main.py
+                model="o3",
                 messages=[
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_prompt}
@@ -116,27 +114,23 @@ Please provide detailed step-by-step instructions for completing this task. Star
         print(f"Saved verbose instruction to: {output_path}")
 
 
-def main():
+def process_datasets(generator: VerboseInstructionGenerator, num_datasets: int = None):
     """
-    Example usage: Generate verbose instruction for one task from spider2-lite.jsonl
+    Process examples from spider2-lite.jsonl.
+
+    Args:
+        generator: VerboseInstructionGenerator instance
+        num_datasets: Number of datasets to process. If None, process all datasets.
     """
-
-    # Initialize generator (same setup as main.py)
-    generator = VerboseInstructionGenerator()
-
-    # Load one example from the dataset
+    # Load all examples from the dataset
     try:
         with open('spider2-lite.jsonl', 'r') as f:
-            # Get first line
-            example = json.loads(f.readline())
+            examples = [json.loads(line) for line in f]
     except FileNotFoundError:
         print("Error: spider2-lite.jsonl not found")
         return
 
-    instance_id = example['instance_id']
-    question = example['question']
-
-    # Load gold tables for this example
+    # Load gold tables for all examples
     try:
         with open('gold_tables.jsonl', 'r') as f:
             gold_tables_data = [json.loads(line) for line in f]
@@ -145,36 +139,132 @@ def main():
         return
 
     gold_tables_dict = {item['instance_id']: item['gold_tables'] for item in gold_tables_data}
-    tables = gold_tables_dict.get(instance_id, [])
 
-    if not tables:
-        print(f"No gold tables found for {instance_id}")
-        return
+    # Determine how many examples to process
+    if num_datasets is None:
+        examples_to_process = examples
+        print(f"Processing ALL {len(examples)} examples...")
+    else:
+        examples_to_process = examples[:num_datasets]
+        print(f"Processing {len(examples_to_process)} out of {len(examples)} examples...")
 
-    print(f"Processing: {instance_id}")
-    print(f"Question: {question}")
-    print(f"Tables: {len(tables)} tables")
     print("=" * 80)
 
-    # Generate verbose instruction
-    print("Generating verbose instruction...")
-    try:
-        verbose_instruction = generator.generate_verbose_instruction(question, tables)
-    except Exception as e:
-        print(f"\nFailed to generate instruction: {e}")
-        return
+    success_count = 0
+    fail_count = 0
+    show_preview = (num_datasets == 1)  # Show preview only when processing 1 example
+
+    for idx, example in enumerate(examples_to_process, 1):
+        instance_id = example['instance_id']
+        question = example['question']
+        tables = gold_tables_dict.get(instance_id, [])
+
+        if not tables:
+            print(f"[{idx}/{len(examples_to_process)}] Skipping {instance_id}: No gold tables found")
+            fail_count += 1
+            continue
+
+        print(f"\n[{idx}/{len(examples_to_process)}] Processing: {instance_id}")
+        if show_preview:
+            print(f"Question: {question}")
+        else:
+            print(f"Question: {question[:100]}..." if len(question) > 100 else f"Question: {question}")
+        print(f"Tables: {len(tables)} tables")
+
+        # Generate verbose instruction
+        if show_preview:
+            print("Generating verbose instruction...")
+
+        try:
+            verbose_instruction = generator.generate_verbose_instruction(question, tables)
+
+            # Save to file
+            output_path = f"./verbose_instructions/{instance_id}/verbose_instruction.txt"
+            generator.save_verbose_instruction(verbose_instruction, output_path)
+
+            # Show preview for single example
+            if show_preview:
+                lines = verbose_instruction.split('\n')
+                preview_lines = lines[:5]  # Show first 5 lines
+
+                print("\n" + "=" * 80)
+                print("GENERATED VERBOSE INSTRUCTION (Preview):")
+                print("=" * 80)
+                for line in preview_lines:
+                    print(line)
+                if len(lines) > 5:
+                    print(f"... ({len(lines) - 5} more lines)")
+                print("=" * 80)
+                print(f"\n✓ Complete! Verbose instruction saved to {output_path}")
+                print(f"  Total lines: {len(lines)}")
+            else:
+                print(f"✓ Success! Saved to {output_path}")
+
+            success_count += 1
+
+        except Exception as e:
+            print(f"✗ Failed: {e}")
+            fail_count += 1
 
     print("\n" + "=" * 80)
-    print("GENERATED VERBOSE INSTRUCTION:")
-    print("=" * 80)
-    print(verbose_instruction)
+    print(f"COMPLETE!")
+    print(f"Successfully processed: {success_count}/{len(examples_to_process)}")
+    print(f"Failed: {fail_count}/{len(examples_to_process)}")
     print("=" * 80)
 
-    # Save to file
-    output_path = f"./verbose_instructions/{instance_id}/verbose_instruction.txt"
-    generator.save_verbose_instruction(verbose_instruction, output_path)
 
-    print(f"\nComplete! Verbose instruction saved to {output_path}")
+def main():
+    """
+    Main function with CLI argument parsing.
+
+    Usage:
+        python react_verbose_simple.py --num 1      # Run 1 example for testing
+        python react_verbose_simple.py --num 10     # Run 10 examples
+        python react_verbose_simple.py --all        # Run all datasets
+    """
+    parser = argparse.ArgumentParser(
+        description="Generate verbose instructions for BigQuery tasks",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  # Test with a single example (shows preview)
+  python react_verbose_simple.py --num 1
+
+  # Process 10 examples
+  python react_verbose_simple.py --num 10
+
+  # Process first 100 examples
+  python react_verbose_simple.py --num 100
+
+  # Process all datasets
+  python react_verbose_simple.py --all
+        """
+    )
+
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument(
+        '--num',
+        type=int,
+        metavar='N',
+        help='Number of datasets to process (e.g., 1, 10, 100)'
+    )
+    group.add_argument(
+        '--all',
+        action='store_true',
+        help='Process all datasets'
+    )
+
+    args = parser.parse_args()
+
+    # Initialize generator (same setup as main.py)
+    generator = VerboseInstructionGenerator()
+
+    if args.all:
+        print("Running in ALL mode...")
+        process_datasets(generator, num_datasets=None)
+    else:
+        print(f"Running with {args.num} dataset(s)...")
+        process_datasets(generator, num_datasets=args.num)
 
 
 if __name__ == "__main__":

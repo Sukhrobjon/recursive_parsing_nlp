@@ -1,77 +1,42 @@
-1. Navigate to the BigQuery console and expand the project `bigquery-public-data`, then drill down to the dataset `ga4_obfuscated_sample_ecommerce`.
-2. Verify that the seven daily tables `events_20210101` … `events_20210107` are present; these cover the full 7-day window we need.
-3. Click any one table (e.g., `events_20210107`) to preview its schema and confirm key columns:
-   • `user_pseudo_id` – GA4’s anonymous user identifier  
-   • `event_name` – name of the GA4 event  
-   • `event_params` – repeated RECORD that stores parameters such as `engagement_time_msec`
-4. Still on the schema tab, expand `event_params` and find the nested field `key` / `value.int_value`; note that the parameter we need is `engagement_time_msec`.
-5. Open the Query editor and start a new query.
-6. Write a SELECT that reads all seven tables at once with a wildcard suffix:
-   ```
-   FROM `bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_202101*`
-   ```
-   We’ll restrict it to `*_01`–`*_07` shortly.
-7. Add a WHERE clause to (a) keep only the seven target dates, (b) isolate `user_engagement` events, and (c) extract positive engagement time:
-   ```
-   WHERE _TABLE_SUFFIX BETWEEN '01' AND '07'          -- dates 2021-01-01 to 2021-01-07
-     AND event_name = 'user_engagement'
-   ```
-8. UNNEST the `event_params` array so we can pull `engagement_time_msec`; add it to the SELECT list with SAFE_CAST:
-   ```
-   SELECT
-     user_pseudo_id,
-     event_date,
-     SAFE_CAST(
-       (SELECT value.int_value
-        FROM UNNEST(event_params)
-        WHERE key = 'engagement_time_msec') AS INT64
-     ) AS engagement_time_msec
-   ```
-9. Wrap steps 6-8 in a CTE called `engagement` for readability:
-   ```
-   WITH engagement AS (
-     SELECT
-       user_pseudo_id,
-       event_date,
-       SAFE_CAST(
-         (SELECT value.int_value
-          FROM UNNEST(event_params)
-          WHERE key = 'engagement_time_msec') AS INT64
-       ) AS engagement_time_msec
-     FROM `bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_202101*`
-     WHERE _TABLE_SUFFIX BETWEEN '01' AND '07'
-       AND event_name = 'user_engagement'
-   )
-   ```
-10. Create a second CTE `seven_day` that captures every user with positive engagement time in the full 7-day window:
-    ```
-    , seven_day AS (
-      SELECT DISTINCT user_pseudo_id
-      FROM engagement
-      WHERE engagement_time_msec > 0
-        AND event_date BETWEEN '20210101' AND '20210107'
-    )
-    ```
-11. Create a third CTE `two_day` that captures every user with positive engagement time in just the final 2 days (Jan 6–7):
-    ```
-    , two_day AS (
-      SELECT DISTINCT user_pseudo_id
-      FROM engagement
-      WHERE engagement_time_msec > 0
-        AND event_date BETWEEN '20210106' AND '20210107'
-    )
-    ```
-12. Write the final SELECT that counts users who are in `seven_day` but NOT in `two_day`:
-    ```
-    SELECT COUNT(*) AS distinct_users_7d_only
-    FROM seven_day
-    WHERE user_pseudo_id NOT IN (SELECT user_pseudo_id FROM two_day);
-    ```
-13. Combine the CTEs and final SELECT into one complete query in the editor.
-14. Click “Run” to execute the query; wait for the results pane to display the count.
-15. Review the result (single row, column `distinct_users_7d_only`) to obtain the number of distinct pseudo-users who had positive engagement in the 7-day window but none in the overlapping 2-day window.
-16. Optionally, validate by:
-    a. Running `SELECT COUNT(*) FROM seven_day;` to see total engaged users in 7 days.  
-    b. Running `SELECT COUNT(*) FROM two_day;` to see engaged users in 2 days.  
-    c. Cross-checking a sample user_id from the final set by querying their events and confirming no positive engagement on Jan 6–7.
-17. Document the final count and save the query (File → Save) for reproducibility.
+1. Navigate to https://console.cloud.google.com/bigquery in your browser and make sure you are in the project where you have BigQuery access.  
+2. Click the triangle to the left of bigquery-public-data in the Explorer pane so its list of datasets expands.  
+3. Click the triangle next to ga4_obfuscated_sample_ecommerce to reveal all daily partitioned tables whose names start with events_202101. You should see events_20210101 through events_20210107.  
+4. Click events_20210101 once; the Table details panel opens on the right. Scroll the Schema tab and note the repeated column event_params (this contains key / value pairs such as engagement_time_msec) and the scalar columns user_pseudo_id, event_name, and event_date. We are interested in these columns for our query.  
+5. Click the + COMPOSE NEW QUERY button at the top of the main BigQuery window; a new blank query editor tab appears.  
+6. Write the following SQL into the editor (copy/paste everything inside the code block):  
+```sql
+-- Step 1: Collect users with positive engagement time anywhere in the 7-day window
+WITH seven_day_users AS (
+  SELECT DISTINCT
+         user_pseudo_id
+  FROM  `bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_202101*`,
+        UNNEST(event_params) AS ep
+  WHERE event_date BETWEEN '20210101' AND '20210107'                -- 7-day window
+    AND event_name = 'user_engagement'                               -- only engagement events
+    AND ep.key = 'engagement_time_msec'                              -- locate the parameter
+    AND ep.int_value > 0                                             -- positive engagement
+),
+
+-- Step 2: Collect users with positive engagement time in the last 2 days
+two_day_users AS (
+  SELECT DISTINCT
+         user_pseudo_id
+  FROM  `bigquery-public-data.ga4_obfuscated_sample_ecommerce.events_202101*`,
+        UNNEST(event_params) AS ep
+  WHERE event_date BETWEEN '20210106' AND '20210107'                 -- 2-day window
+    AND event_name = 'user_engagement'
+    AND ep.key = 'engagement_time_msec'
+    AND ep.int_value > 0
+)
+
+-- Step 3: Find 7-day users who are NOT in the 2-day set
+SELECT COUNT(*) AS distinct_users_only_7day_not_2day
+FROM   seven_day_users
+WHERE  user_pseudo_id NOT IN (SELECT user_pseudo_id FROM two_day_users);
+```  
+7. First, quickly scan the SQL to confirm the two CTEs (seven_day_users and two_day_users) and the final COUNT statement match the business question: “users active in 7 days but not active in final 2 days.”  
+8. Click the blue ▷ RUN button in the toolbar above the editor to execute the query. Notice the job progress indicator in the bottom-right corner; when it turns green the query is finished.  
+9. After execution, look beneath the editor in the Query results panel. The single row result shows the answer in the column distinct_users_only_7day_not_2day.  
+10. Click the SAVE RESULTS button (on the right side of the Query results header).  
+11. In the dropdown choose CSV (local file); BigQuery will start a download of a file named something like query_results.csv.  
+12. Once the download completes, open your system’s file browser, move the file into your ~/Downloads directory, and rename it to result.csv so it is easy to reference later.

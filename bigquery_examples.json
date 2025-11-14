@@ -1,0 +1,60 @@
+{
+  "examples": [
+    {
+      "task_type": "web_ui_query_writing",
+      "instruction": "Using Bigquery WebUI, check the covid19_open_data, calculate the total number of confirmed COVID-19 cases in the world on April 15, 2020. Save the answer in ~/Downloads/result.csv",
+      "tables": ["bigquery-public-data.covid19_open_data.covid19_open_data"],
+      "verbose_instruction": "In this task, we will use Bigquery Web UI to write code to query `covid19_open_data` public dataset and save the execution results into a local .csv file. Concretely,\n1. Click the triangle symbol to the left of covid19_open_data to open the datasets and see what tables the datasets have.\n2. Click `covid19_open_data` to see the table schema.\n3. Click '+' button at the top of the main panel to **Create SQL query**. This will open a blank query panel.\n4. Write the following code into the blank\n```\nSELECT\n  SUM(cumulative_confirmed) AS total_cases_worldwide\nFROM\n  `bigquery-public-data.covid19_open_data.covid19_open_data`\nWHERE\n  date = \"2020-04-15\"\n```\n5. Click the \"> RUN\" button in the menu bar of this panel to execute this SQL;\n6. Wait for a moment. The query results will show below.\n7. Click the \"SAVE RESULTS\" button above the execution results (on the right side of the same row as panel \"Query results\");\n8. And in the drop-down menu, further click the option \"CSV (local file)\";\n9. Open the terminal and move to the `~/Downloads` folder\n10. Change the name of the csv file to result.csv",
+      "action_number": 10
+    },
+    {
+      "task_type": "code_based_querying",
+      "instruction": "Using VSCode and BigQuery Python client, query the austin_bikeshare dataset to find the top 10 bike stations by area (calculated as footprint_length * footprint_width). Save results to result.csv in the project1 folder.",
+      "tables": ["bigquery-public-data.austin_bikeshare.bikeshare_stations"],
+      "verbose_instruction": "In this task, we will use VSCode to write code to query a public dataset `austin_bikeshare` and save the execution results into a local .csv file. Concretely,\n1. Click \"query.py\" in VS Code to see the project code. we can see the code is partially finished, and we need to know the detailed information of austin_bikeshare.\n2. Change to Google Chrome or Chromium, we can see one entry of `austin_bikeshare` database in the Explorer panel on the left side.\n3. Click the toggle node (a triangular icon) on the left of `austin_bikeshare` in the Explorer panel to expand the tables in this public database.\n4. Click row \"bikeshare_stations\" among the expanded entries, we can see the table schema on the right panel. Among these columns, we are interested in `name`, `footprint_length` and `footprint_width`. Note that, `footprint_length` multiplied by `footprint_width` can be used to calculate the total area.\n5. Click \"PREVIEW\" tab on the right panel, we can see sample data from `bikeshare_stations`.\n6. Change to application VSCode.\n7. Write the following code into file \"query.py\"\n```\nimport os\nimport pandas as pd\nfrom google.cloud import bigquery\n\ndef query_data():\n    os.environ[\"GOOGLE_APPLICATION_CREDENTIALS\"] = \"credential.json\"\n    client = bigquery.Client()\n    \n    query = \"\"\"\n        SELECT name, (footprint_length * footprint_width) AS area\n        FROM `bigquery-public-data.austin_bikeshare.bikeshare_stations`\n        ORDER BY area DESC\n        LIMIT 10;\n    \"\"\"\n\n    query_job = client.query(query)\n    try:\n      results = query_job.result().to_dataframe() \n      if results.empty:\n        print(\"No data found for the specified query.\")\n      else:\n        results.to_csv(\"result.csv\", index=False)\n        print(\"Results saved to result.csv\")\n    except Exception as e:\n      print(\"Error occurred while fetching data: \", e)\n\nif __name__ == \"__main__\":\n    query_data()\n```\n8. Switch to the opened terminal.\n9. Type in \"python query.py\" to run the code. Results will be saved to file 'result.csv' in folder `project1`.",
+      "action_number": 9
+    },
+    {
+      "task_type": "schema_modification",
+      "instruction": "Please add an empty column named RANK to the 2012 schema in the census dataset.",
+      "tables": ["bigquery-project.census.2012"],
+      "verbose_instruction": "We need to add a column to the 2012 table in the cencus dataset and name it RANK。\n1. First, you need to view the project first, click toggle node on the personal project name in Exporer\n2. Click the Toggle node of census dataset\n3. Click 2012 Dataset\n4. In the schema interface of the 2012 table, click the blue button of EDIT SCHEMA\n5. In the 'New fields' part, click '+', our purpose is to add a new column\n6. Enter RANK in Field name\n7. Click the blue button \"SAVE\" below",
+      "action_number": 7
+    }
+  ],
+  "common_patterns": {
+    "opening": [
+      "In this task, we will use",
+      "We need to",
+      "This task requires you to"
+    ],
+    "ui_navigation": [
+      "Click the triangle symbol",
+      "Click the toggle node",
+      "Click '+' button",
+      "In the Explorer panel",
+      "Switch to",
+      "Change to"
+    ],
+    "schema_exploration": [
+      "to see the table schema",
+      "we can see",
+      "Among these columns, we are interested in",
+      "Note that"
+    ],
+    "code_writing": [
+      "Write the following code",
+      "Type in"
+    ],
+    "execution": [
+      "Click the \"> RUN\" button",
+      "Wait for a moment",
+      "Execute"
+    ],
+    "saving_results": [
+      "Click the \"SAVE RESULTS\" button",
+      "Save results to",
+      "Results will be saved to"
+    ]
+  }
+}

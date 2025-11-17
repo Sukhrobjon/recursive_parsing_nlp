@@ -1,0 +1,19 @@
+1. Open the existing terminal window or press Ctrl+Alt+T to launch a new terminal.  
+2. Type the change-directory command to move into the Downloads folder, then press Enter:  
+```bash
+cd ~/Downloads
+```  
+3. List all Jupyter Notebook files so we can verify the exact filename; press Enter after the command:  
+```bash
+ls *.ipynb
+```  
+   Note that you should see Aragon_Conviction_Voting_Model.ipynb in the output. If you do not, double-check the spelling or confirm the file was actually downloaded to this directory.  
+4. Start Jupyter Lab bound to port 1036 and open the notebook in one step; type the command and press Enter:  
+```bash
+jupyter lab --port 1036 Aragon_Conviction_Voting_Model.ipynb
+```  
+   • Jupyter will print a long URL containing “localhost:1036”.  
+   • If prompted about an existing server, type y to proceed or simply press Enter to accept the default.  
+5. Switch to your web browser (click the Chrome or Chromium icon, or Alt+Tab until the browser window is active).  
+6. Look for a new tab automatically opened by Jupyter at http://localhost:1036/lab. If it did not open automatically, copy the full URL from the terminal (it contains a token) and paste it into the browser’s address bar, then press Enter.  
+7. Confirm that the Jupyter Lab interface loads and the file Aragon_Conviction_Voting_Model.ipynb appears in the main work area. You should see the notebook’s first cell ready for execution—that verifies the notebook is open successfully on port 1036.

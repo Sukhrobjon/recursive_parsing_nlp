@@ -1,0 +1,25 @@
+1) Navigate to https://console.cloud.google.com/bigquery so you are in the BigQuery Web UI.  
+2) Look at the left-hand side Explorer pane, locate your GCP project (for example “my_project”) and click the triangle ▶ to expand it.  
+3) Inside the project, click the triangle ▶ next to the dataset named `census` so we can see the tables it contains.  
+4) Click the table `census_2012` to open its details; the Schema tab will appear in the right panel and we can verify that a numeric column called `ANNUAL_RANK` exists—this is the field we will sort on.  
+5) Click the + “Compose new query” button (white sheet with a plus sign) at the top of the main panel; a new blank query editor tab opens.  
+6) Type or paste the following SQL in the editor—first we preview the top 5 rows, then we wrap that logic in a CREATE VIEW statement:  
+```sql
+-- Preview to make sure it returns what we expect
+SELECT *
+FROM   `my_project.census.census_2012`
+ORDER BY ANNUAL_RANK DESC
+LIMIT 5;
+```  
+7) Click the blue ▶ Run button to execute; in a few seconds the Query results grid appears below showing the five highest‐ranked records—perfect, we will use this logic in a view.  
+8) Replace the preview query with the final view-creation statement:  
+```sql
+CREATE OR REPLACE VIEW `my_project.census.2012_best` AS
+SELECT *
+FROM   `my_project.census.census_2012`
+ORDER BY ANNUAL_RANK DESC
+LIMIT 5;
+```  
+9) Press ▶ Run again; BigQuery returns a “CREATE VIEW” confirmation message in the results pane.  
+10) In the Explorer pane, click the refresh icon (two arrows forming a circle) next to the dataset `census`; you will now see a new object named `2012_best` with a view icon, confirming the view was created successfully.  
+11) (Optional) Click `2012_best`, then click Preview in the right panel to verify it permanently shows the same 5 rows we observed earlier. Awesome—we have filtered, ordered, limited, and saved the top records as a reusable view.

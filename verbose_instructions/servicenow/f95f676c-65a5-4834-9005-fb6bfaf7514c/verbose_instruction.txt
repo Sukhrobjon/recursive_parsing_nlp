@@ -1,0 +1,7 @@
+1. Open your preferred web browser and enter the URL for the Contract application (e.g., https://app.company.com/contract) in the address bar, then press Enter.  
+2. Type your username in the “Email” field, enter your password in the “Password” field, and click the blue “Sign in” button.  
+3. Wait until the Contract application’s main dashboard loads, and confirm you can see the left-hand navigation sidebar.  
+4. Hover your mouse over the sidebar and scroll if necessary until the “Contracts” parent menu item is visible.  
+5. Click the “Contracts” label (or its folder/chevron icon) once to expand its sub-menu options. You should now see entries such as “Leases,” “Licenses,” and “Agreements.”  
+6. Click the “Leases” sub-menu item directly under “Contracts.”  
+7. Verify that the page header now reads “Leases” and the URL ends with /contracts/leases (or similar), confirming you are in the “Contracts > Leases” module.

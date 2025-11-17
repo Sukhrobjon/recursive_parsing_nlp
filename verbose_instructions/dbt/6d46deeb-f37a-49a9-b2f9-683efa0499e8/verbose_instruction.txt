@@ -1,0 +1,73 @@
+1. Open the dbt Cloud browser tab that shows the wizard for the project “snowflake_transform”.  
+   We are on the page that begins with the subtitle “Choose a connection”.
+
+2. Click the drop-down labelled “Choose a connection” and select “Snowflake” from the list.  
+   Selecting this unlocks the Snowflake-specific settings panel just below.
+
+3. Click the blue “Next” button in the bottom-right corner of the wizard.  
+   A new “Settings” page appears with text boxes for Account, Database, Warehouse, etc.
+
+4. Switch to the operating-system file explorer and double-click Desktop ➞ dbt-user-creds.json to open the credential file in the default text editor.  
+   Keep this window open—we will copy three fields (account, user, password) one at a time.
+
+5. Switch to the Chromium browser and press Ctrl+T (or ⌘+T on macOS) to open a new tab.  
+   The dbt Cloud tab remains open in the background.
+
+6. Type the URL exactly:  
+   https://www.base64decode.org/  
+   …and press Enter to load the online Base64 decoder.
+
+7. Highlight the entire value (between the quotes) of the "account" field in dbt-user-creds.json, right-click, and choose “Copy”.
+
+8. Click inside the large grey “Type (or paste) here...” text area on base64decode.org.  
+   Press Ctrl+V / ⌘+V to paste the encoded account value.
+
+9. Click the big green “DECODE” button just below the text area.  
+   The decoded string appears instantly in the lower “Result” box.
+
+10. Highlight the decoded account string in the “Result” box, right-click, and choose “Copy”.
+
+11. Switch back to the dbt Cloud tab.  
+    In the “Settings” section, click inside the “Account” text box and paste with Ctrl+V / ⌘+V.
+
+12. Edit the pasted value so that it conforms to Snowflake’s account locator format of  
+    <org_name>.<region>  
+    Example adjustment (if the decode produced a full URL): remove “.snowflakecomputing.com”.  
+    For instance, change  
+    db5261993.eu-central-1.snowflakecomputing.com  
+    to  
+    db5261993.eu-central-1
+
+13. Return to the dbt-user-creds.json editor window, highlight the value of the "user" field, and copy it.
+
+14. Switch to the Base64 decoder tab again, click inside the top text area, press Ctrl+A to select all, then Delete to clear it.  
+    Paste the encoded user value you just copied.
+
+15. Click the green “DECODE” button.  
+    Copy the decoded username from the lower “Result” box.
+
+16. Go back to dbt Cloud, scroll to the “Development credentials” subtitle, and paste the username into the “Username” text box.
+
+17. Repeat the same routine for the password:  
+    a) Copy the "password" field from dbt-user-creds.json.  
+    b) Paste it into the Base64 decoder text area.  
+    c) Click “DECODE”.  
+    d) Copy the clear-text password from the “Result” box.  
+    e) Paste it into the “Password” text box in dbt Cloud under “Development credentials”.
+
+18. Click once inside the “Database” text box (still under the “Settings” subtitle) and type a new database name of your choice, e.g.  
+    snowflake_transform_db
+
+19. Click inside the “Warehouse” text box and enter a warehouse name, e.g.  
+    snowflake_transform_wh
+
+20. Optionally, type a simple schema name (e.g., public) in the “Schema” box if it is empty; dbt will default to “PUBLIC” if none is provided.
+
+21. Click the grey “Test connection” button at the bottom of the form.  
+    Wait a few seconds—dbt Cloud should display a green success banner: “All credentials verified.”  
+    If the test fails, double-check the trimmed account locator and pasted username/password.
+
+22. After seeing the success banner, click the blue “Next” button in the lower-right corner to save the Snowflake connection for the “snowflake_transform” project.
+
+23. Observe that dbt Cloud advances to the following wizard page, confirming the connection is stored.  
+    We have now successfully created and tested the Snowflake connection using the decoded credentials.

@@ -1,0 +1,31 @@
+1) Navigate to https://console.cloud.google.com/bigquery so the BigQuery Web UI opens in a new browser tab.  
+2) Click the blue Select project dropdown in the left navigation panel, then choose the project that contains your employee data (for this walkthrough we will assume it is called my_project).  
+3) Click the gray triangle ▶ to the left of my_project so its datasets expand.  
+4) Click the gray triangle ▶ beside the hr dataset to reveal its tables, then click the table named employee_directory.  
+5) Observe the Schema tab that appears in the right-hand information panel—here we can verify the column names we will filter on (employee_number, company, default_perspective, state_province, enable_multifactor_authentication).  
+6) Click the + COMPOSE NEW QUERY button at the top of the main workspace; a new untitled query tab opens.  
+7) Type (or paste) the following SQL into the blank editor window exactly as shown:  
+
+```sql
+-- Filter employees matching the stated criteria
+SELECT
+  *
+FROM
+  `my_project.hr.employee_directory`
+WHERE
+  (employee_number = '' OR employee_number IS NULL)             -- "Employee number" is empty
+  AND company = 'ACME Japan'                                     -- "Company" is "ACME Japan"
+  AND (default_perspective = '' OR default_perspective IS NULL)  -- "Default perspective" is empty
+  AND (state_province = '' OR state_province IS NULL)            -- "State / Province" is empty
+  AND enable_multifactor_authentication = FALSE                  -- MFA explicitly disabled
+;
+```
+
+Note that we add the IS NULL option as a safeguard in case the source system stored an actual NULL instead of an empty string; this returns the same employees the UI filter would show.  
+8) Click the large blue ▶ RUN button in the toolbar above the editor; BigQuery will execute the query.  
+9) Wait a few seconds. When the status bar shows “Query complete”, scroll down and confirm the Query results grid lists only employees that meet every condition.  
+10) Click the SAVE RESULTS button located on the right side of the “Query results” header row.  
+11) Choose the CSV (local file) option from the dropdown so BigQuery prepares a file download.  
+12) When prompted by your browser, choose Save File; the file (usually named employee_directory_*.csv) will download to your default Downloads folder.  
+13) (Optional) Rename the file to acme_japan_mfa_false.csv so you can easily identify it later.  
+14) You can now share or analyze this filtered list knowing it contains only rows where Employee number, Default perspective, and State/Province are blank, Company equals “ACME Japan”, and MFA is disabled.

@@ -1,0 +1,26 @@
+1. Switch to the browser tab running Metabase.  
+2. Click the blue “New” button in the upper-right corner.  
+3. Click “Question” in the drop-down.  
+4. Click “Raw data” → choose the “Company_Knowledge_Base” database.  
+5. Select the table named ​`company_services` (this table holds each internal office service and its provider).  
+6. Click the “Write SQL” button at the top-left of the editor pane.  
+7. Type the following SQL exactly as shown:  
+```sql
+SELECT
+    provider_name
+FROM
+    company_services
+WHERE
+    LOWER(service_type) = 'office event catering';
+```  
+8. Click the green “Run” ▶️ button.  
+9. Confirm the results grid shows a single row under the column ​`provider_name` (e.g., “Blue Apron Catering Co.”).  
+10. Highlight (select) the value in that one row and press Ctrl + C (Cmd + C on macOS) to copy it to the clipboard.  
+11. Switch to the text-editor window that already has an empty “answer.txt” file open.  
+12. Click inside the blank document to place the caret.  
+13. Press Ctrl + V (Cmd + V) to paste the catering firm’s name.  
+14. Press Ctrl + S (Cmd + S) to save the file.  
+15. Glance at the status bar of the editor to confirm “answer.txt — Saved” appears (verification that the text file was updated).  
+16. Return to Metabase and click the tab title to ensure the query tab still shows the same provider name; this double-checks consistency.  
+17. Close the SQL query tab in Metabase (optional housekeeping).  
+18. You have now identified the firm in charge of office event catering and recorded it in the opened .txt file.

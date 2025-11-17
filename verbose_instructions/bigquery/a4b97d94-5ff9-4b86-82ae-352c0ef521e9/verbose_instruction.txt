@@ -1,0 +1,24 @@
+1) Navigate to the Google Cloud console in your browser and Click the left-hand menu item “BigQuery” so the BigQuery Explorer panel loads.
+
+2) Verify you are in the correct GCP project by looking at the project selector in the top bar; if it is not the intended project, Click the project name dropdown and Choose the correct project.
+
+3) In the Explorer pane (left side), Hover over the line that shows your project ID until the grey “+ ADD” button appears, then Click “+ ADD”.
+
+4) Observe that a slide-out panel titled “Add data” opens on the right. In this panel, Click the card labeled “Connections to external data sources”.
+
+5) Wait for the “Create connection” dialog to load, then Scroll if needed until you see the group “Vertex AI remote models, remote functions and BigLake (Cloud Resource)” under “Connection type”.
+
+6) Click the radio button in front of “Vertex AI remote models, remote functions and BigLake (Cloud Resource)” so it becomes highlighted.
+
+7) Move to the “Connection ID” field that appears below, Type exactly:
+```
+text_generation
+```
+
+8) Optionally, review the “Location” dropdown; leave it at its default (usually “US”) unless you need a specific region for your Vertex AI resources.
+
+9) Click the blue button labeled “CREATE CONNECTION” at the bottom of the panel.
+
+10) Wait until the toast notification “Connection created” appears in the lower-right corner; this confirms the connection was provisioned successfully.
+
+11) Verify the new connection: in the Explorer pane, Expand the “External connections” section under your project and Confirm you can see an entry named “text_generation” with the Vertex AI icon.

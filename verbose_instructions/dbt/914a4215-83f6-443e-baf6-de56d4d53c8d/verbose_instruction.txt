@@ -1,0 +1,56 @@
+1. Log in to dbt Cloud with an account that has “Developer” or higher permissions.
+
+2. Click the left-hand Navigation menu and choose Jobs.
+
+3. Click the blue + New Job button in the upper-right corner.
+
+4. Type init in the Job Name field so the heading now reads “Create Job: init”.
+
+5. Click the Environment drop-down and select the existing environment that points to your target warehouse (e.g. “Production” or “Staging”).  
+   Note that the Environment tells dbt Cloud which warehouse credentials and profile to use.
+
+6. Scroll to the Commands panel. A single default line that says
+   ```
+   dbt run
+   ```
+   is pre-populated.
+
+7. Highlight that default line, press Delete, and then paste the following three commands in order:
+
+   ```bash
+   dbt seed --full-refresh        # 1) load local CSV files
+   dbt test                       # 2) execute pre-defined tests
+   dbt run                        # 3) build / update all models
+   ```
+
+   We now have exactly three command lines that satisfy the workflow requirements.
+
+8. Confirm that the little numbered circles to the left now show 1, 2, 3 (dbt Cloud executes them sequentially).
+
+9. Toggle the switch labelled Generate docs on run so it turns blue (ON).  
+   This tells dbt Cloud to run
+   ```
+   dbt docs generate
+   ```
+   automatically after the last command every time this job succeeds.
+
+10. (Optional) In the Schedule section, click None and pick your preferred schedule if you want the init job to run automatically; otherwise leave it manual.
+
+11. Click the green Save button at the bottom-right of the page.  
+    A toast notification “Job saved successfully” should appear.
+
+12. Click the blue Run Job button in the upper-right corner to perform a test run.
+
+13. Watch the Run Logs panel:  
+    a. Step 1 should show “Running command: dbt seed --full-refresh” and end with “Completed successfully”.  
+    b. Step 2 should show the number of passing tests (0 failures expected).  
+    c. Step 3 should show model compile/build messages ending with “Completed successfully”.  
+    d. Finally, a fourth implicit step will appear: “dbt docs generate”, ending with “Done.”
+
+14. When the run status in the header changes to Success, click the Documentation tab (book icon) and verify today’s timestamp is present, confirming the docs were regenerated.
+
+15. We now have a working init job that:  
+    - loads CSVs into the warehouse,  
+    - runs all tests,  
+    - builds all models, and  
+    - refreshes project documentation on every execution.

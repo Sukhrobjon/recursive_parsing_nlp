@@ -1,0 +1,7 @@
+1. Open your browser tab that is running Astronomer and wait until the Airflow UI loads the DAGs home page.  
+2. Scan the table under the header “DAGs” and identify the first row in the list (this is the DAG with the smallest alphabetical order or earliest load time).  
+3. Click the blue-colored DAG name hyperlink in that first row; Airflow redirects to the “DAG Details” screen for that project.  
+4. Locate the horizontal menu bar inside the large content panel (tabs labeled “Graph”, “Tree”, “Grid”, etc.) directly under the DAG title.  
+5. Click the tab labeled “Graph”.  
+6. Wait a second for the DAG nodes and edges to render; confirm you can now see your tasks laid out as boxes connected by arrows.  
+7. Hover over two or three nodes to verify their tooltips pop up—this confirms the view is interactive and fully loaded.

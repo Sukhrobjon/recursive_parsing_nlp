@@ -1,0 +1,60 @@
+1. Open your browser and navigate to https://console.cloud.google.com/bigquery so we are inside the BigQuery Web UI.  
+2. Verify you are in the correct project (look at the blue project-selector pill in the top header); switch if necessary.  
+3. In the Explorer panel on the left, click the triangle ▶ next to the dataset sakila to expand it and reveal its tables (actor, film_actor, film, inventory, rental).  
+4. Click actor to highlight it, then look at the Schema tab in the right-hand pane; note we will need actor_id, first_name, and last_name.  
+5. Click film_actor, observe its schema (film_id, actor_id) so we know how actors connect to films.  
+6. Click inventory and review that inventory_id and film_id columns exist; this table links films to specific inventory copies.  
+7. Click rental and confirm it contains rental_id, inventory_id, and rental_date; each row represents one rental event.  
+8. Click the + Compose new query button (large blue “+” above the Explorer) to open a blank query editor tab.  
+9. Write the following SQL exactly into the query editor; it first counts rentals per film, then aggregates by actor, finally sorts and limits to 10:
+
+```sql
+/* 10 actors whose films have been rented the most */
+WITH rentals_per_film AS (
+  SELECT
+    inv.film_id,
+    COUNT(*) AS film_rentals
+  FROM
+    `sakila.inventory`   AS inv
+  JOIN
+    `sakila.rental`      AS r
+  ON
+    r.inventory_id = inv.inventory_id
+  GROUP BY
+    inv.film_id
+),
+actor_rentals AS (
+  SELECT
+    a.actor_id,
+    CONCAT(a.first_name, ' ', a.last_name) AS actor_name,
+    SUM(rpf.film_rentals)                  AS total_rentals
+  FROM
+    `sakila.actor`      AS a
+  JOIN
+    `sakila.film_actor` AS fa
+  ON
+    a.actor_id = fa.actor_id
+  JOIN
+    rentals_per_film    AS rpf
+  ON
+    fa.film_id = rpf.film_id
+  GROUP BY
+    a.actor_id,
+    actor_name
+)
+SELECT
+  actor_name,
+  total_rentals
+FROM
+  actor_rentals
+ORDER BY
+  total_rentals DESC
+LIMIT
+  10;
+```
+
+10. Click the green ► Run button in the toolbar of the query editor; BigQuery will execute and a “Query results” panel will appear below.  
+11. Verify the output lists 10 rows with actor_name and total_rentals sorted from largest to smallest—confirming our ORDER BY worked.  
+12. Click SAVE RESULTS on the right side of the Query results header, choose CSV (local file) if you want to download; otherwise skip this step if only viewing is required.  
+13. Wait for the CSV file to download; you can then move or rename it in your file system as needed (for example, ~/Downloads/top_actors_by_rentals.csv).  
+14. Optionally click the floppy-disk icon in the query editor toolbar, type a name like top_10_actors_most_rented.sql, and press Save so the query is stored in your project for future use.

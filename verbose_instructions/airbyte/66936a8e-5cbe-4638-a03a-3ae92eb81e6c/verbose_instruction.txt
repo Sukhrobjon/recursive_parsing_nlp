@@ -1,0 +1,20 @@
+1) Open your web browser and Navigate to the Airbyte UI where the Faker ➜ CSV connection is already listed.  
+2) Click the left-hand menu item “Connections” so we can see every configured stream.  
+3) Locate the row that shows Source “Sample Data (Faker)” and Destination “Local CSV”.  
+4) Click directly on the connection name (it is a blue hyperlink) to open the Connection Settings page.  
+5) In the top-right corner of this page, Click the grey “Edit connection” button.  
+6) Scroll down to the “Schedule” panel; you will see the current setting is probably “Manual” or an interval (e.g., every 24 h).  
+7) Click the radio button “Cron” to unlock the cron expression input field.  
+8) Type the following cron expression into the text box so it triggers once every day at 18:00:  
+```text
+0 18 * * *
+```  
+   Note that the order is “minute hour day-of-month month day-of-week”. We set minute=0, hour=18, everything else as wildcards.  
+9) Verify the small helper text under the field now reads “Every day at 06:00 PM”. This confirms Airbyte has parsed the cron correctly.  
+10) Leave the optional “Timezone” dropdown at its default (usually your browser’s local timezone). If you need UTC instead, select “UTC” explicitly.  
+11) Scroll to the bottom of the page and Click the blue “Save changes” button.  
+12) Wait for the green toast popup “Connection updated successfully” to appear on the lower-right corner; this is our immediate confirmation.  
+13) Click the back-arrow icon beside the connection name to return to the Connections list.  
+14) In the “Last sync” column for this connection, you should now see text reading “Scheduled • Cron (0 18 * * *)”, confirming that the job is picked up by the Airbyte scheduler.  
+15) Optionally Click the kebab menu (three vertical dots) on that row and choose “Sync now” to run one manual job—this verifies the pipeline still succeeds after the schedule change.  
+16) After the manual run finishes, Check the status badge shows “SUCCEEDED” and the “Last sync” timestamp updates. This proves the connection remains healthy and will automatically run at 18:00 each subsequent day.

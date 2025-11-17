@@ -1,0 +1,61 @@
+1) Double-click “result.csv” in the left file browser so we can observe the target column order and header spelling—this is the file we will overwrite in a moment.  
+2) Double-click “products.csv” to preview the raw product data; scroll horizontally until you see the columns “product_id”, “model_year”, and “list_price” so we know they exist.  
+3) Double-click “notebook.ipynb” to open the working notebook interface.  
+4) Scroll to the very last executed cell, then hover just below it until the grey “Click to add a cell” button appears.  
+5) Click “Click to add a cell.”  
+6) Write the following code into the new cell to load the CSVs into SQLite tables (this keeps everything reproducible).  
+
+```python
+import pandas as pd, sqlite3, os
+
+# Load raw CSVs
+products   = pd.read_csv('products.csv')
+categories = pd.read_csv('categories.csv')   if os.path.exists('categories.csv')   else pd.DataFrame()
+customers  = pd.read_csv('customers.csv')    if os.path.exists('customers.csv')    else pd.DataFrame()
+order_items= pd.read_csv('order_items.csv')  if os.path.exists('order_items.csv')  else pd.DataFrame()
+orders     = pd.read_csv('orders.csv')       if os.path.exists('orders.csv')       else pd.DataFrame()
+stocks     = pd.read_csv('stocks.csv')       if os.path.exists('stocks.csv')       else pd.DataFrame()
+stores     = pd.read_csv('stores.csv')       if os.path.exists('stores.csv')       else pd.DataFrame()
+
+# Create / connect to an in-memory SQLite DB
+connection = sqlite3.connect('bike_store.db')
+
+# Persist tables for SQL querying
+categories.to_sql('categories', connection, if_exists='replace', index=False)
+customers.to_sql('customers', connection, if_exists='replace', index=False)
+order_items.to_sql('order_items', connection, if_exists='replace', index=False)
+orders.to_sql('orders', connection, if_exists='replace', index=False)
+products.to_sql('products', connection, if_exists='replace', index=False)
+stocks.to_sql('stocks', connection, if_exists='replace', index=False)
+stores.to_sql('stores', connection, if_exists='replace', index=False)
+```
+
+7) Press Shift + Enter (or click the black ▶ Run triangle on the left of the cell) to execute; wait until the asterisk `[*]` turns into a number, confirming the load succeeded.  
+8) Hover under the executed cell again and click “Click to add a cell.”  
+9) Type the SQL query and export logic exactly as shown:  
+
+```python
+query = """
+SELECT *
+FROM products
+WHERE model_year = 2019
+  AND list_price > (
+        SELECT AVG(list_price)
+        FROM products
+        WHERE model_year = 2019
+      )
+ORDER BY list_price DESC;
+"""
+
+df = pd.read_sql_query(query, connection)
+
+# Save to CSV in the same shape as the previewed template
+df.to_csv('result.csv', index=False)
+print(f"Rows written: {len(df)}")
+```
+
+10) Run this second cell (Shift + Enter). The console prints the number of qualifying 2019 products, confirming the query worked.  
+11) Locate “result.csv” in the file browser panel, double-click it, and verify that:  
+    • All rows have model_year = 2019  
+    • Every list_price is higher than the average you can compute with `df['list_price'].mean()` if desired.  
+12) If anything looks off, click “Kernel” ➜ “Restart & Run All” on the top Jupyter menu bar, then re-inspect “result.csv”—this re-creates everything from scratch ensuring consistency.

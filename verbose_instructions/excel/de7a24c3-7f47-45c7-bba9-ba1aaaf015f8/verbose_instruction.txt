@@ -1,0 +1,28 @@
+1. Right-click any existing sheet tab and choose “Insert” → “Worksheet” to add a blank sheet.  
+2. Type “Sheet2” in the sheet-name box and press ENTER so the new sheet is called exactly “Sheet2”.  
+3. Click cell A1 on Sheet2.  
+4. Hold SHIFT and click cell B1 to highlight both A1 and B1 together.  
+5. Click the “Merge & Center” button on the Home tab ribbon (Alignment group) to merge these two cells.  
+6. Type Summer sales ($) and press ENTER to store the headline. Confirm that the text is centered across the merged cell A1:B1.  
+7. Switch to “Sheet1” by clicking its sheet tab.  
+8. Press CTRL+* (or CTRL+A twice inside the data block) to select the whole data range that contains the sales information. Make sure the top row contains the field names such as “Product”, “Revenue”, etc.  
+9. Click the “Insert” tab and then click “PivotTable” (first icon in the Tables group).  
+10. In the “Create PivotTable” dialog, confirm “Select a table or range” is chosen and that the Table/Range box shows something like ‘Sheet1!$A$1:$D$500’.  
+11. Choose “Existing worksheet”.  
+12. Click the “Location” box, then click Sheet2’s tab, and finally click cell A3 (directly under the heading) to place the pivot table starting at A3. Press OK.  
+13. In the PivotTable Field List pane on the right:  
+    a. Drag the field “Product” into the Rows area.  
+    b. Drag the field “Revenue” into the Values area. Excel should default to “Sum of Revenue”. If it shows “Count”, click the drop-down beside it → “Value Field Settings…” → choose “Sum” → OK.  
+14. Verify that the pivot table now lists each product name in column A and the corresponding total revenue in column B. We will use these two columns for the chart.  
+15. Click any single cell inside the newly created pivot table to keep the whole pivot selected.  
+16. Press CTRL+A once to highlight the entire pivot table (don’t include the Grand Total row).  
+17. Click the “Insert” tab → choose “Bar Chart” → under the 2-D Bar section select “Clustered Bar” (this provides horizontal bars). A chart will appear on Sheet2.  
+18. Click inside the chart title box, type Revenue of Each Product, and press ENTER.  
+19. Click the legend once and press DELETE to remove it (horizontal bars already have labels).  
+20. Drag the chart to an open area beneath the pivot table (for example, around cell E3) so both the pivot and chart are visible together.  
+21. Resize the chart’s corners so all product names are readable; ensure the bars are horizontal and properly aligned.  
+22. Click outside the chart to deselect everything.  
+23. Press CTRL+S to save the workbook, confirming that Sheet2 now contains:  
+    • a merged-cell heading “Summer sales ($)” in A1:B1,  
+    • a pivot table starting in A3 summarizing Sum of Revenue per Product, and  
+    • a horizontal bar chart titled “Revenue of Each Product” with no legend.

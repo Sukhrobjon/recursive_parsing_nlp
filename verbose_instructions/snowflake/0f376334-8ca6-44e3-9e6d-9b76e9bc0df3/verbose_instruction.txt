@@ -1,0 +1,17 @@
+1. Click the blue “+” button located in the upper-right corner of the Snowsight window  
+2. Choose “Folder” from the drop-down panel that appears  
+3. Type Online shopping into the Name input box that pops up  
+4. Click the Create Folder button at the lower-right of the dialog; we will see the new folder listed in the left-side navigation tree  
+5. Click the blue “+” button again in the upper-right corner  
+6. Select “SQL Worksheet” from the menu; a new tab called Worksheet X will open in the main editor pane  
+7. Hover your mouse over the Worksheet X tab title until the three-dot “⋮” icon becomes visible, then click the icon  
+8. Click Rename in the drop-down list  
+9. Type Books products and press Enter; the tab now shows the new name  
+10. Click the “✕” on the Books products tab to save context and close the worksheet (the worksheet is automatically saved in the root for now)  
+11. Locate the Online shopping folder in the left navigation panel and click it once so the folder becomes highlighted; we are now “inside” that folder  
+12. Click the blue “+” button in the upper-right corner again  
+13. Select “SQL Worksheet” from the drop-down; a new Worksheet Y tab opens under the Online shopping folder context  
+14. Hover over the Worksheet Y tab, click the revealed “⋮” icon, and choose Rename  
+15. Type Electronics products and press Enter; the tab title updates accordingly  
+16. Click the “✕” on the Electronics products tab to close it; Snowflake auto-saves the worksheet inside the Online shopping folder  
+17. Verify the result: expand the Online shopping folder in the left navigation pane and confirm both worksheets—Books products and Electronics products—are listed underneath.

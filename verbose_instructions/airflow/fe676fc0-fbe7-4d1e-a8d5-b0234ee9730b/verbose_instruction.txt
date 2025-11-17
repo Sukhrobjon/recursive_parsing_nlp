@@ -1,0 +1,58 @@
+1. Click the “VS Code” icon in the Astronomer sidebar to open the editor we mounted inside the container.  
+2. Locate README.md in the left-hand Explorer and click it; we can see the following connection details near the top of the file:  
+   • Conn Id: dq_postgres_conn  
+   • Conn Type: Postgres  
+   • Host: postgres  
+   • Schema: airflow_demo  
+   • Login: astro  
+   • Password: astro_pw  
+   • Port: 5432  
+   Note that we will use these values to build the Airflow connection in the next steps.
+
+3. Switch to “Chromium” in the sidebar to open the Airflow webserver that Astronomer started for us (usually accessible at http://localhost:8080).  
+
+4. Click “Admin” in the Airflow top menu bar.  
+5. Select “Connections” from the dropdown.  
+6. Click the blue “+” button just below the search bar to add a new connection.  
+7. Type the following in the “Add Connection” modal exactly as shown:    
+   • Connection Id: dq_postgres_conn  
+   • Connection Type: Postgres  
+   • Host: postgres  
+   • Schema: airflow_demo  
+   • Login: astro  
+   • Password: astro_pw  
+   • Port: 5432  
+8. Click “Save” at the bottom of the modal.  
+   We can see a green toast saying “Added connection” and a new row for dq_postgres_conn appears in the list—this confirms that the connection has been created.
+
+9. Switch back to “VS Code” to confirm that the DAG we want to run, data_quality_checks.py, is present under the dags/ folder. (No editing needed for this task.)  
+
+10. Switch to the integrated terminal tab already open inside VS Code (`/home/astro/projects/<project-name>`).  
+11. Execute the Astronomer restart so the scheduler picks up the newly added connection:  
+   ```bash
+   astro dev restart
+   ```  
+   Wait until the console prints “Airflow webserver health check passed” which confirms the services are back up.
+
+12. Go back to the Chromium Airflow tab.  
+13. Locate data_quality_checks in the DAG list; click the toggle slider at the far left of its row to Unpause it (turns from grey to blue).  
+14. Click the “Play” triangle (trigger) icon in the Actions column of the same row to run the DAG manually.  
+15. Wait until a new row appears under the “Recent tasks” column for the DAG indicating the run has started.  
+
+16. Click the DAG name data_quality_checks to enter the DAG details screen.  
+17. Select the “Graph” view tab so we can see all tasks and their status.  
+18. Watch the task boxes: once a task turns red it indicates failure. Suppose task_id sql_column_checks is the one that fails (the box is red).  
+
+19. Click the red sql_column_checks task box to open the Task Instance pop-up.  
+20. Click “View Log” in that pop-up; Airflow navigates to the log viewer page at a URL similar to `/log?dag_id=data_quality_checks&task_id=sql_column_checks&execution_date=...`.  
+
+21. Verify the blue banner at the top says “Task Log for sql_column_checks”. We can now scroll to read stack traces or error messages.  
+   (If you need to share the page, copy the browser URL or click the download button in the top-right corner of the log viewer to download the full log as a text file.)
+
+22. Confirm that the downloaded file (if you chose to download) exists by opening a new terminal tab (Ctrl+Shift+`) and running:  
+   ```bash
+   ls ~/Downloads | grep sql_column_checks
+   ```  
+   Seeing a filename such as `sql_column_checks.log` verifies the log was saved successfully.
+
+We have now created the dq_postgres_conn connection, triggered the DAG, identified the failing task instance, and brought up the exact log page required for debugging.

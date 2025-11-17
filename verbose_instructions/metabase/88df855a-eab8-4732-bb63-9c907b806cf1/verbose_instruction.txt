@@ -1,0 +1,37 @@
+1. Click the plus-sign button labeled “New” in the Metabase top-right toolbar.  
+2. Select “Question” from the dropdown panel. (Metabase opens the question builder.)
+
+3. Click the “SQL” tab (left of the editor) so we can write a native query.  
+4. Copy the entire contents of the already opened file question1.sql, then paste it into the white SQL editor pane.  
+   ```sql
+   -- question1.sql  
+   -- (Paste exactly what you see in the file here.  This is the query that will power our question.)
+   SELECT *
+   FROM my_table           -- replace with the real table name if needed
+   LIMIT 10;
+   ```
+   Note: Replace the example table name with the actual table referenced in question1.sql if different.
+
+5. Click the blue “Run” button (triangle ▶︎ icon) in the upper-right of the editor to execute the query.  
+6. Verify that you see a result grid with at least one row—this confirms the SQL ran successfully.
+
+7. Click the “Save” button (disk icon) beside Run.  
+8. Type question1 into the “Name this question” field.  
+9. Choose the appropriate collection/folder (e.g., “Our analytics” or “Personal Collection”) in the location dropdown so you can find it later.  
+10. Click “Save” to persist the question.
+
+11. Click the Metabase logo (top-left) to return to the home screen.  
+12. Click “New” again and pick “Dashboard.”  
+13. Type New Dashboard in the “Name your dashboard” textbox.  
+14. Click “Create” to open an empty dashboard canvas.
+
+15. Click the “Add to dashboard” button (large blue plus sign in the center or top-right).  
+16. In the “Add existing” search box, start typing question1, then click the resulting card labeled “question1.”  
+17. Press the “Add” button (bottom of the modal) to place the question on the canvas.
+
+18. Drag the corner handles if you want to resize the tile; then click “Done” (top-right) to exit layout mode.  
+19. Confirm you can see a tile titled “question1” showing the query results—this validates the addition.
+
+20. Click the floppy-disk “Save” icon on the dashboard header. Metabase saves both the layout and name “New Dashboard.”
+
+21. Reload the page (press the browser refresh arrow) to double-check: the dashboard opens and still displays the “question1” tile with data.

@@ -1,0 +1,56 @@
+1. Open your browser tab that already shows the Google Cloud BigQuery console (https://console.cloud.google.com/bigquery).  
+
+2. Click the triangle ▸ to the left of your project name so its datasets become visible.  
+   Note that in this walkthrough we will use a dataset called ​analytics​. Feel free to adjust the dataset name if you are using a different one; every subsequent reference assumes the ​analytics​ dataset exists or has been created.
+
+3. Click the triangle ▸ next to the dataset ​analytics​ to reveal its tables; we expect to see a table called ​customer_churn_data​.  
+   • If the table appears, click it once so the right-hand “Schema” panel shows the columns (we can verify the label column churned, plus the independent features we will use).  
+   • We will use this table as training data for the model we are about to create.
+
+4. In the Object Explorer panel, click the blue “+ Compose New Query” button (just above the list of tables).  
+   This opens a new query editor tab titled ​model_query.sql​ (BigQuery automatically names untitled files based on existing filenames; if it did not open as *model_query.sql*, click the tab title drop-down and choose “Rename” → type ​model_query.sql​).
+
+5. Replace any existing text in the editor with the following SQL, which creates (or replaces) a logistic-regression model.  
+```sql
+-- model_query.sql
+CREATE OR REPLACE MODEL `analytics.customer_churn_model`
+OPTIONS (
+  model_type = 'logistic_reg',
+  input_label_cols = ['churned'],
+  auto_class_weights = TRUE,
+  learn_rate = 0.1
+) AS
+SELECT
+  *
+FROM
+  `analytics.customer_churn_data`;
+```
+   • The CREATE OR REPLACE MODEL statement tells BigQuery ML to build a model named customer_churn_model inside the analytics dataset based on every row in customer_churn_data.  
+   • The churned column is the label we want to predict.  
+   • We specify a modest learning rate and allow BigQuery to handle class-weighting automatically.
+
+6. Click the grey “diskette” icon (Save) in the left side of the editor toolbar so the file is stored as ​model_query.sql​ in your project’s Saved Queries area. We will run it next.
+
+7. Click the blue “▶ RUN” button (top-left of the editor panel).  
+   Wait until the green check-mark and the “Query complete” message appear in the Results pane; this indicates the customer_churn_model has been successfully trained.
+
+8. After the model finishes building, highlight the entire contents of the editor (Ctrl + A / Cmd + A), press Delete to clear it, and type the follow-up query that extracts the model’s metadata.  
+```sql
+SELECT
+  *
+FROM
+  ML.EVALUATE(MODEL `analytics.customer_churn_model`);
+```
+
+9. Click “▶ RUN” again.  
+   The Results grid now shows evaluation and metadata measures such as precision, recall, accuracy, log_loss, etc.
+
+10. Above the Results grid, click the white “SAVE RESULTS” button.  
+    A drop-down menu appears—choose “JSON (local file)”.
+
+11. When the browser’s file-save dialog opens, navigate to your Desktop folder.  
+    Type the filename exactly as ​model.json​ and click “Save”.  
+    • Because we chose JSON, the file extension is automatically *.json*.  
+    • Confirm the file is located on Desktop; you can minimise the browser and open your Desktop to verify.
+
+12. Switch back to BigQuery and optionally close the editor tab; your model is safely stored in the analytics dataset, and the metadata evaluation has been exported as Desktop/model.json, completing the task.

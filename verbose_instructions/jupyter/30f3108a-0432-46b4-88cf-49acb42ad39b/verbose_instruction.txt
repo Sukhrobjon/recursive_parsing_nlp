@@ -1,0 +1,98 @@
+1) Scroll to the first empty code cell right under the title of the notebook and Click inside it.  
+2) Type the standard library / third-party imports and dataset loader:  
+```python
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+from sklearn.datasets import fetch_california_housing
+from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.preprocessing import StandardScaler
+from sklearn.neighbors import KNeighborsRegressor
+from sklearn.pipeline import Pipeline
+```
+3) Hit Shift + Enter (or click the gray Run ▶︎ button) to execute the cell and make sure no red error trace appears.
+
+4) Click into the next existing empty cell immediately below.  
+5) Write the code to load the California Housing data and create train / test splits:  
+```python
+# Load dataset
+california = fetch_california_housing(as_frame=True)
+X, y = california.data, california.target
+
+# Train-test split (80 % train, 20 % test, reproducible split)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+print(f"Training rows: {X_train.shape[0]}, Testing rows: {X_test.shape[0]}")
+```
+6) Run the cell and confirm the printed row counts roughly equal 16 k / 4 k (the official dataset size is 20 640).
+
+7) Click in the next blank cell.  
+8) Type the hyper-parameter search loop that evaluates K from 1 to 30 using 5-fold cross-validation inside a Pipeline (scaler + KNN):  
+```python
+k_range   = range(1, 31)
+cv_scores = []
+
+for k in k_range:
+    knn_pipe = Pipeline(
+        steps=[
+            ("scaler", StandardScaler()),
+            ("knn",    KNeighborsRegressor(n_neighbors=k))
+        ]
+    )
+    # Negative MAE so higher is better; we invert later
+    mae_scores = cross_val_score(
+        knn_pipe,
+        X_train,
+        y_train,
+        cv=5,
+        scoring="neg_mean_absolute_error",
+        n_jobs=-1
+    )
+    cv_scores.append(-mae_scores.mean())   # store positive MAE
+
+best_k       = k_range[int(np.argmin(cv_scores))]
+best_mae     = min(cv_scores)
+
+print(f"Best k: {best_k}  |  CV Mean Absolute Error: {best_mae:.4f}")
+```
+9) Run the cell; verify you see “Best k: …”.
+
+10) Click in the following empty cell to visualize the search curve.  
+11) Enter:  
+```python
+plt.figure(figsize=(8,4))
+plt.plot(k_range, cv_scores, marker="o")
+plt.xlabel("Number of Neighbors (k)")
+plt.ylabel("Cross-validated MAE")
+plt.title("KNN Regressor: MAE vs k")
+plt.grid(True)
+plt.show()
+```
+12) Execute the cell and visually confirm the lowest point corresponds to the printed best_k.
+
+13) Click the next empty cell to train the final model with best_k on the full training set and evaluate on the held-out test set:  
+```python
+final_model = Pipeline(
+    steps=[
+        ("scaler", StandardScaler()),
+        ("knn",    KNeighborsRegressor(n_neighbors=best_k))
+    ]
+)
+final_model.fit(X_train, y_train)
+
+test_mae = (np.abs(y_test - final_model.predict(X_test))).mean()
+print(f"Test MAE with k={best_k}: {test_mae:.4f}")
+```
+14) Run the cell and make sure a reasonable MAE (~0.3–0.6) is printed.
+
+15) Click the menu Run ➜ Run All Cells (or press Shift + Command + Option + Enter / Shift + Ctrl + Alt + Enter) to ensure every cell executes sequentially without error.
+
+16) Verify that every code cell has a sequential execution number (1, 2, 3 …) and no red tracebacks are visible.
+
+17) Click the blue disk-shaped Save icon in the Jupyter toolbar, or press Ctrl + S / Command + S, to persist all changes.
+
+18) Confirm the notebook name in the browser tab briefly shows a solid circle (💾) disappearing, indicating the file is saved.
+
+Your notebook is now fully executed, saved, and contains the optimal K value for a KNN regressor on the California Housing dataset.

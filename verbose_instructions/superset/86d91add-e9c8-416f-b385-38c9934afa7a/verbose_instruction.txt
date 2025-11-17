@@ -1,0 +1,62 @@
+1) Open a browser and Navigate to https://console.cloud.google.com/bigquery so you are in the BigQuery Web UI (bigquery_console).  
+
+2) Check that the blue project-selector at the top shows the correct billing project. If not, Click the project name and choose the one where you want the new table to live—write the project ID down, we will need it in the SQL.  
+
+3) In the left-hand Explorer panel, look for a dataset called Games under your project.  
+   • If Games already exists, jump to Step 5.  
+   • If it is missing: Click the blue +CREATE DATASET button, Type Games in “Dataset ID”, leave Location as default, Click CREATE DATASET.
+
+4) Expand the newly created Games dataset so its name is highlighted.
+
+5) Click CREATE TABLE (upper-right of the right-hand pane). A “Create table” form opens.
+
+6) In the Source section  
+   a. Click the radio-button Upload.  
+   b. Click BROWSE and in the file picker navigate to /home/user/video_game_sales.csv, select it, and click OPEN.  
+   c. Make sure “File format” shows CSV.  
+   d. Tick the “Auto detect” checkbox so BigQuery infers the schema.
+
+7) In the Destination section  
+   a. Verify Dataset shows Games.  
+   b. Type games in “Table name”.  
+   c. Leave Table type as “Native table”.
+
+8) Scroll to the bottom and Click CREATE TABLE. Wait until a green pop-up says “Table created”. You can verify by expanding Games; table games should appear.
+
+9) Click the blue +COMPOSE NEW QUERY button (upper-right). A new query editor tab opens.
+
+10) Write the aggregation SQL below, replacing YOUR_PROJECT with the project ID you noted in Step 2:
+
+```sql
+SELECT
+  Genre,
+  MAX(Global_Sales) AS max_global_sales
+FROM
+  `YOUR_PROJECT.Games.games`
+GROUP BY
+  Genre
+ORDER BY
+  max_global_sales DESC;
+```
+
+11) Click the ► RUN button. After the job finishes, the results grid shows one row per genre with its maximum global sales.
+
+12) Hover over the results grid header row; a row of icons appears. Click the small bar-chart icon labelled “Explore data (Charts)”. The “Chart” pane slides out on the right.
+
+13) In the Chart pane  
+    a. Verify Chart type is “Bar chart”. If not, Click the drop-down and choose Bar chart.  
+    b. Under X-axis, Genre should already be selected; if not, Click “Add dimension” and choose Genre.  
+    c. Under Y-axis, make sure max_global_sales is selected as “Metric”.  
+    We can see the bar chart preview update instantly.
+
+14) Click the SAVE button at the top of the Chart pane. A “Save chart” dialog appears.
+
+15) In the dialog  
+    a. Under Save in, choose Dashboard.  
+    b. If “MyDashboard” already exists, select it; otherwise Click +NEW DASHBOARD, type MyDashboard, and Click CREATE.  
+    c. In “Chart title” type games.  
+    d. Click SAVE. A toast message confirms “Chart saved to MyDashboard”.
+
+16) To verify, Click the View dashboard link in the toast message (or open “Data > Dashboards” in the left menu and Click MyDashboard). Confirm the bar chart titled games is present and shows the expected max sales per genre.
+
+17) You have successfully uploaded the CSV into BigQuery table Games.games, computed the maximum global sales for each genre, visualised it, and saved the chart to the dashboard MyDashboard.

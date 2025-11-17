@@ -1,0 +1,60 @@
+1) Switch to VS Code by clicking the blue square icon in the OS dock.  
+
+2) Navigate to the Explorer panel on the left and single-click the folder name “iris_classification”.  
+
+3) Double-click the sub-folder “assets” so it expands and shows its contents.  
+
+4) Double-click the file “__init__.py” inside the assets folder to open it in the main editor tab.  
+
+5) Scroll to the very bottom of the file (you can press Ctrl+End to jump instantly).  
+
+6) Write the new Dagstermill asset definition exactly as shown below, making sure it is separated from any previous code by one blank line:  
+```python
+from dagstermill import define_dagstermill_asset
+from dagster import AssetIn
+from dagster._utils import file_relative_path
+
+iris_kmeans_notebook = define_dagstermill_asset(
+    name="iris_kmeans_notebook",
+    notebook_path=file_relative_path(__file__, "../notebooks/iris-kmeans-notebook.ipynb"),
+    ins={"iris": AssetIn("iris_data")},
+    group_name="classification",
+)
+```  
+Note that file_relative_path points one directory up to the “notebooks” folder; we will use this later when the notebook is executed.
+
+7) Press Ctrl+S to save “__init__.py”. Confirm the white dot on the tab disappears (that indicates the file is saved).  
+
+8) Click the Chromium icon in the dock to switch to the browser.  
+
+9) Select the tab titled “iris-kmeans-notebook.ipynb” to bring the Jupyter notebook to the front.  
+
+10) Click once on the code cell that contains the comment  
+```python
+# fetch the Iris dataset
+```  
+so that a blue border appears around that cell.
+
+11) In the notebook menu bar, click “View”, then hover over “Right Sidebar”, and click “Show Notebook Tools”. The right-hand sidebar labelled “Notebook Tools” should now be visible.
+
+12) Inside the sidebar, click the toggle “COMMON TOOLS” so its panel expands. Verify the “Selected Cell” preview corresponds to the cell with the “# fetch the Iris dataset” comment we selected earlier.
+
+13) Under the heading “Cell Tags” in this panel, click the small “Add Tag” button. A text box labelled “Add a tag” will appear.
+
+14) Type parameters (all lowercase, no spaces) into the box and press Enter. You should now see the word “parameters” displayed under Cell Tags, confirming the tag was added successfully.
+
+15) Press Ctrl+S (or click “File > Save Notebook”) to save the notebook. Briefly check that the save icon turns from filled to outlined, indicating the notebook is written to disk.
+
+16) Use the browser tab bar to switch to the Dagster UI tab titled “Asset Group: classification”. If that tab is not yet open, open a new tab and navigate to http://localhost:3000/asset-groups/classification (adjust the port if your Dagster instance uses a different one).
+
+17) Click the blue “Reload definitions” button in the top-right corner of the Dagster UI. Wait a few seconds until the toast notification says “Workspace reloaded”.
+
+18) Confirm that a new node labelled “iris_kmeans_notebook” now appears in the lineage graph, with an edge coming from “iris_data”.
+
+19) Click the green “Materialize all” button in the upper-right of the graph panel. Dagster will open the “Launchpad” with both “iris_data” and “iris_kmeans_notebook” pre-selected.
+
+20) Click the green “Launch run” button at the bottom of the Launchpad. A Run page will open and show live logs.
+
+21) Wait until the run status badge changes to “Succeeded” and you see log lines such as “Finished executing notebook” followed by “materialization of asset iris_kmeans_notebook succeeded”. This verifies that K-means clustering has run inside the notebook and the asset is stored.
+
+22) (Optional) Click on the “iris_kmeans_notebook” line in the left Run sidebar, then click “View Materialization”. Confirm that the output metadata (e.g., cluster centroids) is recorded as expected.

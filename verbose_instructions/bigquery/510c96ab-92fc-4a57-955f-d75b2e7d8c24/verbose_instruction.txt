@@ -1,0 +1,28 @@
+1. Navigate to https://console.cloud.google.com/bigquery to open the BigQuery Web UI.  
+2. Click the blue “PINNED PROJECTS” triangle to the left of “bigquery-public-data” so it points down.  
+3. Click the triangle to the left of “patents” to expand that dataset and expose its tables.  
+4. Click the table name “publications” to display its schema in the right-hand “Table details” panel; we can see a STRING field called “country_code” which we will group on.  
+5. Click the “+ COMPOSE NEW QUERY” button (white sheet icon) in the top bar; a blank query editor tab appears.  
+6. Write the SQL query below in the editor to aggregate patent counts by country code, sort them, and keep only the top 10:  
+
+```sql
+SELECT
+  country_code,
+  COUNT(*) AS patent_count
+FROM
+  `bigquery-public-data.patents.publications`
+GROUP BY
+  country_code
+ORDER BY
+  patent_count DESC
+LIMIT
+  10;
+```  
+
+7. Click the blue “▶ RUN” button above the editor to execute the query.  
+8. Wait until the green check mark and “Query complete” message appear; the results grid will show exactly 10 rows.  
+9. Click the “SAVE RESULTS” button located just above the results grid on the right.  
+10. Choose the option “CSV (local file)” from the dropdown; a download dialog appears.  
+11. Confirm the download; the file (usually named results-…csv) is saved to your default Downloads folder.  
+12. Open your operating system’s file manager, go to the Downloads directory, and rename the downloaded file to “result.csv”.  
+13. Verify that ~/Downloads/result.csv now contains the 10-row list of country codes with the largest patent counts—task completed.

@@ -1,0 +1,51 @@
+1. Click VS Code icon on the left Astronomer workbench to open the editor.  
+2. Locate README.md in the file tree (~/astro/my_airflow_dag/README.md) and click it.  
+3. Read through the “Task Documentation” section—we will embed the exact Markdown block shown there into the DAG code in a moment. (Note: in the sample README the block starts with `## Data Sync Task` and ends with the table of parameters.)  
+4. In the Explorer pane, single-click dags/sql_data_sync.py (or create it if it does not exist yet).  
+5. Scroll to the top of the file, right under the imports, and type the Airflow DAG skeleton if it’s a new file:  
+   ```python
+   from airflow import DAG
+   from airflow.operators.bash import BashOperator
+   from datetime import datetime
+
+   default_args = {"owner": "astronomer", "retries": 1}
+
+   with DAG(
+       dag_id="data_sync_with_docs",
+       start_date=datetime(2024, 1, 1),
+       schedule_interval=None,
+       catchup=False,
+       default_args=default_args,
+   ) as dag:
+   ```
+6. Below the DAG context manager, create the task and paste the Markdown from README.md into the `doc_md` field.  
+   ```python
+       data_sync = BashOperator(
+           task_id="data_sync",
+           bash_command="echo 'syncing data ...'",
+           doc_md="""
+   ## Data Sync Task  
+   This task copies data from the staging bucket to the warehouse.  
+
+   **Parameters**
+
+   | Parameter | Description          | Example |
+   |-----------|----------------------|---------|
+   | `source`  | GCS staging bucket   | `gs://staging/data` |
+   | `target`  | BigQuery dataset     | `bigquery://warehouse.raw` |
+   """,
+       )
+   ```
+7. Finish the DAG context block with any downstream tasks if needed (none for this tutorial) and save (Ctrl/Cmd + S).  
+8. Switch to the integrated terminal tab that points to your Astro project root (`~/astro`).  
+9. Run `astro dev restart --wait` to rebuild the container so Airflow picks up the new DAG. Wait until you see “Airflow webserver is ready” in the logs.  
+10. Click the Chromium icon on the left to bring the Airflow web UI forward.  
+11. In the DAG list, find `data_sync_with_docs` and toggle the grey slider to ON (unpause).  
+12. Click the triangular “Play” button in the Action column to trigger the DAG run manually.  
+13. On the pop-up, click “Trigger” without changing any field.  
+14. Wait until the coloured square in the “Latest Run” column turns green (success).  
+15. Click the DAG name `data_sync_with_docs` to open its Graph view.  
+16. Hover your mouse over the `data_sync` task box, then click the blue circle with an “i” (Task Details) that appears.  
+17. In the sidebar that opens, click the “Task Docs” tab. Verify that the Markdown from README.md is rendered with the header “Data Sync Task” and the parameters table exactly as in the README.  
+18. (Optional) If you need to download the log: click the “Log” tab, then “Download” at the upper-right of the log viewer.  
+19. Switch back to the VS Code terminal and run `astro dev ps` to confirm the scheduler sees 0 running tasks—our single task has completed successfully.

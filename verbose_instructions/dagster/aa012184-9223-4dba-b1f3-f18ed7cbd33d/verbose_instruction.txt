@@ -1,0 +1,71 @@
+1. Click the “VS Code” icon in the left dock to bring the editor to the foreground.  
+2. Navigate to the Explorer panel and double-click the file “file_sizes_job.py” so it opens in the main editor tab.  
+3. Type Ctrl + A (or ⌘ + A on macOS) to select any placeholder code, then press Delete to clear the file so we can write fresh content.  
+4. Write the import block by pasting the code below at the very top of the file:  
+```python
+import os
+from dagster import op, job, get_dagster_logger
+```  
+5. Press Enter twice, then write the first op that gathers file sizes inside the “./files” directory:  
+```python
+@op
+def get_file_sizes():
+    """Return a dict mapping filename → size in bytes for every file in ./files."""
+    files = [
+        f
+        for f in os.listdir("./files")
+        if os.path.isfile(os.path.join("./files", f))
+    ]
+    return {f: os.path.getsize(os.path.join("./files", f)) for f in files}
+```  
+6. Press Enter twice and add the second op to calculate the total size of all files:  
+```python
+@op
+def get_total_file_size(file_sizes: dict) -> int:
+    """Sum all file sizes."""
+    return sum(file_sizes.values())
+```  
+7. Press Enter twice and insert the third op that finds the single-largest file size:  
+```python
+@op
+def get_max_file_size(file_sizes: dict) -> int:
+    """Return the maximum file size."""
+    return max(file_sizes.values()) if file_sizes else 0
+```  
+8. Press Enter twice and author the fourth op to log both statistics so they appear in Dagster logs:  
+```python
+@op
+def report_file_stats(total_size: int, max_size: int):
+    """Log summary statistics to Dagster’s event stream."""
+    logger = get_dagster_logger()
+    logger.info(f"Total size across all files: {total_size} bytes")
+    logger.info(f"Largest single file: {max_size} bytes")
+```  
+9. Press Enter twice and build the job that wires every op together:  
+```python
+@job
+def file_sizes_job():
+    """Pipeline: collect sizes → compute stats → report."""
+    sizes = get_file_sizes()
+    report_file_stats(
+        get_total_file_size(sizes),
+        get_max_file_size(sizes),
+    )
+```  
+10. Press Ctrl + S (⌘ + S) to save “file_sizes_job.py”.  
+11. Click the terminal icon (or press Ctrl + \` to toggle the integrated terminal) and confirm the prompt shows the path “~/file-ops-and-jobs/”. If not, type `cd ~/file-ops-and-jobs` and press Enter.  
+12. Execute the Dagster dev server pointing directly at the file:  
+```bash
+dagster dev -f file_sizes_job.py --port 3000
+```  
+13. Wait until the terminal prints “Dagster UI running at http://127.0.0.1:3000/” to confirm the service started successfully.  
+14. Switch to the Chromium browser by clicking its icon in the dock.  
+15. Type `localhost:3000` in the address bar and press Enter to load the Dagster UI.  
+16. Observe the left sidebar; under “Jobs” verify that “file_sizes_job” is listed.  
+17. Click “file_sizes_job” in the list; in the canvas on the right we can see the graph containing “get_file_sizes” → “get_total_file_size”, “get_max_file_size” → “report_file_stats”. This confirms the four ops are connected correctly.  
+18. Click the blue “Materialize” button in the top-right corner of the job page, then click “Launch” in the modal to trigger a test run.  
+19. Watch the real-time logs at the bottom panel; ensure you see both informational lines:  
+   • “Total size across all files: … bytes”  
+   • “Largest single file: … bytes”  
+   Their presence verifies every op executed successfully.  
+20. Close the run window (X in the tab) once the status badge shows “Success”. The job and its four ops are now fully implemented, visualized, and validated in Dagster at port 3000.

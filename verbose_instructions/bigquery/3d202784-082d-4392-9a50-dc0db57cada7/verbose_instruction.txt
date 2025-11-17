@@ -1,0 +1,56 @@
+1) Open a browser tab and navigate to https://console.cloud.google.com/bigquery so we are inside the BigQuery Web UI.
+
+2) Verify the correct GCP project is selected in the blue project-drop-down at the top-left. If it is not, click the drop-down and choose the project that contains the dataset ml_project.
+
+3) In the Explorer panel on the left, locate the line that shows our project name.  
+   • Click the small grey triangle to the left of the project name so its contents expand.  
+   • Scroll until you see the dataset ml_project.
+
+4) Click the grey triangle to the left of ml_project to reveal its objects.  
+   • We should now see any existing Tables and (if present) a Models section.  
+   • Identify which table you plan to train on (for example training_data). Click that table name once so the schema appears in the main panel—this lets us confirm column names and data types. Note the column that contains the label (assume it is named label).
+
+5) Click the blue “+ Compose New Query” button at the top of the BigQuery UI (upper-right of the Explorer panel). A fresh SQL editor tab opens.
+
+6) Delete any boiler-plate code inside the editor, then write the modified CREATE MODEL statement below.  
+   • We switch the model name to logistic_model.  
+   • We keep the model inside the ml_project dataset.  
+   • We specify model_type='logistic_reg' so BigQuery ML trains a logistic regression model.  
+   • We point the SELECT at the training table we just inspected.  
+
+```sql
+CREATE OR REPLACE MODEL `ml_project.logistic_model`
+OPTIONS (
+  model_type = 'logistic_reg',
+  input_label_cols = ['label'],     -- name of the dependent variable
+  auto_class_weights = TRUE,        -- helpful if the classes are imbalanced
+  learn_rate = 0.1                  -- example hyper-parameter; adjust as needed
+)
+AS
+SELECT
+  *
+EXCEPT(id)                          -- drop non-feature columns if necessary
+FROM
+  `ml_project.training_data`
+WHERE
+  RAND() < 0.8;                     -- simple 80% train split
+```
+
+7) Click the dark-blue “▶ RUN” button located on the toolbar directly above the query editor.  
+   • Watch the Job information panel on the right; it will show status “Running” then “Succeeded”.  
+   • The creation may take a couple of minutes, depending on data size.
+
+8) After the query finishes, look back at the Explorer panel:  
+   • Click the grey triangle next to ml_project again if it collapsed.  
+   • A new sub-section titled Models appears (or updates).  
+   • Click the triangle left of Models, and you should now see logistic_model.
+
+9) Click logistic_model. The main BigQuery panel switches to the Model Details page. Here we can review:  
+   • “Overview” tab with basic metadata (schema, model_type, training options).  
+   • “Evaluation” tab to inspect precision, recall, ROC, etc.  
+   • “Training” tab to see job history.  
+   This confirms the model was successfully created.
+
+10) (Optional) If you want to save a link for review later, click the clipboard icon in the upper-right of the Model Details page to copy the direct model URL.
+
+The logistic_model inside the ml_project dataset is now built and open for inspection.

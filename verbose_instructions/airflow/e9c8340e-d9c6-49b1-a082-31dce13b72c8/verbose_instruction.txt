@@ -1,0 +1,10 @@
+1. Open the Chromium browser icon on the left dock to switch to the running Airflow web interface.  
+2. Locate the DAG list on the home screen and scroll until you see the row labelled “workFlow_Echo”.  
+3. Click the grey Pause/Play slider just to the left of the DAG name so it turns green, un-pausing the DAG. (Airflow only allows manual triggers when the DAG is active.)  
+4. Click directly on the blue “workFlow_Echo” DAG name to open its details page.  
+5. In the top-center menu bar of the DAG details page, click the tab labeled “Graph” to switch into the Graph View.  
+6. In Graph View, move your mouse to the upper-right corner and click the green “Play” (triangle) button to open the “Trigger DAG” dialog.  
+7. Verify the “Run ID” auto-generated field looks correct (e.g., manual__<timestamp>), then click the blue “Trigger” button inside the dialog. Airflow immediately schedules the run.  
+8. Wait a few seconds; the mini status badge in the top-left of Graph View changes from “no status” to “queued” and then to “running”.  
+9. Watch the task boxes in the graph: they will turn from light-grey to yellow (queued) and finally to green (success) or red (failed). This provides real-time confirmation that the DAG was triggered from Graph View.  
+10. When every task box is green, the run has completed successfully. You can also confirm by looking at the “Runs” dropdown in the upper-right; it should show the latest run with a green checkmark.

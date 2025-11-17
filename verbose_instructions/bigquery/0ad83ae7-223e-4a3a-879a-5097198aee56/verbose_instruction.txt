@@ -1,0 +1,32 @@
+In this task we will query the 2010 Census ZIP-code dataset, retrieve the 10 ZIP codes with the largest populations, and store the results in a new BigQuery table called `census_2010` inside the `census` dataset.  
+
+1. Navigate to https://console.cloud.google.com/bigquery to open the BigQuery Web UI.  
+2. Click the triangle ▶ to the left of bigquery-public-data in the Explorer panel so its datasets list expands.  
+3. Click the triangle ▶ next to census_bureau_usa to reveal the tables inside that public dataset.  
+4. Click population_by_zip_2010 once to display its schema and preview pane; we can see columns such as zipcode (STRING) and population (INTEGER) which we will use shortly.  
+5. Click the + COMPOSE NEW QUERY button located at the top of the main panel to open a blank SQL editor tab.  
+6. Write (or paste) the following SQL into the editor:  
+
+```sql
+SELECT
+  zipcode AS zip_code,
+  population
+FROM
+  `bigquery-public-data.census_bureau_usa.population_by_zip_2010`
+ORDER BY
+  population DESC
+LIMIT
+  10;
+```  
+
+7. Click the blue ► RUN button in the toolbar above the query editor to execute the SQL.  
+8. Wait until the “Query complete” message appears and the results grid is displayed beneath the editor; we now have the top 10 rows.  
+9. Click the SAVE RESULTS button on the right side of the “Query results” bar.  
+10. In the dropdown, choose BigQuery table.  
+11. In the side panel that opens, set Destination:  
+    a. For Dataset, click the dropdown and select census (create it first if it doesn’t already exist).  
+    b. For Table name, type census_2010.  
+12. Leave the File format as “Native table” and write preference as “Overwrite table” (OK because we are creating a brand-new table).  
+13. Click SAVE to launch the job that writes the query result into census.census_2010.  
+14. Wait for the job status to show Success (green check).  
+15. Expand the census dataset in the Explorer panel; click the new census_2010 table and choose Preview to confirm it contains exactly 10 rows with columns zip_code and population sorted by population descending. We can now reuse this table for downstream analysis.

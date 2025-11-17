@@ -1,0 +1,37 @@
+1) Double-click the file name “allGames.csv” in the left Explorer panel so we can preview its current (possibly empty) layout and column naming.  
+2) Double-click “Athletes_summer_games.csv” to open the data preview and visually confirm it contains columns labelled “Games”, “Year”, etc. (we only need the Games column).  
+3) Double-click “Athletes_winter_games.csv” to inspect its structure and make sure it also has the “Games” column.  
+4) Double-click “notebook.ipynb” to open the Jupyter Notebook editor.  
+5) Scroll to the first blank area at the bottom of the notebook.  
+6) Click the grey “+ Code” button (sometimes shown as “Click to add a cell”) to insert a new code cell.  
+7) Type (or paste) the following complete code block into the new cell:  
+```python
+import pandas as pd
+
+# Load the two CSV source files
+df_summer = pd.read_csv('./Athletes_summer_games.csv')
+df_winter = pd.read_csv('./Athletes_winter_games.csv')
+
+# Create an empty DataFrame that will hold the counts
+total_games = pd.DataFrame(columns=['Season', 'Total # of Games'])
+
+# Calculate unique Games counts for each season
+winter_count = df_winter['Games'].nunique()
+summer_count = df_summer['Games'].nunique()
+
+# Populate the summary table
+total_games.loc[0] = ['Winter', winter_count]
+total_games.loc[1] = ['Summer', summer_count]
+
+# Save the result to the required output file
+total_games_path = './allGames.csv'
+total_games.to_csv(total_games_path, index=False)
+
+# Display the final DataFrame so we can verify interactively
+total_games
+```  
+8) Click the grey “Run” triangle (or press Shift + Enter) to execute the cell.  
+9) Confirm in the notebook output that a two-row table appears showing “Winter” and “Summer” with their corresponding counts. The numbers should look reasonable (e.g. ~20–30 Games each).  
+10) In the left Explorer panel, single-click “allGames.csv”; the preview should now display the same two rows we just saw in the notebook, confirming the file was written successfully.  
+11) If the code cell throws an error (e.g. NameError, FileNotFoundError), click the menu “Run ▸ Restart Kernel and Run All Cells”, then click “Restart” in the pop-up to execute everything from a clean state.  
+12) Re-open “allGames.csv” once more after the rerun to make sure the counts are present; we can now confidently report that the task is complete.

@@ -1,0 +1,21 @@
+1) Navigate to the Airbyte UI in the browser and observe the “Status” pill for the connection you created (e.g., incremental-sync-demo) until the label changes to “Succeeded” so we know no job is currently running.  
+2) Switch to the terminal window where Docker is available.  
+3) Run the psql one-liner inside the source Postgres container to change the record whose id = 2:  
+```bash
+docker exec -i airbyte-source psql -U postgres <<'SQL'
+UPDATE table_one
+SET    name = 'Eg2b IncAp'
+WHERE  id   = 2;
+SELECT id, name FROM table_one WHERE id = 2;  -- quick sanity check
+SQL
+```  
+   Note that the SELECT should now return: `2 | Eg2b IncAp`. We will sync this new value next.  
+4) Switch back to the Airbyte UI tab, then click the connection name “incremental-sync-demo” in the left sidebar so the connection details page opens.  
+5) Click the blue “Sync now” button in the upper-right corner of the page to launch a manual sync.  
+6) Watch the Job History panel scroll; wait until the latest job’s status turns to the green “Succeeded” badge.  
+7) (Optional) Verify in the destination Postgres that the new value arrived:  
+```bash
+docker exec -i airbyte-destination psql -U postgres -d destination_db -c \
+"SELECT id, name FROM public.table_one WHERE id = 2;"
+```  
+   You should see the row `2 | Eg2b IncAp`, confirming the update propagated successfully.

@@ -1,0 +1,13 @@
+1) Click the "Destinations" icon (blue database symbol) on the dark-gray left sidebar of the Airbyte UI  
+2) Click the white "+ New destination" button that appears in the main panel  
+3) Type “local json” into the “Search for a destination” bar at the top of the modal  
+4) Select the result labeled “Local JSON” (the row with a gray file icon) by clicking anywhere on that row  
+5) Click the blue “Set up destination” button in the lower-right of the modal to open the configuration form  
+6) Type “local-json-destination” into the “Name” field so we can recognize this destination later  
+7) Locate the field labelled “Destination Path” (directly under “Name”) and type:  
+```
+/local/json_destination
+```  
+8) (Optional) Leave “Format” set to the default “One JSON file per stream” unless your team has another preference  
+9) Scroll to the bottom of the form and click the blue “Set up destination” button  
+10) Wait until the status banner in the top-right flashes “Success” and the new destination appears in the Destinations list—this confirms the local JSON destination is ready for future connections

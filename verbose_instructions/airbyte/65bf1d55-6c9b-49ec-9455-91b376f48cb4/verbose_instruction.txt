@@ -1,0 +1,23 @@
+1) Open the browser tab that shows airbyte_ui and wait until the “Connections” list loads  
+2) Locate the row whose Name column reads “Cloud File → Snowflake” (that is the unused pipeline)  
+3) Click anywhere on that row to open the connection detail page  
+4) Click the gray “Settings” tab in the secondary left-hand panel  
+5) Scroll to the very bottom of the Settings page and click the red “Delete connection” link  
+6) Type DELETE in the confirmation modal’s text box to acknowledge permanent removal  
+7) Click the red “Delete” button inside the modal; the UI should redirect back to the Connections list  
+8) Verify the connection is gone by typing “Cloud File” in the Connections search bar—no rows should be returned  
+
+9) Switch to the left navigation bar and click the “Sources” icon (stacked cylinder)  
+10) In the Sources list find the source named “Cloud File” (the one previously paired with Snowflake)  
+11) Click the kebab menu (three vertical dots) at the far right of that row  
+12) Choose “Delete source” from the dropdown menu  
+13) In the confirmation dialog type DELETE and click the “Delete” button  
+14) Observe a green toast “Source deleted” and confirm the source list no longer shows “Cloud File” by searching for it  
+
+15) Click the “Destinations” icon (arrow into box) on the left navigation bar  
+16) Find the destination named “Snowflake” (used only by the removed connection)  
+17) Click the kebab menu on that row and select “Delete destination”  
+18) Enter DELETE in the modal and press the red “Delete” button  
+19) Wait for the success toast; verify by searching “Snowflake” in the destination list—no matching row should appear  
+
+20) Refresh the browser with Ctrl+R and quickly check all three sections (Connections, Sources, Destinations) to ensure none of the deleted objects re-appear; the cleanup is complete

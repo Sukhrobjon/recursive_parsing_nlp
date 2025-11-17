@@ -1,0 +1,85 @@
+1. Open VS Code. In the Explorer left-hand navbar expand the folder orders/external and click external.py.  
+2. Scroll to the top of external.py and import Dagster Pipes utilities:  
+   ```python
+   from dagster_pipes import open_dagster_pipes
+   ```  
+3. Locate the main entry-point function or the if __name__ == "__main__": block. Replace its contents with the following snippet (or append if other logic already exists):  
+   ```python
+   # external.py
+   import pandas as pd
+
+   def _run_logic():
+       # Example: build the DataFrame we want to return
+       orders_df = pd.read_csv("data/orders.csv")          # adapt path if different
+       row_count = len(orders_df)
+
+       # 👉 we will emit both the DataFrame and a materialization
+       return orders_df, row_count
+
+
+   if __name__ == "__main__":
+       # Dagster Pipes context automatically injected by the parent Dagster asset
+       with open_dagster_pipes() as context:
+           orders_df, row_count = _run_logic()
+
+           # Emit the DataFrame to the parent through the default output
+           context.emit_dataframe(orders_df)
+
+           # Report a materialization for observability
+           context.report_asset_materialization(
+               asset_key="orders_subprocess_asset",
+               description=f"Materialized orders_df containing {row_count} rows",
+               metadata={"row_count": row_count},
+           )
+
+           # Also surface an ordinary log – convenient while debugging
+           context.log.info(f"[external.py] orders_df row_count = {row_count}")
+   ```  
+   Note that context.report_asset_materialization automatically lets the Dagster run display this event and its metadata.
+
+4. Press Ctrl+S (⌘+S on macOS) to save external.py.  
+
+5. In VS Code, expand orders/assets and click validation.py (create the file if it doesn’t exist). Append a new asset check definition:  
+   ```python
+   # validation.py
+   import pandas as pd
+   from dagster import AssetCheckResult, asset_check
+
+   @asset_check(asset="orders_subprocess_asset", name="no_null_check")
+   def no_null_check(orders_df: pd.DataFrame) -> AssetCheckResult:
+       """Fail if any Item_ID is null."""
+       null_count = orders_df["Item_ID"].isna().sum()
+       passed = null_count == 0
+       return AssetCheckResult(
+           passed=passed,
+           metadata={"null_count": null_count},
+           description="Verify Item_ID column has zero nulls",
+       )
+   ```  
+6. Save validation.py.  
+
+7. Switch to the terminal window that is running Dagster (`dagster dev`). If Dagster is not running, run:  
+   ```bash
+   cd orders
+   dagster dev
+   ```  
+   Wait until the server prints “Dagit UI started”.
+
+8. Switch to your browser tab titled Dagit ‑ Orders.  
+9. Click the top-right button “Reload Definitions” so Dagster detects the changes to external.py and validation.py. The toast “Definitions reloaded” should appear.
+
+10. In the left sidebar click “Assets”. In the lineage graph find the node orders_subprocess_asset (it may be grouped; you can use the search box if needed).
+
+11. Click the orders_subprocess_asset node to open its right-hand panel, then click “Materialize…” (blue button).  
+12. In the “Materialize Assets” dialog leave defaults and click the “Materialize” button. The Run view opens.
+
+13. Wait for the run to complete (green “Succeeded” dot). Verify in the log stream that you see:  
+   • a log line “[external.py] orders_df row_count = …”  
+   • an event “Materialization for orders_subprocess_asset” that lists metadata row_count.
+
+14. In the top navigation bar click “Asset Checks”.  
+15. Use the search box at the top right of the table and type “orders_subprocess_asset”. The table should now display one row: no_null_check.  
+
+16. Confirm the “Status” column shows a green checkmark with text “Succeeded” and the metadata column shows null_count = 0, proving the check passed.
+
+17. If you wish to inspect details, click the row no_null_check and observe the check result page that opens on the right.

@@ -1,0 +1,20 @@
+1. Click any single cell inside your source data range (for example, click cell A2 on sheet “SalesData” that contains a transaction Date).  
+2. Press Ctrl + T to convert the raw data into an official Excel Table; in the “Create Table” dialog leave “My table has headers” checked, then click OK. (Note that converting to a Table lets the PivotTable auto-expand when new rows are added later.)  
+3. Navigate to the Ribbon tab “Insert”, then click the “PivotTable” button located in the “Tables” group.  
+4. In the “Create PivotTable” dialog that appears:  
+   a. Verify that the Table/Range box shows something like “SalesData[#All]”.  
+   b. Select the radio button “New Worksheet”.  
+   c. Click OK. Excel switches to a new worksheet named “SheetX” (the exact number may vary) and displays an empty PivotTable frame plus the “PivotTable Fields” task pane on the right.  
+5. Drag the field “Date” from the field list into the quadrant labeled “Rows”.  
+6. Drag the field “Revenue” into the quadrant labeled “Values”. By default Excel displays “Sum of Revenue”; if you instead see “Count of Revenue”, click the small drop-down in the “Values” area, choose “Value Field Settings…”, select “Sum”, then click OK.  
+7. Right-click any date entry in the Row Labels area of the PivotTable, choose “Group…”, check “Months” (leave “Years” checked as well if available for multi-year data), then click OK. Excel collapses the raw dates into Month buckets such as “Jan”, “Feb”, etc.  
+8. Double-click the cell that currently reads “Sum of Revenue” in the top-left corner of the PivotTable, type “Total Revenue”, then press Enter to rename the value column header.  
+9. Verify that each month now shows a single numeric total; quickly sanity-check by comparing one month’s subtotal against the original data to confirm accuracy.  
+10. Click any cell inside the PivotTable (for example, cell B6 under “Total Revenue”).  
+11. Navigate to Ribbon tab “Insert”, then in the “Charts” group click “Column or Bar Chart” → select the first option under 2-D Column (“Clustered Column”). Excel inserts a bar chart (vertical bars) on the same worksheet.  
+12. Drag the newly created chart so that its upper-left corner sits a few rows below the PivotTable (this keeps the table visible for future refreshes).  
+13. Click once on the Chart Title placeholder, type “Monthly Total Revenue” and press Enter.  
+14. Click once on the legend and press Delete to remove it (the data series is self-explanatory).  
+15. Right-click any bar, choose “Format Data Series…”, and under “Series Options” ensure “Gap Width” is around 150 % (optional—this makes bars slightly wider and easier to read).  
+16. Press Ctrl + S to save the workbook, ensuring the PivotTable and chart are preserved.  
+17. (Verification) Return to sheet “SalesData”, append a new test row with a recent date and a known revenue amount, then go back to the PivotTable sheet, right-click anywhere inside the PivotTable, choose “Refresh”, and confirm both the PivotTable numbers and the bar chart automatically update to include the new month if applicable.

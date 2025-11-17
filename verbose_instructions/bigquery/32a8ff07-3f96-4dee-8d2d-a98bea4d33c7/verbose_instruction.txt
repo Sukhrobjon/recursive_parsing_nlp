@@ -1,0 +1,12 @@
+1) Navigate to https://console.cloud.google.com/bigquery in your browser and make sure you are logged into the correct GCP project (look for the blue project selector bar at the top-left).  
+2) Click the clock-shaped “Query history” icon in the left sidebar, just under the Explorer panel—this opens the history view.  
+3) Click the “Project history” tab (next to “User history”) so we see every job that ran in this project.  
+4) Confirm the list is sorted by “Start time” in descending order (newest first). If it is not, click the “Start time” column header once until the latest job appears at the very top.  
+5) Click the very first row in the list; that row represents the most recent job. A right-side drawer titled “Job details” opens.  
+6) In the drawer, locate the grey code block under the “SQL” heading. Click the blue link “Open query in editor” that appears directly above that block—this automatically drops the SQL into a new query tab in the main editor panel.  
+7) Verify which tables the query touches: in the still-open Query Editor, hover over each dataset.table name and click the pop-up link “Go to table” once. A new tab with the schema opens—use this quick check to be sure we are referencing the correct sources. Close the schema tab(s) when done.  
+8) Click the blue “RUN” button (triangle icon) in the top bar of the Query Editor to re-execute the SQL. Wait until the green check mark and “Query complete” toast appear.  
+9) Look below the editor: the “Query results” pane now shows fresh data. Click the “SAVE RESULTS” button on the far right side of this pane.  
+10) In the drop-down menu that appears, choose “CSV (local file)”. A file download prompt begins; Chrome will automatically place the file in your default Downloads folder (~/Downloads).  
+11) Open your system’s file manager, go to ~/Downloads, and rename the newly downloaded file (likely named something like query_results.csv) to exactly result.csv so it matches the required filename.  
+12) You can now close the BigQuery browser tab or continue working; the query has been re-run and the results are safely saved in ~/Downloads/result.csv.

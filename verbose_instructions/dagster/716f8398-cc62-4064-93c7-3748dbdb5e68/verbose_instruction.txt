@@ -1,0 +1,106 @@
+1. Open VS Code. In the Explorer left-hand navbar, right-click the top-level project folder (where your Dagster `workspace.yaml` lives) and choose “New Folder”. Type `io_managers` and press Enter.
+
+2. Right-click the new `io_managers` folder → “New File”. Name the file `parquet_io_manager.py`.
+
+3. Write the custom I/O manager code. Paste the following block into `parquet_io_manager.py`, then press Ctrl+S to save:
+
+```python
+# io_managers/parquet_io_manager.py
+import os
+from typing import Union
+
+import pandas as pd
+from dagster import IOManager, InputContext, OutputContext, UPathIOManager
+
+class ParquetIOManager(IOManager):  # inheriting bare IOManager keeps it simple
+    def __init__(self, base_path: Union[str, os.PathLike]):
+        self._base_path = base_path
+        os.makedirs(self._base_path, exist_ok=True)
+
+    # Called when an upstream asset emits its value
+    def handle_output(self, context: OutputContext, obj: pd.DataFrame):
+        asset_id = "__".join(context.asset_key.path)        # e.g. my_table → my_table
+        file_path = os.path.join(self._base_path, f"{asset_id}.pq")
+        context.log.info(f"Writing DataFrame to {file_path}")
+        obj.to_parquet(file_path, index=False)
+
+    # Called when a downstream asset/operation needs the value
+    def load_input(self, context: InputContext) -> pd.DataFrame:
+        upstream_asset_id = "__".join(context.upstream_output.asset_key.path)
+        file_path = os.path.join(self._base_path, f"{upstream_asset_id}.pq")
+        context.log.info(f"Loading DataFrame from {file_path}")
+        return pd.read_parquet(file_path)
+
+    # Optional but helpful for Dagster UI
+    def get_description(self) -> str:
+        return f"Stores Pandas DataFrames as parquet files in {self._base_path}"
+```
+
+   Note that the manager creates one file per asset, using a double-underscore concatenation so nested asset keys (`["bronze","customers"]`) become `bronze__customers.pq`.
+
+4. In the Explorer, open the package root `my_project/__init__.py` (replace `my_project` with your project’s actual module name).
+
+5. Scroll to the bottom (or your existing `Definitions` block). Add the import and resource definition. Insert the lines:
+
+```python
+# my_project/__init__.py
+from dagster import Definitions
+from io_managers.parquet_io_manager import ParquetIOManager
+from .assets import *           # assuming assets live in my_project/assets/__init__.py
+
+parquet_io_manager = ParquetIOManager(base_path="storage/parquet")  # relative to project root
+
+defs = Definitions(
+    assets=all_assets,          # rename if you use a different variable
+    resources={
+        "parquet": parquet_io_manager,   # <-- we expose it to Dagster with this key
+    },
+)
+```
+
+   • If you already have a `defs = Definitions(...)` block, simply merge `"parquet": parquet_io_manager` into its `resources` dictionary.  
+   • The `base_path` folder (`storage/parquet`) will be created automatically on first run.
+
+6. Press Ctrl+S to save `__init__.py`. Verify there are no red squiggles under imports.
+
+7. Open a Terminal inside VS Code (Ctrl+`), and run the Dagster web server:
+
+```bash
+dagster dev
+```
+
+   Wait until the terminal prints “Dagit UI running at http://127.0.0.1:3000”.
+
+8. Switch to your web browser. Navigate to `http://127.0.0.1:3000`.
+
+9. In Dagit’s left sidebar, click “Resources”. A list of available resources appears.
+
+10. Click the resource named “parquet”. The right-hand panel changes to the resource detail page. Here you can:
+
+    • See the description “Stores Pandas DataFrames as parquet files in storage/parquet”.  
+    • Expand the “Configuration” accordion to verify that `base_path` shows as `storage/parquet` (Dagster auto-renders the __init__ arguments).
+
+11. To test, click “Assets” in the left sidebar, then the green “Materialize all” button (or select a single asset and click “Materialize”). When the run completes, we should find `.pq` files under `storage/parquet`.  
+
+12. Switch back to the Terminal. Type:
+
+```bash
+ls storage/parquet
+```
+
+    Confirm that each asset has produced a file like `my_asset.pq`.
+
+13. (Optional) Run a quick parquet read to be absolutely sure. In the same terminal, start a Python REPL:
+
+```bash
+python - <<'PY'
+import pandas as pd, glob
+print("Files:", glob.glob("storage/parquet/*.pq"))
+df = pd.read_parquet(glob.glob("storage/parquet/*.pq")[0])
+print("Loaded rows:", len(df))
+PY
+```
+
+    If rows print without error, the ParquetIOManager is functioning correctly.
+
+Done! Your assets now persist and reload via parquet, and the “parquet” resource is visible in Dagster UI for further inspection.

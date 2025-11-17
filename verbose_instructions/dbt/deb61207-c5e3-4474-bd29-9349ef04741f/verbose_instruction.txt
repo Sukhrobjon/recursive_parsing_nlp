@@ -1,0 +1,65 @@
+1) Open VSCode and click the Explorer icon (two-file icon) in the left sidebar so we can browse project files.  
+2) Navigate to the file tree and double-click dbt_project.yml to open it in the main editor tab.  
+3) Locate the existing line that controls default model materialization, usually inside the `models:` block:
+
+```yaml
+models:
+  +materialized: view        # existing line
+```
+
+4) Highlight `view` and type `table` so the line now reads:
+
+```yaml
+models:
+  +materialized: table
+```
+
+5) Press Ctrl + S (⌘ + S on macOS) to save dbt_project.yml.  
+6) Still in Explorer, expand the models folder, then the test sub-folder, and double-click models/test/my_first_dbt_model.sql.  
+7) In the SQL file, find the config line at the very top:
+
+```sql
+{{ config(materialized='view') }}
+```
+
+8) Replace `view` with `table` so the snippet becomes:
+
+```sql
+{{ config(materialized='table') }}
+```
+
+9) Press Ctrl + S to save my_first_dbt_model.sql.  
+10) In the same test folder, double-click my_second_dbt_model.sql (the second example model).  
+11) Change its materialization line exactly the same way:
+
+```sql
+{{ config(materialized='table') }}
+```
+
+12) Save the second file with Ctrl + S.  
+13) Switch to the terminal (click the integrated Terminal panel at the bottom of VSCode or press Ctrl + `).  
+14) Ensure you are at the project root by typing:
+
+```bash
+pwd
+```
+
+and verifying the path ends with your dbt project folder; if not, run `cd <project_folder>`.  
+15) Execute the models with:
+
+```bash
+dbt run
+```
+
+16) Watch the terminal output; confirm you see messages similar to:
+
+```
+17:18:22 | 2 of 2 START table model my_project.models.my_first_dbt_model............. [RUN]
+17:18:24 | 2 of 2 OK created table model my_project.models.my_first_dbt_model....... [SUCCESS 1 in 2.42s]
+17:18:24 | 2 of 2 START table model my_project.models.my_second_dbt_model............ [RUN]
+17:18:27 | 2 of 2 OK created table model my_project.models.my_second_dbt_model...... [SUCCESS 1 in 2.31s]
+17:18:27 | Finished running 2 table models in 6.84s.
+```
+
+17) Verify every line shows `table model` (not `view model`) to confirm the materialization change took effect.  
+18) Optionally, connect to your warehouse and run `SELECT * FROM my_first_dbt_model LIMIT 5;` to see data, proving the tables exist.

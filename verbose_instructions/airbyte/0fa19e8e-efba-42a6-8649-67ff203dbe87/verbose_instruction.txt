@@ -1,0 +1,78 @@
+1) Wait until the blue “Syncing…” ribbon in airbyte_ui changes to green “Succeeded” in the Connection ‑> History panel.  
+   Note that we must append the rows only after the replication job is done so that the new rows will be absent from Snowflake and therefore appear in the diff result.
+
+2) Switch to the terminal window.
+
+3) Type the psql command below, replacing <HOST> <USER> <DB> with the values shown in the Airbyte Postgres source configuration (they are normally host.docker.internal, airbyte, and postgres):
+```bash
+PGPASSWORD="$POSTGRES_PASSWORD" psql -h <HOST> -U <USER> -d <DB>
+```
+   • We pass the password through the PGPASSWORD env variable so it is not echoed.
+
+4) Write the SQL statement to open a transaction:
+```sql
+BEGIN;
+```
+
+5) Press Enter, then open the already-opened values.txt file in the editor and copy the two comma-separated lines (for example it shows  
+   201,'Delta',120.50,'2024-05-01'  
+   202,'Echo',  89.99,'2024-05-02').
+
+6) Type the INSERT statement targeting the replicated table (assume it is public.orders with columns id,name,amount,order_date):
+```sql
+INSERT INTO public.orders (id, name, amount, order_date) VALUES
+  (201, 'Delta', 120.50, '2024-05-01'),
+  (202, 'Echo',  89.99, '2024-05-02');
+```
+
+7) Execute the statement, then commit:
+```sql
+COMMIT;
+```
+
+8) Verify the two new rows exist:
+```sql
+SELECT * FROM public.orders
+ORDER BY id DESC
+LIMIT 2;
+```
+   • You should see ids 202 and 201 returned.
+
+9) Type `\q` to quit psql.
+
+10) Stay in the terminal and install the diff tool if it is not present:
+```bash
+pip install data-diff
+```
+
+11) Export both connection strings as shell variables so the command line is shorter (replace the bracketed placeholders with the values you used in Airbyte):
+```bash
+export PG_CONN="postgresql://<USER>:$POSTGRES_PASSWORD@<HOST>:5432/<DB>"
+export SNOW_CONN="snowflake://<SNOWFLAKE_USER>:$SNOWFLAKE_PASSWORD@<ACCOUNT>/<DATABASE>/<SCHEMA>?warehouse=<WAREHOUSE>&role=<ROLE>"
+```
+   • The Snowflake ACCOUNT/DATABASE/SCHEMA/WAREHOUSE/ROLE can be copied from the Snowflake destination settings panel in Airbyte.
+
+12) Run the diff comparison for the replicated table, asking for CSV output:
+```bash
+data-diff "$SNOW_CONN","PUBLIC"."ORDERS" \
+          "$PG_CONN",public.orders \
+          --key id \
+          --output csv \
+          > ~/Desktop/diff_test.csv
+```
+   • We set --key id because id is the primary key used by Airbyte’s CDC logic.  
+   • The command returns nothing on stdout because we redirected the CSV file to the Desktop.
+
+13) Confirm the file exists and has two lines:
+```bash
+wc -l ~/Desktop/diff_test.csv
+```
+   You should see `2 diff_test.csv`, indicating the two missing rows.
+
+14) Open the CSV quickly to visually inspect:
+```bash
+head ~/Desktop/diff_test.csv
+```
+   • Each line contains the column values plus a “+” flag, meaning they are present in Postgres but not yet in Snowflake—exactly what we expect.
+
+15) Return to the Airbyte UI, click “Sync now” if you want Snowflake to ingest the new rows, otherwise you are finished.

@@ -1,0 +1,23 @@
+1. Click the small plus icon labeled “Append sheet” located just to the left of the Sheet1 tab; Excel creates a new worksheet named “Sheet2”.  
+2. Confirm the tab text now reads “Sheet2” (this verifies the sheet was added).  
+3. Click the “Sheet1” tab to return to the original data sheet.  
+4. Drag across the column headers A through G so the entire data range A:G is highlighted.  
+5. Click the top-menu path Insert ➜ PivotTable…; the “Create PivotTable” dialog opens with the selected range already filled in.  
+6. Leave “Select a table or range” chosen and click the OK button; the PivotTable Field List appears on the right side.  
+7. Drag the field named Product from the upper “Available Fields” list down into the “Rows” quadrant.  
+8. Drag the field named Revenue ($) down into the “Values” quadrant; Excel should automatically change the value field setting to “Sum of Revenue ($)”.  
+9. Click inside the PivotTable so the PivotTable Analyze tab is active, then click PivotTable Analyze ➜ PivotTable ➜ Move PivotTable.  
+10. In the “Move PivotTable” dialog, choose “Existing Worksheet”.  
+11. Click the location selector button (small grid icon), then click cell A1 on Sheet2 (you will automatically switch to Sheet2).  
+12. Click the same grid icon again to commit the reference so the location box now reads Sheet2!$A$1, and then press OK; the first PivotTable appears beginning in A1 on Sheet2.  
+13. Verify that Column A lists each distinct Product and Column B shows the corresponding Sum of Revenue ($).  
+14. Switch back to Sheet1 by clicking its tab.  
+15. Highlight columns A through G again to re-select the full data area.  
+16. Click Insert ➜ PivotTable… a second time, then press OK in the dialog (range is already correct).  
+17. Drag Sales Channel from “Available Fields” into the “Rows” quadrant.  
+18. Drag Revenue ($) into the “Values” quadrant (it should again read Sum of Revenue ($)).  
+19. Click PivotTable Analyze ➜ PivotTable ➜ Move PivotTable.  
+20. Choose “Existing Worksheet”, click the selector button, and this time click cell D1 on Sheet2.  
+21. Click the selector button again so the reference shows Sheet2!$D$1, then press OK; the second PivotTable is now positioned starting in D1 on Sheet2.  
+22. Confirm that Column D lists each distinct Sales Channel and Column E displays the corresponding Sum of Revenue ($).  
+23. Press Ctrl+S to save the workbook, ensuring both PivotTables are stored.

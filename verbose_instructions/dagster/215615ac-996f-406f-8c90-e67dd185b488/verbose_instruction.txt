@@ -1,0 +1,121 @@
+1. Open Visual Studio Code from the left dock so we can edit files.
+
+2. Click the file explorer icon, then double-click README.md to review the “Migration requirements” section for any special parameters (e.g., schedule interval, retries, tags). Keep this tab open—we will reference it shortly.
+
+3. Locate your Airflow DAG file (for example dags/daily_etl.py) in the explorer and skim it; confirm the DAG id, schedule, task names, and any default_args we need to keep.  
+   Note that the example below assumes:
+      • dag_id = "daily_etl"  
+      • schedule_interval = "@daily"  
+      • tasks = extract ➔ transform ➔ load  
+      • owner = "data_eng"  
+   Replace these with your real values if they differ.
+
+4. Right-click the top-level project folder in the explorer, choose “New File…”, and type dagster_migration.py. Press Enter to create the Dagster counterpart.
+
+5. Type the following Dagster code into dagster_migration.py, mirroring the Airflow logic but meeting the README.md requirements (adjust the Python inside each op if your Airflow tasks differ):
+
+```python
+from dagster import op, job, ScheduleDefinition, get_dagster_logger, Definitions
+
+logger = get_dagster_logger()
+
+@op(tags={"owner": "data_eng"})
+def extract():
+    # original Airflow PythonOperator logic goes here
+    logger.info("extract step complete")
+
+@op(tags={"owner": "data_eng"})
+def transform(context):
+    # your transform code
+    logger.info("transform step complete")
+
+@op(tags={"owner": "data_eng"})
+def load(context):
+    # your load code
+    logger.info("load step complete")
+
+@job(tags={"dag_id": "daily_etl"})
+def daily_etl_job():
+    load(transform(extract()))
+
+daily_schedule = ScheduleDefinition(
+    job=daily_etl_job,
+    cron_schedule="@daily",
+    name="daily_etl_schedule",
+    execution_timezone="UTC",
+)
+
+defs = Definitions(
+    jobs=[daily_etl_job],
+    schedules=[daily_schedule],
+)
+```
+
+6. Press Ctrl+S to save dagster_migration.py.
+
+7. Switch to the integrated TERMINAL in VS Code by clicking “Terminal › New Terminal”.
+
+8. Execute the installation command to guarantee Dagster is available:
+
+```bash
+pip install dagster dagit --quiet
+```
+
+9. Still in the terminal, launch Dagit directly from the file:
+
+```bash
+dagster dev -f dagster_migration.py
+```
+
+10. Wait until you see “Dagster UI running at http://127.0.0.1:3000” in the console—this confirms the Dagster webserver is up.
+
+11. Click the Chromium browser icon in the left dock to open the Dagit UI. It should automatically load at http://127.0.0.1:3000; if not, manually enter the URL.
+
+12. In Dagit’s sidebar, expand “Jobs” and click daily_etl_job. We can see the visual graph extract → transform → load that matches our Airflow DAG.
+
+13. Click the “Schedules” tab underneath the job name; verify there is a row labelled daily_etl_schedule with a toggle switch currently OFF.
+
+14. Toggle the daily_etl_schedule switch to ON. A green toast “Schedule started successfully” should appear—this activates automatic daily runs.
+
+15. Verify the schedule by clicking the clock icon (Schedule Details) on the right; confirm “Running: Yes”, “Cron: @daily”, and the next tick timestamp.
+
+16. For an immediate test, click “Launchpad” (blue rocket icon in the top-right) while still on the job page.
+
+17. In Launchpad, leave the default run configuration blank (unless README.md specified a config section; if so, paste it into the YAML editor).  
+
+18. Click the blue “Launch Run” button at the bottom-right of the Launchpad modal.
+
+19. Dagit redirects to the Run page. Observe the progress under the “Steps” list: extract should start, then transform, then load.
+
+20. Wait until all three steps show a green checkmark. The “Status” badge at the top turns to SUCCESS—this proves the job works.
+
+21. Click each step (extract, transform, load) in the left sidebar; the right pane shows the log stream. Confirm any print/log lines you had in your Airflow tasks appear here, indicating the code executed.
+
+22. Return to the “Overview” tab of this run and copy the Run ID—you may need it for traceability later.
+
+23. Click “Back” in your browser to return to the daily_etl_job page, then press F5 to refresh; under “Runs”, you should now see one successful entry.
+
+24. Still on the job page, click the “Schedules” tab again and verify the schedule remains ON after the manual run (it should).
+
+25. Switch back to the VS Code TERMINAL window. Press Ctrl+C to stop Dagster if you need to end the dev session later; otherwise leave it running to allow the daily schedule to trigger.
+
+26. (Optional) Test the actual scheduler: in the terminal open a new tab (Ctrl+Shift+`) and execute:
+
+```bash
+dagster schedule debug -f dagster_migration.py
+```
+
+   Confirm you see “Tick scheduled for daily_etl_schedule” without errors.
+
+27. Return to README.md in VS Code. Place a checkmark comment or update any migration status pointer required by your team because the Dagster migration is complete and tested.
+
+28. Commit your new file:  
+   a. Click the Source Control icon,  
+   b. Type “feat: migrate daily_etl DAG to Dagster” in the message box,  
+   c. Click the checkmark “Commit” button.
+
+29. Push to remote if applicable by clicking “•••” then “Push”.
+
+30. Notify your team in Slack/Teams that the Dagster migration is live: paste the Dagit URL and the confirmed successful Run ID so they can review.
+
+31. Congratulations—Airflow DAG successfully migrated to Dagster, the webserver is running from dagster_migration.py, the schedule is enabled, and a launchpad test run succeeded.

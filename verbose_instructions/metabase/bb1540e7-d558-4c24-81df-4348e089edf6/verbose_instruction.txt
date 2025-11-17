@@ -1,0 +1,32 @@
+1) Open your browser and navigate to console.cloud.google.com/bigquery to launch the BigQuery Web UI.  
+2) Verify that you are in the correct Google Cloud project (check the blue project-selector pill in the upper-left corner).  
+3) In the Explorer panel on the left, scroll to find the public dataset bigquery-public-data. Click the small gray ► triangle to its left to expand it.  
+4) Scroll inside that list, locate new_york_taxi_trips, and click its ► triangle so we can see the tables.  
+5) Click the table taxi_trips. The Schema tab opens in the main panel; skim the columns and note that payment_type is a categorical field – we will use this later for the bar chart.  
+6) In the Files pane at the top (next to “Scratch” queries), click query.sql so the saved SQL file opens in the editor.  
+7) Select everything inside query.sql (Ctrl/⌘+A) and replace it with the following aggregation query that is suited for a bar-chart visualization:  
+
+```sql
+-- Count trips by payment type (categorical dimension + numeric metric)
+SELECT
+  payment_type,
+  COUNT(*) AS trips
+FROM
+  `bigquery-public-data.new_york_taxi_trips.taxi_trips`
+GROUP BY
+  payment_type
+ORDER BY
+  trips DESC;
+```
+
+8) Click the blue ► Run button in the query toolbar. Wait until the green check mark and “Query complete” message appear.  
+9) Look at the lower panel where two tabs are now visible: Results and Chart. First, make sure the Results tab shows a small table with payment_type and trips.  
+10) Click the Chart tab (it has a tiny bar-chart icon). BigQuery automatically displays a visualization of the first column as the X-axis and the second column as the Y-axis.  
+11) On the right side of the Chart tab’s header bar, click the “Bar” icon (hover text: “Bar chart”) so the visualization type is explicitly set to Bar.  
+12) Confirm the mapping: Dimension = payment_type, Metric = trips. If BigQuery did not auto-select correctly, use the pull-down menus directly under “Chart configuration” (inside the right-hand pane) to adjust them.  
+13) Once the bar chart looks correct, click the ︙ (three-dot) menu in the upper-right corner of the chart canvas and choose “Download PNG”.  
+14) Your browser immediately downloads a file named something like chart.png (exact default name may vary).  
+15) Open your system’s file manager, go to the default Downloads folder, right-click the newly downloaded PNG, choose Rename, and type visualization.png. Press Enter to save the new name.  
+16) (Optional) Drag visualization.png to another folder if your project requires a different storage location.  
+
+That’s it—your SQL results are visualized as a bar chart, saved locally as visualization.png, ready to share or embed elsewhere!

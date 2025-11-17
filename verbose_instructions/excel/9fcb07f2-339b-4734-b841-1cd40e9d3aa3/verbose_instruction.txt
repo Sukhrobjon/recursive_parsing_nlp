@@ -1,0 +1,12 @@
+1. Click any single cell inside your source data to make Excel recognize the current range.  
+2. Press Ctrl + A so the entire block of data is highlighted; this guarantees the pivot table will include every row and column.  
+3. Click the Insert tab on the ribbon, then click the PivotTable icon in the Tables group; a dialog titled “Create PivotTable” appears.  
+4. Verify the Table/Range box now shows the full range (for example “Sheet1!$A$1:$D$500”). Do not change anything—Excel has already captured the right data.  
+5. Select the option “New Worksheet” under Choose where you want the PivotTable report to be placed. We will rename this new sheet later.  
+6. Click the OK button at the bottom of the dialog; Excel creates “PivotTable_Sheet1_1” (or similar) and displays the PivotTable Fields panel on the right-hand side.  
+7. Locate the field Promotion in the PivotTable Fields list, hold the left mouse button, and drag it straight into the Columns area; release the mouse when the cursor shows a small green “plus” icon. You should now see each promotion type appear as a column header in the blank pivot outline.  
+8. Locate the field Revenue in the same field list, drag it into the Values area, and drop it. Excel automatically labels it “Sum of Revenue,” meaning it is performing an aggregation rather than a count.  
+9. Glance at the Values section to confirm the aggregation type reads “Sum.” If it shows “Count” instead, click the drop-down beside “Count of Revenue,” choose “Value Field Settings…,” select “Sum,” and click OK.  
+10. Right-click the sheet tab named “PivotTable_Sheet1_1” at the bottom of the window; a context menu opens.  
+11. Click Rename from the context menu, type Sheet2, and press Enter to commit the new name.  
+12. Press Ctrl + S to save the workbook so the pivot table and sheet name persist. We can see the total revenue for each promotion type laid out as individual columns in Sheet2.

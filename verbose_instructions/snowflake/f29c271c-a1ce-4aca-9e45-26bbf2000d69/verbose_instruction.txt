@@ -1,0 +1,21 @@
+1. Click the “Data › Databases” icon in the blue left-hand navigation bar of Snowsight.  
+2. In the center pane, click the database named “USERS”, then open the Schema drop-down and choose “PUBLIC” so that “USERS.PUBLIC” shows at the top of the page.  
+3. Click the gray “Create” button in the upper-right corner of the data grid.  
+4. Hover over “Table”, then click the submenu item “From File” to open the “Load Data into Table” wizard.  
+5. Click the “Browse” tile in the wizard, navigate to your Desktop, select the file “users_information.json”, and press “Open”. The file name now appears under “Files”.  
+6. Scroll down to the text box labeled “Name” and type exactly:  
+   users_information  
+   (this will be the Snowflake table’s name).  
+7. Click the blue “Next” button at the bottom right of the dialog.  
+8. If you only see the file preview and no JSON parsing options, click the small “View options” link on the left side of the dialog to expand additional settings.  
+9. Toggle the switch labeled “Strip outer array” to TRUE (the switch turns blue). Note that without stripping the outer array Snowflake will treat the file as a single row and the load will fail.  
+10. Verify that the preview grid on the right now shows one column per JSON field (e.g., id, user_name, email, created_at).  
+11. Click the blue “Load” button. A progress bar appears, then a green notification “Load complete” tells us the data was staged and copied.  
+12. Switch to a new worksheet by clicking “+ › SQL Worksheet” on the top bar, and run the query below to confirm the table was created and populated:  
+```sql
+USE DATABASE USERS;
+USE SCHEMA PUBLIC;
+SELECT COUNT(*) AS row_cnt
+FROM users_information;
+```  
+13. Observe that the result shows the expected number of rows (for example, 2,000). If the count is correct, the table creation and data load are successful—we’re done!

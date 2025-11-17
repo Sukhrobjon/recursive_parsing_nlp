@@ -1,0 +1,108 @@
+1. Switch to VS Code. In the Explorer left-hand panel expand the folder “assets” and double-click  `__init__.py`.
+
+2. Scroll to the bottom of the file (right below the existing asset `top10_story_ids`).  Type the next asset that fetches the full story objects:
+```python
+# ── download the story objects themselves ──────────────────────────────────────
+import json
+import requests
+from dagster import AssetIn, asset, MetadataValue
+
+
+@asset(
+    name="top10_stories",
+    ins={"ids": AssetIn("top10_story_ids")},
+    group_name="hn_pipeline",
+)
+def top10_stories(ids):
+    """Download each story and persist to data/stories.json"""
+    stories = []
+    for story_id in ids:
+        r = requests.get(f"https://hacker-news.firebaseio.com/v0/item/{story_id}.json")
+        r.raise_for_status()
+        stories.append(r.json())
+    # write to disk so we can inspect the file later
+    with open("data/stories.json", "w") as f:
+        json.dump(stories, f, indent=2)
+
+    return stories
+```
+
+3. Still in the same `__init__.py`, append a 3rd asset that produces the top-5 most-frequent words (MFW) in the titles:
+
+```python
+# ── calculate top 5 most-frequent words in the titles ──────────────────────────
+from collections import Counter
+
+@asset(
+    name="top5_mfw",
+    ins={"stories": AssetIn("top10_stories")},
+    group_name="hn_pipeline",
+)
+def top5_mfw(stories):
+    """
+    Compute the top-5 most frequent words in story titles.
+    We ignore case, use a naive split(), and exclude stopwords listed in stopwords.txt.
+    """
+    # load stopwords once
+    with open("stopwords.txt") as f:
+        stop = {w.strip().lower() for w in f if w.strip()}
+
+    c = Counter()
+    for story in stories:
+        title = story.get("title", "")
+        words = title.lower().split()
+        c.update(w for w in words if w not in stop)
+
+    most_common = dict(c.most_common(5))
+
+    # persist for inspection
+    with open("data/mfw.json", "w") as f:
+        json.dump(most_common, f, indent=2)
+
+    # add a little Dagster metadata so we can preview it from the UI
+    return MetadataValue.json(most_common)
+```
+
+4. Press Ctrl+S to save `__init__.py`.
+
+5. Check that the project has the Requests library. In the VS Code Explorer click `requirements.txt` (or `pyproject.toml` if using Poetry).  If you do not see the word `requests`, add the following line and save:
+```
+requests>=2.31.0
+```
+   (We need it to call the Hacker News API.)
+
+6. Open a terminal pane (View > Terminal).  Install any new dependency:
+```
+pip install -r requirements.txt
+```
+
+7. Still in the terminal, run the Dagster web server if it isn’t already running:
+```
+dagster dev
+```
+   Wait until the log shows “Dagster UI running at http://localhost:3000”.
+
+8. Switch to your browser tab titled “Dagster”.  In the left navigation click the refresh-icon button “Reload definitions” (top-right).  Verify that the lineage graph now displays three assets connected linearly: `top10_story_ids → top10_stories → top5_mfw`.
+
+9. Click the “Materialize all” button (also top-right).  Accept the defaults and hit “Launch run”.
+
+10. Wait for the run to finish (green “Succeeded”).  Click each asset box to inspect log output; you should see messages like “wrote data/stories.json”.
+
+11. Open a new terminal tab (or Finder/Explorer) and inspect the generated files:
+
+   a. View the stories file:
+   ```
+   cat data/stories.json | jq '.[0] | {id, title}'
+   ```
+   b. View the top-5 MFW:
+   ```
+   cat data/mfw.json
+   ```
+   You should see a JSON dict such as:
+   ```
+   {"openai": 4, "dagster": 3, "launches": 2, "python": 2, "tutorial": 1}
+   ```
+
+12. Finally, go back to the Dagster UI, click the asset “top5_mfw”, and in the “Metadata” panel confirm the same word-count dictionary is displayed—this tells us the metadata round-trip succeeded.
+
+We now have a functioning three-asset pipeline that fetches top story IDs, downloads the full stories into data/stories.json, and writes the five most-frequent words (excluding stopwords) into data/mfw.json.

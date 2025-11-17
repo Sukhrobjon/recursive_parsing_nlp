@@ -1,0 +1,28 @@
+1. Open your browser and log in to Apache Superset with a user that has database write permissions.  
+2. Click “Data” in the top navigation bar.  
+3. Click “Upload a CSV” from the drop-down.  
+4. In the “Upload CSV to Database” modal, click the button labeled “Browse” (or “Choose File”).  
+5. In the file-picker dialog that appears, navigate to /home/user on your local computer, select tutorial_flights.csv, and click “Open”.  
+6. In the modal’s “Table Name” field, type  
+   ```
+   tutorial_flights
+   ```  
+7. In the “Database” drop-down, choose “MyDatabase”.  
+8. Scroll to the “Parse Dates” section, click the input, and type exactly  
+   ```
+   Travel Date
+   ```  
+   (This tells Superset to convert the “Travel Date” column to DATE type.)  
+9. Confirm that the “Delimiter” remains as “,” and that “Header Row” is checked (so the first line is treated as column names).  
+10. Click “Save” at the bottom-right of the modal. Superset shows a brief spinner; when it finishes, we should see the message “Successfully created table tutorial_flights in database MyDatabase”.  
+11. Click the blue link “tutorial_flights” in that success message to open the new dataset.  
+12. Verify the schema: in the left sidebar, make sure the “Travel Date” column shows type “DATE”.  
+13. Click the “SQL” tab in the upper-right of the dataset screen.  
+14. Type the following validation query:  
+    ```sql
+    SELECT "Travel Date", * 
+    FROM tutorial_flights
+    LIMIT 10;
+    ```  
+15. Press the green “Run” button. Confirm that the first column displays ordinary date values (YYYY-MM-DD).  
+16. If the dates look correct, click “Save Dataset” in the upper-right to persist metadata, then inform your leader the table is ready in MyDatabase.

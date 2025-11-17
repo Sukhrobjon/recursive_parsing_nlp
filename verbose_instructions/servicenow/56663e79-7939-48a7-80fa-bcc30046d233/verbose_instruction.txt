@@ -1,0 +1,24 @@
+1) Open your browser and navigate to https://console.cloud.google.com/bigquery so you land on the BigQuery console.  
+2) Locate the Explorer panel on the left, then click the triangle ▸ next to your project name (for example, my-gcp-project) so the datasets become visible.  
+3) Click the triangle ▸ next to the dataset that stores your ServiceNow export—assume it is named servicenow_raw—to reveal its tables.  
+4) Click the table servicenow_raw.task_list to display its Schema tab in the main panel; confirm you can see the columns short_description, assigned_to, risk, and state. (We will filter on these columns in the next step.)  
+5) Click the + Compose new query button at the top of the main panel to open a blank SQL editor tab.  
+6) Type (or paste) the following SQL exactly into the editor:  
+
+```sql
+SELECT
+  *
+FROM
+  `my-gcp-project.servicenow_raw.task_list`
+WHERE
+  short_description = 'Upgrade OWA-SD-01 to MS Windows Server 2016'
+  AND assigned_to      = 'David Loo'
+  AND risk             = 'High'
+  AND state            = 'Assess';
+```  
+
+Note that we are matching all four conditions with AND so only records that satisfy every requirement will be returned.  
+7) Click the blue ▶ RUN button in the toolbar of the query editor to execute the query.  
+8) Watch the Job information panel on the right until the green check appears; then look below the editor to see the Query results grid listing the filtered rows.  
+9) (Optional but handy) Click SAVE RESULTS in the upper-right of the Query results pane, choose CSV (local file), and download the file to your workstation if you need the list offline.  
+10) (Optional) If you will reuse this filter often, click the ellipsis ⁝ menu next to the query tab title and choose Save View; name it high_risk_upgrade_assess to store the filter as a permanent view inside servicenow_raw for quick access later.

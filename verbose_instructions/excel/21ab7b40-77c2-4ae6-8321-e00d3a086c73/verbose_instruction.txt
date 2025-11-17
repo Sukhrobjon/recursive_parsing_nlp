@@ -1,0 +1,47 @@
+1) Navigate to https://console.cloud.google.com/bigquery so you are on the BigQuery Web UI.  
+2) In the Explorer panel on the left, click the triangle next to project **my_project** to expand it.  
+3) Click the triangle next to dataset **sales_data** to reveal its tables.  
+4) Click table **daily_sales** once; the right-hand pane now shows the table’s “Schema” tab. We can see the important columns are  
+   • sales_date (DATE) – the chronological key  
+   • sales_amount (NUMERIC) – the value from which we will compute the rate  
+5) Click the blue **+ Compose new query** button (with the “SQL” icon) at the top of the work area. A new blank query editor opens.  
+6) Write the following SQL exactly in the editor:  
+
+```sql
+-- Calculate period-over-period rate and add a formatted column
+WITH ordered AS (
+  SELECT
+    sales_date,
+    sales_amount,
+    LAG(sales_amount) OVER(ORDER BY sales_date) AS prev_amount        -- previous period value
+  FROM `my_project.sales_data.daily_sales`
+)
+SELECT
+  sales_date,
+  sales_amount,
+  ROUND( (sales_amount - prev_amount) / prev_amount * 100 , 2) 
+    AS `Period Rate (%)`                                              -- new column
+FROM ordered
+WHERE prev_amount IS NOT NULL                                         -- drop the first row (no prior period)
+ORDER BY sales_date;
+```
+
+   Note that LAG() grabs the previous row, enabling us to compute the percentage change for each period.  
+7) Click the gray **▶ RUN** button (top-centre of the editor) to execute the query. Wait for the “Query results” grid to appear underneath.  
+8) Verify the last column header is exactly Period Rate (%) and the numbers show 2-decimal precision (e.g., 3.45).  
+9) Click the **SAVE RESULTS** button above the results grid, choose **Google Sheets**.  
+10) In the pop-up, leave the default sheet name (e.g., “daily_sales_YYYYMMDD”) and press **Save**.  
+11) When the snackbar says “Saved to Google Sheets”, click **OPEN** to switch to the newly created Sheet.  
+12) In Google Sheets, single-click column C header (it should be titled “Period Rate (%)”) so the whole column is highlighted.  
+13) Go to the top menu and choose Format → Number → Number. This forces numeric type (needed for conditional formatting).  
+14) Immediately open Format → Number → Custom number format, type `0.00` into the box, and press **Apply** so every rate shows two decimals.  
+15) With column C still highlighted, click Format → Conditional formatting. A side panel opens on the right.  
+16) Under “Format cells if”, open the drop-down and pick “Custom formula is”.  
+17) In the formula field enter  
+```
+= C1 = MAX($C:$C)
+```  
+   (Sheets will automatically adjust the row reference; the `$C:$C` locks the whole column.)  
+18) Click the text-color icon within the same panel, pick **Custom** and paste **#00ff00** (pure green).  
+19) Press **Done**. The highest Period Rate (%) cell in column C now appears in green text while all others remain default.  
+20) Your Sheet now contains the calculated period rates, formatted numerically, with the single highest rate visually highlighted. Every requirement is met and saved automatically in Google Sheets.

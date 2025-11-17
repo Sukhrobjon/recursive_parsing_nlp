@@ -1,0 +1,21 @@
+1. Navigate to the web browser tab that shows your analytics tool and click “Dataset” in the top navigation bar so the list of available datasets appears.  
+2. Locate the row whose Dataset name is flights and click the blue pencil-shaped Edit icon at the far right of that row.  
+3. In the “Edit Dataset – flights” modal that opens, click the METRICS tab in the left-hand vertical menu.  
+4. Click the grey “ADD ITEM” button in the upper-right corner of the Metrics panel; a new blank metric row appears.  
+5. Click inside the Metric Key cell of the new row and type SumCost.  
+6. Click inside the SQL Expression cell of that same row and paste the aggregation expression below (include the quotes exactly):  
+   ```sql
+   SUM("Cost")
+   ```  
+7. Press Enter once so the expression is stored, then leave the Metric Type drop-down as “No filter” (default) because this will be calculated at query time.  
+8. Next, click the CALCULATED COLUMN tab in the left-hand menu of the modal.  
+9. Click the grey “ADD ITEM” button in the Calculated Columns panel to create a new blank column entry.  
+10. Click the first cell (name) of that entry and type IntCost.  
+11. Click the SQL Expression cell of the same row and paste the casting expression below:  
+    ```sql
+    CAST("Cost" AS INTEGER)
+    ```  
+12. Verify that the “Is temporal” toggle remains off (it should) since IntCost is numeric and not a date.  
+13. Click the blue “Save” button at the bottom-right corner of the modal to persist both the SumCost metric and the IntCost calculated column. A green toast notification (“Saved”) should briefly appear in the lower-right confirming success.  
+14. Click the “←” Back arrow in the upper-left of the modal (or simply close the dialog) to return to the main Dataset list.  
+15. Confirm that the flights row now shows a Metrics count and a Columns count each incremented by one; this visually verifies that SumCost and IntCost have been registered correctly.

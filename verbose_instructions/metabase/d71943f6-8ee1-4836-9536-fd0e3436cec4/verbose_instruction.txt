@@ -1,0 +1,9 @@
+1) Navigate to Google Cloud Console and click BigQuery from the left-hand navigation menu so the BigQuery web UI loads.  
+2) Locate the Explorer panel on the left, hover over CONNECTIONS, and click the small grey triangle to expand the list.  
+3) Find the external connection named PostgresData in the list and click PostgresData once so its Details panel opens on the right.  
+4) Click the pencil-shaped Edit connection button that appears in the Details panel header.  
+5) Scroll down in the Edit Connection dialog until you reach the Advanced settings section.  
+6) Locate the JSON unfolding toggle switch; click the switch so it moves to the left and shows an inactive/grey state (OFF).  
+7) Click the blue Save button at the bottom of the dialog to apply the change.  
+8) Wait for the green confirmation banner that says “Connection updated” to appear; this verifies the setting was saved.  
+9) Re-click PostgresData in the Explorer panel, review the Details panel, and confirm the JSON unfolding field now reads Disabled, ensuring the configuration change succeeded.

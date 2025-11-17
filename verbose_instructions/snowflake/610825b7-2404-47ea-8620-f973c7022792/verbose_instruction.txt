@@ -1,0 +1,12 @@
+1) Locate the BigQuery console tab that is already open in your browser so the current worksheet stays in view.  
+2) Click the small downward-pointing arrow ( ▾ ) just to the right of the worksheet name in the gray bar above the query editor; this opens the worksheet’s drop-down menu.  
+3) Click “Revision history…” in that drop-down. A Revision History panel will slide in on the right side of the screen showing a vertical list of saved versions.  
+4) Read the list from top to bottom—BigQuery orders revisions chronologically, newest at the top.  
+   Note that “Version 1” is the most recent save, so the second item in the list is the previous save we need.  
+5) Click once on the second item (it will read something like “Version 2 – <timestamp>”) to highlight it; the SQL snapshot for that version appears in the preview pane below.  
+6) Verify the preview looks correct (we can scroll inside the preview to skim the SQL).  
+7) Click the blue button labeled “Restore this version” at the upper-right corner of the preview pane.  
+8) In the confirmation dialog that pops up, click “Restore” again. The Revision History panel will close automatically, and the query editor now shows the SQL text from Version 2.  
+9) Press Ctrl+S (or click the floppy-disk icon in the toolbar) to save the worksheet so Version 2 becomes the current head revision.  
+10) Check the status bar at the bottom of the editor—if it flashes “Saved” we know the rollback was successful.  
+11) Leave the browser tab open; do NOT click the ‘X’ on the tab or close the window. The worksheet is now rolled back to the second version and remains available for further edits or execution.

@@ -1,0 +1,31 @@
+1. Navigate to https://console.cloud.google.com/bigquery to open the BigQuery Web UI.  
+2. Look at the left-hand Resources panel and locate your dataset (for this walkthrough we’ll use `my_project.retail`).  
+3. Click the small grey triangle ▶️ to the left of `my_project.retail` so the list of tables expands.  
+4. Click the table `sales_transactions` to show its schema in the Details pane; we confirm the columns we need are present:  
+   • Date (DATE)  
+   • Revenue ($) (FLOAT64)  
+   • Sales Channel (STRING)  
+   Note that we’ll use these field names exactly in the query.  
+5. Click the + Compose Query button (white sheet with a “+” icon) at the top-right of the BigQuery window; a new blank query tab opens.  
+6. Type or paste the following SQL into the editor:  
+```sql
+-- Filter for E-mail Coupon rows and keep only Date & Revenue
+SELECT
+  `Date`,
+  `Revenue ($)`
+FROM
+  `my_project.retail.sales_transactions`
+WHERE
+  `Sales Channel` = 'E-mail Coupon'
+ORDER BY
+  `Date`;
+```  
+7. Click the blue ► RUN button in the toolbar to execute the query.  
+8. Wait a moment—“Query Results” appears at the bottom showing only the Date and Revenue ($) columns for “E-mail Coupon” rows; quickly scan a few rows to verify.  
+9. Click the SAVE RESULTS button (to the right of “Query Results”).  
+10. Choose “Save to Google Sheets” from the dropdown; a dialog pops up asking for the destination Spreadsheet.  
+11. Click Create new spreadsheet, then type “Sales_Analysis” (or any name you prefer) and press OK. BigQuery now opens the newly created Google Sheet in a new browser tab.  
+12. In the Google Sheet, click the + icon at the bottom to add another worksheet, then double-click the new tab’s name, type “Sheet2”, and press Enter.  
+13. Go back to the first sheet (named “Results” by default), press Ctrl + A to highlight all returned data, then Ctrl + C to copy.  
+14. Click the “Sheet2” tab you just created, cell A1 becomes active; press Ctrl + V to paste the data.  
+15. (Optional) Rename columns in “Sheet2” if desired, or apply any formatting; your filtered Date and Revenue ($) records are now safely stored in “Sheet2”.

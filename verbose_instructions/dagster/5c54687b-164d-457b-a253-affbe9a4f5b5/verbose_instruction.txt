@@ -1,0 +1,79 @@
+1) Switch to the VS Code window that has the “Explorer” side bar open  
+2) Click the folder name “apod_proj” in the Explorer to expand its contents  
+3) Click the file “assets.py” so it opens in the main editor pane  
+4) Select any placeholder code inside the file (if present) and press Delete to clear it  
+5) Type the following complete asset definition exactly as shown:
+
+```python
+import os
+import urllib.request
+import json
+
+# Ensure output directory exists
+dir_name = "data"
+if not os.path.exists(dir_name):
+    os.makedirs(dir_name)
+
+from dagster import AssetExecutionContext, DailyPartitionsDefinition, asset
+
+@asset(partitions_def=DailyPartitionsDefinition(start_date="2024-04-01"))
+def apod_asset(context: AssetExecutionContext) -> None:
+    """
+    Partitioned Dagster asset that fetches NASA's Astronomy Picture of the Day
+    for each partition date and saves the HD image URL to a text file.
+    """
+    partition_date_str = context.partition_key  # e.g. '2024-04-10'
+
+    api_url = (
+        f"https://api.nasa.gov/planetary/apod"
+        f"?api_key=DEMO_KEY&date={partition_date_str}"
+    )
+    json_target = f"data/{partition_date_str}.json"
+
+    # Download the JSON metadata for the date
+    urllib.request.urlretrieve(api_url, json_target)
+
+    # Load JSON to extract the hdurl field
+    with open(json_target, "r") as f:
+        data = json.load(f)
+
+    # Write the HD image URL to a dated txt file
+    txt_target = f"data/apod_url_{partition_date_str}.txt"
+    with open(txt_target, "w") as out_f:
+        out_f.write(data["hdurl"])
+```
+
+6) Press Ctrl+S to save the file and verify the blue dot on the editor tab disappears  
+7) Switch to the Chromium browser window (Alt+Tab if needed)  
+8) Click the tab that displays the Dagster UI (URL usually ends with “/instance” or “/workspace”)  
+9) Click the “Reload all” button (circular arrows icon) in the upper-right control bar to make Dagster pick up the new code  
+10) Wait until the green toast notification “Workspace reloaded” appears in the bottom-left corner  
+11) Click the project entry “apod_proj” in the workspace table so the asset graph loads  
+12) If no assets are listed, click the expandable row labeled “default” to reveal them  
+13) Click the node named “apod_asset” to open its dedicated asset page  
+14) Click the purple “Materialize…” button in the top-right corner of that page  
+15) In the pop-up, locate the “Partition selection” text input and replace its contents with:
+
+```
+[2024-04-10...2024-04-13]
+```
+
+16) Verify the date range preview below the input shows four partitions: 2024-04-10, 2024-04-11, 2024-04-12, 2024-04-13  
+17) Click the “Launch backfill” button in the bottom-right of the dialog  
+18) Observe the toast notification confirming the backfill launch and note the backfill ID for reference  
+19) Click “Overview” in the top menu bar to navigate to the Overview page  
+20) Click the “Backfills” tab/button just beneath the top bar to open the backfill table  
+21) Watch the first row (your newest backfill) until the “Backfill status” column changes from “In progress” to “Completed”  
+22) If the status changes to “Failed” or any individual run shows a red icon, click the failing run ID, read the logs, fix issues, then return to step 9 and relaunch the backfill  
+23) After completion, switch to your terminal (Ctrl+` in VS Code) and run:
+
+```bash
+ls data/apod_url_2024-04-1*
+```
+
+24) Confirm that four files named  
+   • apod_url_2024-04-10.txt  
+   • apod_url_2024-04-11.txt  
+   • apod_url_2024-04-12.txt  
+   • apod_url_2024-04-13.txt  
+   are present, each containing a full HTTPS image URL – this verifies successful materialization

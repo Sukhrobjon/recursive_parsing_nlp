@@ -1,0 +1,12 @@
+1. Open your web browser and go to the Metabase login page (e.g., https://your-metabase-domain.com).  
+2. Click the link labeled “Forgot password?” located beneath the blue Log in button.  
+3. Type the email address associated with your Metabase account into the “Email” input box.  
+4. Click the purple “Send reset link” button. Metabase displays “Email sent!” and sends a reset email to your inbox.  
+5. Switch to your email client (Gmail, Outlook, etc.) and open the new message with subject “Reset your Metabase password.”  
+6. Click the “Reset your password” button inside the email; a new browser tab opens with a secure reset form.  
+7. Type metabase123 into the “New password” field.  
+8. Re-type metabase123 into the “Confirm new password” field to ensure both entries match.  
+9. Click the teal “Reset password” button. A green success banner appears stating “Password reset successfully.”  
+10. Click “Return to login,” then enter your email and the new password metabase123 and press Enter.  
+11. Confirm you are redirected to the Metabase home page (Questions / Dashboards list). This verifies the reset succeeded.  
+12. Log out (click your avatar → Log out) and log back in once more with metabase123 to double-check everything is working properly.

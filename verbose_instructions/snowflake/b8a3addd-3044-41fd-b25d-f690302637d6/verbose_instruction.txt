@@ -1,0 +1,18 @@
+1. Click the “Worksheets” icon (sheet of paper) in the left-hand navigation bar so the Worksheets pane becomes active.  
+2. Click the blue “+ Folder” button located at the top-left of the Worksheets pane.  
+3. Type Online shopping in the Folder Name field that appears.  
+4. Press Enter or click the blue “Create” button; we can now see an empty folder named Online shopping under “Private”.  
+5. Hover over the new Online shopping folder name in the tree and click the three-dot (···) menu that appears to confirm we can see “New Worksheet” in the menu—this verifies the folder was created successfully.  
+6. Click the Online shopping folder once to highlight it (this makes sure new worksheets are placed inside this folder).  
+7. Click the blue “+ Worksheet” button at the top-left of the Worksheets pane.  
+8. Type Books products in the Worksheet Name field of the popup.  
+9. Make sure the Location dropdown shows “/Online shopping”; then click the blue “Create” button. A new blank worksheet tab titled Books products opens, and in the left pane we now see the worksheet listed under Online shopping.  
+10. Click back on the Online shopping folder in the left pane to keep it selected.  
+11. Click the blue “+ Worksheet” button again.  
+12. Type Electronics products in the Worksheet Name field.  
+13. Verify the Location still shows “/Online shopping” and click “Create”. The second worksheet tab Electronics products appears, and it is also listed in the folder.  
+14. Look at the folder tree: we should see  
+   • Online shopping  
+     • Books products  
+     • Electronics products  
+   confirming both worksheets reside inside the new folder.

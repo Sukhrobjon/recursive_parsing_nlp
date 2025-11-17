@@ -1,12 +1,9 @@
-1. Navigate to the left-hand “Files” sidebar and locate the top-right blue button labeled “New”.  
-2. Click the “New” button and select “Python 3 (ipykernel)” (or the default Python kernel shown) from the drop-down list. A new untitled notebook opens in a separate tab.  
-3. Click the current notebook title “Untitled” at the top center; a rename dialog appears.  
-4. Type `tensor.ipynb` into the text box and press Enter (or click “Rename”). The notebook tab now shows “tensor.ipynb”.  
-5. Switch back to the “Files” sidebar by clicking the browser tab or panel where you can see your directory tree.  
-6. Double-click the file `code.py` located in the Desktop folder (`Desktop/code.py`). Its contents open in a text preview pane.  
-7. Press Ctrl + A (Cmd + A on macOS) to select the entire code, then press Ctrl + C (Cmd + C) to copy it to the clipboard.  
-8. Switch to the “tensor.ipynb” notebook tab we just created.  
-9. Click inside the first (empty) code cell so you see the blue vertical cursor bar.  
-10. Paste the copied code by pressing Ctrl + V (Cmd + V on macOS). All lines from `code.py` now appear in this single cell.  
-11. Verify that the pasted code starts with the first line of `code.py` and ends with the last line to confirm nothing is missing.  
-12. Skip running the cell—no execution is required for this task; simply leave the code as-is.
+1. Locate the “File Browser” (left-hand sidebar with the folder icon) and click the triangle beside “Desktop” to expand its contents.  
+2. Double-click “code.py” so it opens in the built-in text viewer tab on the right.  
+3. Press Ctrl + A to highlight the entire script, then press Ctrl + C to copy it to the clipboard.  
+4. Switch back to the File Browser panel, click the “+” (New Launcher) button in the top-left corner, and in the launcher choose “Python 3 (ipykernel)” under the “Notebook” section; a new untitled notebook tab appears.  
+5. Click the notebook title “Untitled.ipynb” at the top, type tensor.ipynb, and press Enter to rename it.  
+6. Click once inside the first (only) empty code cell so you see the blue border.  
+7. Press Ctrl + V to paste the entire contents of code.py into this cell; verify that every line from the original file now appears in this single cell.  
+8. Choose File ➜ Save Notebook (or press Ctrl + S) so tensor.ipynb is written to disk with the copied code.  
+9. Confirm success by glancing at the tab title—there should be no “*” next to tensor.ipynb, indicating it has been saved, and the cell should display the full script without needing to run it.

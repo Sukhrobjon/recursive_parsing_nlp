@@ -1,0 +1,22 @@
+1. Click any single cell inside your raw data range on Sheet1 (for example, click cell A1 if your header row starts there).  
+2. Press Ctrl + A to highlight the entire contiguous block of data that contains the two required columns – Product and Revenue.  
+3. Click the Insert tab on the Ribbon.  
+4. Click the PivotTable button in the Tables group.  
+5. Verify the Table/Range box now shows the correct address (for example, $A$1:$B$500).  
+6. Select the radio button “New Worksheet” so the pivot table is created on a separate sheet.  
+7. Click OK; Excel adds a new sheet named something like “Sheet2 (PivotTable1)” and opens the PivotTable Fields pane on the right.  
+8. Drag the field “Product” from the top list box down into the Rows area of the layout section.  
+9. Drag the field “Revenue” from the top list box down into the Values area. Excel automatically applies the aggregation “Sum of Revenue.”  
+10. Confirm that the first column of the pivot (Row Labels) now lists every product once, and the second column shows the summed revenue values.  
+11. Right-click any number inside the “Sum of Revenue” column, choose Number Format, pick Currency (or Number with 0 decimal places), and click OK to improve readability.  
+12. Click any blank cell inside the pivot table body to keep the pivot activated (a gray border will appear).  
+13. Click the PivotTable Analyze tab (called just Analyze in some versions) that appears in the Ribbon.  
+14. Click the PivotChart button in the Tools group.  
+15. In the Insert Chart dialog, click Pie on the left pane, then choose the first subtype “Pie” in the upper-left of the right pane.  
+16. Click OK; Excel inserts a pie chart that is automatically linked to the pivot data.  
+17. Click the chart once to make the Chart Design and Format tabs appear.  
+18. Click Chart Design → Add Chart Element → Legend → Right. Excel moves the legend to the right side, listing all product names.  
+19. Click Chart Design → Add Chart Element → Chart Title → None (optional, if you prefer no title).  
+20. Click anywhere outside the chart to deselect it; confirm visually that each colored slice corresponds to a product and the legend on the right lists those products.  
+21. Press Ctrl + S to save your workbook, choosing a meaningful file name such as “ProductRevenueSummary.xlsx.”  
+22. Double-check: change a revenue figure in Sheet1 and refresh the pivot table by right-clicking inside the pivot and choosing Refresh; verify that both the pivot totals and the pie slices update—this confirms the entire setup works correctly.

@@ -1,0 +1,19 @@
+1. Click the funnel-shaped AutoFilter icon on the main toolbar to activate filtering on the header row.  
+2. Click the small triangle at the right edge of cell E1 that contains the text “Sales Channel”.  
+3. Uncheck the box labeled “(Select All)” so that every channel is deselected.  
+4. Check the box labeled “E-mail Coupon” to keep only those rows visible.  
+5. Click the “OK” button in the filter popup; the sheet now shows only the header row and the rows where “Sales Channel” equals “E-mail Coupon”.  
+6. Click the “+” (Append sheet) icon just to the left of the “Sheet1” tab at the bottom; a new tab named “Sheet2” appears.  
+7. Click the “Sheet1” tab to return to the filtered data.  
+8. Click the column header “A” to highlight the entire Date column.  
+9. Press Ctrl + C to copy that column.  
+10. Click the “Sheet2” tab at the bottom to switch sheets.  
+11. Click cell A1 so it is highlighted.  
+12. Press Ctrl + V to paste the Date values into column A of Sheet2.  
+13. Click the “Sheet1” tab again to go back.  
+14. Click the column header “G” to highlight the entire Revenue ($) column (confirm that the header actually shows “Revenue ($)”).  
+15. Press Ctrl + C to copy the Revenue ($) column.  
+16. Click the “Sheet2” tab to return.  
+17. Click cell B1 in Sheet2 so it is selected.  
+18. Press Ctrl + V to paste the Revenue ($) values into column B.  
+19. Press Ctrl + S (or Cmd + S on macOS) to save the workbook and preserve the new “Sheet2” with the filtered Date and Revenue ($) data.

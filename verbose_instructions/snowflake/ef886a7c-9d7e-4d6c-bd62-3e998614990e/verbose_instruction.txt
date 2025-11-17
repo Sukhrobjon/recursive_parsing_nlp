@@ -1,0 +1,51 @@
+1. Highlight the entire SQL script in the already-opened file code.txt by pressing Ctrl + A, then press Ctrl + C to copy it to the clipboard  
+    Note that we will paste this exact text into a brand-new worksheet in the next step.
+
+2. Switch to your browser window that is displaying the Snowflake / Redshift / BigQuery* Web UI (the SQL console)  
+    (*use the actual tool open in your session).
+
+3. Click the blue “+” button in the upper-right corner of the page.
+
+4. Select “SQL Worksheet” from the drop-down list that appears; a blank editor tab named something like Worksheet ## opens.
+
+5. Click inside the blank editor pane and press Ctrl + V to paste the SQL you copied from code.txt.
+
+6. Verify that the very first and very last lines of the pasted block look identical to what you saw in code.txt (this confirms nothing was truncated).
+
+7. Click the black “Run” triangle ► in the upper-right corner of the worksheet (or press Ctrl + Enter) to execute the query.
+
+8. Wait until the Results grid appears below the editor and shows row data with a green “Query succeeded” message; this guarantees the dataset is ready for charting.
+
+9. Click the “Chart” tab that sits immediately to the right of “Results” inside the result panel.
+
+10. Click the “Line” thumbnail (a slanted-line icon) in the “Chart type” picker on the right-hand side; the canvas refreshes to a line plot.
+
+11. Click directly on the default chart title (e.g., “Line Chart”), press Ctrl + A to select the whole title text, then type  
+   Number of Orders in the First 10 Days  
+   and press Enter to commit the change.
+
+12. Hover over the upper-right corner of the chart canvas and click the downward-facing arrow icon labelled “Download” (it may look like a cloud with an arrow).
+
+13. Choose “PNG” when prompted; the file automatically downloads to your default folder (usually /home/user/Downloads) with a system-generated name such as chart_20240612.png.
+
+14. Open a terminal window and change to your downloads directory:  
+```bash
+cd /home/user/Downloads
+```
+
+15. List the most recent file to confirm the download succeeded:  
+```bash
+ls -lt | head
+```
+    We expect to see the fresh PNG file at the top of the list.
+
+16. Rename the file to chart.png using mv (replace <actual_name>.png with the exact filename you saw):  
+```bash
+mv "<actual_name>.png" chart.png
+```
+
+17. Run ls again to verify the new name is present:  
+```bash
+ls -l chart.png
+```
+    If the file is listed without errors, the task is complete and the chart is saved locally as chart.png.

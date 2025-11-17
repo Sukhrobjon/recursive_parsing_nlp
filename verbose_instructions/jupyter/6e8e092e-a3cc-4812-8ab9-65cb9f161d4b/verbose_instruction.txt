@@ -1,0 +1,9 @@
+1. Locate the left sidebar in JupyterLab, then right-click the file name sports-products.ipynb that currently has a blue dot (indicating it is open).  
+2. Click the context-menu option Download; the browser immediately starts downloading the notebook to the system’s default download location.  
+3. Switch to the file manager window (press Super + E or click the folder icon in the dock).  
+4. Navigate by double-clicking “Home”, then double-click “Downloads” so the path shown near the top reads /home/user/Downloads; you should see sports-products.ipynb highlighted as the most recent file.  
+5. Right-click sports-products.ipynb and choose Rename; when the file name becomes editable, type submission.ipynb and press Enter.  
+6. Right-click the newly renamed submission.ipynb and choose Cut (or press Ctrl + X).  
+7. In the left pane of the file manager, click Desktop to open the Desktop directory.  
+8. Right-click on any blank space inside Desktop and select Paste (or press Ctrl + V); submission.ipynb now appears on the Desktop.  
+9. Confirm success by checking that the Desktop window lists submission.ipynb and that no sports-products.ipynb remains in Downloads.

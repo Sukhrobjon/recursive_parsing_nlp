@@ -1,0 +1,17 @@
+1. Click the Chromium icon in the left-hand dock to switch to the Airflow web UI opened by Astronomer.  
+2. Wait until the Airflow homepage loads and we can see the list of DAGs under the “DAGs” tab.  
+3. Locate your target DAG (for example, type the first few letters into the Search box if the list is long) and verify that its row is visible.  
+4. Click the blue DAG name itself (not the toggle switch) to navigate into that DAG’s detail page.  
+5. Confirm we are in the DAG details page by checking the breadcrumb in the upper-left corner that now reads something like “DAGs / your_dag_id”.  
+6. Look at the horizontal view selector directly under the DAG title; the options are “Grid”, “Graph”, “Calendar”, “Task Duration”, “Gantt”, “Landing Times”, and “Dependencies”.  
+7. Click the “Dependencies” tab (it is usually the last option on the right).  
+8. Observe the DAG Dependencies view that appears:  
+   • Upstream DAGs (those that trigger this DAG) are shown on the left in blue boxes.  
+   • The current DAG is centered in a grey box.  
+   • Downstream DAGs (those triggered by this DAG) appear on the right in green boxes.  
+9. Hover over any DAG box to highlight its edges; notice that Airflow shows arrows pointing from upstream → current → downstream, confirming the dependency chain.  
+10. Verify that the dependency arrows correspond to what you configured in your code (e.g., using TriggerDagRunOperator or dataset-based scheduling).  
+11. (Optional) Click any upstream or downstream DAG box; Airflow opens that DAG’s detail page in the same tab so we can further inspect its own dependencies.  
+12. When finished, click the “DAGs” breadcrumb at the top to return to the main list or simply close the tab.
+
+That’s it—this sequence lets us view and confirm DAG-level dependencies directly in the Airflow web UI deployed on Astronomer.

@@ -1,0 +1,16 @@
+1. Click the grey funnel icon located in the center of the top menu bar (directly beneath the page title “servicenow”). The Filter panel slides down and displays a header that reads “Order results by the following fields”.  
+2. Click the blue “Add Sort” button that appears just below that header. A new drop-down box labeled “Select field…” becomes visible.  
+3. Click the “Select field…” drop-down, type Created by, and press Enter to confirm the field.  
+4. Click the adjacent “A to Z” toggle, choose Z to A so the arrow points downward (this sets descending order).  
+5. Click the blue “Add Sort” button again. A second “Select field…” drop-down is appended beneath the first sort rule.  
+6. Click this new “Select field…” box, type Flow, and press Enter to confirm.  
+7. Click the corresponding “A to Z” toggle, choose Z to A to make the sort descending for Flow.  
+8. Click the blue “Add Sort” button a third time to add the final sort key.  
+9. Click the newly added “Select field…” drop-down, type Classic Mobile Picture Type, and press Enter to confirm the field.  
+10. Click its “A to Z” toggle and choose Z to A to set descending order.  
+11. Verify that the Sort list now shows the three rows in the following exact sequence:  
+    • Created by  –  Z to A  
+    • Flow        –  Z to A  
+    • Classic Mobile Picture Type – Z to A  
+12. Click the green “Run” button in the lower-right corner of the Filter panel. The list refreshes and re-orders itself based on the three descending criteria.  
+13. Confirm success by scanning the first few rows: we should see records whose Created by field starts with letters closer to Z, and within identical Created by values, rows with higher Flow values appear first, followed by Classic Mobile Picture Type in descending order.

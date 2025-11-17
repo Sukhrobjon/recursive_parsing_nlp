@@ -1,0 +1,10 @@
+1. Switch to your web browser window that is displaying the application’s main screen where the gear icon is visible in the upper-right corner.  
+2. Click the gear icon to open the drop-down configuration menu.  
+3. Select “Admin settings” from the drop-down; the Administration panel will load in a new view.  
+4. Click the “Databases” tab located in the horizontal navigation bar at the top of the Admin panel.  
+5. Locate the row labeled “PostgresData” in the database list and click directly on the database name “PostgresData” to open its settings page.  
+6. Scroll to the bottom of the settings page and click the blue text link “Show advanced options”; an additional set of configuration fields will expand.  
+7. Locate the toggle labeled “Allow unfolding of JSON columns” inside the Advanced Options section and click the toggle once so that it switches to the OFF position (it should turn gray and move to the left).  
+8. Click the blue “Save changes” button at the bottom of the page to persist the new setting.  
+9. Wait for the confirmation toast “Database settings saved” to appear, then click the “Sync database schema now” button on the right-hand side of the page; a spinner will indicate the sync is running.  
+10. After the sync completes, click the “Re-scan field values now” button directly underneath to refresh cached metadata; verify that a green check mark and the timestamp update, confirming both the schema sync and field value scan finished successfully with JSON unfolding disabled.

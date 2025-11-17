@@ -1,0 +1,22 @@
+1. Click cell C1  
+2. Type Period Rate (%) and press Enter  
+3. Click cell C2  
+4. Type = and then click cell A2 so “A2” appears in the formula bar  
+5. Type / (forward-slash)  
+6. Click cell B2 so the full formula now reads =A2/B2  
+7. Press Enter to confirm the formula – the first period rate appears in C2  
+8. Click cell C2 again  
+9. Drag the fill handle (small square at the bottom-right corner of C2) downward to C25 to copy the formula for all rows 2-25  
+10. Press Ctrl+1 to open the Format Cells dialog (or, on the Home ribbon, click the Number Format drop-down)  
+11. Select Number in the Category list, set Decimal places to 2, then click OK – all period rates are now numeric with two decimals  
+12. While column C is still selected, go to the Home ribbon and click Conditional Formatting ▸ New Rule  
+13. Choose “Use a formula to determine which cells to format”  
+14. In the “Format values where this formula is true” box, type  
+```
+=C2=MAX($C$2:$C$25)
+```  
+15. Click the Format… button → Font tab → Color drop-down → More Colors…  
+16. In the Custom tab, set Red = 0, Green = 255, Blue = 0 (hex #00FF00), then click OK  
+17. Click OK again to close the Format dialog, and click OK to finish the rule – the highest period rate now appears in bright green font  
+18. Scroll through cells C2:C25 to verify exactly one value is green and matches the maximum shown by =MAX($C$2:$C$25) in any spare cell  
+19. Press Ctrl+S to save the workbook, preserving the calculations and formatting

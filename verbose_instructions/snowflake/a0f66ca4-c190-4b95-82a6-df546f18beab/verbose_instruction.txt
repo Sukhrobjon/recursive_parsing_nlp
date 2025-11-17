@@ -1,0 +1,71 @@
+1. Open the terminal on your workstation and type  
+   `code ~/project/config.yaml`  
+   to launch the config file in VS Code so we can read the user details we need for Snowflake.
+
+2. Locate the block that looks like this (copy the exact values on your screen — the sample below is just an example):  
+   ```yaml
+   user:
+     username: analytics_eng
+     login_name: analytics_eng
+     password: "Str0ngP@ssw0rd!"
+     first_name: "Analytics"
+     last_name: "Engineer"
+     email: "analytics.engineer@company.com"
+     default_warehouse: LOAD_WH
+     must_change_password: false
+     default_role: SYSADMIN
+   ```  
+   Keep this window open; we will paste these values into Snowsight in a moment.
+
+3. Switch to your browser tab that contains Snowflake Snowsight and click the orange “+” button in the upper-right corner.
+
+4. Select “SQL Worksheet” from the drop-down list so a new, blank worksheet appears.
+
+5. Type the role-selection command exactly as shown below and place the cursor anywhere on that line:  
+   ```sql
+   USE ROLE USERADMIN;
+   ```
+
+6. Click the “Run” ▶️ button on the upper-right of the worksheet to activate USERADMIN.  
+   Note: USERADMIN is required for creating new users.
+
+7. Copy the values you saw in config.yaml and build the CREATE USER statement. Paste the finished statement into the worksheet (replace the sample values if they differ):  
+   ```sql
+   CREATE OR REPLACE USER analytics_eng
+     PASSWORD               = 'Str0ngP@ssw0rd!'
+     LOGIN_NAME             = 'analytics_eng'
+     FIRST_NAME             = 'Analytics'
+     LAST_NAME              = 'Engineer'
+     EMAIL                  = 'analytics.engineer@company.com'
+     MUST_CHANGE_PASSWORD   = FALSE
+     DEFAULT_WAREHOUSE      = LOAD_WH;
+   ```  
+   We purposely set MUST_CHANGE_PASSWORD = FALSE to let the user log in immediately without rotating the password.
+
+8. Highlight the entire CREATE USER block and click the “Run” ▶️ icon again.  
+   Verify in the Results panel that the status reads “User ANALYTICS_ENG created.”
+
+9. In the same worksheet, change to the role that can grant roles by typing:  
+   ```sql
+   USE ROLE SECURITYADMIN;
+   ```  
+   Run the command.
+
+10. Grant the default role from config.yaml to the new user. Paste and execute:  
+    ```sql
+    GRANT ROLE SYSADMIN TO USER analytics_eng;
+    ```
+
+11. Confirm that the role grant and user creation both worked:  
+    a) Run  
+    ```sql
+    SHOW USERS LIKE 'ANALYTICS_ENG';
+    ```  
+    b) Then run  
+    ```sql
+    SHOW GRANTS TO USER analytics_eng;
+    ```  
+    You should see SYSADMIN in the returned rows.
+
+12. Tell the new user their initial credentials (login name `analytics_eng` with the password from config.yaml) and instruct them to test by logging in to Snowsight.  
+    We’re done—analytics_eng now exists with SYSADMIN privileges exactly as specified in config.yaml.

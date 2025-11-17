@@ -1,0 +1,17 @@
+1) Open your web browser and navigate to https://cloud.astronomer.io, then log in with your Astro Workspace credentials.  
+2) Click the blue “Deployments” menu item in the left-hand navigation panel to view your list of Airflow deployments.  
+3) Locate the deployment that should access your local PostgreSQL database, hover over its row, and click the “Open Airflow” button (small rocket icon). A new tab with the Airflow UI appears.  
+4) In the Airflow UI, click the top menu labeled “Admin” and choose “Connections” from the dropdown.  
+5) Click the blue “+ Add a new record” (or “+” button) in the upper right of the Connections list. A blank “Add Connection” form opens.  
+6) Type postgres_conn in the “Conn Id” textbox so other DAGs can reference this connection via conn_id="postgres_conn".  
+7) Click the “Conn Type” dropdown and select “Postgres” (or “PostgreSQL” depending on your version). This auto-adjusts the form to show Postgres-specific fields.  
+8) Click the “Host” field and enter 172.17.0.1 to point Airflow at your local Docker/host network interface.  
+9) Click the “Schema” (Database) field and enter jaffle_shop so Airflow targets the correct database.  
+10) Click the “Login” field and type user (your PostgreSQL username).  
+11) Click the “Password” field and type password.  
+12) Click the “Port” field and type 5432, the default PostgreSQL port.  
+13) (Optional) Scroll to “Extra” and leave it blank unless you need SSL or additional parameters; none are required for this local connection.  
+14) Click the “Save” button at the bottom left of the modal. A green toast message “Successfully added” appears.  
+15) Hover over the new row for postgres_conn and click the blue “Test” icon (plug symbol). Verify that the pop-up reads “Connection successful.”  
+16) Close the Airflow tab and return to your Astro Deployment page. We’ve now created a reusable connection with ID postgres_conn that any DAG can reference.  
+17) (Verification) Trigger or refresh any DAG that uses PostgresHook(conn_id="postgres_conn") and confirm tasks reach the “success” state, demonstrating that the Astro web UI connection to your local PostgreSQL database is functioning.

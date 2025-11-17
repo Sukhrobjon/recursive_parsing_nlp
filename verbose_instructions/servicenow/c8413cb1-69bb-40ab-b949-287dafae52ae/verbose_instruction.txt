@@ -1,0 +1,20 @@
+1. Locate the funnel-shaped Filter icon immediately to the left of the text “Assets View: ITAM Workspace” and Click it to open the filter builder panel.  
+2. Click the grey input field labeled “-- choose field --” at the top of the new row that appears.  
+3. Type “Asset function” and Press Enter (or Click the matching item “Asset function”) so the first column now shows Asset function.  
+4. Click the second dropdown (it defaults to “is”) and ensure the operator “is” is selected.  
+5. Click the third input field “-- None --”, Scroll if necessary, and Click “Secondary” so the value column reads Secondary.  
+6. Click the blue AND button on the far right of the row to append another condition.  
+7. For the new row, Click “-- choose field --”, type “Serial number”, and Select “Serial number” from the list.  
+8. Verify the operator dropdown shows “is”; if not, Click it and Select “is”.  
+9. Leave the value box completely blank (do not type anything) so the filter will pick up empty Serial number entries.  
+10. Click the AND button again to add a third row.  
+11. In the new row, Click “-- choose field --”, type “Class”, and Choose “Class”.  
+12. Confirm the operator is “is”, then Click the value box and Select “Consumable”. The row should now read Class is Consumable.  
+13. Click AND once more to create the fourth and final row.  
+14. Click “-- choose field --”, type “Location”, and Select “Location”.  
+15. Make sure the operator is “is”; if necessary, Click and change it to “is”.  
+16. Click the value box, Scroll or type “30 Katharinenstr, Hamburg”, and Select that exact location string so the row displays Location is 30 Katharinenstr, Hamburg.  
+17. Review all four rows—verify the left-hand fields read Asset function, Serial number, Class, Location; operators all read is; and the values are Secondary, (blank), Consumable, 30 Katharinenstr, Hamburg respectively.  
+18. Click the green Run button in the upper-right corner of the filter panel to execute the composite filter.  
+19. Wait a few seconds while the table reloads, then Observe that only assets matching all four criteria are displayed (Asset function = Secondary, empty Serial number, Class = Consumable, Location = 30 Katharinenstr, Hamburg).  
+20. Confirm success by checking the status bar above the table—it should show the number of filtered rows—and visually scanning a few entries to ensure every row meets all four conditions.

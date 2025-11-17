@@ -1,0 +1,22 @@
+1. Click the gray funnel icon (middle icon just to the left of the “Catalog Items” title) to open the list filter builder.  
+2. Click the first dropdown that shows “-- choose field --”.  
+3. Type Assigned in the search box, then Click “Assigned to” from the filtered list.  
+4. Click the next dropdown (operator) and Select “is empty”.  
+5. Click the blue “AND” button on the filter toolbar above the current row (NOT the tiny AND/OR inside the same line) so the label “AND all of these conditions must be met” appears underneath.  
+6. In the new row, Click “-- choose field --”, type Config, then Click “Configuration item”.  
+7. Click the operator dropdown and Select “is empty”.  
+8. Click the blue “AND” button on the toolbar again to add a third condition row.  
+9. In the new row, Click “-- choose field --”, type Pri, then Click “Priority”.  
+10. Click the operator dropdown and Select “is”.  
+11. Click the value box on the right, Scroll (or type “-- None --”) until you see “-- None --”, then Click that exact entry so the box border returns to normal color (blue/black, not red).  
+12. Click the toolbar “AND” button one more time to add the final condition row.  
+13. In the new row, Click “-- choose field --”, type Num, then Click “Number”.  
+14. Click the operator dropdown and Select “is”.  
+15. Click the value box on the right, Type INC0011939, and press Enter or choose the dropdown option if it appears.  
+16. Verify that you now have four rows showing:  
+    • Assigned to | is empty  
+    • Configuration item | is empty  
+    • Priority | is | -- None --  
+    • Number | is | INC0011939  
+17. Click the blue “Run” button at the far right of the filter toolbar to execute the filter.  
+18. Wait until the list refreshes (spinner disappears) and confirm the results table shows only records that match all four conditions—ideally just the single incident “INC0011939”.

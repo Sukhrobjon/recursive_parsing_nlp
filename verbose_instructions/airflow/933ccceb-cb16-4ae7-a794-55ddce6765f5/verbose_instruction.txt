@@ -1,0 +1,129 @@
+1. Click “VS Code” in the left dock of the Astronomer workspace so we can inspect the project files.  
+2. Expand the side-bar tree and double-click README.md; skim the “Connection details” section so we know the connection id will be sqlite_conn and the database file lives at /tmp/sqlite.db – we will use this in Airflow next.  
+3. Click “Chromium” in the dock to switch to the running Airflow web UI (it is already opened by Astronomer).  
+4. Click Admin in the top menu bar.  
+5. Select Connections from the dropdown list.  
+6. Click the blue “+” button just under the search bar to add a new Connection.  
+7. Choose “SQLite” from the Conn Type dropdown that appears in the Add Connection modal.  
+8. Type the following values into the form (exactly):  
+   • Connection Id: sqlite_conn  
+   • Host: /tmp/sqlite.db  
+   (Leave login, password, port, and schema blank.)  
+9. Scroll to the bottom of the modal and click Save.  
+10. Confirm we see a new row with Conn Id sqlite_conn on the Connections table – this verifies the connection was created successfully.  
+11. Click “VS Code” again in the dock so we can edit the DAG.  
+12. In the Explorer tree, locate and open dags/sql_data_quality.py (double-click the file).  
+13. Replace the TODO code section with the full DAG definition below, keeping any imports that already exist. Make sure indentation is 4 spaces:
+
+```python
+from airflow import DAG
+from airflow.providers.common.sql.operators.sql import SQLExecuteQueryOperator
+from airflow.providers.common.sql.operators.sql_check import (
+    SQLColumnCheckOperator,
+    SQLTableCheckOperator,
+)
+from airflow.utils.dates import days_ago
+
+_CONN_ID = "sqlite_conn"
+_TABLE_NAME = "birds"
+
+with DAG(
+    dag_id="sql_data_quality",
+    start_date=days_ago(1),
+    schedule_interval=None,
+    catchup=False,
+    tags=["examples", "sqlite", "data_quality"],
+) as dag:
+
+    # 1) Build a demo table and populate test data
+    init_db = SQLExecuteQueryOperator(
+        task_id="init_db",
+        conn_id=_CONN_ID,
+        sql="""
+        DROP TABLE IF EXISTS birds;
+        CREATE TABLE birds (
+            bird_name TEXT,
+            observation_year INTEGER,
+            bird_happiness INTEGER
+        );
+        INSERT INTO birds (bird_name, observation_year, bird_happiness) VALUES
+            ('Sparrow', 2019, 9),
+            ('Robin',   2020, 8),
+            ('Eagle',   2021, 10),
+            ('Parrot',  2022, 7),
+            ('Crow',    2023, 6),
+            ('Finch',   2023, 9);
+        """,
+    )
+
+    # 2) Column-level checks
+    column_checks = SQLColumnCheckOperator(
+        task_id="column_checks",
+        conn_id=_CONN_ID,
+        table=_TABLE_NAME,
+        partition_clause="bird_name IS NOT NULL",
+        column_mapping={
+            "bird_name": {
+                "null_check": {"equal_to": 0},
+                "distinct_check": {"geq_to": 5},
+            },
+            "observation_year": {
+                "min": {"geq_to": 2018},
+                "max": {"less_than": 2024},
+            },
+            "bird_happiness": {
+                "min": {"greater_than": 0},
+                "max": {"leq_to": 10},
+            },
+        },
+    )
+
+    # 3) Table-level checks
+    table_checks = SQLTableCheckOperator(
+        task_id="table_checks",
+        conn_id=_CONN_ID,
+        table=_TABLE_NAME,
+        checks={
+            "average_happiness_check": {
+                "check_statement": "AVG(bird_happiness) >= 8",
+                "partition_clause": "observation_year >= 2019",
+            },
+        },
+    )
+
+    init_db >> column_checks >> table_checks
+```
+
+14. Press Ctrl+S (Cmd+S on Mac) to save sql_data_quality.py.  
+15. Switch to the Terminal tab that Astronomer opens at /home/user/projects (it is usually titled “astro”). If it is not visible, click the “Terminal” icon in the dock.  
+16. Run the following command to rebuild and restart the local Airflow containers with our code changes:  
+```bash
+astro dev restart
+```  
+   The command finishes when “Webserver health check healthy” appears.  
+17. Click “Chromium” again to return to Airflow.  
+18. In the DAGs list, locate sql_data_quality and toggle the switch at the far left to unpause it (the switch turns blue).  
+19. Click the dark-gray triangle (Trigger DAG) under the Actions column on the sql_data_quality row to start a manual run.  
+20. Wait until the colored squares in the Runs column turn green (success) for all three tasks – this usually takes less than one minute.  
+21. Click the sql_data_quality DAG name hyperlink to open the Graph view.  
+22. Click the rightmost square (latest run) for the task_id column_checks.  
+23. Click the Logs link in the right-hand Details pane.  
+24. Click the Download button above the log viewport – the browser saves a file such as column_checks__2024-06-01T10_00_00+00_00.log to ~/Downloads.  
+25. Click the browser Back arrow or the X in the Details pane to return to the Graph view.  
+26. Click the rightmost square for task_id table_checks.  
+27. Click Logs in the Details pane.  
+28. Click Download to save the table_checks log file.  
+29. Switch to the Terminal app (open a new one or reuse the existing) and cd into the Downloads folder:  
+```bash
+cd ~/Downloads
+```  
+30. List the files to verify the downloads exist:  
+```bash
+ls -lh
+```  
+31. Rename the downloaded files so they exactly match the task_ids:  
+```bash
+mv column_checks__*.log column_checks.log
+mv table_checks__*.log table_checks.log
+```  
+32. Run ls again to confirm that column_checks.log and table_checks.log are present – these will be used for data-quality verification.

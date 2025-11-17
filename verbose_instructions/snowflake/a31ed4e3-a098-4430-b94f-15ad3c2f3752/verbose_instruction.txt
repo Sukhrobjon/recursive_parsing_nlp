@@ -1,0 +1,95 @@
+1. Click “Projects » Worksheets” on the Snowsight left-hand panel so the list of worksheets appears.  
+2. Click the blue “+” button in the upper-right corner of that list.  
+3. Select “Python Worksheet” from the drop-down; a blank Python worksheet opens.
+
+4. Copy-and-paste the entire block of code below into the empty worksheet editor pane:
+
+```python
+import snowflake.snowpark as snowpark
+from snowflake.snowpark.functions import col
+from snowflake.snowpark.types import *
+
+# ----------------------------------------------------------------------------
+# main() is the entry point Snowpark executes.
+# ----------------------------------------------------------------------------
+def main(session: snowpark.Session):
+
+    # 1) Create database + schema we’ll use throughout
+    session.sql("CREATE OR REPLACE DATABASE global_data;").collect()
+    session.sql("CREATE OR REPLACE SCHEMA global_data.raw_pos;").collect()
+
+    # 2) Create an external stage that points to the S3 bucket
+    session.sql("""
+        CREATE OR REPLACE STAGE global_data.raw_pos.country_stage
+        URL = 's3://sfquickstarts/tastybytes/raw_pos/country/'
+        FILE_FORMAT = (TYPE = csv SKIP_HEADER = 0 FIELD_OPTIONALLY_ENCLOSED_BY = '"')
+    ;""").collect()
+
+    # 3) Build the table schema (taken from Desktop/schema.txt)
+    country_schema = StructType([
+        StructField("country_id",        IntegerType()),
+        StructField("country_name",      StringType()),
+        StructField("country_code1",     StringType()),
+        StructField("country_code2",     StringType()),
+        StructField("postal_code",       StringType()),
+        StructField("city_name",         StringType()),
+        StructField("size",              IntegerType())
+    ])
+
+    # 4) Read the CSV files in the stage into a DataFrame
+    df_stage = session.read.schema(country_schema).csv("@global_data.raw_pos.country_stage")
+
+    # 5) Persist the DataFrame as a permanent table
+    df_stage.write.mode("overwrite").save_as_table("global_data.raw_pos.country")
+
+    # 6) Filter for rows whose country_name = 'France'
+    df_result = (
+        session
+        .table("global_data.raw_pos.country")
+        .filter(col("country_name") == "France")
+    )
+
+    # 7) Return the filtered DataFrame so Snowsight shows it in the Results grid
+    return df_result
+```
+
+5. Click the dark-blue “Run” triangle in the upper-right of the worksheet.  
+   • The Status bar at the top will switch to “Running…”, then “Complete” once execution finishes.  
+   • We should see a results grid containing only those rows where country_name is “France”.
+
+6. Click the “Download Results” cloud-arrow icon located at the top-right of the results grid.  
+7. Choose “Download as .csv”; Snowsight downloads the file to your VM’s default downloads folder (~/Downloads).  
+   • Snowsight will name it something like results-xxxxx.csv. We’ll rename it next.
+
+8. Open the file explorer inside the VM and navigate to /home/user/Downloads.  
+9. Right-click the freshly downloaded CSV and choose “Rename…”; type exactly: result.csv and press Enter.
+
+10. Switch to the VM Terminal (click the Terminal icon on the dock or press Ctrl+Alt+T).  
+11. Type the following commands:
+
+```
+cd Desktop          # move to the Desktop folder
+code code.py        # open VS Code (or Code OSS) with a new file named code.py
+```
+
+(If VS Code prompts to create the file, click “Yes”.)
+
+12. Return to Snowsight, press Ctrl+A in the Python worksheet to select all code, then Ctrl+C to copy.  
+13. Come back to the VS Code window that opened with code.py, click in the editor and press Ctrl+V to paste the code.  
+14. Press Ctrl+S (or click “File » Save”) to save code.py to the Desktop.
+
+15. Verify everything succeeded:  
+    a. In Snowsight, run
+
+    ```sql
+    SELECT COUNT(*) FROM global_data.raw_pos.country WHERE country_name = 'France';
+    ```
+
+    b. Confirm the count matches the number of rows in result.csv.  
+    c. In Terminal, list files with `ls Desktop` and confirm code.py exists.
+
+You have now:  
+• loaded the country data from S3 into Snowflake,  
+• executed a Snowpark Python query to retrieve the “France” rows,  
+• downloaded the results as result.csv, and  
+• saved the worksheet code into Desktop/code.py for future reuse.

@@ -1,0 +1,43 @@
+1. Open your browser and log in to Google Cloud Console.  
+2. Click the main menu (three-bar “Navigation menu” at top-left) and select “BigQuery” to open the BigQuery web UI.  
+3. In the Explorer panel on the left, locate your project name and click its triangle icon to expand it.  
+4. Click the triangle next to the dataset labeled census so we can see its tables (it should be empty if this is the first table).  
+5. Click the blue “+ CREATE TABLE” button in the right-hand work area.  
+6. In the Create table form, go to the Source section and perform these actions:  
+   6.1 Click the “Drive” radio button (it automatically selects “Google Drive” sources).  
+   6.2 Paste the full URL of the Google Sheet you want to upload into the “Select drive URI” field (for example: https://docs.google.com/spreadsheets/d/xxxxxxxxxxxxx/edit#gid=0).  
+   6.3 In the “File format” dropdown, choose “Google Sheets”.  
+   6.4 Click the checkbox “Auto-detect” OFF (we will define the schema manually).  
+   6.5 In the “Sheet range” textbox that appears, type the exact range; for example: Sheet1!A1:E1000 (replace Sheet1 and the cell limits with your real sheet range). Note that including the header row (row 1) is fine—we will mark the header option in the next step.  
+   6.6 Keep the “Header rows to skip” set to 1 so BigQuery treats the first row as column headers.  
+7. Scroll to the Destination section and configure it:  
+   7.1 Confirm Dataset is census (change it if needed via the dropdown).  
+   7.2 In the Table name field, type population.  
+   7.3 For Table type, leave it as Native table (default).  
+8. Scroll to the Schema section and click “+ ADD FIELD” repeatedly to define each column exactly as it appears in the sheet:  
+```
+Field name     Type         Mode
+-------------- ------------ -----
+state          STRING       NULLABLE
+year           INTEGER      NULLABLE
+population     INTEGER      NULLABLE
+density        FLOAT        NULLABLE
+notes          STRING       NULLABLE
+```  
+   8.1 For each field: type the Field name, pick the Type from the dropdown, leave Mode as NULLABLE unless you need REQUIRED.  
+   8.2 When finished, verify that the list matches the columns in the sheet and appears in the correct order.  
+9. Leave Partitioning and Clustering sections empty (we don’t need them for this simple load).  
+10. At the bottom, click the blue “CREATE TABLE” button. BigQuery starts importing the Google Sheet.  
+11. Wait for the green toast message “Create table complete” to appear in the lower right; this confirms the upload succeeded.  
+12. In the Explorer panel, click the refresh icon next to the census dataset; the new table population now shows. Click population and then click the “Preview” tab—verify the first few rows look correct (column headers, sample data, numeric types not quoted).  
+13. Switch to the “Query” tab and run a quick check:  
+```
+SELECT
+  COUNT(*) AS total_rows,
+  MIN(year) AS earliest_year,
+  MAX(population) AS max_population
+FROM
+  `your-project-id.census.population`;
+```  
+14. Click the blue “Run” button. Confirm that a valid row count and numeric summary values return (no errors, meaning the schema types were set correctly).  
+15. If everything looks good, you have successfully uploaded the Google Sheet as the population table in the census dataset with the correct range and schema.

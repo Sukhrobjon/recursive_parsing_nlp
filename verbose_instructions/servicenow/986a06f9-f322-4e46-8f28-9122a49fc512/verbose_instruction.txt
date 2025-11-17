@@ -1,0 +1,30 @@
+1. Open the browser tab that shows the target list (we will refer to it as the “Records” list; the exact table name appears in the upper-left corner, e.g., “Incident” or “Catalog Tasks”).  
+2. Click the grey funnel icon labelled “Filter” in the list header to open the condition builder panel.  
+3. Click the blue “New criteria row” (+) button once; a row with three dropdowns—Field, Operator, Value—appears.  
+4. Select “Short description” from the Field dropdown.  
+5. Select “is” from the Operator dropdown.  
+6. Type Request to setup web conferencing into the Value text box and press Enter.  
+7. Click the “OR” link that appears to the right of the row (this turns the next row into an OR condition group).  
+8. Click the blue “New criteria row” (+) again to add a second row.  
+9. Select “Type” in the Field dropdown of the second row.  
+10. Select “is” in the Operator dropdown.  
+11. Type Task in the Value field and press Enter.  
+12. Click the “OR” link at the end of the second row.  
+13. Click the blue “New criteria row” (+) to add the third row.  
+14. Choose “Active” in the Field dropdown.  
+15. Choose “is” in the Operator dropdown (it auto-populates with a True/False selector).  
+16. Pick false from the Value dropdown.  
+17. Click the “OR” link at the end of this third row.  
+18. Click the blue “New criteria row” (+) to add the fourth row.  
+19. Pick “Category” from the Field dropdown.  
+20. Keep “is” as the Operator.  
+21. Enter Services in the Value field and press Enter.  
+22. Click the “OR” link at the end of the fourth row.  
+23. Click the blue “New criteria row” (+) to add the fifth and final row.  
+24. Choose “Name” from the Field dropdown.  
+25. Ensure the Operator reads “is”.  
+26. Type Web Conferencing into the Value box and press Enter.  
+27. Review the condition builder; you should now see five rows connected exclusively by the word OR, confirming that any single match will be returned.  
+28. Click the blue “Run” button in the upper-right corner of the filter panel.  
+29. Observe the list refresh; verify that every displayed record satisfies at least one of the five conditions (we can spot-check by scanning the Short description, Type, Active, Category, and Name columns).  
+30. Click the “Save” dropdown beside the Run button and choose “Save as” if you want to store this filter; type WebConferencing_Or_Filter, click “Save”, and confirm it appears under the “Filters” menu for future reuse.

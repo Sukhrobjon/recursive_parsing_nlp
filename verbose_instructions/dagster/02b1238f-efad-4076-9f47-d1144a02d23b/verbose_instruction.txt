@@ -1,0 +1,33 @@
+1) Switch to VS Code. In the Explorer side-bar click the folder path ​iris_classification/assets​.  
+2) Double-click the file ​__init__.py​ inside that folder to open it in the editor.  
+3) Scroll to the bottom of the file, then type the new Dagster-Mill asset code block exactly as shown:  
+```python
+from dagstermill import define_dagstermill_asset
+from dagster import AssetIn, file_relative_path
+
+iris_kmeans_notebook = define_dagstermill_asset(
+    name="iris_kmeans_notebook",
+    notebook_path=file_relative_path(__file__, "../notebooks/iris-kmeans-notebook.ipynb"),
+    ins={"iris": AssetIn("iris_data")},
+    group_name="classification",
+)
+```  
+   Note that we import define_dagstermill_asset, AssetIn, and file_relative_path so Dagster can register the notebook as an asset that consumes the existing ​iris_data​ asset.
+
+4) Press Ctrl+S to save ​__init__.py​.  
+5) Switch to the Chromium tab that already has the notebook ​iris-kmeans-notebook.ipynb​ open.  
+6) Click once inside the cell that starts with the comment `# fetch the Iris dataset` so it becomes highlighted.  
+7) On the top menubar choose View ▸ Right Sidebar ▸ Show Notebook Tools (if it is not already visible).  
+8) In the right sidebar click COMMON TOOLS to expand the section.  
+9) Under Cell Tags, click the Add Tag textbox, type parameters, and press Enter.  
+   Reasoning: Dagster-Mill uses the tag “parameters” to inject upstream data (here, the ​iris​ dataframe from iris_data).  
+
+10) Press Ctrl+S again to save the notebook with the new tag.  
+11) Switch to the Dagster web UI browser tab titled “Asset Group: classification”.  
+12) Click the blue Reload definitions button in the top-right corner.  
+    Verification: After a few seconds you should see a new node labelled iris_kmeans_notebook connected downstream from iris_data in the graph.  
+
+13) Click the green Materialize all button above the lineage graph.  
+14) In the modal that appears, leave default selections and click Launch run.  
+15) Wait for the run page to load; you will see the op log for ​iris_kmeans_notebook​. Confirm the step finishes with a green ✓ status.  
+16) Navigate back to Assets ➜ classification and observe that both iris_data and iris_kmeans_notebook now show the latest materialization timestamp, verifying K-means clustering on the Iris dataset completed successfully.

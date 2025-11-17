@@ -1,0 +1,15 @@
+1. Switch to the Chromium browser window that is already pointing to your Astronomer-hosted Airflow web UI (default http://localhost:8080).  
+2. Click the blue Airflow logo in the upper-left corner to make sure you are on the main “DAGs” home page.  
+3. Type workFlow_Echo into the “Filter” search bar at the top-right of the DAGs list and press Enter so that only your target DAG appears.  
+4. Find the row labeled workFlow_Echo and glance at the “Last Run” column—verify the timestamp corresponds to the most recent execution (we will reference this in a moment).  
+5. Click directly on the DAG name workFlow_Echo (not the toggle or triangle) to open the DAG Details screen.  
+6. Observe the Execution Date dropdown in the upper-right corner; it should automatically show the latest run.  If it does not, click the dropdown and select the topmost timestamp so we are definitely inspecting the most recent run.  
+7. Locate and click the Graph tab just below the DAG title so the task nodes display visually (Graph view is faster for selecting a single task).  
+8. In the Graph canvas, find the task square labeled processing (you may need to zoom with the trackpad or the “+” button until task names are readable).  
+9. Click the processing task square once; a grey pop-up menu appears.  
+10. Click the leftmost blue Logs button in that pop-up (the icon looks like a page with lines).  
+11. Wait a few seconds while Airflow loads the log; the screen should now read “Log: workFlow_Echo > processing” at the top.  
+12. Scroll through the log pane and confirm you see timestamped lines such as *** Starting attempt ... and any Python print statements from your processing code—this verifies we are indeed viewing the correct log.  
+13. (Optional) Click the Download button in the upper-right of the log pane if you want to save the file for offline debugging.  
+14. Press the browser Back arrow once to return to the Graph view when finished.  
+15. Confirm no additional navigation is needed—your processing task log for the most recent workFlow_Echo run has now been successfully accessed.

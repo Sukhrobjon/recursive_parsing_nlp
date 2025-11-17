@@ -1,0 +1,16 @@
+1. Navigate to https://console.cloud.google.com/bigquery to open the BigQuery Web UI.  
+2. Click the triangle ▸ next to project my_company, then ▸ analytics, and finally ▸ financials to expand the list of tables; locate revenues_2023.  
+3. Click revenues_2023 once so its Table detail panel opens on the right; scroll through the Schema tab and confirm we see a column named Revenue (we will use this in the query).  
+4. Click the + Compose Query button (white page icon with a plus) in the top toolbar to open a blank SQL editor tab.  
+5. Write the following SQL in the editor to isolate just the Revenue column and keep its header:  
+```sql
+SELECT
+  Revenue
+FROM
+  `my_company.analytics.financials.revenues_2023`;
+```  
+6. Click the blue ▸ RUN button above the editor to execute the query; wait a moment until “Query complete” appears and the results grid shows one column titled Revenue.  
+7. Click SAVE RESULTS in the gray bar that sits directly above the results grid (right side).  
+8. In the dropdown, select Google Sheets ➜ Create new spreadsheet; BigQuery will pop up a dialog with a suggested file name like revenues_2023_<timestamp>.  
+9. Type “Revenue_Only” (or any name you prefer) in the File name field, leave Location set to “My Drive,” and press EXPORT; BigQuery will create a brand-new Google Sheet containing one tab where the first row is the header Revenue followed by all corresponding values.  
+10. Click OPEN in the green confirmation toast to jump to Google Sheets and verify the new sheet now contains exactly the Revenue column plus its header.

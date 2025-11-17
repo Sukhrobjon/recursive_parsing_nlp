@@ -1,0 +1,100 @@
+1. Click “sensors.py” in the VS Code Explorer so we have a clean file to hold both the job and the sensor code.
+
+2. Type the complete, runnable Dagster code below into “sensors.py”.  
+```python
+import os
+from dagster import op, job, sensor, RunRequest
+
+# Folder we are watching.  Make sure it already exists on the host machine.
+WATCH_DIR = "/home/user/file-watch-sensor/files"
+
+@op(config_schema={"filename": str})
+def log_file(context):
+    """
+    Simple op that logs the name of a newly detected file.
+    The filename is passed in through op-level config so the same job
+    can run for many different files.
+    """
+    fname = context.op_config["filename"]
+    context.log.info(f"New file detected by sensor – {fname}")
+
+@job
+def log_file_job():
+    """
+    The job that will be triggered by the sensor.
+    It contains only one op, but additional downstream ops could be
+    chained here later (e.g. parsing or moving the file).
+    """
+    log_file()
+
+@sensor(job=log_file_job, minimum_interval_seconds=30)
+def directory_sensor(context):
+    """
+    Watches WATCH_DIR for newly created files.
+    • The sensor persists a CSV list of files it has already seen in its cursor.
+    • For every brand-new filename, it yields a RunRequest that triggers
+      log_file_job with that filename passed as config.
+    """
+    # Get last-seen snapshot from the cursor ('' on first run)
+    already_seen = set(context.cursor.split(",")) if context.cursor else set()
+
+    # Current files on disk
+    current = set(os.listdir(WATCH_DIR))
+
+    # Anything in current but not in already_seen is a new file
+    new_files = current - already_seen
+
+    for fname in sorted(new_files):
+        # Each file acts as its own run_key to prevent duplicate runs
+        yield RunRequest(
+            run_key=fname,
+            run_config={
+                "ops": {
+                    "log_file": {
+                        "config": {"filename": fname}
+                    }
+                }
+            },
+        )
+
+    # Persist the full current file list so we don’t re-emit them next tick
+    context.update_cursor(",".join(sorted(current)))
+```
+   Note that:
+   • We hard-code the watched directory in the constant `WATCH_DIR`; change it only if the path on disk is different.  
+   • `minimum_interval_seconds=30` tells Dagster not to run this sensor more than once every 30 s, which is usually fast enough for local testing.
+
+3. Press `Ctrl+S` to save “sensors.py”.
+
+4. Switch to the integrated terminal in VS Code (or open a new one with `Ctrl+``).
+
+5. Type the command below and hit Enter to boot Dagster in dev mode so our new definitions are loaded:  
+```bash
+dagster dev
+```
+   The terminal prints a URL, typically `http://127.0.0.1:3000`, and indicates that Dagit and the Dagster daemon are running.
+
+6. Change to your browser (Chrome/Chromium) and navigate to `http://127.0.0.1:3000` (or the URL shown in the terminal).
+
+7. Click “Sensors” in the left navigation bar; Dagit lists every sensor in the current workspace. We can see `directory_sensor` in the table.
+
+8. Click the toggle switch on the far-right of the `directory_sensor` row.  
+   • The status column changes from “Stopped” to “Running”.  
+   • A toast at the bottom-left confirms the sensor has been started.
+
+9. (Optional sanity check) Click the sensor’s name “directory_sensor” to open its details panel. We can see:
+   • “Next tick: in ~30 s” indicating the scheduler is active.  
+   • An empty “Recent Ticks” list (because it has not fired yet).
+
+10. Open a separate terminal window (or the host OS file manager) and create a test file inside the watched directory:  
+```bash
+echo "hello sensor" > /home/user/file-watch-sensor/files/test_1.txt
+```
+
+11. Wait for one sensor tick (~30 s). Then in Dagit:
+    a. Observe a new entry in “Recent Ticks” showing status “Success”.  
+    b. Click the Run ID linked in the tick row to open the run page for `log_file_job`.  
+    c. In the Logs panel, we can see the message “New file detected by sensor – test_1.txt”, proving the job received the filename.
+
+12. Repeat step 10 with a different filename (e.g., `touch /home/user/file-watch-sensor/files/test_2.csv`).  
+    The sensor will create a second run (unique run_key) and again log the filename—in real time we have a fully working directory sensor that launches `log_file_job` on every new file.

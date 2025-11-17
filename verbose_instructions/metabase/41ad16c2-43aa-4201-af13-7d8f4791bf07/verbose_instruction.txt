@@ -1,0 +1,32 @@
+1. Open a terminal window in the directory where you want to keep Metabase (e.g., /home/$USER/metabase).  
+2. Verify Java is available by typing:  
+   ```bash
+   java -version
+   ```  
+   Note that you should see an OpenJDK or Oracle Java version 11+ message; otherwise install Java (e.g., `sudo apt-get install openjdk-17-jdk` on Debian/Ubuntu) before proceeding.  
+3. Download the Metabase open-source JAR to the current directory by executing:  
+   ```bash
+   wget -c https://downloads.metabase.com/v0.49.7/metabase.jar
+   ```  
+   We can see the progress bar reach 100 % when the 300-MB-ish file is fully saved.  
+4. (Optional) Confirm the file exists by listing the directory:  
+   ```bash
+   ls -lh metabase.jar
+   ```  
+   You should see a single JAR roughly 300 MB in size.  
+5. Tell Metabase to listen on port 3000 by exporting the environment variable before launch:  
+   ```bash
+   export MB_JETTY_PORT=3000
+   ```  
+   We will use this later so that `http://localhost:3000` opens the UI.  
+6. Start the Metabase server in the foreground:  
+   ```bash
+   java -jar metabase.jar
+   ```  
+7. Watch the terminal logs. First we see “Metabase Initialization” messages, then lines such as `... Metabase Initialization COMPLETE`. Wait until you read:  
+   `Metabase Started and listening on port 3000`.  
+8. Switch to your web browser (Chrome/Firefox/Safari).  
+9. Type the URL `http://localhost:3000` into the address bar and press Enter.  
+10. Observe that the Metabase “Welcome to Metabase” setup wizard page loads.  
+11. Return to the terminal and confirm there are no ERROR lines after the page request (helpful verification that the server is stable).  
+12. Leave the terminal session running while you use Metabase; press Ctrl-C later when you want to stop the server.

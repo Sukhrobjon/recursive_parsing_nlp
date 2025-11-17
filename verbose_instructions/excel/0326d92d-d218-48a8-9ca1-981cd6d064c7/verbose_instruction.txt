@@ -1,0 +1,78 @@
+1) Navigate to https://console.cloud.google.com/bigquery so you land on BigQuery Web UI.  
+2) Check that the correct GCP project (for example, my_project) is highlighted in the Explorer panel on the left.  
+3) Click the triangle ► next to project my_project to expand it.  
+4) Click the triangle ► next to dataset sales_data so we can see all tables inside it.  
+5) Click table monthly_sales to display its schema; we can see two useful fields:  
+   • month  – DATE (first day of each calendar month)  
+   • sales_amount – NUMERIC (individual order total)  
+   Note that we will aggregate the raw order-level rows into month buckets in the next step.  
+6) Click the + Compose new query button (just under the blue ribbon) to open a blank SQL editor tab.  
+7) Write the query that summarizes each month’s total sales.  Type (or paste) the following code block exactly:  
+```sql
+-- 1) Monthly total sales
+WITH month_total AS (
+  SELECT
+    DATE_TRUNC(month, MONTH) AS month_start,
+    SUM(sales_amount)        AS total_sales
+  FROM
+    `my_project.sales_data.monthly_sales`
+  GROUP BY
+    month_start
+  ORDER BY
+    month_start
+),
+
+-- 2) Month-over-month growth expressed as a decimal
+growth AS (
+  SELECT
+    month_start,
+    SAFE_DIVIDE(
+      total_sales - LAG(total_sales) OVER (ORDER BY month_start),
+      LAG(total_sales)              OVER (ORDER BY month_start)
+    ) AS growth_rate
+  FROM month_total
+)
+
+-- 3) Final result set with two “virtual rows” required by the task
+SELECT
+  'Total'  AS row_header,
+  month_start,
+  total_sales AS value
+FROM month_total
+
+UNION ALL
+
+SELECT
+  'Growth' AS row_header,
+  month_start,
+  growth_rate AS value
+FROM growth
+ORDER BY
+  row_header,       -- guarantees “Total” rows appear first
+  month_start;
+```
+8) Click the ▷ RUN button in the query toolbar to execute.  
+9) Wait a few seconds until the green check mark appears and the Query results table is shown below.  
+10) Confirm that the first block of rows (row_header = “Total”) shows numbers like 12345.67 while the second block (row_header = “Growth”) shows decimals such as 0.08, –0.03, etc.; this verifies both calculations ran correctly.  
+11) Click the CHART tab located immediately to the right of the “Job information” tab inside the result area. A new visual-building canvas opens.  
+12) In the Chart type dropdown, choose Bar to satisfy the first requirement.  
+13) Drag month_start from the Fields list into the X-axis bucket.  
+14) Drag value into the Y-axis bucket.  
+15) Drag row_header into the Filter bucket, then select only Total so that only the bar series for total sales is displayed.  
+16) In the upper-left of the canvas, click Untitled chart and type Total to set the title.  
+17) Click the paint-roller icon (Customize) on the right side, locate the Legend toggle, and turn it off so no legend is displayed.  
+18) Click the floppy-disk Save as chart button (top right of the canvas). Give it the name Total_Monthly_Sales and press Save; this stores the chart inside the current project for future reference.  
+19) Now switch back to the Results table tab by clicking Table (left of Chart).  
+20) Click Chart again to open a second visual tab (BigQuery creates a new blank canvas each time).  
+21) In Chart type, choose Line to visualize growth.  
+22) Drag month_start to the X-axis bucket.  
+23) Drag value to the Y-axis bucket.  
+24) Drag row_header to the Filter bucket and tick only Growth so we plot just the growth series.  
+25) Click Untitled chart in the upper-left and rename it Growth.  
+26) Open the Customize pane again, toggle Legend to off (same as Step 17).  
+27) Click Save as chart, name the object Monthly_Growth_Rate, and press Save.  
+28) Optionally verify both charts appear under the “Saved charts” section of the Explorer panel; we can reopen them anytime.  
+29) We have now:  
+    • Calculated Total sales per month and plotted them as bars in a chart titled “Total.”  
+    • Calculated Growth rate between consecutive months and plotted them as a line chart titled “Growth.”  
+    • Removed legends from both charts per requirements.

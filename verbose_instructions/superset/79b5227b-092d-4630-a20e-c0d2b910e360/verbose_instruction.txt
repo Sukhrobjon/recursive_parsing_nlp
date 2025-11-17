@@ -1,0 +1,14 @@
+1. Navigate to the opened browser tab that contains your BI tool and Click the top-level menu item labeled “Dataset”.  
+2. Locate the row that contains the table name flights and Click directly on the flights link to open its dataset builder.  
+3. Drag the Department field from the left-hand column (under the list of columns) into the DIMENSIONS drop zone in the center panel.  
+4. Drag the cost field from the same left-hand column into the METRICS drop zone.  
+5. Hover over the just-added cost pill in METRICS and Click the small AGGREGATE drop-down that appears.  
+6. Select AVG from the drop-down list so we aggregate cost by average. (Note that the label on the pill should now read AVG(cost); we will use this later when reading the chart.)  
+7. Click the blue CREATE CHART button located at the bottom of the builder pane.  
+8. Wait until the preview renders on the right side; we can see a table with two columns: Department and AVG(cost).  
+9. Click the SAVE button in the upper-right corner of the screen.  
+10. Select Save as… in the small modal that appears.  
+11. Type Mychart into the Chart Name field exactly as shown.  
+12. Click the Save button on the modal to persist the visualization.  
+13. Navigate back to the main navigation bar and Click Charts.  
+14. Verify that a new thumbnail titled Mychart is visible in the list; this confirms the chart was saved successfully.

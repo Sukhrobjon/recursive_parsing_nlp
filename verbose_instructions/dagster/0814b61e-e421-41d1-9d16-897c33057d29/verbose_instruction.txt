@@ -1,0 +1,9 @@
+1. Locate the browser tab that is already showing the Dagster UI; if it is not in view, Switch to the tab titled “Dagster – Assets”.  
+2. Hover over the left sidebar and Click the “Assets” icon (diamond-shaped) so the asset lineage graph appears in the main panel.  
+3. Scroll or pinch-zoom on the canvas until we can see the asset node labeled `top10_story_ids`—it should sit near the top center of the graph.  
+4. Click directly on the `top10_story_ids` node; the node border will turn blue and a right-hand “Asset Details” drawer will slide open, confirming the selection.  
+5. Verify in the header of the right drawer that only 1 asset is selected (look for the text “1 selected”); if any additional assets are highlighted, Ctrl+Click them to deselect so that only `top10_story_ids` remains blue.  
+6. Click the “Materialize selected” button located in the upper-right corner of the lineage graph toolbar.  
+7. In the confirmation modal that pops up, review that the list contains only `top10_story_ids`, then Click the green “Materialize” button.  
+8. Wait while Dagster redirects to the “Runs” page; we can see a progress bar labeled with the new Run ID. When the status indicator turns from “STARTED” to the green “SUCCESS” badge, the materialization is complete.  
+9. Click the breadcrumb “Assets” in the top nav bar, Click the `top10_story_ids` node again, and check the right-hand drawer: the “Last materialized” timestamp should now reflect the current time, confirming success.

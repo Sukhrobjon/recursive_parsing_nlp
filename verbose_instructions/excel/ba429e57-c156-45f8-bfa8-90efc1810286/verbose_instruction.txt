@@ -1,0 +1,7 @@
+1. Click cell C1.  
+2. Type “Maturity Date” and press ENTER to create the header.  
+3. Click cell C2.  
+4. Type the formula `=A2+B2` and press ENTER so Excel adds the loan start date in column A to the term in column B.  
+5. Click the small square “fill handle” at the bottom-right corner of cell C2 (the cursor turns into a black cross).  
+6. Drag the fill handle straight down to cell C10, then release the mouse so the formula copies through all loan rows.  
+7. Press Ctrl + S to save the workbook and keep the new “Maturity Date” column.

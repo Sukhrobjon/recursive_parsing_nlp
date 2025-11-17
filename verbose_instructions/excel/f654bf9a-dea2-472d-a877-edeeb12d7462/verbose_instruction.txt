@@ -1,0 +1,30 @@
+1. Click any single cell inside your raw data table on sheet “SalesData” (e.g., A2 which should contain a date).  
+2. Press Ctrl + A to highlight the entire contiguous data block so Excel knows the full range.  
+3. Click the “Insert” tab on the Ribbon.  
+4. Click the “PivotTable” button in the Tables group.  
+5. In the Create PivotTable dialog:  
+   a. Verify the Table/Range box shows something like `SalesData!$A$1:$B$5000` (adjusted to your data).  
+   b. Select the radio option “New Worksheet”.  
+   c. Click OK. Excel creates “Sheet1” (or “Sheet2” if that name is taken) with an empty pivot table frame.  
+6. Locate the PivotTable Fields pane (usually on the right).  
+7. Drag the field “Date” from the top list down into the “Rows” quadrant.  
+8. Drag the field “Revenue” into the “Values” quadrant. It should default to “Sum of Revenue”. If it shows “Count”, click the dropdown arrow on that field → “Value Field Settings” → choose “Sum” → OK.  
+9. Right-click any date label inside the pivot (e.g., “01/02/2024”).  
+10. Choose “Group…”.  
+11. In the Grouping dialog:  
+    a. Click “Days” to deselect it (if selected).  
+    b. Click “Weeks” so it is checked.  
+    c. Ensure “Starting at” and “Ending at” look correct.  
+    d. Click OK. The row labels now change to “2024-W01”, “2024-W02”, etc., each showing a summed revenue.  
+12. Click once anywhere inside the pivot to activate the PivotTable Analyze ribbon.  
+13. Press Ctrl + Space to select the entire pivot table body (not the Grand Total row).  
+14. Click the “Insert” tab again.  
+15. Click the “Line” drop-down arrow in the Charts group and choose the very first “Line” subtype. Excel drops a line chart on the same new sheet.  
+16. With the chart still selected, go to the “Chart Design” ribbon and click “Add Chart Element” → “Chart Title” → “Above Chart”.  
+17. Click inside the title box and type “Weekly Revenue”. Press Enter.  
+18. While still on “Chart Design”, click “Legend” → “None” to remove the legend (redundant since we have only one series).  
+19. Resize the chart: drag its bottom-right corner so it’s wide enough to show all week labels clearly.  
+20. Verify the numbers: compare the Grand Total in the pivot table against a quick SUM in the raw data (e.g., on “SalesData”, in an empty cell type `=SUM(B:B)` and press Enter). Both totals should match.  
+21. Save your work: press Ctrl + S, pick a filename such as “Weekly_Revenue_Report.xlsx”, and click Save.
+
+We have now (1) summarized revenue by week in a pivot table on a new sheet, and (2) displayed that weekly revenue as a line chart on the same sheet.

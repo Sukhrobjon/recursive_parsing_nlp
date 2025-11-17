@@ -1,0 +1,21 @@
+1) Launch JupyterLab and click the blue “Terminal” icon in the Launcher panel to open a new shell window.  
+2) Type the command below and press Enter to list every registered kernel on your system:  
+```bash
+jupyter kernelspec list
+```  
+   Note that the left-hand column shows the short kernel names (e.g. python-jupyterlab) while the right-hand column shows the installation paths—we will need the exact short name in the next step.  
+3) Copy (or note) the exact short name that corresponds to “Python (jupyterlab)”. Typically it appears as python-jupyterlab or python_jupyterlab.  
+4) Run the uninstall command, replacing NAME with the kernel name you copied:  
+```bash
+jupyter kernelspec uninstall NAME
+```  
+   Example:  
+```bash
+jupyter kernelspec uninstall python-jupyterlab
+```  
+5) When prompted with “Remove kernel spec NAME? [y/N]”, type y and press Enter.  
+6) Verify the kernel is gone by repeating step 2:  
+```bash
+jupyter kernelspec list
+```  
+   Confirm that the line for “Python (jupyterlab)” no longer appears—this confirms successful deletion.

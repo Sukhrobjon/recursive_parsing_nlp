@@ -1,0 +1,75 @@
+1) Open Visual Studio Code from the left dock and click producer_dag.py in the dags/ folder.  
+2) Type the import for Dataset at the top of the file (just under from airflow import DAG):  
+```python
+from airflow.datasets import Dataset
+```
+3) Scroll to (or search for) the PythonOperator / BashOperator that actually writes the result files – the task is currently named write_cocktail_files.  
+4) Directly above that task definition, create a Dataset object that points to the files you generate.  We will assume the producer writes one consolidated CSV under /opt/airflow/data/cocktails.csv:  
+```python
+cocktail_csv_ds = Dataset("file:///opt/airflow/data/cocktails.csv")
+```
+5) Inside the write_cocktail_files operator, add an outlets parameter so Airflow knows this task updates the dataset:  
+```python
+write_cocktail_files = PythonOperator(
+        task_id="write_cocktail_files",
+        python_callable=save_to_local_csv,
+        outlets=[cocktail_csv_ds],          # <-- NEW
+        dag=dag,
+)
+```
+   Note that outlets is available from Airflow 2.4 onward; it registers the run’s dataset update automatically.  
+6) Press CTRL+S to save producer_dag.py.  
+
+7) Still in VS Code, click consumer_dag.py in the dags/ folder.  
+8) Add the same Dataset import at the top:  
+```python
+from airflow.datasets import Dataset
+```  
+9) Paste the identical dataset definition near the top of the file so both DAGs reference the exact same object string:  
+```python
+cocktail_csv_ds = Dataset("file:///opt/airflow/data/cocktails.csv")
+```  
+10) Locate the DAG instantiation line that currently reads something like:  
+```python
+dag = DAG(
+    dag_id="cocktail_consumer",
+    schedule_interval="0 2 * * *",
+    ...
+)
+```  
+11) Replace the schedule_interval with the datasets argument so the consumer DAG will be data-aware:  
+```python
+dag = DAG(
+    dag_id="cocktail_consumer",
+    schedule=[cocktail_csv_ds],   # <-- TRIGGER WHEN DATASET CHANGES
+    catchup=False,
+    default_args=default_args,
+)
+```  
+   • Remove or comment out the old schedule_interval line – having both will raise an exception.  
+
+12) Press CTRL+S to save consumer_dag.py.  
+
+13) Switch to the integrated terminal tab in VS Code (or open a new terminal at /home/astro).  
+14) Execute the Astronomer restart so Airflow reloads the edited DAGs:  
+```bash
+astro dev restart
+```  
+   Wait until the terminal prints “Airflow webserver is healthy”.
+
+15) Click Chromium in the dock to open the Airflow UI (http://localhost:8080).  
+16) In the DAGs list, locate cocktail_producer and cocktail_consumer.  
+17) Click the toggle switch to the left of each name so both DAGs are unpaused (blue).  
+18) Trigger one manual run of the producer to confirm the chain: click the play (▶) button under the Actions column for cocktail_producer, then click Trigger in the pop-up.  
+
+19) Watch the “Recent Tasks” toast in the lower-right; when the write_cocktail_files task shows Success, Airflow’s dataset feature will automatically enqueue a run for cocktail_consumer.  
+20) Click the Graph icon for cocktail_consumer — you should see a run whose Start Date matches the time the producer finished.  
+
+21) Verify by opening the consumer run’s Log:  
+    a. In the Grid view, click the square for its first task.  
+    b. On the right panel click Logs.  
+    c. Confirm the log timestamp is just after the producer’s finish time – this proves data-aware scheduling is working.  
+
+22) (Optional) Manually edit /opt/airflow/data/cocktails.csv in the container to simulate new data and re-run the single write task; observe that another consumer run is triggered automatically.  
+
+We have now linked the consumer DAG schedule directly to updates of the producer’s output file, enabling fully data-driven orchestration without fixed cron expressions.

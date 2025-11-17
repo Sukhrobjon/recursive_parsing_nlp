@@ -1,0 +1,39 @@
+1. Open your web browser and go to https://console.cloud.google.com/bigquery so we land in the BigQuery console.  
+2. Click the project drop-down (top-left just under the Google Cloud logo) and make sure you are inside the project that contains the Sample Database.  
+3. In the Explorer panel on the left, click the ​▶​ triangle next to the project name to expand its datasets.  
+4. Click the ​▶​ triangle next to sample_db (or the exact dataset name that holds the Orders table) so we can view its tables.  
+5. Click the table orders to highlight it and then look at the Schema tab in the right-hand information panel; confirm there are fields named created_at (TIMESTAMP or DATETIME) and total (NUMERIC). We will use these two columns in our query.  
+6. Click the blue +Compose Query button (upper-right of the console toolbar) to open a new blank SQL editor tab.  
+7. Type or paste the following SQL query into the editor:  
+
+```sql
+-- Sum of Total by month for the Orders table
+SELECT
+  DATE_TRUNC(created_at, MONTH) AS order_month,
+  SUM(total) AS sum_total
+FROM
+  `sample_db.orders`
+GROUP BY
+  order_month
+ORDER BY
+  order_month;
+```  
+
+Note that DATE_TRUNC groups every order into the first day of its month; ordering lets the chart connect the points chronologically.  
+8. Click the ► Run button in the query toolbar to execute the SQL. Wait until the green check mark and timing information appear.  
+9. Verify in the Query results pane that we see two columns: order_month and sum_total.  
+10. In the same Query results pane, click the Explore data button (small compass icon) and choose Explore with chart. A Chart Builder panel appears at the bottom.  
+11. Inside the Chart Builder panel, click the Chart type dropdown and select Line.  
+12. Drag order_month from the Available fields list to the X-axis bucket.  
+13. Drag sum_total to the Y-axis bucket; aggregation is already SUM, matching the query. Now the basic line chart appears.  
+14. Click the Customize tab (paint-roller icon) in the Chart Builder to adjust styling.  
+15. Scroll to “Goal line” (or “Reference line” depending on UI version) and click +Add goal line.  
+16. Type 40000 in the Value box, press Enter, and optionally change the line color or label (“Goal = 40K”).  
+17. Still under Customize, scroll down to “Trend line”, tick the checkbox Add trend line, and leave the default Linear option so BigQuery overlays a regression line on the series.  
+18. Review the preview; the chart should show monthly sums, a horizontal goal line at 40 000, and a slanted trend line.  
+19. Click the Download button (down-arrow icon) in the top-right corner of the chart preview and choose PNG. BigQuery immediately generates and downloads a file named something like chart.png to your browser’s default download folder.  
+20. Open your operating system’s file manager and navigate to the Downloads folder.  
+21. Rename the newly downloaded file to line_chart.png (right-click → Rename).  
+22. Drag or move the file line_chart.png to the Desktop folder so it is easily accessible.  
+
+The line chart with monthly order totals, a 40 000 goal line, and a trend line is now saved on your Desktop as "line_chart.png".

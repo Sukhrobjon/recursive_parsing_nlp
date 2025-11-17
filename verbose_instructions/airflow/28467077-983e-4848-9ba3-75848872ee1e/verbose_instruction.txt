@@ -1,0 +1,11 @@
+1. Click the Admin button in the top-level Airflow menu bar  
+2. Select Connections from the drop-down list that appears  
+3. Click the blue + button at the upper-right of the List Connections table to open the Add Connection form  
+4. Type postgres_conn into the Connection Id field  
+5. Click the Connection Type drop-down, scroll until you see Postgres, and click Postgres to select it  
+6. Type 172.17.0.1 in the Host field  
+7. Type jaffle_shop in the Database field  
+8. Type user in the Login field  
+9. Type password in the Password field (Airflow will display dots instead of the actual characters)  
+10. Type 5432 in the Port field  
+11. Click the Save button at the bottom of the form, then look for a green “Successfully added” toast notification in the upper-right corner; this confirms the postgres_conn connection is now available in the Connections list

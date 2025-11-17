@@ -1,0 +1,24 @@
+1) Click the blue “Deploy” button in the top navigation bar so the deploy-related drop-down menu appears.  
+2) Select “Jobs” from that drop-down; we jump to the Jobs list page.  
+3) Click the “Create Job” button in the upper-right corner; another menu will open.  
+4) Choose “Deploy job” from that menu; the New Job configuration screen now loads.  
+5) Type init into the “Job name” input under the Job settings section; the label beside the field should instantly reflect “init”.  
+6) Scroll to (or locate) the “Execution settings” section, then tick the checkbox labeled “Generate docs on run” so that docs are rebuilt every time this job executes.  
+7) Highlight the pre-filled Command 1 field that currently shows dbt build, press Backspace, and type the first required command exactly:  
+```bash
+dbt seed
+```  
+   Note that seeding is executed first so the CSV files land in the warehouse before any tests or model builds.  
+8) Click the “Add command” button; a new blank Command 2 row appears. Type:  
+```bash
+dbt test
+```  
+   We add testing second so we can quickly catch freshness / schema issues on the newly seeded tables.  
+9) Click “Add command” again to create Command 3. Enter:  
+```bash
+dbt run
+```  
+   This final command materializes models after the data and tests are in place.  
+10) Glance over the Commands list—ensure the order reads (1) dbt seed, (2) dbt test, (3) dbt run—and verify the “Generate docs on run” box remains checked.  
+11) Click the green “Save” button in the upper-right corner of the page; the window closes and the new job named init now appears in the Jobs table.  
+12) Run a quick validation by hovering over the init row and clicking the triangular “Run” ▶ button. Watch the run log; we should observe three consecutive steps: Seeding, Testing, Running. At the end, confirm a final “Docs generation complete” message appears—this tells us the checkbox worked.

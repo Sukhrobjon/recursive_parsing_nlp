@@ -1,0 +1,13 @@
+1. Click cell D1 in the open workbook “WeeklySales.xlsx”.  
+2. Type Week Sales COGS Summary into the formula bar directly under the ribbon, then press Enter to commit the header.  
+3. Click cell D2 (first data row of the new column).  
+4. Type the following concatenation formula into the formula bar:  
+```excel
+=$A$1 & ": " & $A2 & ", " & $B$1 & ": " & $B2 & ", " & $C$1 & ": " & $C2
+```  
+   • Note that we use absolute references ($A$1, $B$1, $C$1) for the header cells so the text labels stay fixed, and relative references (A2, B2, C2) for the row values so they update as we copy the formula downward.  
+5. Press Enter; cell D2 should now display something like “Week: 1, Sales: 12500, COGS: 9300” (values will vary based on your sheet).  
+6. Hover over the small square (fill handle) in the bottom-right corner of cell D2 until the cursor changes to a black plus sign.  
+7. Click-and-drag the fill handle straight down to cell D11 (or the last data row) to copy the formula for all rows. Release the mouse—each row in column D should now contain its own Week-Sales-COGS summary string.  
+8. Scan a few random cells in column D to verify the pattern matches “Week: [Week Value], Sales: [Sales Value], COGS: [COGS Value]” for every row; correct any anomalies if needed.  
+9. Press Ctrl+S (or click the Save icon in the upper-left) to save the updated workbook.

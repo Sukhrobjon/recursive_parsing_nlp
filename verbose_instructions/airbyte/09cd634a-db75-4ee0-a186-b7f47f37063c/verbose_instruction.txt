@@ -1,0 +1,30 @@
+1) Switch to the browser tab that shows airbyte_ui.  
+2) Click the menu item “Connections” on the left navigation bar.  
+3) Click the row that contains the connection you want to export (the whole row becomes highlighted).  
+4) Look at the browser’s address bar; copy the UUID found between “/connections/” and “/status”.  
+   • Example URL: `http://localhost:8000/connections/3f9c1be8-1dd5-43c7-9b66-7f7bd2b40ab3/status`  
+   • The value `3f9c1be8-1dd5-43c7-9b66-7f7bd2b40ab3` is the ConnectionId.  
+   Note that we will paste this ID into the next command.  
+
+5) Switch to the terminal window.  
+6) Type the following command, replacing `<ConnectionId>` with the UUID you just copied, then press Enter:  
+```bash
+connection_config=$(curl -s -X POST http://localhost:8000/api/v1/connections/get \
+  -H "Content-Type: application/json" \
+  -d "{\"connectionId\": \"<ConnectionId>\"}")
+```  
+   • The `-s` flag hides progress output so only JSON is returned.  
+   • The response is stored in the shell variable `connection_config`.
+
+7) Run the command below to write the JSON to a file named `connection.json` on your Desktop:  
+```bash
+echo "${connection_config}" > ~/Desktop/connection.json
+```  
+
+8) Execute a quick check to confirm the file was saved correctly:  
+```bash
+cat ~/Desktop/connection.json | jq '.connectionId, .source, .destination'
+```  
+   • You should see your ConnectionId and basic source/destination info printed, confirming the JSON is valid and complete.  
+
+9) Tell your colleague the file is located at `~/Desktop/connection.json`; they can open or transfer it as needed.

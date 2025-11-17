@@ -1,0 +1,28 @@
+1. Open your web browser (Chrome, Firefox, or Edge) and type the URL of the hardware store’s online portal (for example, https://hardware-store.example.com) in the address bar, then press Enter.  
+2. Click the “Log In” button in the upper-right corner of the homepage.  
+3. Type your corporate email in the “Email” field, type your password in the “Password” field, and click the blue “Sign In” button.  
+4. Wait until the dashboard loads; we should see a left-hand navigation pane labeled “Products,” “Orders,” and “Account.”  
+5. Click “Products” in the left-hand pane to expand the product categories.  
+6. Click the category labeled “Computers & Laptops” to display all available laptop SKUs.  
+7. Scroll (or use the search bar at the top of the product grid) and type “Development Laptop (PC)” into the search bar, then press Enter.  
+8. Locate the card titled “Development Laptop (PC)” in the results grid and click the product name to open the detailed product page.  
+9. On the product page, confirm the item title reads “Development Laptop (PC)” and note the configuration options panel on the right side.  
+10. In the configuration options panel, click the dropdown or radio button labeled “Please specify an operating system.”  
+11. Select “Ubuntu” from the OS dropdown list.  
+12. Click the dropdown or radio button labeled “What size solid state drive do you want?” and choose “250 GB” (or “250” if the UI shows only the numeric size).  
+13. Verify the quantity box (often defaulted to “1”) appears directly under the price. Click inside the quantity box, delete the current value, type “10,” and press Tab to update the subtotal.  
+14. Review the summary on the right: we should now see “Quantity: 10,” “OS: Ubuntu,” “SSD: 250 GB,” and a total price reflecting ten units.  
+15. Click the blue “Add to Cart” (or “Add 10 to Cart”) button beneath the summary.  
+16. Wait for the confirmation toast in the upper-right corner (“10 items added to cart”) and then click the cart icon (shopping-cart symbol) in the top navigation bar.  
+17. On the cart page, verify again that:  
+    a. Product: “Development Laptop (PC)” appears once with quantity = 10  
+    b. Configuration shows “Ubuntu” and “250 GB”  
+    c. Line-item total and grand total match expectations  
+18. Click the green “Proceed to Checkout” button below the cart items.  
+19. In the checkout screen, ensure the shipping address is correct (edit if necessary), choose the preferred shipping method (e.g., “Standard 3-5 days”), and click “Continue.”  
+20. Select the pre-configured payment method (corporate card or purchase order). If prompted, type the PO number “DEV-LAPTOP-2023-10” in the field labeled “Purchase Order #.”  
+21. Check the order review page that loads: we should see “10 × Development Laptop (PC), Ubuntu, 250 GB SSD.”  
+22. Click the blue “Place Order” button at the bottom of the review page.  
+23. Wait for the order confirmation screen with an order number (e.g., “Order # HS-48392”) to appear; copy this number to the clipboard.  
+24. Click the “Download Invoice (PDF)” link on the confirmation screen and save the file to your local “Downloads” folder for records.  
+25. Open your email client, compose a new email to it-procurement@example.com with subject “Order Confirmation – 10 Development Laptops (Ubuntu/250GB SSD)” and paste the order number in the body so the procurement team is informed.

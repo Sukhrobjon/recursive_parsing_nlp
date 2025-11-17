@@ -1,0 +1,26 @@
+1. Scroll to the far-right column of your data table on Sheet1 (we assume the existing columns are “Product”, “Quantity”, and “UnitPrice”).  
+2. Click the first empty header cell immediately to the right of “UnitPrice”.  
+3. Type Revenue and press ENTER to add the new column header.  
+4. Click cell D2 (the first data cell under the new “Revenue” header).  
+5. Type  
+   ```
+   =B2*C2
+   ```  
+   and press ENTER.  
+   Note that the formula multiplies Quantity (column B) by UnitPrice (column C).  
+6. Click cell D2 again, move the mouse to the bottom-right corner until the tiny black plus (“fill handle”) appears, then double-click the handle. Excel automatically fills the formula down to the last row of contiguous data.  
+7. Press Ctrl+` (grave accent, top-left of keyboard) to toggle “Show Formulas” ON, quickly scan a few rows to verify each formula reads “=Bx*Cx”, then press Ctrl+` again to toggle back.  
+8. Click any single cell inside the data range (A1 or B2—anywhere within the table). This tells Excel which range to pre-select for the PivotTable.  
+
+9. Click Insert on the Ribbon.  
+10. Click the PivotTable icon (left-most in the Insert tab). The “Create PivotTable” dialog opens.  
+11. Ensure “Select a table or range” is selected and the Table/Range box shows something like $A$1:$D$1000 (Excel detected the full data including the new “Revenue” column).  
+12. Choose “New Worksheet”.  
+13. Click OK. Excel creates Sheet2 automatically and opens the PivotTable Fields pane.  
+
+14. In the PivotTable Fields pane, drag Product into the Rows area.  
+15. Drag Revenue into the Values area. Excel defaults to “Sum of Revenue”; that is exactly what we need.  
+16. If the number format shows plain numbers, right-click any number inside the PivotTable, choose Number Format, select Currency, set 2 decimal places, and click OK.  
+17. Double-check: the row labels list each unique product, and the right column displays its total revenue. The Grand Total at the bottom should equal the sum of the “Revenue” column on Sheet1.  
+
+18. Press Ctrl+S to save the workbook, confirming that Sheet1 now has the calculated Revenue column and Sheet2 contains the product-level revenue PivotTable.

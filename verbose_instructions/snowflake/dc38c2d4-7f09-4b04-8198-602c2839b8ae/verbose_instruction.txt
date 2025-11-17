@@ -1,0 +1,39 @@
+We will create a new worksheet, write the SQL that returns the highest-paid employee in every department, execute it, and export the results. Follow these exact steps:
+
+1. Click “Projects » Worksheets” in Snowsight’s left-hand navigation panel to open the Worksheets list.  
+2. Click the blue “+” icon in the upper-right corner of the list.  
+3. Select “SQL Worksheet” from the drop-down to open a blank worksheet tab.  
+4. Click the grey button that currently reads “No database selected” at the top of the worksheet header.  
+5. Select database “COMPANY” and schema “PUBLIC” in the pop-up selector, then click anywhere outside the menu to apply the change.  
+6. Click the button just to the right that shows a warehouse name (or “No warehouse”). Choose an active warehouse (e.g., “COMPUTE_WH”) so the query can run.  
+7. Copy-and-paste the following SQL into the blank worksheet editor pane:
+
+```sql
+-- Highest-paid employee(s) per department
+SELECT  e.employee_id,
+        e.first_name,
+        e.last_name,
+        d.department_name,
+        e.salary
+FROM    EMPLOYEES   e
+JOIN    DEPARTMENTS d
+        ON e.department_id = d.department_id
+WHERE (e.department_id, e.salary) IN (
+      SELECT  department_id,
+              MAX(salary)
+      FROM    EMPLOYEES
+      GROUP BY department_id
+);
+```
+
+8. Click the blue “Run” ▶︎ button in the upper-right of the worksheet (or press Ctrl+Enter) to execute the query.  
+9. Confirm in the Results grid below that each department appears only with its highest salary (we expect one or more rows per department if ties exist).  
+10. Click “Download Results” (down-arrow icon) in the upper-right corner of the Results panel.  
+11. Choose “Download as .csv” in the drop-down; a file such as `results.csv` will be saved by your browser.  
+12. Switch to the operating system’s file explorer (Windows “File Explorer”, macOS “Finder”, or Linux Nautilus).  
+13. Navigate to the default download location (for most browsers: `~/Downloads/`).  
+14. Right-click the newly downloaded CSV file (for example `results.csv`) and choose “Rename”.  
+15. Type `highest_salary.csv` and press Enter to save the new name.  
+16. Double-click `highest_salary.csv` to open it quickly and verify the header and rows match the Results grid in Snowsight.  
+
+You have now stored the query output locally as “highest_salary.csv”.

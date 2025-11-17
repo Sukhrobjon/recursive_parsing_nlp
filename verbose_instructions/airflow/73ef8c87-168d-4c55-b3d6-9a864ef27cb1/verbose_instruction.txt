@@ -1,0 +1,16 @@
+1. Click the Chromium icon on the left-hand dock to bring the Astronomer Airflow web-UI to the foreground.  
+2. On the top menu bar, click Admin.  
+3. Select Connections from the drop-down list that appears.  
+4. In the Connections page, click the blue + (Add a new record) button directly under the search bar.  
+5. Type http_weather_service into the Connection Id input field.  
+6. Open the Conn Type drop-down menu and choose HTTP.  
+7. Type https into the Schema field (the field label may read “Schema / Protocol”).  
+8. Type wttr.in into the Host field (leave port blank).  
+9. (Optional) Scroll down and confirm that Login, Password, Extra, and Description stay empty—we don’t need them for this public API.  
+10. Click the dark blue Save button at the bottom of the modal window.  
+11. Verify back on the Connections list that a new row with Conn Id http_weather_service and Conn Type HTTP is visible (we’ll use this in the DAG).  
+12. Click the Airflow logo in the top-left corner to return to the DAGs home page.  
+13. Locate weather_data_dag in the list; if the toggle in the left-most column is gray, click the toggle to unpause the DAG (it turns blue).  
+14. In the right-most Action column of the weather_data_dag row, click the dark gray triangle (Trigger Dag) to trigger a run immediately.  
+15. Wait a few seconds until a green success badge appears in the “Recent Tasks” mini-graph for the triggered run (refresh the page if necessary).  
+16. (Optional) Click weather_data_dag to open the Graph view, then click the latest run’s weather task; in the right panel, click Logs and confirm the HTTP call returned status code 200 and contains “Hong Kong” or similar weather output—this ensures the API call worked.

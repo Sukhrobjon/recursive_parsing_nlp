@@ -1,0 +1,24 @@
+1. Click the funnel icon (middle of the three icons to the left of the text “Change Requests View: Service Operations Workspace”) to open the filter builder panel.  
+2. Click the first “-- choose field --” dropdown that appears.  
+3. Type “Short” in the search box of the dropdown, then click “Short description” when it appears in the list.  
+4. Click the operator dropdown to the right, then select “is”.  
+5. Click the input box that appears and type Request to setup web conferencing.  
+6. Click the blue OR button (directly to the right of the condition line) so the next condition is evaluated with OR logic.  
+7. Click the new “-- choose field --” dropdown.  
+8. Type “Type” in the search box, then click Type from the list.  
+9. Click the operator dropdown, select “is”, then click the value box and type Task.  
+10. Click the OR button on the right of this second condition to add another OR clause.  
+11. Click the third “-- choose field --” dropdown that appears.  
+12. Type “Active” in the search box, then click Active.  
+13. Click the operator dropdown, choose “is”, then in the value dropdown select false.  
+14. Click OR on the right of the Active condition line to add a fourth clause.  
+15. Click the new “-- choose field --” dropdown.  
+16. Type “Category”, then click Category in the list.  
+17. Click the operator dropdown, choose “is”, then in the value box type Services.  
+18. Click OR on the right of this Category condition line to add the final clause.  
+19. Click the last “-- choose field --” dropdown.  
+20. Type “Name”, then click Name when it appears.  
+21. Click the operator dropdown, choose “is”, and type Web Conferencing in the value box.  
+22. Verify that you now have five condition rows connected by OR (you should see “OR” to the left of each line except the first).  
+23. Click the blue Run button at the top-right of the filter panel to execute the filter.  
+24. Wait a few seconds; confirm the list refreshes and only records that satisfy any of the five conditions are displayed (e.g., rows whose Short description is “Request to setup web conferencing” or whose Type is “Task”, etc.).

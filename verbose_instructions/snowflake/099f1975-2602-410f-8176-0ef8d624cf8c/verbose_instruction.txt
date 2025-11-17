@@ -1,0 +1,39 @@
+1. Navigate to https://console.cloud.google.com/bigquery so the BigQuery Web UI loads in your browser.
+
+2. Click the triangle ▸ to the left of bigquery-public-data in the Explorer panel, then scroll down and click ▸ again beside thelook_ecommerce to expose its tables.
+
+3. Click the orders table once so the Schema tab opens in the right-hand panel; we can see columns such as id, created_at, and user_id—these are the fields referenced in the SQL we’ll run next.
+
+4. Click the +COMPOSE NEW QUERY button (white sheet with a plus sign) at the top of the Explorer panel to open a blank SQL worksheet.
+
+5. Open code.txt on your computer (double-click it in your file explorer or use any text editor), press Ctrl + A then Ctrl + C to copy its entire contents.
+
+6. Click inside the new BigQuery worksheet and press Ctrl + V to paste the code. If you prefer to type it manually, the full query from code.txt is reproduced below for reference—either way, ensure it appears exactly in the editor:  
+   ```sql
+   -- Count orders for the first 10 days of January 2023
+   SELECT
+     DATE(created_at) AS order_date,
+     COUNT(*) AS num_orders
+   FROM
+     `bigquery-public-data.thelook_ecommerce.orders`
+   WHERE
+     DATE(created_at) BETWEEN '2023-01-01' AND '2023-01-10'
+   GROUP BY
+     order_date
+   ORDER BY
+     order_date;
+   ```
+
+7. Click the blue ▸ RUN button in the toolbar of the worksheet to execute the query.
+
+8. Wait a few seconds; once the green checkmark appears, the “Query results” tab will show a table of 10 rows (one per day). 
+
+9. Click the Chart tab directly to the right of “Results” in the lower panel (it has a little bar-chart icon); BigQuery automatically renders a default chart of the current result set.
+
+10. Click the Chart Type dropdown (it currently shows “Column” or “Bar”) and select Line. The visualization now uses a line chart.
+
+11. Double-click the default chart title (it may say “Chart 1” or similar), type Number of Orders in the First 10 Days, and press Enter to save the new title.
+
+12. Hover near the upper-right corner of the chart until the three-dot menu ⋮ appears, click it, and choose Download PNG. The file downloads to your browser’s default download folder as something like Chart.png.
+
+13. Go to your file manager or Downloads folder, right-click the freshly downloaded file (its name starts with “Chart”), choose Rename, and change it to chart.png. You are done!

@@ -1,0 +1,78 @@
+1. Click the VS Code icon on the left panel to bring the editor to the foreground.  
+2. Navigate to the file explorer in VS Code’s left sidebar and single–click README.md to open it in the main editor pane.  
+3. Read through README.md and note the section that shows how Markdown headings, bold, links, and block-style lists should render; we will reuse that format in our task documentation.  
+4. Press Ctrl + P (or ⌘ + P on macOS), type task_today.py, and hit Enter to open dags/task_today.py.  
+5. Scroll to the very top of task_today.py (above all imports if possible).  
+6. Type the following documentation block exactly as shown, including the triple quotes, making sure it starts at column 0:
+
+```python
+# ---- Task documentation block ----
+doc_md_doc = """
+### Purpose of this task
+
+This task **boldly** suggests a daily activity to occupy my time.
+
+Weather today: https://wttr.in/HongKong
+
+If I don't like the suggested activity I can always play some games instead.
+
+Check steam for my game: https://store.steampowered.com/
+
+Sports today: running
+gear: |
+    - running shoes
+    - sports clothes
+    - a healthy lung
+I hate running
+
+But I can watch some anime when running: https://www.bilibili.com/
+"""
+# -----------------------------------
+```
+
+7. Scroll down until you locate the existing @dag decorator (it should wrap a function such as task_today()).  
+8. Modify the decorator so it passes the Markdown variable to the doc_md parameter, exactly like this:
+
+```python
+@dag(
+    start_date=datetime(2024, 4, 1),
+    schedule="@daily",
+    catchup=False,
+    doc_md=doc_md_doc,          # ← add this line
+    tags=["example", "docs"],
+)
+```
+
+9. Inside the task_today() function, identify the PythonOperator (or whichever operator represents the single task). Immediately after that operator is defined, add one line to attach the same documentation to the task:
+
+```python
+daily_activity = PythonOperator(
+    task_id="daily_activity",
+    python_callable=suggest_activity,
+)
+daily_activity.doc_md = doc_md_doc     # ← add this line
+```
+
+10. Press Ctrl + S (⌘ + S) to save task_today.py.  
+11. Switch to the integrated terminal at the bottom of VS Code (or click the “Terminal” tab).  
+12. Execute the Astronomer dev restart command to rebuild the Airflow image with the new code:
+
+```bash
+astro dev restart
+```
+
+13. Wait until the terminal prints “Webserver: http://localhost:8080 … up” indicating Airflow has restarted.  
+14. Click the Chromium icon on the left panel to open the already-running Airflow Web UI.  
+15. In the DAGs list, locate task_today and click the grey toggle slider to unpause it (it turns blue).  
+16. Click the play (triangle) button in the Action column for task_today to trigger a manual DAG run.  
+17. Watch the “Runs” column; wait until it shows “success” (green) for the most recent execution.  
+18. Click the DAG name task_today to enter the Graph view.  
+19. Hover over or click the daily_activity task bubble; in the right-hand Details panel, click the “Documentation” tab.  
+20. Verify that the rendered Markdown shows:  
+    • The heading “Purpose of this task”  
+    • Bold text around the word “boldly”  
+    • Clickable links to wttr.in, Steam, and Bilibili  
+    • A block list under “gear:” with three dash items  
+21. Click the DAG name breadcrumb at the top to return, then hover over the empty canvas (white background) and press D. The DAG-level “Documentation” modal should show the exact same content; confirm that as well.  
+
+If both task-level and DAG-level documentation render correctly, the update is successful.

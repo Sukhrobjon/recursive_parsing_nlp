@@ -1,0 +1,13 @@
+1. Click the gear-shaped Settings icon in the upper-right corner of the Metabase screen  
+2. Select “Admin settings” from the drop-down menu  
+3. Click the “People” tab in the horizontal navigation bar at the top of the Admin panel  
+4. Click the “Groups” tab in the vertical sidebar on the left  
+5. Click the blue “Create a group” button in the upper-right corner of the Groups page  
+6. Type Project Users into the “Group name” input field that appears  
+7. Click the blue “Add” button to save the new group  
+8. Verify that a new row labelled “Project Users” now shows up in the list (this confirms the group was created)  
+9. Click the “Project Users” row to open the group details page  
+10. Click the “Add members” button in the upper-right corner of the group details page  
+11. Type J in the search box; when the drop-down list appears, click John Wilson to select him  
+12. Click the blue “Add” button to add the user to the group  
+13. Confirm that “John Wilson” now appears in the Members list of the “Project Users” group (this verifies success)

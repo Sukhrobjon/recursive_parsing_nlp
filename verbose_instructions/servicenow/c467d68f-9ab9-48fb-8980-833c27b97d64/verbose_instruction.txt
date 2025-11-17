@@ -1,0 +1,10 @@
+1. Click the “Hardware” panel in the main navigation bar and wait until the catalog page finishes loading (the spinning loader in the top-right corner disappears).  
+2. Click the search bar labeled “Search catalog” in the upper-right corner, type Development Laptop (PC), and press Enter to filter the results.  
+3. Locate the item card titled “Development Laptop (PC)” in the results grid; click anywhere on that card to open the product-detail page.  
+4. Scroll to the “Configuration” section (it sits directly beneath the product photo).  
+5. Click the radio button whose label starts with “250” under the question “What size solid state drive do you want?” to select the 250 GB SSD option.  
+6. Click the drop-down field for “Please specify an operating system,” then choose Ubuntu from the list.  
+7. Move to the right-hand summary panel labeled “Order Details,” click inside the “Quantity” input, type 10, and press Tab to confirm.  
+8. Verify that the summary panel now shows Quantity = 10, OS = Ubuntu, and SSD = 250 GB.  
+9. Click the green “Order Now” button at the bottom of the summary panel.  
+10. Wait until the confirmation toast reading “Your order has been placed” appears in the lower-right corner; this confirms the request for 10 configured laptops was successfully submitted.

@@ -1,0 +1,26 @@
+1) Click the triangle next to your project name (e.g. bigquery-project) in the Explorer panel to expand it  
+2) Click the triangle next to the dataset that holds the weekly facts table (e.g. sales)  
+3) Click the table name that stores weekly metrics (e.g. weekly_sales) so its details open on the right  
+4) Click the blue EDIT SCHEMA button in the Table details pane  
+5) Click the + ADD FIELD link under New fields  
+6) Type Profit in the Field name box  
+7) Select NUMERIC from the Type drop-down (NUMERIC handles currency and avoids floating-point rounding issues)  
+8) Leave Mode as NULLABLE so we can back-fill values in a moment  
+9) Click the blue SAVE button in the lower-right corner; BigQuery will display a green “Updated table schema” toast—this confirms the column exists but is empty  
+10) Click the COMPOSE NEW QUERY button in the upper-right to open a new SQL tab  
+11) Write the back-fill UPDATE statement that calculates Profit as Sales – COGS:  
+```sql
+-- Populate Profit for every existing row
+UPDATE `bigquery-project.sales.weekly_sales`
+SET    Profit = Sales - COGS
+WHERE  Profit IS NULL;
+```  
+12) Press the blue RUN button (▶ Run) above the editor; watch the Job Information panel—when Status shows “SUCCESS” and the affected rows count matches the table’s row count, the calculation is complete  
+13) Verify the results by running a quick spot-check SELECT:  
+```sql
+SELECT Week_ID, Sales, COGS, Profit
+FROM   `bigquery-project.sales.weekly_sales`
+ORDER  BY Week_ID
+LIMIT  10;
+```  
+14) Press RUN again; in the Results grid we can see the new Profit column and confirm that Profit = Sales − COGS for each sampled row—this completes the task

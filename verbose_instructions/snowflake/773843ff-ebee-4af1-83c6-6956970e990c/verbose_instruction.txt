@@ -1,0 +1,35 @@
+1. Click the “New Project” card on the Hasura Cloud home page that is currently open in your browser.  
+2. Leave “Region”, “Project Name”, and every other field at their default values and click the purple “Create Project” button.  
+3. Wait until the spinner next to “Provisioning” turns into a green check-mark and then click the blue “Launch Console” button that appears.  
+4. In the Console, click the “DATA” tab in the top navigation bar.  
+5. Click the gray “Connect Database” button in the upper-right corner of the Data page.  
+6. Type `VIDEOS` into the “Display Name” input box so the database will be labeled clearly in Hasura.  
+7. Switch to your desktop file explorer, open the file “information.txt”, and double-click to reveal its contents.  
+8. Highlight and copy (Ctrl + C / Cmd + C) the entire Snowflake JDBC string that starts with `jdbc:snowflake://` from the file.  
+9. Return to the browser tab with the Hasura Console.  
+10. Paste (Ctrl + V / Cmd + V) the copied Snowflake JDBC string into the “Database URL” text area.  
+11. Click the teal “Connect Database” button at the bottom of the modal.  
+12. Wait until you see a green toast message “Database added successfully” and the new “VIDEOS” link appears in the left sidebar—this confirms the Snowflake connection works.  
+13. Click the “API” tab on the top bar to open the GraphiQL window.  
+14. In the GraphiQL editor pane, delete any placeholder code and type the exact query below:
+
+```graphql
+query GetPaidSubscriptions {
+  VIDEOS_ITEMS(
+    where: {WAS_SUBSCRIPTION_PAID: { _eq: "Yes" }}
+    offset: 50
+    limit: 100
+  ) {
+    customer_id
+    created_date
+  }
+}
+```
+
+15. Click the triangular “Play” button (▶) just above the editor to execute the query.  
+16. Verify that the JSON response on the right shows exactly 100 objects (or fewer if the dataset ends), each with only “customer_id” and “created_date” keys and that every object’s “WAS_SUBSCRIPTION_PAID” is indeed “Yes”.  
+17. Click anywhere inside the response panel, then press Ctrl + A (Cmd + A) to select all and Ctrl + C (Cmd + C) to copy the full JSON result.  
+18. Switch to your desktop, right-click an empty area, choose “New” → “Text Document”, and name the file `result.txt` (make sure the extension is .txt).  
+19. Double-click `result.txt` to open it in the default text editor, then paste (Ctrl + V / Cmd + V) the copied JSON.  
+20. Press Ctrl + S (Cmd + S) to save, then close the text editor.  
+21. Return to the Hasura Console and confirm that no errors appeared in the response; if everything looks good, the task is complete.

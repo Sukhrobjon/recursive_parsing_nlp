@@ -1,27 +1,33 @@
-1) Click the “Destinations” icon on the left sidebar of the Airbyte UI so we can review where Airbyte writes the SQLite file.  
-2) Click the row that shows “Local SQLite” to open the destination settings drawer.  
-3) Read the field labelled “destination_path”; you should see “/local/epidemiology.sqlite”. Note that “/local” is only a placeholder that Docker remaps.  
-4) Recall that Airbyte’s Docker-compose sets the environment variable LOCAL_ROOT to “/tmp/airbyte_local”, so the actual file location in the running container is “/tmp/airbyte_local/epidemiology.sqlite”. We will use this full path in a moment.  
+1) Click the “Destinations” item in the left navigation bar of the Airbyte UI so the Destinations list opens.  
+2) Click the row that contains the name “Local SQLite” to open its settings drawer.  
+3) Read the field labeled destination_path; you will see the value  
+   ```
+   /local/epidemiology.sqlite
+   ```  
+   Note that “/local” is a Docker‐mounted alias for the host folder referenced by the LOCAL_ROOT variable. By default LOCAL_ROOT is /tmp/airbyte_local, so the real file inside the container is “/tmp/airbyte_local/epidemiology.sqlite”. We will use this path in the next steps.
 
-5) Switch to the Ubuntu desktop and Click the black “Terminal” icon () on the left launcher to open a shell.  
-6) Type the following command to list all running containers and press Enter:  
-```bash
-docker ps
-```  
-7) Look for the line containing the IMAGE name “airbyte/server”. Copy or note the first column (CONTAINER ID). If you prefer to grab it automatically, run:  
-```bash
-container_id=$(docker ps | grep "airbyte/server" | awk '{print $1}')
-echo $container_id   # we can see the collected ID
-```  
+4) Switch to the Ubuntu desktop and click the black “Terminal” icon (prompt symbol) on the left Dock to open a terminal window.  
+5) Type and run the command below to list all running containers so we can capture the Airbyte Server container ID:  
+   ```bash
+   docker ps
+   ```  
+   We expect one row that contains the IMAGE “airbyte/server”. The first column of that row is the container ID.
 
-8) Run the docker cp command to copy the database file out of the container and place it on your Desktop:  
-```bash
-docker cp ${container_id}:/tmp/airbyte_local/epidemiology.sqlite ~/Desktop/epidemiology.sqlite
-```  
-9) Execute ls to verify that the file now exists on the Desktop:  
-```bash
-ls -lh ~/Desktop/epidemiology.sqlite
-```  
-   We should see the file size and date; this confirms the copy succeeded.  
+6) Copy the container ID to your clipboard, then assign it to the shell variable container_id with this command (replace ABC123 with the real ID if you prefer manual typing):  
+   ```bash
+   container_id=$(docker ps | grep "airbyte/server" | awk '{print $1}')
+   ```
 
-10) Double-click epidemiology.sqlite on the Desktop (or open it with sqlitebrowser / sqlite3) to confirm it opens without error. The data is now safely stored outside the Airbyte container and can be backed up or shared as needed.
+7) Run the docker cp command to copy the SQLite file from inside the container to your Desktop, renaming it epidemiology.sqlite:  
+   ```bash
+   docker cp ${container_id}:/tmp/airbyte_local/epidemiology.sqlite ~/Desktop/epidemiology.sqlite
+   ```
+
+8) Execute the ls command to confirm the file is now on your Desktop:  
+   ```bash
+   ls -l ~/Desktop/epidemiology.sqlite
+   ```  
+   You should see a file listing with a non-zero size. If the file is present, the copy succeeded.
+
+9) Double-click “epidemiology.sqlite” on the Desktop to open it with your default SQLite viewer and verify the tables are present.  
+10) Return to the Airbyte UI and optionally stop or leave the container running; the database file is now safely stored on your Desktop.

@@ -1,0 +1,89 @@
+1. Click VS Code icon on the left dock to bring the editor to the foreground.  
+2. Expand the Explorer panel and double-click README.md so we can extract connection parameters.  
+3. Note that README.md specifies we will use a local SQLite file located at /tmp/sqlite.db and the Airflow connection id should be sqlite_conn. We will use this shortly.  
+4. Click the Chromium icon on the dock to switch to the browser that already shows the Airflow web‐UI.  
+5. Click Admin in the top menu bar.  
+6. Select Connections from the drop-down list.  
+7. Click the blue + button directly under the search bar to add a new connection.  
+8. Type sqlite_conn in the Connection Id input box.  
+9. Click the Conn Type drop-down and choose SQLite.  
+10. Type /tmp/sqlite.db into the Host input field (leave everything else blank).  
+11. Scroll to the bottom of the modal and click Save.  
+12. Verify the new row sqlite_conn now appears in the connections table—we will use it in our DAG.  
+13. Click VS Code in the dock again to return to the editor.  
+14. In the Explorer, single-click custom_check.sql so it opens.  
+15. Replace the boiler-plate content with the customised SQL check below, making sure to include the templated table_name parameter:  
+
+```sql
+-- custom_check.sql
+WITH happiness_data AS (
+    SELECT
+        AVG(CASE WHEN observation_year >= 2019 THEN bird_happiness END) AS avg_happiness_post_2019,
+        AVG(CASE WHEN observation_year < 2019 THEN bird_happiness END)  AS avg_happiness_pre_2019
+    FROM "{{ params.table_name }}"
+)
+SELECT
+    CASE
+        WHEN avg_happiness_post_2019 < avg_happiness_pre_2019 THEN 1
+        ELSE 0
+    END AS happiness_comparison
+FROM "{{ params.table_name }}"
+JOIN happiness_data;
+```  
+
+16. Press Ctrl+S (or Cmd+S) to save custom_check.sql.  
+17. Double-click dags/sql_data_quality.py to open the DAG file.  
+18. Scroll to the imports section and ensure we have the following imports (add them if missing):  
+
+```python
+from airflow import DAG
+from airflow.providers.common.sql.operators.sql import SQLCheckOperator
+from airflow.utils.dates import days_ago
+```  
+
+19. Inside the DAG definition, directly after any existing tasks (or replacing the TODO placeholder), write the custom SQLCheckOperator code:  
+
+```python
+# sql_data_quality.py  (excerpt)
+
+_CONN_ID = "sqlite_conn"
+_TABLE_NAME = "bird_observations"
+
+custom_happy_check = SQLCheckOperator(
+    task_id="custom_happy_check",
+    conn_id=_CONN_ID,
+    sql="custom_check.sql",          # file located in the same directory
+    params={"table_name": _TABLE_NAME},
+)
+# If you have other tasks, set dependencies, e.g. create_table_task >> custom_happy_check
+```  
+
+20. Press Ctrl+S / Cmd+S to save the DAG file.  
+21. Click the Terminal tab already opened at /home/user/projects/SQL_Check (or open a new one with View ➜ Terminal).  
+22. Execute the container restart so Airflow reloads our new DAG:  
+```bash
+astro dev restart
+```  
+23. Wait until the terminal prints Successfully restarted, then click Chromium to return to Airflow UI.  
+24. Locate sql_data_quality in the DAGs list and click the grey toggle to turn it on (unpause).  
+25. Click the play/triangle icon in the Action column to trigger the DAG manually.  
+26. Observe the Runs column until the square turns green (success) or red (failed). We expect green.  
+27. Click the sql_data_quality DAG name itself to open the graph view.  
+28. Find the custom_happy_check task box; it should have succeeded. Click the square for the latest run (right-most square in the mini-grid inside the task box).  
+29. In the right sidebar, click Logs.  
+30. Click the Download button located above the log viewer to download the full task log; the file will save to ~/Downloads by default.  
+31. Switch back to the terminal, but this time open one pointing to Downloads:  
+```bash
+cd ~/Downloads
+ls
+```  
+32. Identify the file that contains custom_happy_check in its filename (something like 1_sql_data_quality_custom_happy_check_*.log).  
+33. Rename the log to custom_happy_check.log so it is easy to review later:  
+```bash
+mv "<exact-old-filename>.log" custom_happy_check.log
+```  
+34. Run ls again to verify custom_happy_check.log now exists:  
+```bash
+ls
+```  
+35. Confirm the log shows Query returned a single row with value 0 meaning post-2019 happiness is greater or equal, or 1 if lower; either is acceptable depending on sample data. We have now finished creating the SQLite connection, adding the custom SQL quality check, running the DAG, and downloading the task log for inspection.

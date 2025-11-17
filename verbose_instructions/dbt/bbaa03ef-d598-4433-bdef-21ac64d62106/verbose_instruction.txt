@@ -1,0 +1,64 @@
+1. Open Visual Studio Code and click the Explorer icon (top-left files panel) so we can see the project tree.  
+2. Navigate to jaffle_shop › models and double-click schema.yml to open it in the main editor tab.  
+3. Scroll to the bottom of the file (or the section that already lists models) so we can append new tests under the existing YAML.  
+4. Type the following YAML snippet for the customers model, respecting indentation (2 spaces) and saving whenever you finish typing:  
+```yml
+  - name: customers
+    columns:
+      - name: customer_id
+        tests:
+          - unique
+          - not_null
+```  
+   Note that this block must be indented under the parent version / models key exactly like any existing model entries.  
+5. Immediately below, type the test block for the stg_customers model:  
+```yml
+  - name: stg_customers
+    columns:
+      - name: customer_id
+        tests:
+          - unique
+          - not_null
+```  
+6. Still in the same schema.yml, add the stg_orders tests right after the previous block:  
+```yml
+  - name: stg_orders
+    columns:
+      - name: order_id
+        tests:
+          - unique
+          - not_null
+      - name: status
+        tests:
+          - accepted_values:
+              values: ['placed', 'shipped', 'completed', 'return_pending', 'returned']
+      - name: customer_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_customers')
+              field: customer_id
+```  
+   We include:  
+   • unique + not_null tests for order_id  
+   • accepted_values test for status with the five allowed states  
+   • not_null and relationships tests on customer_id to ensure referential integrity with stg_customers.  
+7. Press Ctrl+S (or Cmd+S on macOS) to save schema.yml, and confirm the blue dot on the tab disappears, indicating the file is saved.  
+8. Switch to the terminal (click the Terminal panel at the bottom of VSCode or press Ctrl+` to open an integrated terminal).  
+9. Ensure you are in the project root by running:  
+```bash
+pwd
+```  
+   If the output path does not end with /jaffle_shop, run:  
+```bash
+cd path/to/jaffle_shop
+```  
+10. Run all tests with dbt:  
+```bash
+dbt test
+```  
+11. Wait for dbt to compile and execute the tests. When it finishes, look for the summary lines such as:  
+   • “All tests passed!” or  
+   • “Passed X of X tests” with zero failures.  
+   If every test shows status PASS, we’re done.  
+12. If any test fails, double-click its name in the terminal output, re-examine the failing column values in the warehouse (or run `dbt build --full-refresh` to reload data), fix data or test definitions, save, and repeat step 10 until all tests pass.

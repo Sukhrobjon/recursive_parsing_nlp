@@ -1,0 +1,15 @@
+1) Open the browser tab that already has Airbyte running (http://localhost:8000 by default).  
+2) Click the menu item “Connections” in the dark-blue left sidebar to display the list of existing connections.  
+3) Locate the required connection row (for example “postgres_to_bigquery”). If the list is long, type part of the name into the search bar at the top-right of the Connections page, then press Enter to filter.  
+4) Click the connection name hyperlink itself (not the three-dot menu) so we enter the connection’s detail page.  
+5) Press the “Sync History” tab just under the connection title; we can now see a table of past sync runs.  
+6) Look at the first row in the table (Status column should read “SUCCEEDED” or “FAILED” with the most recent timestamp).  
+7) Click the blue text “See logs” in that first row; a side panel titled “Logs” opens on the right with the full stdout / stderr output.  
+8) Scroll to the top of this Logs panel and click the gray button “Download logs” (cloud-arrow icon). The browser download dialog appears.  
+9) Change the “File name” field to exactly: airbyte_log.txt  
+10) In the location tree on the left side of the dialog, click “Desktop” once so it is highlighted as the save destination.  
+11) Click the blue “Save” button. The dialog closes and the file starts downloading to Desktop.  
+12) Wait until the browser download notification says “airbyte_log.txt – Complete”.  
+13) Minimize the browser, then double-click the “Desktop” shortcut/folder to open it and visually confirm that airbyte_log.txt is present.  
+14) Double-click airbyte_log.txt to open it with the default text editor; verify that the first few lines show recognizable Airbyte log content (e.g., “INFO i.a.w.t.BaseWorker Started worker” ).  
+15) Close the text editor—our sync log is now saved and validated on the Desktop.

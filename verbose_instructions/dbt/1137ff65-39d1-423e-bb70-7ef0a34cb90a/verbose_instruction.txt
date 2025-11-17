@@ -1,0 +1,34 @@
+1. Open a browser tab and navigate to https://console.cloud.google.com/bigquery so we land in the BigQuery Web UI.  
+2. In the Explorer panel on the left, locate your project name (for this walkthrough we will use my-project). Click the small triangle ▸ to expand it.  
+3. Click the triangle ▸ next to the dataset demo_dataset to expand it—this is where we will store our two test tables. (If you do not already have demo_dataset, click “+ ADD DATA” → “Create dataset” and create it once; then come back to this step.)  
+4. Click the “+ COMPOSE NEW QUERY” button in the top-right of the main pane to open a blank SQL editor tab.  
+5. Type (or paste) the Materialize-as-table statement for the first model:  
+```sql
+-- Model 1: minimal numeric demo
+CREATE OR REPLACE TABLE `my-project.demo_dataset.example_model_one` AS
+SELECT
+  1         AS id,
+  'model_1' AS label,
+  CURRENT_TIMESTAMP() AS loaded_at;
+```  
+6. Click the blue “RUN ▸” button in the toolbar of the query editor. Wait for the green check-mark and the row count in the “Query results” panel—this confirms example_model_one has been created.  
+7. In the same SQL editor tab, highlight (or delete) the previous SQL and write the second model’s Materialize-as-table statement:  
+```sql
+-- Model 2: simple string demo
+CREATE OR REPLACE TABLE `my-project.demo_dataset.example_model_two` AS
+SELECT
+  'alpha'   AS category,
+  2023      AS year_val,
+  CURRENT_DATE() AS snapshot_date;
+```  
+8. Press “RUN ▸” again. When the “Query complete” banner appears, we have also materialized example_model_two.  
+9. Verify that both tables exist: in the Explorer panel, click the refresh ⟳ icon next to demo_dataset; we should now see example_model_one and example_model_two listed.  
+10. Double-click example_model_one in the Explorer tree; its schema panel opens on the right so we can inspect the columns id, label, loaded_at.  
+11. Click “PREVIEW” in that schema panel—we can see the single test row we inserted.  
+12. Now execute a SELECT against the first table:  
+    a. Click the “+” icon that appears when you hover over example_model_one, then choose “Query”. A new query tab opens prefilled with `SELECT * FROM \`my-project.demo_dataset.example_model_one\``.  
+    b. Click “RUN ▸”. The result grid shows the data from model one.  
+13. Switch back to the Explorer panel, hover over example_model_two, click the “+”, and choose “Query” to open a tab for model two.  
+14. Click “RUN ▸” on that tab to execute `SELECT * FROM \`my-project.demo_dataset.example_model_two\`` and verify its contents.  
+15. (Optional) If you want to keep the output of either SELECT, click the “SAVE RESULTS” button just above the results grid, choose “CSV (local file)”, and download it to your machine.  
+16. Success—we have materialized two test example models as permanent tables and executed queries to confirm they work.

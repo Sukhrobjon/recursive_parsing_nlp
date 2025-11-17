@@ -1,0 +1,42 @@
+1) Open your terminal window so we can reach the running Docker containers  
+2) Type `docker ps` and press Enter to list all containers; confirm that a container named `airbyte-source` (or similarly prefixed, e.g. `airbyte-source-db`) is Up – we’ll connect to this one  
+3) Execute the interactive shell inside the container by typing  
+```bash
+docker exec -it airbyte-source bash
+```  
+4) Inside the container launch psql with the Airbyte-source credentials (replace placeholders if your project used different values):  
+```bash
+psql -U airbyte -d airbyte
+```  
+   Note that Airbyte’s default Postgres image has an `airbyte` user and `airbyte` database; use yours if different  
+5) Verify the current value for the row whose `id = 2` so we can see the change later:  
+```sql
+SELECT id, name
+FROM public.records
+WHERE id = 2;
+```  
+   We expect the existing name to appear (e.g. “Eg2b Inc”)  
+6) Update the record’s name to the required value:  
+```sql
+UPDATE public.records
+SET name = 'Eg2b IncAp'
+WHERE id = 2;
+```  
+7) Immediately re-query to verify the change took effect:  
+```sql
+SELECT id, name
+FROM public.records
+WHERE id = 2;
+```  
+   Confirm the output row now shows `Eg2b IncAp`  
+8) Type `\q` to quit psql, then `exit` to leave the container shell  
+9) Switch to your browser tab running the Airbyte UI  
+10) Click “Sources” in the left navigation, then click the Postgres source you modified – this lets us ensure the catalog still matches after the data edit  
+11) Click “Connections” in the left navigation, then click the existing Postgres-to-Postgres connection you already created  
+12) In the connection detail page, press the blue “Sync now” button in the top-right corner to trigger an immediate manual sync  
+13) Watch the status banner change from “Starting” → “Running” → “Succeeded” (green check). This confirms Airbyte has replicated the updated row to the destination Postgres  
+14) (Optional) Open another terminal and connect to the destination Postgres container `airbyte-destination` to confirm the target table also shows the new value:  
+```bash
+docker exec -it airbyte-destination psql -U airbyte -d airbyte -c "SELECT id, name FROM public.records WHERE id = 2;"
+```  
+   You should see one row with `id | name` => `2 | Eg2b IncAp`, proving the sync propagated correctly

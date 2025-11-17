@@ -1,0 +1,49 @@
+1) Switch to VS Code. In the Explorer left-sidebar, expand the folder “hacker_news”.  
+2) Click the blue “New File” icon. Type “story_ids_asset.py” (inside the hacker_news folder) and press Enter.  
+3) Write the following code into the new file, replacing anything already there:  
+```python
+# hacker_news/story_ids_asset.py
+from pathlib import Path
+import json
+import requests
+from dagster import asset
+
+@asset(
+    name="top10_story_ids",
+    group_name="hacker_news",
+    description="Download the list of top 10 HackerNews story ids and persist to data/story_ids.json",
+)
+def top10_story_ids():
+    # 1. Call the HackerNews API for the current top stories
+    api_url = "https://hacker-news.firebaseio.com/v0/topstories.json"
+    ids = requests.get(api_url, timeout=10).json()[:10]     # keep only first 10
+    
+    # 2. Persist the ids to the project-level data folder
+    data_dir = Path(__file__).resolve().parent.parent / "data"
+    data_dir.mkdir(parents=True, exist_ok=True)
+    output_path = data_dir / "story_ids.json"
+    output_path.write_text(json.dumps(ids, indent=2))
+    
+    # 3. Return ids so they appear in run logs / downstream assets
+    return ids
+```  
+4) Press Ctrl+S to save “story_ids_asset.py”.  
+5) In the Explorer, open “hacker_news/__init__.py”. If the file is empty, type the following import at the bottom (make sure it is not duplicated):  
+```python
+from .story_ids_asset import top10_story_ids  # noqa: F401
+```  
+6) Press Ctrl+S again to save “__init__.py”.  
+7) Switch to your terminal window. Run the Dagster dev server if it is not already running:  
+```bash
+dagster dev
+```  
+8) Change to your browser tab titled “Dagster UI”. Wait for the workspace to load, then click the blue “Reload Definitions” button in the upper-right corner.  
+9) Observe the lineage graph. Confirm a new node labeled “top10_story_ids” appears under the asset group “hacker_news”.  
+10) Click the node “top10_story_ids” once to open the right-hand panel, then click the green “Materialize” button.  
+11) Wait for the run screen to finish (status should turn to “Succeeded”). In the run logs we can see the list of 10 integers printed.  
+12) Switch back to VS Code’s terminal pane. Verify the JSON file was created by running:  
+```bash
+cat data/story_ids.json
+```  
+   You should see exactly 10 HackerNews story ids in a JSON array.  
+13) Great! The asset `top10_story_ids` is now part of the Dagster project and will continually download and store the latest top 10 HackerNews story ids in “data/story_ids.json”.

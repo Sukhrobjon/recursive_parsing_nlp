@@ -1,0 +1,8 @@
+1. Switch to “Chromium” on the left panel to bring the Astronomer Airflow tab into focus  
+2. Verify that the Airflow DAGs home page is displayed (you should see the table of DAGs with columns like “DAG”, “Schedule”, “Recent Tasks”)  
+3. Move your cursor to the top-right corner of the page and click the circular user-avatar icon (it usually shows your initials); a small drop-down menu appears  
+4. Click the “Log Out” (sometimes labelled “Sign Out”) option in that drop-down menu  
+5. Wait a few seconds until the browser automatically redirects to the Airflow login screen showing two empty fields titled “Username” and “Password” with a “Sign In” button below them  
+6. Confirm that the URL in the address bar ends with “/login”; this indicates the session has been terminated successfully  
+7. (Optional) Close the browser tab by clicking the “X” on the current tab or pressing Ctrl+W to fully exit the Airflow interface  
+8. You are now safely logged out; no further action is required

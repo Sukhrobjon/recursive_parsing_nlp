@@ -1,0 +1,93 @@
+1. Open the macOS “Finder” and double-click the “Terminal” shortcut in the dock so we can decode the protected credentials file.  
+2. Type `cd ~/Desktop` and press ⏎ to switch the working directory to the Desktop where the encrypted file lives.  
+3. Run the Base64 decoder to reveal the JSON credentials:  
+```bash
+base64 --decode snowflake_creds.b64 > snowflake_creds.json
+cat snowflake_creds.json
+```  
+   We can now see four key/value pairs such as `"account"`, `"user"`, `"password"`, and `"role"`. We will reuse these variables shortly.  
+4. Copy the values that appeared in the Terminal output (or keep the window open) so we can set environment variables for the SnowSQL CLI.  
+5. Still in Terminal, export the credentials so the current shell session (and any Python scripts) can read them:  
+```bash
+export SF_ACCOUNT="<paste account value here>"
+export SF_USER="<paste user value here>"
+export SF_PASSWORD="<paste password value here>"
+export SF_ROLE="<paste role value here>"
+```  
+6. Install SnowSQL if it is missing by running:  
+```bash
+brew install snowflake/snowsql/snowsql
+```  
+   (Skip this step if SnowSQL is already installed.)  
+7. Test the connection using the freshly exported variables:  
+```bash
+snowsql -a $SF_ACCOUNT -u $SF_USER -r $SF_ROLE \
+        -q "SELECT CURRENT_VERSION();" \
+        -o friendly=false
+```  
+   Verify that Snowflake returns a version string such as `7.52.0`, confirming the connection works.  
+8. Create a dedicated warehouse for the project. In the same Terminal session, execute:  
+```bash
+snowsql -a $SF_ACCOUNT -u $SF_USER -r $SF_ROLE -q "
+CREATE OR REPLACE WAREHOUSE transform_wh
+  WAREHOUSE_SIZE = 'XSMALL'
+  AUTO_SUSPEND  = 60
+  AUTO_RESUME   = TRUE
+  INITIALLY_SUSPENDED = TRUE;
+"
+```  
+   You should see the status `Statement executed successfully`.  
+9. Create a project-specific database:  
+```bash
+snowsql -a $SF_ACCOUNT -u $SF_USER -r $SF_ROLE -q "
+CREATE OR REPLACE DATABASE transform_db
+  COMMENT = 'Primary database for the snowflake_transform project';
+"
+```  
+10. Verify both objects exist by querying the Snowflake catalog:  
+```bash
+snowsql -a $SF_ACCOUNT -u $SF_USER -r $SF_ROLE -q "
+SHOW WAREHOUSES LIKE 'TRANSFORM_WH';
+SHOW DATABASES  LIKE 'TRANSFORM_DB';
+"
+```  
+   Ensure the result grid lists `TRANSFORM_WH` and `TRANSFORM_DB` with status “created”.  
+11. Switch to VS Code. In the Explorer sidebar, right-click the project root folder “snowflake_transform” → “New File” → type `.env` and press ⏎.  
+12. Write the following lines into `.env` so any Python script (Snowpark, SQLAlchemy, etc.) can consume the same credentials:  
+```dotenv
+SF_ACCOUNT=${SF_ACCOUNT}
+SF_USER=${SF_USER}
+SF_PASSWORD=${SF_PASSWORD}
+SF_ROLE=${SF_ROLE}
+SF_WAREHOUSE=TRANSFORM_WH
+SF_DATABASE=TRANSFORM_DB
+SF_SCHEMA=PUBLIC
+```  
+   Save the file with ⌘ + S.  
+13. Open the integrated terminal inside VS Code (⌃ + `) and test the connection through Python to double-check the environment file:  
+```python
+python - <<'PY'
+import os, snowflake.connector as sf
+ctx = sf.connect(
+    account  = os.getenv("SF_ACCOUNT"),
+    user     = os.getenv("SF_USER"),
+    password = os.getenv("SF_PASSWORD"),
+    role     = os.getenv("SF_ROLE"),
+    warehouse= os.getenv("SF_WAREHOUSE"),
+    database = os.getenv("SF_DATABASE"),
+    schema   = os.getenv("SF_SCHEMA"),
+)
+cur = ctx.cursor()
+cur.execute("SELECT CURRENT_WAREHOUSE(), CURRENT_DATABASE();")
+print(cur.fetchone())
+ctx.close()
+PY
+```  
+   The console should print `('TRANSFORM_WH', 'TRANSFORM_DB')`, confirming both the credentials and the named objects are working.  
+14. Commit the new `.env` file to version control while excluding it from pushes to public repositories. Run:  
+```bash
+echo ".env" >> .gitignore
+git add .env .gitignore
+git commit -m "Add Snowflake connection settings and ignore .env"
+```  
+15. Celebrate—the “snowflake_transform” project now has a fully functional, repeatable connection setup that uses the decoded credentials, a custom warehouse `TRANSFORM_WH`, and a dedicated database `TRANSFORM_DB`.

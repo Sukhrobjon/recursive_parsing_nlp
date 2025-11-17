@@ -1,0 +1,46 @@
+1. Open your browser and go to https://console.cloud.google.com/bigquery to launch the BigQuery Web UI.  
+2. Click the triangle ▸ next to your project name in the left-hand Resources panel to expand the datasets.  
+3. Scroll (or use the search box) and click the triangle ▸ next to the dataset that contains the table flights (for example, analytics) so we can see its tables.  
+4. Click flights to bring up its Table Info tab in the right-hand pane; review the schema to confirm there is a DATE or TIMESTAMP column named date (or flight_date) and a numeric column cost that stores the cost values—we will use both in our query.  
+5. Click the + Compose New Query button (blue plus icon at the top of the BigQuery toolbar). A blank query editor appears in the main panel.  
+6. Type (or paste) the following SQL, which first sums cost per calendar day and then computes the median of those daily sums for each week. Notice we use APPROX_QUANTILES to obtain the median (quantile 0.5):
+
+```sql
+-- weekly median trend of daily cost totals
+WITH daily_totals AS (
+  SELECT
+    DATE(date) AS flight_date,            -- convert to DATE if the column is TIMESTAMP
+    SUM(cost)  AS daily_cost_sum          -- daily aggregate
+  FROM
+    `your_project.analytics.flights`      -- adjust to the full table path you saw in Step 4
+  GROUP BY
+    flight_date
+),
+weekly_medians AS (
+  SELECT
+    DATE_TRUNC(flight_date, WEEK(MONDAY)) AS week_start,                 -- Monday-based weeks
+    APPROX_QUANTILES(daily_cost_sum, 2)[OFFSET(1)] AS weekly_median_cost -- 0.5 quantile
+  FROM
+    daily_totals
+  GROUP BY
+    week_start
+)
+SELECT
+  week_start,
+  weekly_median_cost
+FROM
+  weekly_medians
+ORDER BY
+  week_start;
+```
+
+7. Click the ▶ RUN button above the editor to execute the query. Wait until the green “Query complete” message appears and the results grid is populated.  
+8. Click the Chart tab (to the right of the Results tab in the lower panel). BigQuery automatically converts the results grid into a chart canvas.  
+9. In the chart configuration pane on the right:  
+   a. Select Line chart (ideal for a trend).  
+   b. Set Dimension to week_start.  
+   c. Set Value to weekly_median_cost (aggregation “None” because it is already aggregated).  
+   d. Confirm the x-axis shows weekly dates and the y-axis shows the median cost values.  
+10. Click the Save chart button (floppy-disk icon) in the top-right corner of the chart canvas.  
+11. Type resampling in the Name field of the dialog that appears, choose the same project for storage if prompted, and click Save.  
+12. Verify in the Explorer pane’s “Saved Charts” section (or the panel that opens automatically) that a chart titled resampling now exists—you can reopen it any time to view or share the weekly median trend.

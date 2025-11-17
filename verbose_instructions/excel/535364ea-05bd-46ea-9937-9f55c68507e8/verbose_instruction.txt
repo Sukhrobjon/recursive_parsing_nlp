@@ -1,0 +1,64 @@
+1. Open your browser and navigate to https://console.cloud.google.com/bigquery so we land in the BigQuery Web UI.
+
+2. In the Explorer panel on the left, locate your project ID (for example, my-project) and click the triangle ▶︎ to expand it.
+
+3. Click the triangle ▶︎ next to the dataset that stores raw sales data (assume it is sales_data).  
+   • You should now see the table transactions listed below the dataset.
+
+4. Click transactions to bring up the Table Details tab in the right panel and review the schema.  
+   • Make sure you see at minimum the following fields we will need:  
+     – product_name (STRING)  
+     – sales_channel (STRING)  
+     – revenue (NUMERIC)  
+   We will use these columns in our aggregation queries.
+
+5. Click the + COMPOSE NEW QUERY button (located at the top of the main pane) to open a blank SQL editor tab—this is our “new sheet” for writing and running queries.
+
+6. Type or paste the first aggregation query to create a table storing total revenue by product.  
+   ```
+   -- 1. Total revenue for each product
+   CREATE OR REPLACE TABLE `my_project.analytics.product_revenue` AS
+   SELECT
+     product_name,
+     SUM(revenue) AS total_revenue
+   FROM
+     `my_project.sales_data.transactions`
+   GROUP BY
+     product_name
+   ORDER BY
+     total_revenue DESC;
+   ```
+   Note that we are writing the results into a permanent table called analytics.product_revenue inside the same project.
+
+7. Click the blue ▸ RUN button in the toolbar of the query editor.  
+   • Wait until the green “Query complete” message appears; the “Job information” panel will confirm that the table product_revenue was created.
+
+8. Verify the table exists: in the Explorer panel, click the triangle ▶︎ next to the analytics dataset. You should now see product_revenue underneath it. This confirms our first table is built.
+
+9. Without opening a new tab, move your cursor to a new line in the same SQL editor (below the previous query) and write the second aggregation query for revenue by sales channel.  
+   ```
+   -- 2. Total revenue for each sales channel
+   CREATE OR REPLACE TABLE `my_project.analytics.channel_revenue` AS
+   SELECT
+     sales_channel,
+     SUM(revenue) AS total_revenue
+   FROM
+     `my_project.sales_data.transactions`
+   GROUP BY
+     sales_channel
+   ORDER BY
+     total_revenue DESC;
+   ```
+   We are saving this to analytics.channel_revenue.
+
+10. Highlight only the second statement (or place your cursor inside it) and click ▸ RUN again.  
+    • When it finishes, BigQuery will show “Query complete” and confirm that channel_revenue has been created.
+
+11. Expand analytics ▶︎ once more and click channel_revenue to inspect the schema and preview rows. You should see two columns: sales_channel and total_revenue, with aggregated values.
+
+12. (Optional) If you want to quickly eyeball both results together, click product_revenue, then click PREVIEW; repeat for channel_revenue. This allows us to verify our aggregations look reasonable before sharing.
+
+13. You now have two new tables in the analytics dataset:  
+    • analytics.product_revenue — total revenue per product  
+    • analytics.channel_revenue — total revenue per sales channel  
+    These can be used by teammates or BI tools for further analysis without re-running the aggregation logic.

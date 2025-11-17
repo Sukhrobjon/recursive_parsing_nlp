@@ -1,0 +1,27 @@
+1) Navigate to https://console.cloud.google.com/bigquery to open the BigQuery Web UI.  
+2) Make sure your billing project is selected in the blue project-drop-down at the top of the left navigation pane (for example, “my-analytics-proj”).  
+3) In the Explorer panel, click the triangle ▸ next to your dataset that contains the table flights (for example, “air_demo”).  
+4) Click the table name flights so we can inspect its schema; in the details pane on the right you should see a field named Cost with data type FLOAT or NUMERIC.  
+5) Click the +COMPOSE NEW QUERY button in the upper-right of the main work area to open a blank SQL editor tab.  
+6) Write the following SQL, which does two things:  
+   • Creates a virtual metric SumCost that totals the Cost column across the entire table.  
+   • Adds a virtual calculated column IntCost that casts each Cost value to an integer type (INT64).  
+
+```sql
+-- SumCost: window function gives the same total to every row (virtual metric)
+-- IntCost: simple CAST from numeric/float to integer
+SELECT
+  SUM(Cost) OVER()              AS SumCost,   -- virtual metric
+  CAST(Cost AS INT64)           AS IntCost,   -- virtual calculated column
+  *
+FROM
+  `my-analytics-proj.air_demo.flights`;
+```
+
+Note that we add “*” so all original columns remain visible; feel free to remove it if you only need the two new virtual fields.  
+7) Click the > RUN button in the toolbar of the query editor.  
+8) Wait for the Query results pane to populate; you will now see two new columns: SumCost (showing a constant grand total) and IntCost (individual rows converted to integers).  
+9) (Optional) Click SAVE RESULTS in the Query results pane if you need to export; choose CSV (local file) or another desired format.  
+10) (Optional) In the dialog that appears, leave the file name as query_results.csv, click SAVE, and the file downloads to your local ~/Downloads folder.  
+
+We have successfully created the virtual metric SumCost and the virtual calculated column IntCost for the flights table using BigQuery Web UI.

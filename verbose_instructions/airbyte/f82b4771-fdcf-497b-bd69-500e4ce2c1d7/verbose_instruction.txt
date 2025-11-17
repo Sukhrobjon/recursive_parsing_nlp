@@ -1,0 +1,16 @@
+To switch an existing Postgres-to-Postgres connection from Full refresh | Overwrite to Full refresh | Append, follow the steps below.
+
+1) Open your browser and Navigate to the Airbyte UI (typically http://localhost:8000).  
+2) Click the left-hand “Connections” menu item so we can view all configured connections.  
+3) Locate the Postgres→Postgres connection in the list (look at the “Source” and “Destination” columns for confirmation) and Click anywhere on that row to open the connection detail page.  
+4) Observe the top navigation bar inside the connection; Click the “Replication” tab (it is next to “Status” and “Settings”).  
+5) Scroll to the “Stream configuration” table; each row represents a table coming from the Postgres source.  
+6) For the first stream in the list, Click the pencil-shaped “Edit” icon on the far right of the row.  
+7) In the “Sync mode” dropdown that appears, leave the left dropdown as “Full refresh” and Click the right-hand dropdown (currently set to “Overwrite”).  
+8) Select “Append” from the dropdown options.  
+9) Click the blue “Save changes” button at the bottom of the modal to close it.  
+10) Repeat steps 6-9 for every remaining stream whose destination sync mode still shows “Overwrite” (Airbyte does not change all streams automatically).  
+11) After all rows display “Full refresh | Append”, Scroll back to the top of the page and Click the “Save & Continue” button (or “Save changes” depending on your Airbyte version).  
+12) Verify success: in the stream table each row should now read “Full refresh | Append” under the “Sync mode” column, and Airbyte shows a green “Changes saved” toast in the bottom left corner.  
+13) Click the “Sync now” button in the upper-right corner of the connection page to run an immediate sync with the new settings.  
+14) Wait until the job status turns to “Succeeded” in the job log panel; we have confirmed the connection is using Full refresh | Append.

@@ -1,0 +1,69 @@
+1. Navigate to https://console.cloud.google.com/ and Click the left-hand menu > BigQuery to open the BigQuery Web UI.  
+2. In the Explorer panel, Click the triangle next to your project id (for example, my_project) to expand it, then Click the triangle next to the analytics dataset to display its tables and views. This is where the existing model customers currently lives.  
+3. Click customers and skim the Schema tab so we remember which columns the final model must still expose (customer_id, first_name, last_name, total_spent, etc.). We will recreate the same output after refactoring.  
+4. Click the + COMPOSE NEW QUERY button in the top-right of the main work area to open a fresh SQL editor tab.  
+
+5. Write the SQL that defines the first staged model stg_customers. Replace raw_dataset with the real raw/source dataset name in your project.  
+```sql
+-- stg_customers
+CREATE OR REPLACE VIEW `my_project.analytics.stg_customers` AS
+SELECT
+    customer_id,
+    first_name,
+    last_name,
+    created_at,
+    updated_at
+FROM `my_project.raw_dataset.customers_raw`
+WHERE   -- simple example filter that was previously inside the CTE
+    is_test_record = FALSE;
+```
+6. Click the blue ▶︎ RUN button to execute. A green check mark in the Job Information panel confirms the view has been created.  
+
+7. Click the triangle next to analytics again. We can now see stg_customers listed—this tells us the first staged model is in place.  
+
+8. Click + COMPOSE NEW QUERY once more to create the second staged model stg_orders.  
+```sql
+-- stg_orders
+CREATE OR REPLACE VIEW `my_project.analytics.stg_orders` AS
+SELECT
+    order_id,
+    customer_id,
+    amount,
+    order_status,
+    order_date
+FROM `my_project.raw_dataset.orders_raw`
+WHERE order_status IN ('shipped', 'completed');
+```
+9. Press ▶︎ RUN. The stg_orders view is now visible under the same dataset in the Explorer tree.  
+
+10. Double-check both staged views: Click stg_customers, then Click Preview to eyeball a few rows; repeat for stg_orders. We confirm they return the same columns we expect to use later.  
+
+11. Now we rewrite the original customers model so it “refers” to the staged models instead of in-line CTEs. Click + COMPOSE NEW QUERY again.  
+
+12. Type the final customers model definition and point it to the two new staged views.  
+```sql
+-- customers (final model that replaces the old version)
+CREATE OR REPLACE VIEW `my_project.analytics.customers` AS
+SELECT
+    c.customer_id,
+    c.first_name,
+    c.last_name,
+    SUM(o.amount) AS total_spent,
+    MIN(o.order_date) AS first_order_date,
+    MAX(o.order_date) AS last_order_date
+FROM `my_project.analytics.stg_customers` AS c      -- ref('stg_customers')
+LEFT JOIN `my_project.analytics.stg_orders`   AS o  -- ref('stg_orders')
+ON c.customer_id = o.customer_id
+GROUP BY c.customer_id, c.first_name, c.last_name;
+```
+13. Click ▶︎ RUN. The view customers has been updated and now depends on stg_customers and stg_orders—effectively our “ref” to the staged models.  
+
+14. Validate the refactor:  
+    a. Click customers in the Explorer tree, then Click Preview.  
+    b. We should still see total_spent aggregations identical to the previous version.  
+
+15. (Optional) Save a snapshot of the results for comparison: Click QUERY SETTINGS ☰ > Save Results > CSV (local file), choose your Downloads folder, and name the file refactor_check.csv.  
+
+16. If everything looks correct, delete the obsolete SQL file or view that held the original CTE-heavy version (Right-click customers_old > Delete) so only the refactored view remains.  
+
+17. Celebrate! We have successfully separated the logic into two staged models (stg_customers, stg_orders) and pointed the final model customers to them via BigQuery references, mirroring dbt’s ref workflow.

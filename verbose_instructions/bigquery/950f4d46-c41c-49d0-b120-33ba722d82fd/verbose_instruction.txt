@@ -1,0 +1,10 @@
+1. Locate the Explorer panel on the left side of the BigQuery console.  
+2. Click the triangle (▸) next to your GCP project name to expand its contents.  
+3. Look for the dataset named customer_orders under the project; click the small grey triangle (▸) beside it so we can confirm its tables appear (this ensures we’re pointing at the correct dataset).  
+4. Right-click the customer_orders dataset name (or click the three-dot kebab icon that appears when you hover over it).  
+5. Select Delete from the context menu that pops up.  
+6. In the “Delete dataset” dialog, carefully review the dataset ID (it should read project-id:customer_orders) to verify you are deleting the intended dataset.  
+7. Type the word DELETE into the confirmation text box exactly as instructed.  
+8. Click the red Delete dataset button to execute the drop operation.  
+9. Wait until the success toast “Dataset deleted” appears in the lower-right corner; this confirms the operation finished successfully.  
+10. Expand your project again in the Explorer panel to verify the customer_orders dataset no longer appears—this final check ensures the dataset has indeed been removed.

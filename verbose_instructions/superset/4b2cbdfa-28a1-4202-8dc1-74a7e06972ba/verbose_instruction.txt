@@ -1,0 +1,12 @@
+1. Click “Settings” (gear icon, top-right of Superset UI).  
+2. Select “Database Connections” from the drop-down.  
+3. Type “SpiderDatabase” into the search bar located above the database list so we can quickly isolate that entry.  
+4. Click the blue pencil icon on the “SpiderDatabase” row to open the Edit Database modal.  
+5. Scroll down inside the modal until you see the toggle labeled “Allow data upload”.  
+6. Click the toggle so it turns blue (enabled).  
+7. Scroll further down (if needed) and click the “Save” button at the bottom-right of the modal.  
+8. Wait for the green toast message “Database updated” to confirm the change succeeded.  
+9. Click “Data” in the top navigation bar.  
+10. Choose “Upload a CSV” from the drop-down.  
+11. Verify that the “Database” drop-down on the CSV Upload page now lists “SpiderDatabase”.  
+12. If “SpiderDatabase” appears, the upload feature is enabled and you can proceed to actually upload CSV files later; if it does not appear, repeat steps 1-7 and ensure you clicked “Save”.

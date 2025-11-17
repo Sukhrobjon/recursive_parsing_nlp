@@ -1,0 +1,38 @@
+1. Open your web browser and navigate to the company’s designated hardware-purchasing portal (type the URL for “hardware-store.company.com” and press Enter).  
+2. Log in by typing your corporate email in the “Email” field, your SSO password in the “Password” field, and clicking the blue “SIGN IN” button.  
+3. Wait for the dashboard to load, then click the search bar at the top labeled “Search products, SKUs, or keywords.”  
+4. Type Developer Laptop (Mac) and press Enter; the product catalog will refresh with matching results.  
+5. Locate the tile titled “Developer Laptop (Mac) – 16-inch, Apple M-series” and click the product name to open its configuration page.  
+6. Click the “CONFIGURE / BUY” button on the right side of the product image to open the customisation wizard.  
+7. In the “Quantity” field at the top-left of the wizard, highlight the default value “1”, type 3, and press Tab to confirm we are ordering three units.  
+8. Scroll down to the “Software & Services” section and click the grey “Add / Edit” link to expand the software checklist.  
+9. Check the box next to Additional software requirements (a free-text field will appear directly beneath).  
+10. Click inside the new text box and type exactly:  
+   ```
+   Salesforce, QuickBooks, Zoom, Microsoft Office 365, Asana, Adobe Creative Cloud
+   ```  
+11. Find the line item “Adobe Acrobat” and verify its toggle is OFF (grey). If it is ON (blue), click the toggle once to turn it OFF.  
+12. Locate “Adobe Photoshop” and click its toggle so it turns ON (blue) to indicate inclusion.  
+13. Locate “Eclipse IDE” and ensure its toggle is OFF (grey). If it is blue, click once to switch it OFF.  
+14. Review the remaining software options quickly to confirm no other undesired items are selected; leave everything else at default.  
+15. Click the green “SAVE CONFIGURATION” button at the bottom-right of the wizard; a confirmation toast “Configuration saved” should appear.  
+16. Click the blue “ADD TO CART” button; you should see the cart icon in the upper-right corner update to “3 items.”  
+17. Click the cart icon to open the mini-cart, then click the “VIEW CART” button.  
+18. Verify the following on the cart page:  
+    a) Product name: Developer Laptop (Mac)  
+    b) Quantity: 3  
+    c) Sub-total matches three units (confirm pricing if required)  
+    d) Software line shows “Adobe Photoshop” and “Additional software requirements: Salesforce, QuickBooks, Zoom, Microsoft Office 365, Asana, Adobe Creative Cloud”  
+    e) No mention of Adobe Acrobat or Eclipse IDE  
+19. Click the orange “PROCEED TO CHECKOUT” button.  
+20. On the “Shipping Information” page, confirm the default office address is selected; if not, click the radio button next to “Head Office – Receiving Dock” and click “CONTINUE.”  
+21. On the “Payment” page, ensure “Corporate PO” is pre-selected; type the internal cost-center code (e.g., DEV-601) into the “PO Number” field and click “CONTINUE.”  
+22. Review the “Order Summary” page once more for quantity (3), software selections, and cost; scroll to the bottom and click the blue “PLACE ORDER” button.  
+23. Wait for the confirmation screen to display “Order #XXXXXX has been placed successfully.” Write down or copy the order number for records.  
+24. Click the “DOWNLOAD RECEIPT (PDF)” link on the confirmation screen; when prompted, save the file to your desktop as Developer_Mac_Order.pdf for finance reference.  
+25. Open Slack (or your team’s communication tool), navigate to the #it-procurement channel, and paste a message:  
+   ```
+   Order #XXXXXX: 3 x Developer Laptop (Mac) placed with required software (Photoshop + listed apps, no Acrobat, no Eclipse). Receipt saved in Teams/Procurement > 2024 Orders folder.
+   ```  
+26. Drag-and-drop Developer_Mac_Order.pdf into the same Slack message and click the paper-plane “SEND” icon.  
+27. Wait for the upload to finish, then confirm the message appears in #it-procurement; your hardware order is now complete.

@@ -1,0 +1,44 @@
+1) Click the “Explorer” left-hand panel to make sure your current GCP project (e.g. my-project-123) is visible and expanded.  
+2) Hover over the project name and click the vertical-ellipsis (︙) icon, then click “Create dataset”.  
+3) Type RANKINGS in the Dataset ID field.  
+4) Leave “Location type” on “Multi-region” (or the default) and keep all other settings as is.  
+5) Click the blue “Create dataset” button – BigQuery now shows a new node my-project-123.RANKINGS in the Explorer.
+
+6) Click the RANKINGS node to highlight it; you should see an empty panel that reads “This dataset has no tables”.
+
+7) Click the blue “Create table” button in the right-hand pane. (We are switching to the Create table screen.)
+
+8) In the “Source” section, click “Browse” next to the “Select file from your device” field, navigate to Desktop, choose the .csv file, and click “Open”.  
+   • Confirm “File format” automatically shows “CSV”.
+
+9) Tick the checkbox “Auto detect” under “Schema” so BigQuery infers column data types for us.
+
+10) In the “Destination” section:  
+    a) Verify “Project” is still my-project-123.  
+    b) Verify “Dataset” shows RANKINGS.  
+    c) Type university_rankings in the “Table name” box.  
+    d) Leave “Table type” as “Native table”.
+
+11) Expand “Advanced options” below “Schema”.  
+    a) Ensure “Header rows to skip” is set to 0 (BigQuery reads the first row for headers).  
+    b) Confirm “Field delimiter” is a comma (,).  
+    c) Confirm “Quote” and “Escape” characters remain default.  
+    Note: BigQuery automatically converts spaces and hyphens in header names to underscores, satisfying the whitespace/hyphen replacement rule.
+
+12) Click the blue “Create table” button at the bottom. BigQuery uploads the CSV and begins the load job.
+
+13) Wait until the green banner “Load job completed” appears. Then click “Go to table” in the banner.
+
+14) Verify:  
+    a) In the Schema tab, ensure all column names reflect underscore substitutions (e.g., “World_Rank”, “University_Name”).  
+    b) Confirm each column’s data type (STRING, INTEGER, FLOAT, etc.) was auto-detected.  
+    c) In the Preview tab, confirm rows look correct and there are no header rows duplicated in the data.
+
+15) Optional: Run a quick query to double-check row count:  
+```sql
+SELECT COUNT(*) AS total_rows
+FROM `my-project-123.RANKINGS.university_rankings`;
+```  
+    Click “Run” and verify the count matches the expected number of lines (total lines in the CSV minus the header).
+
+16) You have successfully created the RANKINGS dataset and loaded the university_rankings table from the local CSV with auto-detected schema and standardized column names.

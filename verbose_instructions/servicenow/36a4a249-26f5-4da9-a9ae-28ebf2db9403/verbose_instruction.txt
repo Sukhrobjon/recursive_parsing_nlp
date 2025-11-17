@@ -1,0 +1,15 @@
+1. Open your web browser and navigate to the company Hardware Store portal (e.g., https://hardware.company.com).  
+2. Click the “Hardware” tab in the left-hand sidebar; wait until the catalog grid finishes loading (you should see a spinning loader disappear).  
+3. In the top-right search bar labeled “Search catalog,” click once inside the field, type Loaner Laptop exactly, and press Enter; the page will refresh showing only matching items.  
+4. Locate the product card titled “Loaner Laptop” (it has a silver laptop thumbnail). Click anywhere on that card to open the item detail page.  
+5. In the configuration form that appears:  
+   a. Click the text box under the label “When do you need it ?” and type By the end of the month.  
+   b. Click the dropdown under “How long do you need it for ?”; from the list of durations, choose 1 day (a blue checkmark will confirm selection).  
+6. Move to the panel on the right side titled “Order Summary.” Click the “Quantity” field, type 9, and press Enter; verify the subtotal updates to reflect nine units.  
+7. Double-check that the summary now shows:  
+   • Product: Loaner Laptop  
+   • Quantity: 9  
+   • When needed: By the end of the month  
+   • Duration: 1 day  
+8. Click the green “Order Now” button beneath the summary; a spinner will appear next to the button. Wait until the success toast “Order request submitted” pops up in the bottom-right corner.  
+9. Confirm the request by clicking the “View Requests” link in the toast; on the Requests page, ensure a new row with status “Pending Approval” lists 9 × Loaner Laptop with the correct need-by date.

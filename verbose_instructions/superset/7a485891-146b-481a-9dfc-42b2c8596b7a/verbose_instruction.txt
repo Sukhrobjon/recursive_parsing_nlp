@@ -1,0 +1,21 @@
+1) Click the “+” (Add) icon in the upper-right corner of the browser window  
+2) Select the “Data” option in the drop-down menu that appears  
+3) Click “Upload CSV to database” in the secondary menu to open the “CSV to Database configuration” modal  
+4) Click the “Choose File” button inside the modal  
+5) Navigate to home → user in the operating-system file picker, single-click video_game_sales.csv, then click the “Select” (or “Open”) button to confirm the file choice  
+6) In the same modal, open the “Database” drop-down and click the item labeled “Games” so the upload targets the correct database  
+7) Click into the “Table Name” text box and type exactly games (lowercase) so the new table will be created as Games.games  
+8) Leave other settings at their defaults (delimiter “,”, header row checked, etc.), then click the blue “Save” button at the bottom of the modal  
+9) Wait until a green toast notification states “CSV file uploaded successfully” and verify that a new dataset named games now appears in the main Data panel under the Games database  
+10) Click the dataset name games to open the Explore (chart-building) interface  
+11) Drag the column genre from the left “Columns” list into the “DIMENSIONS” drop zone in the middle panel  
+12) Drag the column global_sales from the same list into the “METRICS” drop zone  
+13) In the small metric pop-over that appears, click the “AGGREGATE” selector, choose MAX from the list, then click the green “Save” check-mark so the metric now reads MAX(global_sales)  
+14) Confirm that “Group By” automatically lists genre; if not, drag genre into the “GROUP BY” area now  
+15) Click the blue “CREATE CHART” (or “RUN”) button at the bottom-right of the Explore page; a bar chart preview renders on the right showing each genre’s maximum global sales — verify numbers look reasonable (e.g., Action ~80 M, Sports ~40 M, etc.)  
+16) Click the green “SAVE” button in the upper-right corner of the Explore page  
+17) In the “Save Chart” modal, click the radio button “Save as…” so the chart will be saved as a new object  
+18) Type games into the “Chart Name” field exactly (case sensitive)  
+19) Click inside the “Add to Dashboard” input, type MyDashboard, and then click the auto-suggested MyDashboard item when it appears (or press Enter to create it if it does not yet exist)  
+20) Click the blue “Save & Go to Dashboard” button; the page redirects to the MyDashboard view  
+21) Verify that a tile titled games is present and shows the same bar chart preview; hover to ensure tooltips show MAX(global_sales) values — this confirms the task completed successfully

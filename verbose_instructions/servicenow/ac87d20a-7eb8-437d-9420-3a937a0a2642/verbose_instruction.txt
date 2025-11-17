@@ -1,0 +1,47 @@
+1. Scroll through the already-opened text file viewer until you see a line that matches the pattern  
+   `User ID: <alphanumeric_id>`.  
+   (We will call the value after the colon `<user_id>`.)  
+   First, drag to highlight just the <user_id> portion, then press Ctrl + C to copy it to the clipboard— we’ll paste it in the form next.
+
+2. Switch to the Chromium window showing the ServiceNow “User – New Record” form by clicking its icon on the left dock.
+
+3. Click the empty input box labeled “User ID”, press Ctrl + V to paste the <user_id>, and press Tab to move to the next field (this confirms the value is registered).
+
+4. Type “Robyn” in the “First name” field that is now focused, then press Tab once more.
+
+5. Type “Christophel” in the “Last name” field that just received focus.
+
+6. Click the large free-text field labeled “Title” (middle of the left column), type  
+   `surquidry tassie Physostegia snootiness heterotopous`, and press Tab.
+
+7. Locate the checkbox labeled “Locked out” directly beneath the Title field; if a blue/checked icon is present, click it once so the box becomes empty (unchecked).  
+   Note that leaving this unchecked sets “Locked out” to false, as required.
+
+8. Move to the right column and click inside the “Email” field; type  
+   `robyn.christophel@example.com`.
+
+9. Click the drop-down immediately under “Email” labeled “Language”; in the list that opens, scroll (or type “Eng”) and click the entry “English”.  
+   We will see the chip “English” appear in the box.
+
+10. Click the “Calendar integration” drop-down (directly below Language). From the options, choose “Outlook”.
+
+11. Click the “Time zone” selector; in the pop-up list, scroll until you see “GMT” and click it once.  
+    The field should now read “GMT”.
+
+12. Click the “Date format” selector a bit lower; in the list, locate and click “dd-MM-yyyy”.
+
+13. Click the “Business phone” field in the right column and type `(514) 386-6086`, then press Tab.
+
+14. Type `(514) 703-5913` in the “Mobile phone” field that just gained focus.
+
+15. Re-read all fields quickly to verify:
+    • User ID shows the copied <user_id>  
+    • First name Robyn, Last name Christophel  
+    • Locked out checkbox is NOT ticked  
+    • Title has the 6-word phrase  
+    • Email, Language English, Calendar Outlook, Time zone GMT, Date format dd-MM-yyyy  
+    • Business and Mobile phone numbers are correct.
+
+16. Click the blue “Submit” button in the top-right corner of the form.
+
+17. Wait for the page to reload and return to the User list. If no red validation banner appears, the record saved successfully. You can confirm by typing the <user_id> into the list filter search bar— the new Robyn Christophel entry should appear.

@@ -1,0 +1,36 @@
+In this task, we will query a BigQuery public dataset that contains bike-station metadata, pull the ten stations with the largest floor area, and export the results to a CSV named result.csv inside a local project1 folder.
+
+1) Open your browser and navigate to https://console.cloud.google.com/bigquery so the BigQuery Web UI loads.  
+2) Locate the left-hand “Explorer” panel and Scroll until you see the project bigquery-public-data.  
+3) Click the small gray triangle to the left of bigquery-public-data to expand its list of datasets.  
+4) Scroll down and Click the dataset bike_share_stations (if the dataset list is long, type bike_share in the search box above the Explorer tree to filter quickly).  
+5) Click the table stations inside this dataset; the Table Details tab opens in the right panel and we can view its Schema. Confirm it contains at least the following columns:  
+   • name (STRING) – station name  
+   • floor_area (FLOAT) – total floor area in square metres  
+   We will use these two columns in our query.  
+6) Click the blue + Compose new query button at the top of the BigQuery UI; a new blank Query editor tab appears.  
+7) Type (or paste) the SQL below into the editor pane, aliasing floor_area to area so our output header appears exactly as required:
+
+```sql
+SELECT
+  name,
+  floor_area AS area
+FROM
+  `bigquery-public-data.bike_share_stations.stations`
+ORDER BY
+  floor_area DESC
+LIMIT
+  10;
+```
+
+8) Click the green ► RUN button in the toolbar of the editor; wait until the status indicator below the editor shows “Query complete” and the “Query results” grid appears.  
+9) Verify the result grid shows exactly two columns labelled name and area with 10 rows sorted from largest to smallest area.  
+10) Click the SAVE RESULTS button on the top-right of the “Query results” panel; a dropdown appears.  
+11) Select CSV (local file). A dialog pops up confirming the download; click Download. The file (by default named something like `bigquery-results-…csv`) will land in your browser’s default download location, usually ~/Downloads.  
+12) Open a terminal (or file explorer) and Move the file into the project1 folder, renaming it along the way:  
+   • Terminal example:  
+     ```bash
+     mv ~/Downloads/bigquery-results-*.csv ~/project1/result.csv
+     ```  
+   • File-explorer alternative: drag the downloaded CSV into the project1 directory and rename it to result.csv.  
+13) Double-check inside project1 that result.csv exists, open it quickly to ensure the first line contains the headers “name,area” followed by the 10 station records—we’re done!

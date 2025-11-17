@@ -1,0 +1,41 @@
+1. Open your web browser and navigate to https://console.cloud.google.com/bigquery so we land in the BigQuery Web UI.  
+2. Click the blue project-chooser dropdown (top-left) and make sure the project that owns the Accounts table is selected (for this example we’ll assume it is called my_project).  
+3. Click the triangle ▶ to the left of my_project so the Datasets list expands.  
+4. Click the triangle ▶ to the left of the dataset that contains the Accounts table (assume it is sales) so we can inspect its tables.  
+5. Click the table name Accounts to display the Schema tab in the main panel—confirm the column called source exists. (We will use this column in our query.)  
+6. Click the + Compose Query button (white sheet with a plus icon) on the top toolbar to open a new blank query editor panel.  
+7. Type or paste the following SQL in the editor:  
+
+```sql
+-- Count rows by source and calculate the percent of total
+WITH src_counts AS (
+  SELECT
+    source,
+    COUNT(*) AS row_count
+  FROM
+    `my_project.sales.Accounts`
+  GROUP BY
+    source
+)
+SELECT
+  source,
+  row_count,
+  ROUND(row_count * 100.0 / SUM(row_count) OVER (), 2) AS pct_of_total
+FROM
+  src_counts
+ORDER BY
+  row_count DESC;
+```  
+
+8. Click the dark-blue ▷ RUN button just above the query editor to execute the SQL.  
+9. Wait until the green checkmark appears and the “Query results” grid shows the three columns: source, row_count, pct_of_total.  
+10. Click the small bar-chart icon (tooltip reads “Explore data, create chart”) in the grey header of the Query results panel. This opens the Chart Builder pane on the right.  
+11. Click the Chart type dropdown in that pane and select Pie chart.  
+12. Verify that:  
+    • Dimension is set to source  
+    • Metric is set to row_count  
+    • Slice labels are set to “% of total” (if not, click the paint-roller ⚙ Settings icon and change the Label format to Percentage). Now the pie slices display percentages directly on the chart.  
+13. Click the three-dot ⋮ menu in the top-right corner of the chart preview and choose Download PNG. A file named something like chart.png will save to your browser’s default download location (usually ~/Downloads).  
+14. Open your system’s file manager, Navigate to the Downloads folder, and locate the downloaded PNG.  
+15. Rename the file to pie.png (Right-click ➞ Rename on most systems, or use mv chart.png pie.png in a terminal).  
+16. Confirm pie.png is present in ~/Downloads—this is your visualization with percentages displayed.

@@ -1,0 +1,7 @@
+1. Locate the ServiceNow browser tab that is already open.  
+2. Click the “All” icon (three-line hamburger menu) at the upper-left corner of the navigation bar to open the application navigator.  
+3. Click once inside the search field labeled “Filter navigator”.  
+4. Type the word `Leases` and wait for the filtered results to appear beneath the search box.  
+5. Observe that a single matching line appears: “Leases” indented under the parent “Contracts” application group.  
+6. Click the “Leases” link (make sure it is the child under “Contracts”, not any similarly named global search item).  
+7. Wait for the main content frame to reload; confirm you see a list view whose title bar reads “Leases” and whose breadcrumb shows “Contracts > Leases”.

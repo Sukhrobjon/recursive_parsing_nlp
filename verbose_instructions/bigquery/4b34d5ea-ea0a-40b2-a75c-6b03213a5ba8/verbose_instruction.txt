@@ -1,0 +1,77 @@
+1) Verify that the Vertex AI and BigQuery Connection APIs are enabled  
+   Switch to terminal  
+   Run  
+   ```bash
+   gcloud services enable bigqueryconnection.googleapis.com \
+                            aiplatform.googleapis.com
+   ```  
+   A JSON message with `"state": "ENABLED"` should appear for both services.
+
+2) Create (or identify) a service account that BigQuery will use to call Vertex AI  
+   Still in terminal, execute  
+   ```bash
+   gcloud iam service-accounts create bq-vertex-sa \
+       --display-name="BigQuery → Vertex AI connection SA"
+   ```  
+   Note the full name printed, e.g.  
+   `bq-vertex-sa@YOUR_PROJECT_ID.iam.gserviceaccount.com` – we will paste this into the UI in step 7.
+
+3) Grant the service account the Vertex AI “User” role so it can invoke models  
+   ```bash
+   gcloud projects add-iam-policy-binding $GOOGLE_CLOUD_PROJECT \
+       --member="serviceAccount:bq-vertex-sa@$GOOGLE_CLOUD_PROJECT.iam.gserviceaccount.com" \
+       --role="roles/aiplatform.user"
+   ```  
+   The terminal prints an updated IAM policy; confirm the new binding is present.
+
+4) Grant BigQuery Connection Service permission to impersonate this service account  
+   ```bash
+   gcloud iam service-accounts add-iam-policy-binding \
+       bq-vertex-sa@$GOOGLE_CLOUD_PROJECT.iam.gserviceaccount.com \
+       --member="serviceAccount:service-$PROJECT_NUMBER@gcp-sa-bigqueryconnection.iam.gserviceaccount.com" \
+       --role="roles/iam.serviceAccountUser"
+   ```  
+   The command should return `bindings` containing `roles/iam.serviceAccountUser`.
+
+5) Open the BigQuery web UI  
+   Navigate to https://console.cloud.google.com/bigquery in your browser.
+
+6) Expand the left-side panel and click “Connections” (green plug icon).
+
+7) Click the blue “+ CREATE CONNECTION” button at the top.
+
+8) In the “Create connection” dialog, select “Vertex AI” from the list of external resource types, then click “Next”.
+
+9) Fill out the Vertex AI connection details  
+   • Connection ID: type exactly `text_generation`  
+   • Location: select the region where your Vertex AI model is deployed (e.g. `us-central1`)  
+   • Service account: paste `bq-vertex-sa@$GOOGLE_CLOUD_PROJECT.iam.gserviceaccount.com` from step 2  
+   • Optional labels: add `env=prod` if desired
+
+10) Click “Create connection” at the bottom of the dialog.  
+    A toast message “Connection text_generation created successfully” should appear.
+
+11) Verify the new connection  
+    In the left panel under “Connections”, expand your project → region; you should see `text_generation`.  
+    Click it and confirm the right-side detail pane shows “Type: Vertex AI” and the correct service account.
+
+12) Test a simple model invocation from the BigQuery editor  
+    Click “Compose new query”, then run  
+    ```sql
+    SELECT
+      * 
+    FROM
+      EXTERNAL_QUERY(
+        'text_generation',
+        '''
+        SELECT
+          ML.GENERATE_TEXT(
+            MODEL `projects/''' || @project_id || '''/locations/us-central1/publishers/google/models/text-bison`,
+            'Hello, BigQuery!'
+          ) AS reply
+        '''
+      );
+    ```  
+    If configuration is correct, BigQuery returns a single row containing the generated text, confirming the connection works.
+
+13) Commit the IAM and connection artifacts to your infrastructure repo if you use one, noting the connection ID `text_generation` for future queries.

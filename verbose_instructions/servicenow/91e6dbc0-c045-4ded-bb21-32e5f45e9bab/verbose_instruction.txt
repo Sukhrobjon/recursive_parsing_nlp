@@ -1,0 +1,23 @@
+1) Open your browser and navigate to https://console.cloud.google.com/bigquery so we land on the BigQuery Web UI.  
+2) In the Explorer panel on the left, click the small grey triangle ▸ next to your project ID (for example, company_db) to expand it.  
+3) Click the triangle ▸ next to the dataset user_directory so we can view its tables.  
+4) Click the table name users; the Table detail tab in the right-hand pane now shows the Schema tab by default.  
+   • Verify we can see two relevant columns: enable_multifactor_authentication (BOOLEAN) and prefix (STRING). This confirmation ensures we can safely reference them in our ORDER BY clause later.  
+5) Click the blue + Compose new query button (looks like a sheet of paper with a plus symbol) at the top of the BigQuery UI; this opens a blank query editor in the main panel.  
+6) Type or paste the following SQL exactly into the editor:  
+
+```sql
+SELECT
+  *
+FROM
+  `company_db.user_directory.users`
+ORDER BY
+  enable_multifactor_authentication DESC,
+  prefix DESC;
+```  
+
+   Note: The first ORDER BY field (enable_multifactor_authentication) is sorted in descending order so TRUE (or 1) appears before FALSE (or 0). The second field (prefix) is also sorted DESC to alphabetically list Z … A within each MFA grouping.  
+7) Click the blue > RUN button above the query editor to execute the statement.  
+8) Wait a few seconds; the Query results pane will populate beneath the editor. We can scroll the result grid to confirm that rows with MFA enabled (TRUE) appear first and, within that subset, prefixes sort from Z down to A.  
+9) (Optional) If you need to download the sorted list, click the SAVE RESULTS button on the right side of the Query results bar, then choose CSV (local file) and follow the prompt to save the file wherever you like.  
+10) Close the tab or keep it open for further analysis—our ordered users list query is complete!

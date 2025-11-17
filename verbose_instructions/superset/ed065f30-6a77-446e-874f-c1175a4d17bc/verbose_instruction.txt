@@ -1,0 +1,20 @@
+1. Click “Charts” in the top-level navigation bar so we land on the chart gallery.  
+2. Click “+ CHART” in the upper-right corner to open the Create Chart modal.  
+3. Click the blue “Choose a dataset” dropdown, scroll (or type in the filter) and select the dataset “flights”.  
+4. In the chart-type panel on the right, click “Line Chart” (the icon showing connected points).  
+5. Click the blue “CREATE NEW CHART” button at the bottom of the modal; we are now taken to the chart builder.  
+6. Drag the field “Travel Date” from the left sidebar into the “X-AXIS” well in the center pane.  
+7. Drag the field “Cost” from the sidebar into the “METRICS” well.  
+8. Click the small pill that now shows “Cost (SUM)” inside the METRICS well to open its configuration.  
+9. Click the “AGGREGATE” dropdown and verify “SUM” is selected (choose it if it is not); press “SAVE” in that pop-up so the metric reads “SUM(Cost)”.  
+10. Scroll down on the main configuration panel until the grey accordion labeled “Advanced analytics” is visible.  
+11. Click the “Advanced analytics” accordion to expand it.  
+12. Click the “RULE” dropdown; in the calendar frequencies list choose “7 calendar day frequency”.  
+13. Click the “FILL METHOD” dropdown just beneath RULE and choose “Median value” so the system will compute the weekly median of our 7-day windows.  
+14. Scroll back to the top of the right panel and click the blue “CREATE CHART” button; the preview canvas now refreshes.  
+15. Wait a few seconds until the line plot appears—first we check that the x-axis shows weekly ticks (e.g., “2024-05-05”, “2024-05-12”, …) and the tooltip for any point shows “SUM(Cost) – median over 7 days” (confirming the resampling worked).  
+16. Click the green “SAVE” button in the upper-right corner of the screen.  
+17. Type resampling in the “CHART NAME” text box.  
+18. Confirm the “Save to” folder is correct (leave as default or choose the folder mandated by your workspace).  
+19. Click the blue “SAVE” button—Superset/Metabase now stores the chart.  
+20. Observe the toast notification “Chart saved” and verify that the title bar at the top of the chart reads “resampling”; we can now see it listed under Charts → Recently Saved.

@@ -1,0 +1,12 @@
+1. Click the green button labeled “Create Environment” at the bottom of the page.  
+2. Click inside the “Environment name” text field that appears in the modal.  
+3. Type Continuous_Integration to replace the default value.  
+4. Click the card or radio button labeled “Staging” in the “Set deployment type” section so that it turns blue (selected).  
+5. Click the checkbox next to “Only run on a custom branch”; notice a new input called “custom branch” now appears.  
+6. Click inside the newly visible “custom branch” text field.  
+7. Type main in that text field to set the branch restriction.  
+8. Click the blue “Save” button in the upper-right corner of the modal to persist the new staging environment.  
+9. Verify the new environment appears in your environment list with:  
+   • Name: Continuous_Integration  
+   • Type: Staging  
+   • Branch restriction: main

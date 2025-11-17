@@ -1,0 +1,27 @@
+1) Open your browser and navigate to https://console.cloud.google.com/bigquery so you are in the BigQuery Web UI.  
+2) In the left-hand Explorer panel, locate your working project (for example, my_company_prod). Click the triangle ▶️ next to the project name to expand its contents.  
+3) Click the triangle ▶️ next to the dataset called service_desk to expose all of its tables.  
+4) Click the table problems; the main pane switches to the Table details view, and we can see the schema. Confirm the columns exist exactly as needed: problem_statement, impact, service_offering, assignment_group, urgency (all STRING). We will use these names in our INSERT statement.  
+5) Click the + Compose new query button (it looks like a sheet of paper with a plus sign, directly above the editor) to open a fresh SQL query tab.  
+6) Type the following INSERT statement in the blank editor:  
+
+```sql
+INSERT INTO `service_desk.problems`
+  (problem_statement,
+   impact,
+   service_offering,
+   assignment_group,
+   urgency)
+VALUES
+  ('Issue in connecting to internet using modem.',
+   '3 - Low',
+   NULL,          -- service_offering left blank
+   NULL,          -- assignment_group left blank
+   '3 - Low');
+```
+
+   Note that we use NULL for the two empty fields (Service offering and Assignment group) because that is the standard way to store “blank” values in BigQuery.  
+7) Click the blue ▶︎ RUN button in the query toolbar. A warning dialog may appear saying “This statement will modify table service_desk.problems.” Click Run anyway to proceed.  
+8) Wait for the job to finish. In the Query results pane you should see a green checkmark and text like “This statement affected 1 row.” That confirms the new problem record is now in the table.  
+9) (Optional) Click the Job information tab on the right side to log the job ID for auditing, or simply note the job completion time.  
+10) You’re done—no result file needs to be saved because this was a DML operation, not a SELECT query.

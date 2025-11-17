@@ -1,0 +1,56 @@
+1. Click the left-hand navigation item “Projects >> Worksheets” so the list of existing worksheets appears in Snowsight.  
+2. Click the blue “+” button on the upper-right of the worksheet list.  
+3. Select “Python Worksheet” from the drop-down; a new untitled worksheet opens in the main panel.  
+4. Click the grey button that currently reads “No database selected” in the worksheet header.  
+5. Choose “STUDENTS” in the Database column, then “PUBLIC” in the Schema column, and finally click any blank area to close the picker (we will be working inside STUDENTS.PUBLIC).  
+6. Type or paste the entire Python snippet below into the empty worksheet editor pane:  
+
+```python
+import snowflake.snowpark as snowpark
+from snowflake.snowpark.types import *
+
+schema_for_file = StructType([
+    StructField("id", IntegerType()),
+    StructField("first_name", StringType()),
+    StructField("last_name", StringType()), 
+    StructField("email", StringType()),
+    StructField("absence_days", IntegerType()),
+    StructField("weekly_self_study_hours", IntegerType()),
+    StructField("math_score", IntegerType()),
+    StructField("history_score", IntegerType()),
+    StructField("physics_score", IntegerType()),
+    StructField("chemistry_score", IntegerType())
+])
+
+fileLocation = "@STUDENTS.PUBLIC.stage/data.csv"
+outputTableName = "SCORES"
+
+def main(session: snowpark.Session):
+    df_reader = session.read.schema(schema_for_file)
+    df = df_reader.csv(fileLocation)
+    df.write.mode("overwrite").save_as_table(outputTableName)
+
+    return outputTableName + " table successfully written from stage"
+```
+
+7. Click the green “Run” ► button at the top-right of the worksheet.  
+8. Wait until the Results panel shows the message “SCORES table successfully written from stage” (this verifies the data loaded and the table was created).  
+9. Switch to the local terminal by opening the Terminal application from your VM’s taskbar.  
+10. Run the command:  
+
+```bash
+cd Desktop
+```  
+
+to move into the Desktop directory.  
+11. Run the command:  
+
+```bash
+code code.py
+```  
+
+so VS Code (or the default editor) opens a new file named code.py on the desktop.  
+12. Return to your browser, highlight all the code inside the Snowsight Python worksheet (Ctrl + A, then Ctrl + C).  
+13. Switch back to VS Code, click inside code.py, and paste the contents (Ctrl + V).  
+14. Press Ctrl + S (or File >> Save) to save code.py.  
+15. View the VS Code status bar showing “√ Saved” as confirmation that code.py is now stored on the Desktop.

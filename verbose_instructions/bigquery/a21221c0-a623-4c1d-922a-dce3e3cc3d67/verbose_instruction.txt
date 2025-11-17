@@ -1,0 +1,25 @@
+1. Click the grey upward-facing triangle icon on the far-right edge of the “Job history” bar at the bottom of the BigQuery main page to pull the panel up.  
+2. Click the blue “Project history” tab that appears at the top of this panel.  
+3. Click the first row (topmost) under the “Job ID” column—this is the most recent job for the project.  
+4. Observe the “Query job details” drawer that slides in from the right; highlight the entire SQL statement in the “SQL” box and press Ctrl + C to copy it.  
+5. Click the blue “+” (plus) button just to the right of the “Welcome to BigQuery Studio!” banner; a new untitled query editor tab opens.  
+6. Press Ctrl + V inside the blank editor to paste the SQL you just copied.  
+7. Click the blue “▶ Run” button in the toolbar of this editor tab to execute the query.  
+8. Wait until the green toast message “Query complete” appears and confirm that rows are listed in the “Query results” grid below the editor.  
+9. Click the white “Save results” button on the right side of the “Query results” header row.  
+10. Select “CSV (local file)” from the dropdown menu; your browser immediately downloads a file (usually named query_results_*.csv) to the default Downloads folder.  
+11. Switch to the terminal application.  
+12. Type the command below to list the most recently downloaded file and press Enter:  
+```bash
+ls -lt ~/Downloads | head -5
+```  
+   Verify that the top line shows a CSV file such as query_results_20240605_123456.csv.  
+13. Execute the move-and-rename command, replacing <actual_file_name> with the exact name you saw:  
+```bash
+mv ~/Downloads/<actual_file_name> ~/Downloads/result.csv
+```  
+14. Type the command below to confirm the rename succeeded:  
+```bash
+ls -l ~/Downloads/result.csv
+```  
+   You should see result.csv listed with a recent timestamp—this confirms the file was saved successfully.

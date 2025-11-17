@@ -1,0 +1,52 @@
+1. Click VS Code in the left dock so the editor window comes to the front.  
+2. Locate and single-click README.md in the Explorer pane; skim the section “External links for weather_data_dag” so we know the two URLs we must expose (“https://wttr.in/HongKong” and MDN HTTP docs).  
+3. Switch to the tab my_extra_link_plugin.py already open in VS Code (or double-click the file inside plugins/ if it is not open).  
+4. Scroll to the bottom of the file; just above any existing plugin registration line, write the two BaseOperatorLink classes exactly as shown:  
+```python
+# keep any existing imports
+from airflow.utils.context import Context
+from airflow.models.baseoperator import BaseOperatorLink
+from airflow.providers.http.operators.http import SimpleHttpOperator
+
+
+class WTTRWeatherLink(BaseOperatorLink):
+    name = "WTTRWeather"           # text that will appear in the UI
+    operators = [SimpleHttpOperator]
+
+    # optional ti_key retained for Airflow 2.7+ signature compatibility
+    def get_link(self, operator: SimpleHttpOperator, *, ti_key: "TaskInstanceKey" | None = None) -> str:  # type: ignore[name-defined]
+        return "https://wttr.in/HongKong"
+
+
+class HTTPDocsLink(BaseOperatorLink):
+    name = "HTTP file"
+    operators = [SimpleHttpOperator]
+
+    def get_link(self, operator: SimpleHttpOperator, *, ti_key: "TaskInstanceKey" | None = None) -> str:  # type: ignore[name-defined]
+        return "https://developer.mozilla.org/en-US/docs/Web/HTTP"
+
+
+# If not already present, make sure to register the links so Airflow loads them
+LINKS = [WTTRWeatherLink(), HTTPDocsLink()]
+```
+5. Press Ctrl+S (or Command+S) to save the file; confirm “my_extra_link_plugin.py — saved” appears in the VS Code status bar.  
+6. Click the Terminal icon (labeled “/home/astro” or similar) in the left dock to open the running integrated shell.  
+7. Type and run the restart command so the new plugin is picked up:  
+```bash
+astro dev restart
+```  
+8. Wait until the terminal prints “Airflow webserver health check passed” to ensure the UI has reloaded with the plugin.  
+9. Click Chromium in the left dock; the browser window with Airflow should still be open. If not, navigate to http://localhost:8080.  
+10. On the Airflow home page, locate the row weather_data_dag; click the grey toggle switch in the On/Off column so it turns blue (Unpause).  
+11. Click the right-most triangle icon in the Action column for weather_data_dag and choose “Trigger DAG” from the drop-down.  
+12. Watch the Runs column; wait until the most recent run box turns green (success) or red (failed) to confirm completion.  
+13. Click the DAG name weather_data_dag to open its graph view.  
+14. In the Graph view, click the task node that uses SimpleHttpOperator (for example get_weather); a right-side panel slides open.  
+15. Observe two new hyperlinks under “Links” titled “WTTRWeather” and “HTTP file”; this confirms the plugin is active.  
+16. Click WTTRWeather; verify a new browser tab opens to https://wttr.in/HongKong displaying weather information for Hong Kong.  
+17. Close that tab and return to Airflow, then click HTTP file; a new tab should open to the MDN HTTP documentation page.  
+18. Return to VS Code terminal and run the following command to print the latest logs, verifying the DAG executed with no plugin errors:  
+```bash
+astro dev logs | tail -n 20
+```  
+19. Confirm no “ImportError” or “Plugin failed” messages appear. The external links are now fully operational for weather_data_dag.

@@ -1,0 +1,49 @@
+1. Open your web browser and navigate to the Google Cloud Console (console.cloud.google.com), then click “BigQuery” in the left-hand navigation so the BigQuery Web UI appears.
+
+2. In the Explorer panel on the left, locate the public project bigquery-public-data. Click the small triangle ▸ next to it to expand the list of datasets.
+
+3. Scroll down and click the triangle ▸ beside the dataset usa_names to reveal its tables.  
+   (If you don’t see it, type “usa_names” into the search bar at the top of the Explorer to filter quickly.)
+
+4. Click the table usa_1910_current. The main panel switches to the Schema tab where we can verify the columns: name, year, gender, number, state. Note that “year” is INTEGER and “number” is the count of babies with that name—we will use these fields in our query.
+
+5. Click the blue + Compose New Query button at the top right of the UI to open a blank SQL editor tab.
+
+6. Type or paste the following SQL into the editor:  
+   ```sql
+   -- Find names that appear in every recorded year
+   WITH total_years AS (
+     SELECT
+       COUNT(DISTINCT year) AS n_years
+     FROM
+       `bigquery-public-data.usa_names.usa_1910_current`
+   ),
+   name_stats AS (
+     SELECT
+       name,
+       COUNT(DISTINCT year)  AS years_appeared,
+       SUM(number)           AS total_occurrences
+     FROM
+       `bigquery-public-data.usa_names.usa_1910_current`
+     GROUP BY
+       name
+   )
+   SELECT
+     name,
+     total_occurrences
+   FROM
+     name_stats,
+     total_years
+   WHERE
+     years_appeared = n_years          -- only keep names that appear in ALL years
+   ORDER BY
+     total_occurrences DESC;           -- sort from most to least popular overall
+   ```
+
+7. Click the green ▷ RUN button in the toolbar of the query editor. Wait a few seconds while BigQuery processes the request; the “Query results” panel will populate below.
+
+8. Review the results. The first column (“name”) lists baby names that show up in every single year, and the second column (“total_occurrences”) contains their overall counts, already sorted in descending order.
+
+9. (Optional) To keep a copy, click the SAVE RESULTS button just above the results grid. In the drop-down menu choose “CSV (local file)”. Your browser downloads the file, typically to ~/Downloads. If you need a specific file name, rename it—e.g., all_year_baby_names.csv—in your file manager.
+
+10. You have successfully identified all baby names that appear in every recorded year and ranked them by total occurrences!

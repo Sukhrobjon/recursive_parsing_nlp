@@ -1,0 +1,21 @@
+1. Click cell A12 and type `Total`, then press Enter so the label appears in the first empty row under the employee list.  
+2. Click cell H1, type `Total`, and press Enter to create the month-total column header.  
+3. Select cell B12.  
+4. Click once in Excel’s formula bar (the long input line just above the grid) and type the formula exactly as shown:  
+   ```excel
+   =SUM(B2:B11)
+   ```  
+5. Press Enter (or click the green checkmark to the left of the formula bar) to confirm; you should now see the total for “Employee 1” in B12.  
+6. Hover over the small square “fill handle” at the bottom-right corner of B12 until the cursor changes to a black cross, then drag it sideways to G12; release the mouse.  Excel automatically copies the SUM formula across, giving totals for every employee from columns C through G.  
+7. Click cell H2 to start calculating month totals.  
+8. In the formula bar, type:  
+   ```excel
+   =SUM(B2:G2)
+   ```  
+9. Press Enter (or click the green checkmark) to commit; H2 should now display the January total.  
+10. Drag the fill handle at the bottom-right of H2 straight down to H11 so each month (rows 3-11) gets its own SUM formula.  
+11. Click cell A10 (the employee with the largest sum; confirm by glancing at row totals in B-G 12 or using conditional formatting if needed).  
+12. On the Home tab, click the “Fill Color” (paint-can) icon dropdown and select a standard Blue swatch; cell A10’s background turns blue, highlighting the top performer.  
+13. Click cell A4 (the employee with the smallest sum).  
+14. Open the Fill Color dropdown again and choose a Red swatch so A4 is filled red, marking the lowest performer.  
+15. Press Ctrl + S, choose “Excel Workbook (*.xlsx)” if prompted, and click Save to keep the file in Excel 2007-365 format.

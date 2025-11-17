@@ -1,0 +1,39 @@
+1. Navigate to https://console.cloud.google.com/bigquery so the BigQuery Web UI opens in your default project.  
+2. Click the triangle ▶︎ to the left of your dataset name (for example, my_project.air_transport) in the Explorer pane to reveal all tables.  
+3. Click the flights table to highlight it, then look to the right-hand “Schema” tab so we can check the column names and data types. Confirm there is a DATE column (for example flight_date) and a numeric column that represents cost (for example ticket_cost). We will use those two columns in our query.  
+4. Click the + Compose new query button (white sheet icon) at the top of the editor so a blank SQL panel appears.  
+5. Write the SQL below into the new panel to compute a 7-day rolling mean of the average ticket cost per calendar day:
+
+```sql
+-- 7-day rolling mean of average ticket cost per day
+WITH daily_avg AS (
+  SELECT
+    DATE(flight_date)                         AS flight_date,
+    AVG(ticket_cost)                          AS avg_cost_per_day
+  FROM
+    `my_project.air_transport.flights`
+  GROUP BY
+    flight_date
+)
+SELECT
+  flight_date,
+  avg_cost_per_day,
+  AVG(avg_cost_per_day) OVER (
+    ORDER BY flight_date
+    ROWS BETWEEN 6 PRECEDING AND CURRENT ROW   -- 7-day window (today + 6 previous)
+  )                                           AS rolling_7d_mean
+FROM
+  daily_avg
+ORDER BY
+  flight_date;
+```
+
+Note that we first aggregate at the daily level (CTE daily_avg) and then apply a window function so each row’s rolling_7d_mean represents the last 7 calendar days (current day plus the prior six).  
+6. Click the blue ▷ RUN button just above the editor to execute the query. Wait until the Job completes—its status will switch to green “Done”.  
+7. Click the Chart tab that appears immediately to the right of the “Results” tab under the query editor.  
+8. In the Chart pane, click the dropdown that currently says “Column” and change it to Line so we can visualise a trend.  
+9. In the “X-axis” selector, choose flight_date.  
+10. In the “Y-axis” selector, pick rolling_7d_mean (leave avg_cost_per_day unchecked so only the smoothed line shows).  
+11. Optionally use the gear ⚙️ icon (top-right of the Chart pane) to format the date axis or change colours; this will not affect the save step.  
+12. Click the Save chart (floppy-disk) icon that appears on the top-right corner of the Chart pane. When prompted, type rolling_mean and press Save. The chart is now stored under the Saved Charts section of your project for future reference.  
+13. (Optional) Verify the chart is saved: In the Explorer, expand Saved Charts ▶︎ and confirm rolling_mean is listed.

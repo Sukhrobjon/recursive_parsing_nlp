@@ -1,0 +1,8 @@
+1) Switch to the Airbyte browser tab that is already open  
+2) Click the blue link that shows the Postgres ➜ Postgres connection name in the Connections list (it is on the right-hand side of the screen)  
+3) Click the Replication button (third tab in the horizontal menu bar)  
+4) Scroll to the table titled “Activate the streams you want to sync”; in the Sync mode column click each dropdown that currently shows “Full refresh | Overwrite”  
+5) Select “Full refresh | Append” from the dropdown for every stream (you will see the pill update to Append for each row)  
+6) Click the blue Save changes button in the bottom-right corner of the page  
+7) On the confirmation dialog that appears, click Save connection to persist the new sync mode  
+8) Wait until the green “Changes saved” toast appears in the lower left corner to verify the update succeeded

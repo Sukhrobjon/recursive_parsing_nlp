@@ -1,0 +1,20 @@
+1) Open Google Chrome and navigate to https://cloud.getdbt.com, then log in with your dbt Cloud credentials.  
+2) Click the blue project tile labeled “test_connection” to enter the project workspace.  
+3) Click the gear-shaped Settings icon in the left sidebar, then click the sub-menu item “Connection” that appears under the Settings panel.  
+4) Click the white “Edit” button (or “+ New Connection” if none exists) in the top-right corner of the Connection page.  
+5) Select “BigQuery” from the “Adapter” dropdown list. The BigQuery-specific form fields will render on the right half of the screen.  
+6) Type “bigquery_test_conn” into the “Connection Name” textbox so we can easily identify it later.  
+7) Click into the “Project (GCP)” field and type your GCP project ID exactly as it appears in Google Cloud Console—for example, enter `analytics-prod-123`.  
+8) Type the default dataset name you want dbt to build into the “Dataset” textbox—for example, enter `dbt_core`.  
+9) Choose your warehouse (compute) location by clicking the “Location” dropdown and selecting `US` (or select `EU` if your data is located in the European region).  
+10) Open a new Finder window (macOS) or File Explorer (Windows), navigate to Desktop, right-click the service-account JSON file (e.g., `bigquery-sa-key.json`), then choose “Open With → VS Code” (or any text editor) so we can copy its raw contents.  
+11) Press Cmd +A (Ctrl +A on Windows) in the editor to highlight all JSON text, then press Cmd +C (Ctrl +C) to copy it to the clipboard.  
+12) Switch back to the dbt Cloud browser tab, click into the large “Service Account JSON” text area, and press Cmd +V (Ctrl +V) to paste the entire JSON key.  
+13) Leave “Threads” at the default value of `1` (you can tune this later).  
+14) Click the teal “Save” button at the bottom-right corner of the form. A green toast notification “Connection Saved” should appear in the bottom-left corner.  
+15) Click the gray “Test” button that is now visible near the top of the Connection pane. Wait until a green check mark and the message “Connection Successful” appear; this confirms that dbt Cloud can authenticate to BigQuery using your service-account key.  
+16) Click “OK” in the confirmation dialog, then click the blue “Back to Project” link in the breadcrumb trail to return to the project overview.  
+17) Click “Environments” in the left sidebar, then click the existing environment named “Production”.  
+18) Click the pencil icon next to “Connection” inside the environment form, select “bigquery_test_conn” from the dropdown, and press “Save”. Now the environment is wired to BigQuery.  
+19) Click the green “Run dbt Build” button in the upper-right corner of the environment page. In the modal, leave the default command `dbt run` and click “Run”.  
+20) Watch the job log; once it prints “Finished running 0 operations” with a green check, we know the environment can compile and connect to BigQuery—our setup is complete.

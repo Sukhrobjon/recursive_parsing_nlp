@@ -1,0 +1,131 @@
+1) Navigate to the Airbyte UI in your browser  
+We first need the exact connection ID. Airflow’s Airbyte operators identify the sync by that ID.
+
+2) Click the left-hand menu item “Connections”  
+
+3) Select the row for your existing connection “Faker ➜ Local JSON” to open its detail page  
+
+4) Copy the value shown after `/connections/` in the URL bar (something like `ae701b15-0ea1-4707-9457-2c1e8d1b54c5`).  
+Note that we will hard-code this in the DAG file for clarity, but you could also map it with an Airflow Variable.
+
+5) Switch to VS Code (Ctrl+Tab)  
+
+6) In the Explorer panel, expand the folder `airflow/dags` (or create it if it does not exist)  
+
+7) Click “New File” and type `faker_to_json_dag.py`  
+
+8) Write the following DAG skeleton in the new file. Be sure the indentation is exactly 4 spaces. Replace the `AIRBYTE_HOST` / `AIRBYTE_PORT` values if your docker-compose uses something different. Replace the CONNECTION_ID string with the value you copied in step 4.
+
+```python
+from datetime import datetime, timedelta
+from airflow import DAG
+from airflow.providers.airbyte.operators.airbyte import AirbyteTriggerSyncOperator, AirbyteJobSensor
+from airflow.operators.bash import BashOperator
+
+# Airbyte server connection details (assumes the default docker-compose network)
+AIRBYTE_HOST      = "http://airbyte-server:8001"
+AIRBYTE_CONN_ID   = "ae701b15-0ea1-4707-9457-2c1e8d1b54c5"   # <-- paste yours here
+AIRFLOW_CONN_AIRBYTE = "airbyte_conn_local"                   # Airflow connection id we will create
+
+default_args = {
+    "owner": "data_eng",
+    "email_on_failure": False,
+    "email_on_retry": False,
+    "retries": 1,
+    "retry_delay": timedelta(minutes=5),
+}
+
+with DAG(
+    dag_id="faker_to_json_dag",
+    default_args=default_args,
+    start_date=datetime(2023, 1, 1),
+    schedule_interval="0 * * * *",       # every hour
+    catchup=False,
+    tags=["airbyte", "faker", "json"],
+) as dag:
+
+    # 1. Kick off the Airbyte sync
+    trigger_sync = AirbyteTriggerSyncOperator(
+        task_id="trigger_faker_to_json_sync",
+        airbyte_conn_id=AIRFLOW_CONN_AIRBYTE,
+        connection_id=AIRBYTE_CONN_ID,
+        asynchronous=True,            # returns immediately, sensor will wait
+        timeout=3600,
+    )
+
+    # 2. Wait until the Airbyte job finishes
+    wait_for_sync = AirbyteJobSensor(
+        task_id="wait_for_faker_to_json_sync",
+        airbyte_conn_id=AIRFLOW_CONN_AIRBYTE,
+        airbyte_job_id="{{ task_instance.xcom_pull('trigger_faker_to_json_sync', key='return_value')['job']['id'] }}",
+        timeout=3600,
+        poke_interval=30,
+    )
+
+    # 3. Post-processing – simple example: print first 10 lines of the newly written file
+    #    The Local JSON destination writes to /local_json/<connection_id>/... inside the Airbyte volume.
+    #    We join that volume into Airflow’s worker container via docker-compose, so we can read it directly.
+    process_json = BashOperator(
+        task_id="preview_json_output",
+        bash_command=(
+            "echo 'Showing first 10 lines of the latest JSON file:' && "
+            "ls -t /local_json/{{ params.cid }}/*.json | head -1 | xargs -I{} head -10 {}"
+        ),
+        params={"cid": AIRBYTE_CONN_ID},
+    )
+
+    trigger_sync >> wait_for_sync >> process_json
+```
+
+9) Press `Ctrl+S` to save `faker_to_json_dag.py`  
+
+10) Switch to `airflow` folder in the Explorer and open (or create) the file `docker-compose.yaml`  
+
+11) Verify two things:  
+    a. The Airbyte server service is named `airbyte-server` and exposes port `8001`.  
+    b. The Airflow services (`airflow-webserver`, `airflow-scheduler`, etc.) share the same Docker network so the hostname `airbyte-server` resolves.  
+
+   No changes needed if you used Airbyte’s default docker-compose-deployment plus the standard Airflow docker image.
+
+12) Switch to the Airflow UI to create an Airflow Connection that points to the Airbyte API  
+
+13) Click “Admin” ➜ “Connections” ➜ “+ Add”  
+
+14) Fill in the “Add Connection” form exactly:  
+    • Conn Id: `airbyte_conn_local`  
+    • Conn Type: `Airbyte`  
+    • Host: `http://airbyte-server`  
+    • Port: `8001`  
+    • Leave Username / Password blank (Local deployment does not need them)  
+    • Extra: leave empty  
+
+15) Click “Save”  
+
+16) Return to the terminal inside VS Code and start / restart the stack so Airflow picks up the new DAG  
+
+```
+docker compose up -d airflow-webserver airflow-scheduler
+```
+
+17) Wait 20–30 sec, then navigate to `http://localhost:8080` and log in (default: airflow / airflow)  
+
+18) Locate `faker_to_json_dag` in the DAGs list, click the toggle button to unpause it  
+
+19) Click the play icon (“Trigger DAG”) to run it once immediately  
+
+20) Click the colored square of task `trigger_faker_to_json_sync` ➜ “Log” to confirm it returned an Airbyte job id  
+
+21) Click the square for `wait_for_faker_to_json_sync` ➜ “Log”  
+    You should see messages like `Job succeeded` followed by exit 0  
+
+22) Click the square for `preview_json_output` ➜ “Log”  
+    We can see the echoed first 10 lines of the new JSON file.  
+    This verifies both:  
+    • Airbyte produced the file under `/local_json/...`  
+    • Airflow’s post-processing step can access it  
+
+23) Open your host machine’s file browser and navigate to the bind-mount folder (declared in Airbyte’s docker-compose, usually `./data/local_json/<connection_id>/`)  
+    We should see time-stamped JSON files that match the preview shown in the Airflow log.
+
+24) (Optional) Open the DAG’s Graph view, confirm the linear flow: `trigger → wait → preview`  
+    That completes the Airflow orchestration of your Airbyte sync with an extra processing step.

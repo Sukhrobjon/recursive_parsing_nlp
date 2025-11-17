@@ -1,0 +1,13 @@
+1) Log in to dbt Cloud with your account credentials and wait until the workspace dashboard loads.  
+2) Click the workspace drop-down in the upper-left corner and check that you are in the correct workspace where you want the new environment.  
+3) Hover over the left-hand navigation bar and click “Settings” (gear icon) to open the Settings panel.  
+4) In the Settings panel, click the “Environments” tab (it has a small stacked-box icon). A list of existing environments appears on the right.  
+5) Click the blue “+ New Environment” button in the upper-right corner of the Environments page. This opens the Create Environment form.  
+6) Type dev env into the “Name” text box. (Exact spelling matters; include the space.)  
+7) Click the version drop-down labeled “dbt Version” and scroll until you see 1.5.x.  
+8) Select version 1.5.x by clicking it once; the drop-down will collapse and show “1.5.x” as the selected value.  
+9) Leave the “Repository” field blank (dbt Cloud may show “Select a repository” but do not select anything).  
+10) Leave the “Connection” field blank or set to “None” if a placeholder appears.  
+11) Scroll to the bottom of the form and click the blue “Save” button. A green toast notification reading “Environment created” should appear in the lower-right corner.  
+12) Verify that “dev env” now appears in the Environments list with dbt Version 1.5.x and empty Repository / Connection columns. You can refresh the page (Cmd/Ctrl-R) to double-check persistence.  
+13) Click the gray “< Back” arrow next to the page title if you want to return to the workspace dashboard—your new environment is ready for you to connect later.

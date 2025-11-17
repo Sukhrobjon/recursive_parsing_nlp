@@ -1,0 +1,33 @@
+1. Double-click `notebook.ipynb` in the file explorer so it opens in Jupyter Lab.  
+2. Scroll until you see the code cell that ends with the comment `#TODO`.  
+3. Click inside that code cell so the blue left border appears (editing mode).  
+4. Write the loop skeleton directly below `#TODO`:  
+```python
+for i in range(1, 40):
+```
+5. Press Enter twice to stay indented under the loop and add the KNN instantiation:  
+```python
+    knn = KNeighborsRegressor(n_neighbors=i)
+```
+6. Press Enter and keep the four-space indent; fit the model:  
+```python
+    knn.fit(X_train, y_train)
+```
+7. Press Enter again; predict on the test set:  
+```python
+    pred_i = knn.predict(X_test)
+```
+8. Press Enter to calculate the MAE:  
+```python
+    mae = mean_absolute_error(y_test, pred_i)
+```
+9. Press Enter once more and append the MAE to the `error` list supplied earlier in the notebook:  
+```python
+    error.append(mae)
+```
+10. Verify the loop now contains exactly five indented lines (steps 5-9) and the cell shows no red squiggles.  
+11. Click the small black triangle beside the Run button on the top toolbar.  
+12. Select “Run All Cells” from the drop-down. Wait until every cell shows a number (e.g., `In [17]`) and no cell has the “*” running indicator.  
+13. Scroll near the bottom; we can see a line plot or printed list of errors. Confirm the smallest MAE corresponds to the optimal K.  
+14. Click the “File” menu in the top left.  
+15. Choose “Save All” to write the executed notebook with results to disk.

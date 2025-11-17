@@ -1,0 +1,114 @@
+1) Click the VS Code icon in the dock to open the editor that is already pointing to the project root.  
+2) In the Explorer panel, Double-click README.md so we can confirm the requirements for the “file-sizes” pipeline.  
+3) Scroll down to the “File-size pipeline requirements” section in README.md and note:  
+   • We must scan the current folder,  
+   • Produce a list of files,  
+   • Calculate the size of each file in bytes,  
+   • Keep only files larger than 1 KB,  
+   • Aggregate the total size, and  
+   • Print a report.  
+   Keep this list in mind; we will reference it while writing code.
+
+4) Right-click the project root folder in the Explorer and choose “New File…”.  
+5) Type file_sizes_job.py and press Enter.
+
+6) Write the import block that pulls Dagster primitives. Type the following in file_sizes_job.py:  
+```python
+from pathlib import Path
+from typing import List, Tuple
+
+from dagster import op, Out, In, job, get_dagster_logger
+```
+
+7) Create the first op to list every file in the current directory. Under the import block, type:  
+```python
+@op(out=Out(List[Path]))
+def list_files() -> List[Path]:
+    """Return a list of Path objects for every file in the current folder (non-recursive)."""
+    logger = get_dagster_logger()
+    files = [p for p in Path(".").iterdir() if p.is_file()]
+    logger.info(f"Found {len(files)} files")
+    return files
+```
+
+8) Add the second op that maps files to (name, size_in_bytes) tuples:  
+```python
+@op(ins={"files": In(List[Path])}, out=Out(List[Tuple[str, int]]))
+def get_file_sizes(files: List[Path]) -> List[Tuple[str, int]]:
+    """Return (filename, size) tuples for every Path in the input list."""
+    result = [(p.name, p.stat().st_size) for p in files]
+    get_dagster_logger().info(f"Computed size for {len(result)} files")
+    return result
+```
+
+9) Create the third op to filter out small files (< 1024 bytes):  
+```python
+@op(ins={"file_sizes": In(List[Tuple[str, int]])}, out=Out(List[Tuple[str, int]]))
+def filter_large_files(file_sizes: List[Tuple[str, int]]) -> List[Tuple[str, int]]:
+    """Keep only files whose size is >= 1 KB."""
+    filtered = [t for t in file_sizes if t[1] >= 1024]
+    get_dagster_logger().info(f"{len(filtered)} files are >= 1 KB")
+    return filtered
+```
+
+10) Define the fourth op that aggregates the total size and logs a human-readable report:  
+```python
+@op(ins={"large_files": In(List[Tuple[str, int]])})
+def summarize_sizes(large_files: List[Tuple[str, int]]):
+    """Log a report of all large files and their cumulative size."""
+    total_bytes = sum(s for _, s in large_files)
+    logger = get_dagster_logger()
+    logger.info("==== File Size Report (>=1 KB) ====")
+    for name, size in large_files:
+        logger.info(f"{name.ljust(30)} {size:>10} bytes")
+    logger.info("-" * 45)
+    logger.info(f"TOTAL: {total_bytes} bytes across {len(large_files)} files")
+```
+
+11) Create the Dagster job wiring the four ops. Append:  
+```python
+@job
+def file_sizes_job():
+    summary = summarize_sizes(filter_large_files(get_file_sizes(list_files())))
+    return summary
+```
+
+12) Press Ctrl+S (or Cmd+S on macOS) to save file_sizes_job.py.
+
+13) Switch to the integrated Terminal in VS Code by clicking “Terminal” → “New Terminal”.  
+14) Type the command below to make sure the Dagster CLI is present and prints a version:  
+```bash
+dagster --version
+```  
+15) Execute the development Dagster web server on port 3000:  
+```bash
+dagster dev -p 3000
+```  
+16) Wait until the terminal logs the line “Dagit running at http://127.0.0.1:3000” (approx. 5-10 s).
+
+17) Open your web browser and type http://localhost:3000, then press Enter.  
+
+18) Click the “Jobs” tab in the left sidebar of Dagit.  
+19) Locate file_sizes_job in the list and Click the job name.
+
+20) Observe the graph visualization panel in the center; we should see four nodes ordered: list_files → get_file_sizes → filter_large_files → summarize_sizes.  
+21) Verify the op names match exactly those we declared in code. This confirms Dagster detected the job.
+
+22) Click the blue “Launch Run” button in the top-right corner of the screen.  
+23) Keep the default run configuration (none required) and Click the second “Launch Run” button in the modal.
+
+24) Wait in the Live Run view until all four steps have green checkmarks.  
+25) Click summarize_sizes in the left tree once the run completes.  
+26) In the right panel, Click “Logs” to view the message stream and confirm the “File Size Report” with the total bytes printed.
+
+27) Switch back to the terminal that is running dagster dev; confirm there are no error tracebacks.
+
+28) Type Ctrl+C in the terminal to gracefully stop the dev server (only after verifying the visualization, otherwise leave it running).
+
+29) Optionally, run the job via CLI to double-check:  
+```bash
+dagster job run -j file_sizes_job -m file_sizes_job
+```  
+   Confirm the output mirrors what you saw in Dagit.
+
+30) Celebrate—our 4 ops and single job satisfy the README requirements and are fully visualized at port 3000.

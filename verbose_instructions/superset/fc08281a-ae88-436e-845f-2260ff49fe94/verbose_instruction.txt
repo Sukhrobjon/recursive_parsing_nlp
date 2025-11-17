@@ -1,0 +1,8 @@
+1. Expand your Google Cloud project in the BigQuery Explorer panel by clicking the small gray triangle to the left of the project name.  
+2. Scroll to the bottom of the object list and locate the section labeled “Saved Charts.”  
+3. Click the gray triangle beside “Saved Charts” to reveal any existing charts.  
+4. Hover over the chart named Mychart; a vertical three-dot (︙) icon appears on the right.  
+5. Click the three-dot (︙) icon to open the context menu.  
+6. Select “Delete” from the dropdown list; a confirmation dialog titled “Delete chart Mychart?” pops up.  
+7. Read the confirmation text, then click the red “DELETE” button in the dialog.  
+8. Verify the deletion: ensure Mychart no longer appears under “Saved Charts,” and look for a green toast message in the lower-right corner that reads “Chart deleted.”

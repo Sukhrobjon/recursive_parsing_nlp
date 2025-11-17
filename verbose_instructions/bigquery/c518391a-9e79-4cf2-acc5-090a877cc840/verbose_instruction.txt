@@ -1,0 +1,29 @@
+1. Click the file tab named ml.sql in your code editor so the SQL source code becomes visible.  
+2. Highlight the entire SQL statement with Ctrl + A, then press Ctrl + C to copy it—we will paste this in BigQuery shortly.  
+3. Switch to the web browser window that already shows Google Cloud Console and click BigQuery in the left-hand navigation so the BigQuery Studio homepage loads.  
+4. Click the panel titled Untitled query just beneath the banner “Welcome to BigQuery Studio”; a blank SQL worksheet opens in the main canvas.  
+5. Press Ctrl + V to paste the SQL you copied from ml.sql into this worksheet.  
+6. Locate the string bqml_tutorial.sample_model in the pasted text, highlight it, and type ml_project.logistic_model in its place so the CREATE MODEL points to the required dataset and model name. The finished statement should now look like:  
+
+```sql
+CREATE OR REPLACE MODEL `ml_project.logistic_model`
+OPTIONS
+  (model_type = 'logistic_reg',
+   input_label_cols = ['label']) AS
+SELECT
+  *
+FROM
+  `bigquery-public-data.ml_datasets.penguins`
+WHERE
+  label IS NOT NULL;
+```  
+
+7. Verify quickly that the dataset ml_project already exists in the Explorer pane on the left (expand your project > ml_project). If it does not, right-click your project name, choose Create dataset, type ml_project, and click Create.  
+8. Click the blue ▶︎ RUN button at the top of the query editor to execute the CREATE MODEL statement.  
+9. Wait approximately 60 seconds until the green check mark and “Query complete” message appear in the Job Information panel—this means BigQuery finished building the model.  
+10. Click the link GO TO MODEL that appears in the results footer; BigQuery automatically opens the model detail page for ml_project.logistic_model.  
+11. Confirm success by checking that the Model Info panel on the right shows:  
+   • Model ID: logistic_model  
+   • Dataset: ml_project  
+   • Model type: LOGISTIC_REGRESSION  
+We can see the training statistics and evaluation tabs, proving the model has been created and is accessible.

@@ -1,0 +1,26 @@
+1. Verify you are already signed in to Snowsight (Snowflake’s web UI) and can see the left-hand navigation panel—we will stay here for the search.  
+2. Click the folder icon labeled “Projects” on the left panel, then click “Worksheets” so the main canvas lists all available worksheets.  
+3. Click the magnifying-glass icon labeled “Search” in the upper-right corner of the Worksheets screen (this is Snowflake’s universal search).  
+4. Type the keyword  
+```
+orders
+```  
+into the search box and press Enter; wait until the results list appears.  
+5. In the results grid, click the column header “Last Modified” once to sort descending (the small downward triangle should appear). This guarantees the very latest worksheet containing “orders” is at the top.  
+6. Click the first worksheet name in the list—this opens the worksheet in a new browser tab.  
+7. Press Ctrl + A (Cmd + A on macOS) inside the editor pane to highlight the entire SQL script, then press Ctrl + C (Cmd + C) to copy it to your clipboard.  
+8. Switch to your desktop environment’s terminal application (e.g., Windows Terminal, macOS Terminal, or a bash shell).  
+9. Run the following commands to move into the Desktop directory and create/open the new SQL file in VS Code:  
+```bash
+cd ~/Desktop
+code result.sql
+```  
+   Note: If `code` is not on your PATH, open the file with any editor you prefer (e.g., `nano result.sql`).  
+10. When the editor window for result.sql appears, press Ctrl + V (Cmd + V) to paste the SQL commands you copied from the worksheet.  
+11. Press Ctrl + S (Cmd + S) to save the file, then close the editor.  
+12. Back in the terminal, run a quick verification that the file exists and contains content:  
+```bash
+ls -l result.sql
+wc -l result.sql   # shows the number of lines copied
+```  
+   We can see the file size is non-zero and the line count is >0, confirming the SQL commands were successfully stored.

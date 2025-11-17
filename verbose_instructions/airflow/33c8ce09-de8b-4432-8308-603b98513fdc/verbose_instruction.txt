@@ -1,0 +1,8 @@
+1. Click the Chromium (or default browser) icon on the left panel of your Astronomer workspace to open the Airflow web UI  
+2. Wait until the Airflow homepage loads, then look at the DAGs table in the center of the screen  
+3. Identify the first DAG in the list (the top-most row; Airflow sorts alphabetically by default). We will refer to its DAG ID exactly as displayed—e.g. “example_first_dag”  
+4. Click the blue DAG ID link of that first DAG to open its DAG details page  
+5. Observe the sub-tabs at the top of the details page (“Graph”, “Tree”, “Grid”, “Code”, etc.)  
+6. Click the “Graph” tab to switch to graph view  
+7. Verify that a node-and-edge diagram appears; confirm task boxes are connected as expected and that the page title includes “Graph View”  
+8. If the diagram is too large, use the mouse wheel to zoom out and drag the canvas until all tasks are fully visible—this confirms the DAG has rendered correctly

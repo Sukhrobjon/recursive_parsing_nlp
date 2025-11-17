@@ -1,0 +1,69 @@
+1. Wait for the Postgres→Snowflake sync status badge to turn green in the browser window, then click the blue-highlighted connection row to open its configuration page.  
+2. Click the round “Postgres” icon (elephant logo) in the Source panel to open the source settings; jot down:  
+   • Host = localhost • Port = 5432 • Database = development • User = postgres (we will need these for the DB2 URI).  
+3. Click “Destinations” in the left navigation list, then click the Snowflake destination row. From the settings pane copy:  
+   • Host = https://<account>.snowflakecomputing.com → the part before .snowflakecomputing.com is the account name  
+   • Warehouse = COMPUTE_WH • Role = ACCOUNTADMIN • Database = DEVELOPMENT • Default Schema = CUSTOMERS • User = <username>.  
+4. Switch to the gnome-terminal window (Alt + Tab).  
+5. Type and run:  
+   ```bash
+   cat ~/Desktop/new_values.txt
+   ```  
+   We see the two exact values we must insert (for example “record4” and “record5”).  
+6. Run:  
+   ```bash
+   docker ps | grep postgres
+   ```  
+   Copy the first column container id (e.g., 4f1a9bcfe21a).  
+7. Execute two INSERTs into the source table:  
+   ```bash
+   docker exec -i 4f1a9bcfe21a psql -U postgres -d development -c \
+     "INSERT INTO customers.users(col1) VALUES ('record4');"
+
+   docker exec -i 4f1a9bcfe21a psql -U postgres -d development -c \
+     "INSERT INTO customers.users(col1) VALUES ('record5');"
+   ```  
+   (Replace 4f1a9bcfe21a with your actual container id.)  
+8. Confirm the rows exist:  
+   ```bash
+   docker exec -i 4f1a9bcfe21a psql -U postgres -d development -c \
+     "SELECT col1 FROM customers.users WHERE col1 IN ('record4','record5');"
+   ```  
+   We should see two rows returned.  
+9. Output the Postgres password to copy it safely:  
+   ```bash
+   echo $POSTGRES_PASSWORD
+   ```  
+10. Output the Snowflake password likewise:  
+    ```bash
+    echo $SNOWFLAKE_PASSWORD
+    ```  
+11. Construct the two connection URIs. Replace the bracketed placeholders with real values you just gathered:  
+    • Snowflake URI (all caps for db, schema, warehouse, role):  
+      ```
+      snowflake://<username>:<SNOWFLAKE_PASSWORD>@<account>/DEVELOPMENT/CUSTOMERS?warehouse=COMPUTE_WH&role=ACCOUNTADMIN
+      ```  
+    • Postgres URI:  
+      ```
+      postgresql://postgres:<POSTGRES_PASSWORD>@localhost:5432/development
+      ```  
+12. Run data-diff and redirect output to a file on the Desktop:  
+    ```bash
+    cd ~/Desktop
+    data-diff \
+      "snowflake://<username>:<SNOWFLAKE_PASSWORD>@<account>/DEVELOPMENT/CUSTOMERS?warehouse=COMPUTE_WH&role=ACCOUNTADMIN" USERS \
+      "postgresql://postgres:<POSTGRES_PASSWORD>@localhost:5432/development" customers.users \
+      > diff_test.csv
+    ```  
+    (Keep the double quotes; substitute all <…> tokens.)  
+13. List the Desktop directory to verify the CSV was created:  
+    ```bash
+    ls -l diff_test.csv
+    ```  
+    A non-zero file size confirms success.  
+14. Preview the first few lines to ensure results captured:  
+    ```bash
+    head diff_test.csv
+    ```  
+    We should see any primary-key differences (or an empty file if replication is already caught up).  
+15. Return to the browser and refresh the connection “Sync History” tab to confirm that the next incremental sync will now pick up the two new records we added.

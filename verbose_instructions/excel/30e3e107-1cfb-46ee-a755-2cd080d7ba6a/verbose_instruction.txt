@@ -1,0 +1,56 @@
+1. Right-click any sheet tab at the bottom, choose “Insert”, select “Worksheet”, and click OK.  
+2. Double-click the new sheet tab, type Demographics, and press ENTER to rename it.  
+3. Click cell A1.  
+4. Drag across to cell C1 (so A1:C1 are highlighted).  
+5. On the Home ribbon, click the “Merge & Center” button to combine the three cells.  
+6. Type Demographic Profile in the merged cell and press ENTER.  
+7. With the merged cell still selected, click the Fill Color dropdown (paint-bucket icon) on the Home ribbon, choose “More Colors…”, enter the hex value 0000FF, click OK – the background turns blue.  
+8. Click the Font Color dropdown (A icon), pick White, then click the Bold ⌘B/CTRL+B button.  
+9. Still in the merged cell, click the Center alignment button and then the Middle Align button so the title sits perfectly centered.
+
+10. Click anywhere inside your source data table on Sheet1 (the sheet that contains the fields Sex, Civil Status, and Highest Educational Attainment).  
+11. Press CTRL+A to ensure the whole data block is selected (first quick verification: the marching-ants border should frame all records).  
+12. Go to the Insert ribbon and click “PivotTable”.  
+13. In the “Create PivotTable” dialog, leave “Select a table or range” as is and tick “New Worksheet” OFF by selecting “Existing Worksheet”.  
+14. Click inside the “Location” box, switch to the Demographics sheet, click cell A3, and press OK – a blank PivotTable frame appears starting at A3.
+
+15. In the PivotTable Fields pane, drag Sex to the Rows box.  
+16. Drag Sex again to the Values box – Excel shows “Count of Sex”.  
+17. In the Values box, click the dropdown beside “Count of Sex”, choose “Value Field Settings…”, select the tab “Show Values As”, pick “% of Column Total”, and click OK.  
+18. Click once inside cell A3 of the pivot to activate it, then type Percent by Sex and press ENTER – Excel automatically places this as a custom pivot caption.
+
+19. Click any empty cell on the sheet to exit the pivot.  
+20. Check that the percentages in column B sum to 100 % (quick verification step).
+
+21. Note the last row number of this first pivot (it will usually finish by row 6 or 7 depending on categories). Click the first completely blank row after the pivot and leave it untouched as a spacer (e.g., if the first pivot ends on row 7, row 8 stays blank).
+
+22. Click a convenient empty cell (e.g., A9) one blank row below the first pivot.  
+23. Insert → PivotTable again; in the dialog leave the same data range, choose “Existing Worksheet”, click into “Location”, pick A9, press OK.
+
+24. In PivotTable Fields, drag Civil Status to Rows.  
+25. Drag Civil Status again to Values.  
+26. Change the Values summarization just like before: dropdown → “Value Field Settings…” → Show Values As → “% of Column Total” → OK.  
+27. Click cell A9 and type Percent by Civil Status, then press ENTER.  
+28. Verify the displayed percentages add up to 100 %.
+
+29. Leave the first blank row after this second pivot (for example, if the second pivot ends on row 14, keep row 15 empty).
+
+30. Click cell A16 (or the first row after that blank spacer) to begin the third pivot.  
+31. Insert → PivotTable → choose “Existing Worksheet”, set Location to A16, press OK.
+
+32. In PivotTable Fields, drag Highest Educational Attainment to Rows.  
+33. Drag Highest Educational Attainment again to Values.  
+34. Configure Values to “% of Column Total”, then OK.  
+35. Click cell A16 and type Percent by Highest Educational Attainment, press ENTER.  
+36. Confirm the percentage column totals 100 %.
+
+37. Press CTRL+S to save the workbook.
+
+38. Final visual check: The Demographics sheet should read:  
+   • Row 1: blue merged title with bold white text.  
+   • Row 3: first pivot (Sex)  
+   • One blank row gap  
+   • Second pivot (Civil Status)  
+   • One blank row gap  
+   • Third pivot (Educational Attainment)  
+   All pivot tables show percentages instead of raw counts and each caps at 100 %.

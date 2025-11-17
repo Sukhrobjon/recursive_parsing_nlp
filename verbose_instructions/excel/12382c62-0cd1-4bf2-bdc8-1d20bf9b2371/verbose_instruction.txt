@@ -1,0 +1,44 @@
+1) Open your browser and Navigate to https://console.cloud.google.com/bigquery so you land on the BigQuery Web UI.  
+2) In the left navigation panel, Locate your project name (for example, my-project) and Click the triangle ▶ to expand it.  
+3) Scroll to dataset my_dataset, Click the triangle ▶ to reveal its tables, then Click the table sales to bring up the Schema tab in the main panel.  
+4) Verify the table has at least these fields:  
+   • order_date (DATE) – the calendar date of each transaction  
+   • sales_amount (NUMERIC) – revenue for that transaction  
+   • cogs_amount  (NUMERIC) – cost of goods sold for that transaction  
+   Note that we will aggregate these two numeric columns by week in the next step.  
+5) Click the + Compose New Query button at the top-right of the BigQuery header bar. A fresh SQL editor panel opens.  
+6) Write the SQL below into the blank editor. This truncates each order_date to the Monday of its week, then sums Sales and COGS for that week.  
+```sql
+-- Weekly aggregation of Sales & COGS
+WITH weekly_totals AS (
+  SELECT
+    DATE_TRUNC(order_date, WEEK(MONDAY)) AS week_start,
+    SUM(sales_amount)      AS total_sales,
+    SUM(cogs_amount)       AS total_cogs
+  FROM
+    `my-project.my_dataset.sales`
+  GROUP BY
+    week_start
+)
+SELECT
+  week_start,
+  total_sales,
+  total_cogs
+FROM
+  weekly_totals
+ORDER BY
+  week_start;
+```  
+7) Click the blue ▶ RUN button above the editor to Execute the query. Wait until the green check mark appears and the “Query results” grid shows three columns: week_start, total_sales, total_cogs.  
+8) Click the SAVE RESULTS button just above the grid, then Choose Google Sheets → New spreadsheet. BigQuery opens a dialog; leave the default file name (Weekly_Sales_COGS) and Click EXPORT. The sheet automatically opens in a new browser tab.  
+9) In the Google Sheet, Double-click the sheet tab name (currently Sheet1) at the bottom and Type Weekly_Aggregation, then press Enter.  
+10) Click cell A1, then Press Ctrl + Shift + ↓ twice so the entire data block (columns A–C) is highlighted.  
+11) With the range still selected, Click Insert menu → Chart. Sheets opens the Chart Editor on the right side.  
+12) In the Setup section of the Chart Editor, Click the Chart type dropdown and Scroll to the “Column” section. Select Clustered column chart (second item). The preview immediately updates.  
+13) Verify:  
+    • X-axis shows week_start (column A)  
+    • Series lists total_sales and total_cogs (columns B & C). If either is missing, Click “Add Series” and choose the column.  
+14) Still in the Chart Editor, Click the Customize tab → Chart & axis titles. In Title text, Type Sales & COGS and press Enter. The chart title now reflects the required name.  
+15) Click the three-dot kebab icon ⋮ at the top-right corner of the chart and Choose Move to own sheet. Sheets creates a new tab named Chart1 (or similar) containing only the clustered column chart—this satisfies the “new sheet” requirement.  
+16) Double-click the new chart-only tab name (Chart1), Type Sales_&_COGS_Chart, and press Enter so it’s clearly labeled.  
+17) Return to the BigQuery tab; you can close the query result if finished. Your clustered column chart titled “Sales & COGS,” built from weekly aggregated data, is now stored in its own sheet and ready for presentation or sharing.

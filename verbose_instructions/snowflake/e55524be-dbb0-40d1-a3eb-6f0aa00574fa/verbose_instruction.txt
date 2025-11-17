@@ -1,0 +1,25 @@
+1. Double-click inside the opened file tab named query_id.txt so the text cursor appears, then drag to highlight the entire query-id string (for example, `01a12345-060e-4b19-9b2e-abcdef123456`) and press Ctrl-C / Cmd-C to copy it – we will paste this in a moment.  
+2. Click the browser tab that is already displaying the Snowflake Web UI so it becomes active.  
+3. Locate and click the blue “+” button in the upper-right corner of the Snowflake window.  
+4. Choose “SQL Worksheet” from the dropdown list that appears; a new blank worksheet tab opens.  
+5. Click once inside the large code editor pane so the caret appears, then type (or paste) the restore statement below, replacing <PASTE_QUERY_ID_HERE> with the value you copied:  
+
+```sql
+CREATE OR REPLACE TABLE CUSTOMER.PUBLIC.CUSTOMER
+AS
+SELECT *
+FROM CUSTOMER.PUBLIC.CUSTOMER
+BEFORE (STATEMENT => '<PASTE_QUERY_ID_HERE>');
+```
+
+   Note that the BEFORE clause performs Snowflake Time Travel back to the exact state right before the delete statement executed.  
+6. Press Ctrl-V / Cmd-V to paste the copied query id over the placeholder text so the line now reads, for example:  
+
+```sql
+BEFORE (STATEMENT => '01a12345-060e-4b19-9b2e-abcdef123456');
+```  
+7. Verify visually that there are no trailing spaces or extra quotes around the query id – this must match exactly.  
+8. Move your pointer to the top-right of the worksheet and click the blue “Run” button (triangle icon ►).  
+9. Wait until the Results panel below shows Query Status: “Success” and the message “Statement executed successfully”. This confirms the CUSTOMER.PUBLIC.CUSTOMER table has been recreated from the state prior to the delete.  
+10. Click the small refresh (⟳) icon next to “Databases” in the left navigation tree, then expand DATABASES → CUSTOMER → PUBLIC → Tables and confirm that the CUSTOMER table is listed with today’s creation timestamp.  
+11. Right-click CUSTOMER.PUBLIC.CUSTOMER and select “Preview Data” to open a data grid; scan a few rows to make sure the previously deleted record(s) are present – this final visual check certifies the restore worked.

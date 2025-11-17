@@ -1,0 +1,8 @@
+1. Open the Airbyte homepage in your browser.  
+2. Click the blue button labeled “Create your first connection” located at the bottom center of the screen.  
+3. In the “Select a source” panel that appears, click the row titled “Sample Data (Faker)” (you will see its logo of a smiley face next to it).  
+4. In the “Select a destination” panel, click the row titled “Local SQLite” (identified by the SQLite dolphin icon).  
+5. Wait while Airbyte fetches the source schema; a small spinner and the message “Fetching the latest schema” will display for a few seconds.  
+6. When the Connection Configuration page loads, scroll straight to the bottom without changing any fields—everything remains on default values (Destination namespace, Stream sync modes, Schedule type, etc.).  
+7. Click the teal “Set up connection” button at the bottom-right corner of the page.  
+8. Observe the new Connection Overview page: the connection name appears at the top, a green “Active” status pill is visible, and a “Sync now” button is enabled. This confirms the connection was created successfully.

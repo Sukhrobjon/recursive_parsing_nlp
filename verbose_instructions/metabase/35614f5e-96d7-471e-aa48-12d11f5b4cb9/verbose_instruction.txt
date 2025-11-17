@@ -1,0 +1,41 @@
+1. Click the “New” button in the upper-right corner of Metabase.  
+2. Choose “Question” from the drop-down panel that appears.  
+3. Click “Sample Database” in the “Pick your data” modal.  
+4. Select the “Orders” table, then click the blue “Next” (or “→”) button at the bottom.  
+
+5. Click “Join data” (link-icon) in the top gray bar of the query builder.  
+6. In the “Pick a table” dialog, choose “Products”.  
+7. Under “How do these tables relate?”, set:  
+   • “Orders → Product ID” equals “Products → ID”.  
+8. Leave the join type as “Inner join” (default) and click “Done”.  
+   Note that an inner join limits results to rows where the Product IDs match; that is exactly what we need.  
+
+9. Click the blue “Summarize” button (top-right of the builder).  
+10. In the pop-up, under “Pick the metric you want to see”, click “Add” > choose “Count of rows”.  
+11. Under “Group by”, click “Add” > choose “Products → Category” (labeled “Product Category”).  
+12. Click “Done” to close the Summarize box.  
+
+13. Click the “Sort” button (two-arrow icon) in the top bar.  
+14. In the sort modal, choose:  
+    • Column: “Count of rows”  
+    • Order: “Descending”  
+15. Click “Done”. We can already see the rows are sorted from most to least counts—good verification.  
+
+16. Click the “Visualization” button (paintbrush icon) at the bottom to open the Visualization side panel.  
+17. In the panel’s dropdown, choose “Funnel” as the visualization type.  
+18. Observe the preview updates to a funnel chart; confirm the categories appear from top (highest count) to bottom (lowest).  
+19. Click the blue “Done” button in the Visualization panel to save the chart settings.  
+
+20. Click the cloud-shaped “Download” button in the lower-right corner of the screen.  
+21. In the “Download” dialog, select the “.png image” option.  
+22. Click “Download” and wait for the file to finish saving to your browser’s default download folder (usually “~/Downloads”).  
+
+23. Open your file browser (Switch to “File Explorer/Finder”).  
+24. Navigate to the Downloads folder; you should see a PNG with a timestamped name (e.g., “Metabase-2024-...png”).  
+25. Right-click the file, choose “Rename”, and type exactly:  
+    funnel_chart.png  
+26. Press Enter/Return to confirm the new name.  
+
+27. (Optional verification) Double-click “funnel_chart.png” to open it—confirm the funnel reflects Product Category counts sorted descendingly.  
+
+You now have the completed funnel chart stored as “funnel_chart.png”.

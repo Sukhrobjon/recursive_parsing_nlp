@@ -1,0 +1,9 @@
+1. Click the avatar–shaped icon labeled “Settings” in the upper-right corner of the Superset Web UI  
+2. Select “Action Logs” from the drop-down menu that appears  
+3. Click the blue “FILTER LIST” button in the Action Logs screen  
+4. Select “USER” in the left-hand column of the pop-up filter dialog  
+5. Click the “Select value” input box that appears on the right side of the dialog  
+6. Choose “Superset Admin” from the drop-down list of users  
+7. Click the green “Search” button at the bottom-right of the filter dialog to apply the filter  
+8. Click the column header “dttm” once so that a small ↑ (upward arrow) icon appears, indicating ascending chronological order  
+9. Confirm that the earliest timestamp now appears in the first data row and that subsequent rows increase in time—this verifies the list is sorted correctly for your leader

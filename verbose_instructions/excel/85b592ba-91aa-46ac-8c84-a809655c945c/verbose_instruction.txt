@@ -1,0 +1,25 @@
+1. Select cell A1.  
+2. Press Ctrl + Shift + End so the entire data block—from column A through column G and down to the last used row—is highlighted.  
+3. Click the “Insert” tab on the Ribbon.  
+4. Click the “PivotTable” button in the Tables group.  
+5. In the “Create PivotTable” dialog, verify that “Select a table or range” is selected and that the Table/Range box shows something like `$A$1:$G$###` (### = last row).  
+6. Choose the radio button “New Worksheet” (this places the pivot on its own sheet) and click OK.  
+7. Switch to the new worksheet that just appeared (it will be named “SheetX” or “Sheet1 (2)” depending on existing sheets).  
+8. In the PivotTable Fields pane on the right, drag the field called “Month” into the “Rows” area.  
+9. Drag the field called “Revenue” into the “Values” area.  
+10. Confirm that “Sum of Revenue” now appears under Values; if it shows “Count of Revenue,” click the dropdown ➔ choose “Value Field Settings…” ➔ pick “Sum” ➔ OK.  
+11. Notice the PivotTable now lists each month in column A and its total revenue in column B—we will chart this next.  
+12. Click anywhere inside the PivotTable to keep it selected.  
+13. Press Ctrl + A to highlight the entire PivotTable (months plus totals).  
+14. Click the “Insert” tab on the Ribbon again.  
+15. Click the “Recommended Charts” or “Insert Column or Bar Chart” button in the Charts group.  
+16. Choose “Clustered Bar” under the Bar section (horizontal bars) and click OK/Finish.  
+17. A bar chart appears on the same worksheet; make sure the chart is still selected (border handles visible).  
+18. Click the “Chart Elements” plus-sign icon to the upper-right of the chart, uncheck “Legend” so the legend disappears—since months are already on the axis, we don’t need the legend.  
+19. Double-click the generic chart title text box, type “Total Revenue by Month,” and press Enter.  
+20. (Optional) Drag the chart to a clear spot on the sheet so it doesn’t overlap the PivotTable.  
+21. Verify accuracy: compare the largest bar with the corresponding largest total in the PivotTable—values should match exactly.  
+22. Press Ctrl + S to open the Save dialog if this workbook has not been saved before.  
+23. In “Save as type,” choose “Excel Workbook (*.xlsx)” to ensure Excel 2007-365 compatibility.  
+24. Type a file name such as “Monthly_Revenue_PivotChart.xlsx,” choose your folder, and click Save.  
+25. We are done—the workbook now contains a dedicated sheet with a PivotTable summarizing monthly revenue and an accompanying bar chart visualizing the totals.

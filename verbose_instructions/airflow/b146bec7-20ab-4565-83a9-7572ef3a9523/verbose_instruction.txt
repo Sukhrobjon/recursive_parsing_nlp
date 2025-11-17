@@ -1,0 +1,78 @@
+1. Click “VS Code” in the left-hand dock to open the editor where README.md is already visible.  
+2. Scroll to the bottom of README.md and read the red pytest error lines – note the three key failures:  
+   • AssertionError: DAG schedule_interval should be "@daily" but found None  
+   • ValueError: default_args must contain retries and retry_delay  
+   • AssertionError: down-stream dependency missing between task extract → transform → load  
+   We will fix these soon.
+
+3. Press Ctrl + P, type `dags/my_pipeline.py`, and hit Enter to open your DAG file.
+
+4. Locate the default_args dict (around line 15).  
+5. Type the following revised block, replacing the existing one entirely:
+
+```python
+from datetime import datetime, timedelta
+
+default_args = {
+    "owner": "data_eng",
+    "depends_on_past": False,
+    "retries": 2,                       # added to satisfy test
+    "retry_delay": timedelta(minutes=5) # added to satisfy test
+}
+```
+
+6. Find the DAG definition (starts with `with DAG(`).  
+7. Replace the `schedule_interval` argument so it matches the test expectation:
+
+```python
+with DAG(
+    dag_id="my_pipeline",
+    description="ETL pipeline that passes all unit tests",
+    start_date=datetime(2023, 1, 1),
+    schedule_interval="@daily",  # fixed
+    catchup=False,
+    default_args=default_args,
+    tags=["example"],
+) as dag:
+```
+
+8. Scroll to the task section and confirm three PythonOperator tasks named `extract`, `transform`, and `load` exist.  
+9. Below the individual task declarations, add the explicit dependency chain required by the failing test:
+
+```python
+extract >> transform >> load
+```
+
+10. Press Ctrl + S to save the file.
+
+11. Click the Terminal icon in the left dock (path is already at project root).  
+12. Run the unit tests again to confirm fixes:
+
+```
+pytest
+```
+
+13. Wait until you see “3 passed” in green. If any red failures remain, reopen README.md lines referenced and adjust code similarly; repeat steps 11-13 until all tests pass.
+
+14. Once tests are green, execute the Astronomer restart so Airflow picks up the new DAG:
+
+```
+astro dev restart
+```
+
+15. Click “Chromium” in the dock to switch to the Airflow web UI (usually on localhost:8080).
+
+16. Locate “my_pipeline” in the DAG list.  
+17. Click the grey toggle slider left of “my_pipeline” to turn it blue (Unpause).
+
+18. Click the grey circle-arrow (Trigger Dag) at the far right of the “my_pipeline” row to start a run.
+
+19. Wait until the new row appears under “Recent Tasks” and all boxes turn green (“success”).  
+20. Click the dag name “my_pipeline” to open the graph view; visually verify the arrow chain extract → transform → load matches the fix.
+
+21. Optional: Click the latest run’s “load” task box, then click the “Logs” tab, scroll to ensure “Task succeeded” is present – confirming the DAG executed with the corrected configuration.
+
+22. You have now:  
+    • Interpreted pytest logs  
+    • Patched the DAG to satisfy tests  
+    • Re-deployed and triggered the DAG successfully in Astronomer Airflow

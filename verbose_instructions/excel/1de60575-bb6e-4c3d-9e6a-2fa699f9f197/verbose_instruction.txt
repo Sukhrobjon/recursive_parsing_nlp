@@ -1,0 +1,50 @@
+1. Navigate to https://console.cloud.google.com/bigquery to open the BigQuery Web UI.  
+2. Click the triangle ▸ next to your project name to expand the list of datasets.  
+3. Click the triangle ▸ next to the dataset that contains the sales information (for example, `marketing_data`) so we can see its tables.  
+4. Click the table that stores the revenue and promotion information (assume it is `sales_transactions`) to load the schema panel on the right.  
+   • Confirm that there is a column such as `promotion_type` (STRING) and a numeric column such as `revenue`. We will use those in the query.  
+5. Click the + Compose New Query button at the top of the main panel to open a blank query editor tab.  
+6. Type the following helper query; this quickly shows which promotion names exist so we can list them explicitly in a PIVOT clause later:  
+```sql
+SELECT DISTINCT promotion_type
+FROM `marketing_data.sales_transactions`
+ORDER BY promotion_type;
+```  
+7. Click the ► RUN button to execute the helper query.  
+   • Note the exact spellings of each promotion type in the “Query results” grid (e.g., `BOGO`, `Discount`, `FlashSale`, `Loyalty`, etc.). We will paste these into step 9.  
+8. Click the + Compose New Query button again (or clear the existing editor) to start the final aggregation query.  
+9. Write this PIVOT query, replacing the sample promotion names in the IN list with the values you just observed:  
+```sql
+WITH revenue_by_promo AS (
+  SELECT
+    promotion_type,
+    SUM(revenue) AS total_revenue
+  FROM
+    `marketing_data.sales_transactions`
+  GROUP BY
+    promotion_type
+)
+SELECT *
+FROM revenue_by_promo
+PIVOT (
+  SUM(total_revenue) FOR promotion_type IN (
+    'BOGO',
+    'Discount',
+    'FlashSale',
+    'Loyalty',
+    'Seasonal'
+  )
+);
+```  
+   • The PIVOT clause converts each promotion type into its own column, giving the layout the spreadsheet needs.  
+10. Click the ► RUN button to execute the aggregation.  
+11. Wait for the “Query results” grid to appear. Verify that each promotion type is now a column header and the cells contain the corresponding total revenue values.  
+12. Click the SAVE RESULTS button on the upper-right side of the “Query results” panel.  
+13. Choose Google Sheets from the dropdown menu.  
+14. In the pop-up dialog:  
+    • Type a file name such as “Promotion_Revenue_Summary”.  
+    • In the Sheet name box, enter Sheet2 (this tells BigQuery to write the results into a new tab called “Sheet2”; the file will still create a default Sheet1 tab, which we can ignore).  
+    • Leave the location as “My Drive” (or choose a shared drive if preferred).  
+15. Click EXPORT to create the Google Sheet. BigQuery shows a green toast notification with a link; click that link to open the sheet.  
+16. Inspect the Google Sheet: we can see Sheet1 (empty) and Sheet2 containing the table with promotion names as column headers and their total revenue values.  
+17. (Optional) Delete or hide Sheet1 so only Sheet2 remains visible, ensuring the summary is the first thing collaborators see.

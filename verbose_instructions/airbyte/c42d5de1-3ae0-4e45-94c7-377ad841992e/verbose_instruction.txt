@@ -1,0 +1,38 @@
+1) Navigate to the Airbyte UI in your browser (typically http://localhost:8000) and wait until the Airbyte home screen loads.  
+2) Click the blue button “Create your first connection” in the center panel.  
+3) Type “MySQL” into the Search connectors field and observe the single certified “MySQL” source tile appear.  
+4) Click the “MySQL” source tile to open the “Set up source” form.  
+5) Type the source name `mysql_cars` in the Source name input so we can easily recognize it later.  
+6) Fill in the connection fields exactly as provided in the Desktop’s config.json:  
+   • Type `localhost` in Host  
+   • Type `3306` in Port  
+   • Type `alice` in Username  
+   • Type `xbCad9dg` in Password (click the eye icon to confirm the value if needed)  
+   • Type `CARS` in Database name  
+7) Scroll to “Update method” and click the dropdown.  
+8) Select the option “Scan Changes with User Defined Cursor” because the table is frequently updated.  
+9) Scroll to the bottom of the form and click the blue “Set up source” button. Airbyte tests the connection; wait for the green “All tests passed” toast before continuing.  
+10) In the Destination selection screen, type “Local JSON” in the Search connectors field.  
+11) Click the “Local JSON” destination tile.  
+12) Type the destination name `cars_json_local` in the Destination name input.  
+13) In the Destination Path field, type `/json_data` (ensure this directory already exists and is writable on the Airbyte host).  
+14) Click the blue “Set up destination” button and wait for Airbyte to verify access to the path; a green success check will appear.  
+15) Airbyte now shows the “Set up connection” page. Confirm Source is `mysql_cars` and Destination is `cars_json_local`.  
+16) Click the “Replication frequency” dropdown (default “Every 24 hours”).  
+17) Select “Every 12 hours” so Airbyte triggers two syncs per day.  
+18) Verify the namespace format is “Schema: Destination default” (leave default unless you have specific requirements).  
+19) Scroll through the “Streams” table and ensure every desired MySQL table is toggled on. By default all tables are selected; uncheck any that are not needed.  
+20) Scroll to the bottom of the page and click the blue “Set up connection” button. Airbyte creates the connection and lands on the Connection overview page.  
+21) Click the “Sync now” button in the Connection overview to run the first manual sync and establish a baseline dump.  
+22) Watch the Sync history panel; wait until the status changes from “Running” to “Succeeded”. This confirms the data copied successfully.  
+23) Switch to a terminal on the Airbyte host and list the JSON files created by the destination:  
+```bash
+ls -R /json_data
+```  
+You should see sub-folders for each stream such as `/json_data/mysql_cars_CARS_<table_name>/0_0_0.jsonl`.  
+24) Run a quick sanity check by printing the first few lines of one JSONL file:  
+```bash
+head -n 3 /json_data/mysql_cars_CARS_<replace_with_table>/0_0_0.jsonl
+```  
+Ensure the JSON rows contain valid data from the MySQL tables.  
+25) Observe in Airbyte UI that the “Next sync” column now shows a timestamp exactly 12 hours ahead, verifying the schedule is set correctly.

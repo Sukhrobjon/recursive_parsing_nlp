@@ -1,0 +1,44 @@
+1. Navigate to https://console.cloud.google.com/bigquery to open BigQuery Studio in your browser.
+
+2. Confirm that the correct Google Cloud project is selected in the blue project-selector bar at the top (we need to create the destination table inside this project).
+
+3. In the Explorer panel on the far left, expand the project name by clicking the triangle ▶ to its left, then click the triangle ▶ next to the dataset babynames so we can see its tables.
+
+4. Click the table names_2014 to highlight it, then glance at the Schema tab in the Details pane on the right; verify it contains at least the columns name, count, and assigned_sex_at_birth. Note that we will filter on assigned_sex_at_birth and order by count.
+
+5. Click the + Compose new query button (the sheet icon with a +) in the toolbar, or simply click inside the Untitled query editor tab that appears—this opens a blank SQL panel.
+
+6. Write the query below in the editor to return the five most common male baby names in 2014:
+
+```sql
+-- Top 5 male baby names, U.S., 2014
+SELECT
+  name,
+  count
+FROM
+  `babynames.names_2014`
+WHERE
+  assigned_sex_at_birth = 'M'
+ORDER BY
+  count DESC
+LIMIT
+  5;
+```
+
+7. Click the green ▶︎ RUN button at the top of the query editor to execute. Wait a moment until the Query results pane appears below with five rows.
+
+8. In the gray bar of the Query results pane, click the SAVE RESULTS button.
+
+9. From the dropdown menu choose BigQuery table. A panel titled Save Results to Table opens on the right.
+
+10. In that panel:
+    a. For Destination, leave “Create table” selected.  
+    b. In the Dataset field, open the dropdown and select babynames.  
+    c. In the Table name box, type top5_male_2014.  
+    d. Ensure Table type shows Native table and Data location matches your dataset’s location.
+
+11. Click the blue SAVE button at the bottom of the side panel. BigQuery starts a load job; wait until the green checkmark “Job complete” appears.
+
+12. Verify the table: in the Explorer panel, click the refresh icon next to the babynames dataset, then click the triangle ▶ to expand if needed. You should now see top5_male_2014. Click it and switch to the Preview tab to confirm it lists the same five rows (name and count).
+
+13. Optionally, share or use the new table in subsequent analyses; it is permanently stored alongside your other babynames tables.

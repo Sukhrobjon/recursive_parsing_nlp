@@ -1,0 +1,19 @@
+1. Navigate to console.cloud.google.com/bigquery so the BigQuery Web UI opens in your default browser.  
+2. Locate the Explorer panel on the left-hand side and find the dataset that holds the list of change requests (for example: my_company.change_management).  
+3. Click the small ► (triangle) next to the dataset name to expand it, then click the table change_requests; the Schema tab in the right-hand pane shows every column. Confirm that the following fields exist exactly as spelled: closed_by, planned_start_date, phase_state.  
+4. Click the + Compose Query button in the toolbar (blue “+” icon) to open a new blank SQL editor tab.  
+5. Type or paste the SQL below into the editor. We will sort (ORDER BY) on three columns, mixing ascending and descending directions as required:
+```sql
+SELECT
+  *
+FROM
+  `my_company.change_management.change_requests`
+ORDER BY
+  closed_by      DESC,   -- 1) Closed by (descending)
+  planned_start_date ASC, -- 2) Planned start date (ascending)
+  phase_state    DESC;    -- 3) Phase state (descending)
+```
+6. Click the ▷ RUN button above the editor to execute the query; BigQuery will return the reordered list in the Query results pane.  
+7. Verify that the first few records respect the sort order (highest closed_by, within that the earliest planned_start_date, and within that the highest phase_state).  
+8. (Optional) Click SAVE RESULTS in the upper-right of the Query results pane if you need to download the sorted list; choose CSV (local file) or your preferred format.  
+9. If you saved a file, watch the browser download bar; the file (e.g., change_requests_YYYYMMDD.csv) appears in your Downloads folder—rename it if desired.

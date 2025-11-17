@@ -1,0 +1,83 @@
+1) Double-click “notebook.ipynb” to open the existing Jupyter notebook in edit mode.  
+2) Scroll slowly until you see the first empty code cell labelled with a grey “In [ ]:” prompt.  
+3) Click inside that empty cell.  
+4) Type the import code below exactly so we can load the Breast Cancer dataset and set up the environment:  
+```python
+from sklearn.datasets import load_breast_cancer
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.svm import LinearSVC
+from sklearn.metrics import classification_report, accuracy_score
+import pandas as pd
+import numpy as np
+```  
+5) Press Shift+Enter to execute the cell and ensure no import errors appear (the prompt should change to “In [1]” and a number).  
+
+6) Scroll to the next existing empty code cell and click into it.  
+7) Write the dataset-loading code exactly as shown:  
+```python
+# Load the Breast Cancer dataset
+cancer = load_breast_cancer()
+X = cancer.data
+y = cancer.target
+
+# Optional: convert to DataFrame for clarity (not strictly needed, but handy)
+df = pd.DataFrame(X, columns=cancer.feature_names)
+df['target'] = y
+print("Dataset shape:", df.shape)
+df.head()
+```  
+8) Execute this cell with Shift+Enter and verify that a small table preview appears and “Dataset shape” prints (should be (569, 31)).  
+
+9) Move to the next empty code cell.  
+10) Add the train/validation split and feature standardisation code:  
+```python
+# Split the data into train and test (80/20)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y)
+
+# Standardise features for SVM
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+```  
+11) Run the cell with Shift+Enter and confirm no errors; variables X_train_scaled and X_test_scaled should exist.  
+
+12) Scroll to the next blank code cell.  
+13) Write the model training code:  
+```python
+# Train a linear SVM (LinearSVC) model
+svm_clf = LinearSVC(random_state=42, max_iter=10000)
+svm_clf.fit(X_train_scaled, y_train)
+```  
+14) Execute the cell (Shift+Enter). A convergence warning is acceptable; the cell should still complete quickly.  
+
+15) Go to the following empty code cell.  
+16) Add evaluation code to measure accuracy and print a detailed report:  
+```python
+# Make predictions
+y_pred = svm_clf.predict(X_test_scaled)
+
+# Evaluate
+acc = accuracy_score(y_test, y_pred)
+print(f"Test Accuracy: {acc:.4f}\n")
+print(classification_report(y_test, y_pred, target_names=cancer.target_names))
+```  
+17) Run this cell and verify the printed “Test Accuracy” (expected >0.90) and the precision/recall table lines for “malignant” and “benign”.  
+
+18) Scroll to one more empty cell if available (or insert a new cell with the "+" button in the notebook toolbar).  
+19) Type code to save both the model and the scaler for later use (optional but useful):  
+```python
+import joblib
+joblib.dump(svm_clf, "linear_svm_breast_cancer.joblib")
+joblib.dump(scaler, "scaler_breast_cancer.joblib")
+print("Artifacts saved.")
+```  
+20) Execute this cell; ensure “Artifacts saved.” prints and two *.joblib files appear in the file browser on the left.  
+
+21) Click the “Run” menu at the top of JupyterLab and select “Run All Cells” to make sure the entire notebook executes from top to bottom with a clean kernel.  
+22) Wait until every cell’s prompt shows a number (no “*”) indicating completion. If anything errors, choose “Kernel > Restart Kernel and Run All Cells…”, then click “Restart” in the dialog and re-verify.  
+
+23) Once all cells have run successfully, go to “File > Save Notebook” (or press Ctrl+S / Cmd+S). Look for the small blue disk icon to disappear, confirming the notebook has been saved.  
+
+24) Confirm that “notebook.ipynb” now contains the executed output cells, the accuracy report, and has a last-modified timestamp of a few seconds ago—your work is complete.

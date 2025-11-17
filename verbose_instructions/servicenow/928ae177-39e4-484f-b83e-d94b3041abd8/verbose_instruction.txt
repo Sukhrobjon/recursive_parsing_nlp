@@ -1,0 +1,19 @@
+1. Click the middle funnel icon immediately to the left of the text “Change Requests View: Service Operations Workspace” to open the filter builder panel.  
+2. Click the first dropdown labeled “-- choose field --” to activate the field search.  
+3. Type “Short” into the search box that appears, then click the option “Short description” from the filtered list to select it.  
+4. Click the next dropdown (operator column) and choose “is”.  
+5. Click the value input box on the right and type Upgrade OWA-SD-01 to MS Windows Server 2016 exactly.  
+6. Click the blue AND button on the far right of the row to add another condition.  
+7. In the new row, click “-- choose field --”, type Assigned, and select Assigned to from the list.  
+8. Click the operator dropdown in this row, select is, then click the value box and type David Loo.  
+9. Click AND again to append a third condition row.  
+10. Choose field Risk, set the operator to is, then click the value dropdown and pick High.  
+11. Click AND one more time to create the final condition row.  
+12. Select field State, set the operator to is, and type Assess in the value box.  
+13. Click the large blue Run button located at the bottom-right of the filter panel to execute the filter.  
+14. Wait until the results grid refreshes (spinner disappears) and verify that every returned row shows:  
+    • Short description = “Upgrade OWA-SD-01 to MS Windows Server 2016”  
+    • Assigned to = “David Loo”  
+    • Risk = “High”  
+    • State = “Assess”  
+15. Confirm zero extraneous records appear; if any do, re-check each filter row for typos or incorrect operators, then click Run again.

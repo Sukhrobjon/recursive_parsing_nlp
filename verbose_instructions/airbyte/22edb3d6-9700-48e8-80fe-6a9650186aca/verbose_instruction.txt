@@ -1,0 +1,33 @@
+1) Open your browser and Navigate to http://localhost:8000 to bring up the Airbyte local UI  
+2) Click the menu item “Destinations” in the left-hand navigation bar  
+3) Click the blue button “+ New destination” in the upper-right corner of the Destinations panel  
+4) Type “Local JSON” into the search bar that appears and Select “Local JSON (Community)” from the filtered list  
+5) Click the button “Set up destination” that pops up under the connector name  
+6) Type “local_json_file” into the “Name” field so you can easily recognise this destination later  
+7) In the “Destination path” input box Delete any default value and Type the absolute folder path  
+```
+/local/json_destination
+```  
+   Note that Airbyte will create one JSON file per stream in this folder, so be sure the directory already exists on the host machine that runs Airbyte.  
+8) Leave the “Format” drop-down as the default “JSON Lines” (this is required for the Local JSON connector)  
+9) Scroll down and Click “Set up destination” — Airbyte now validates that the folder is reachable inside the Docker container  
+10) Wait for the green toast notification “Destination test succeeded” to confirm connectivity; if you get a red error instead, Verify that:  
+    a) The directory /local/json_destination exists on the host  
+    b) The Docker-compose file mounts the parent directory, e.g. compose has  
+    ```
+    volumes:
+      - /local/json_destination:/local/json_destination
+    ```  
+11) Click “Continue” to finish the wizard; you are now automatically taken to the “Set up connection” screen where you can pair this destination with a source  
+12) In the upper-left corner, Click the breadcrumb “Destinations” to verify the destination is listed; you should see “local_json_file” with a green status dot  
+13) Switch to a terminal window and Run  
+```
+ls -ld /local/json_destination
+```  
+    to ensure the directory permissions are writable by the Docker user; adjust with `chmod` if necessary  
+14) Return to the Airbyte UI and Click the destination “local_json_file”; in the right panel Click the “Test” button again to confirm readiness any time you change permissions  
+15) When you later create a connection and trigger a sync, Open the terminal and Run  
+```
+ls /local/json_destination
+```  
+    to confirm that JSON files like `<stream_name>_2024_*.jsonl` are created—this validates that data successfully landed in your local JSON destination

@@ -1,0 +1,93 @@
+1. Open your Jupyter Notebook (or any Python-capable IDE such as VS Code) where the previous figure was created so we can reuse its styling parameters  
+2. Scroll to the cell that produced the existing figure and skim the code to note the key style elements (e.g., color palette, figure size, axis titles, font size, legend position). We will duplicate these for the new H/A/N plot  
+3. Insert a new code cell directly below that block so the new figure follows the same order in the notebook  
+4. Import the same libraries already used (they are usually `pandas`, `numpy`, `matplotlib.pyplot`, `seaborn`). If they were not imported globally, re-import them in this new cell:
+
+```python
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+```
+
+5. Read in (or reuse) the data frame that contains the H, A, N column. If the dataframe is already in memory from earlier cells (commonly named `df`), skip the read step. Otherwise, adjust the path as needed:
+
+```python
+df = pd.read_csv("your_dataset.csv")     # change file name/path if required
+```
+
+6. Verify that the H/A/N column exists and inspect unique values to understand possible groupings. Run:
+
+```python
+print(df.columns)
+print(df["H/A/N"].unique())
+```
+
+7. Clean or standardize the H/A/N column exactly the same way the earlier column (used for the existing figure) was cleaned. For example, if the previous columns were stripped of extra spaces and capitalized, do:
+
+```python
+df["H/A/N"] = df["H/A/N"].str.strip().str.upper()
+```
+
+8. Aggregate the data to match the previous figure’s level of granularity (likely a simple count of each category). Use `groupby` and `size`:
+
+```python
+han_summary = (
+    df
+      .groupby("H/A/N", dropna=False)  # include NaN if desired
+      .size()
+      .reset_index(name="count")
+)
+
+# Ensure correct order if specific sequence was used earlier
+order = ["H", "A", "N"]  # adjust if exact order from earlier plot differs
+han_summary["H/A/N"] = pd.Categorical(han_summary["H/A/N"], categories=order, ordered=True)
+han_summary = han_summary.sort_values("H/A/N")
+```
+
+9. Instantiate the same style context as the previous figure (for instance, if `sns.set_style("whitegrid")` or a custom rcParams were used). Example:
+
+```python
+sns.set_style("whitegrid")         # or paste the earlier style call
+plt.rcParams.update({"figure.figsize": (8, 5),
+                     "axes.titlesize": 14,
+                     "axes.labelsize": 12})
+```
+
+10. Plot the data using the same chart type as the earlier figure (e.g., bar plot). To keep colors consistent, reuse the same palette (replace `color_list` if you had one):
+
+```python
+ax = sns.barplot(
+        data=han_summary,
+        x="H/A/N",
+        y="count",
+        palette=["#1f77b4", "#ff7f0e", "#2ca02c"]  # sample palette matching the first figure
+)
+
+ax.set_title("Distribution of H/A/N")
+ax.set_xlabel("Category (H, A, N)")
+ax.set_ylabel("Count")
+for p in ax.patches:                           # optional: annotate bars like the first figure
+    ax.annotate(
+        f"{int(p.get_height())}",
+        (p.get_x() + p.get_width() / 2.0, p.get_height()),
+        ha="center", va="bottom", fontsize=10
+    )
+plt.tight_layout()
+```
+
+11. Save the figure with the required filename exactly as `'result.png'` in the current working directory:
+
+```python
+plt.savefig("result.png", dpi=300, bbox_inches='tight')
+plt.show()
+```
+
+12. Confirm the file was successfully created by running a quick OS listing:
+
+```python
+import os
+print("result.png" in os.listdir())
+```
+A returned `True` tells us the PNG is present and ready.
+
+13. (Optional but recommended) Compare the new `result.png` to the original figure visually to ensure the formatting—font sizes, color scheme, axis labels, and annotation style—matches perfectly. Adjust any rcParam or plot parameters if needed, then re-run steps 10–12 to overwrite the file.

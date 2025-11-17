@@ -1,0 +1,9 @@
+1. Click the funnel-shaped Filter icon located in the center of the top menu bar (directly beneath the page title “servicenow”); wait until the “Order results by the following fields” panel appears.  
+2. Click the blue “Add Sort” button that sits on the first row of the panel; a new sort row with two dropdowns (“Field” and “Direction”) will be inserted.  
+3. Click the first dropdown in this new row, start typing “Enable Multifactor Authentication” in the search box that pops up, then press Enter to select that exact field.  
+4. Click the adjacent “Direction” dropdown (it shows “a to z” by default) and choose “z to a” so the field will sort in descending order.  
+5. Click the “Add Sort” button a second time to insert another sort row underneath the first one.  
+6. Click the “Field” dropdown of this second row, type “Prefix”, and press Enter to pick the “Prefix” field.  
+7. Click the “Direction” dropdown next to it and again choose “z to a” to set descending order for Prefix.  
+8. Click the green “Run” button in the lower-right corner of the panel to execute the sort; the user list will refresh.  
+9. Verify that the table now shows users grouped by “Enable Multifactor Authentication” status (those with MFA enabled on top) and, within each MFA status group, ordered by “Prefix” from Z down to A.

@@ -1,0 +1,65 @@
+1. Click the “VS Code” icon in the left dock to open the editor.  
+2. Locate and click the tab titled “README.md” that is already open; skim the section “Unit-tests for DAG & task validation” so we know which tests we must implement.  
+3. Press Ctrl + P, type test_dag.py, and hit Enter to open the file.  
+4. Scroll to the top and confirm the initial imports exist. If they are missing, type the following at the top of the file:  
+```python
+import pytest
+from airflow.models import DagBag
+
+# disable excessive Airflow logging during pytest runs
+import logging
+logging.getLogger("airflow").setLevel(logging.ERROR)
+
+# load all DAGs in the local 'dags/' directory once for reuse
+dag_bag = DagBag(dag_folder="dags/", include_examples=False)
+```
+5. Write a sanity-check test that stops immediately if any DAG fails to import:  
+```python
+def test_dag_imports():
+    """
+    Fail fast if any DAG import errors are present.
+    """
+    assert len(dag_bag.import_errors) == 0, f"DAG import failures: {dag_bag.import_errors}"
+```
+6. Type the first required function “test_dag_schedule_interval” exactly as below to ensure the activity_suggestion_dag runs daily:  
+```python
+def test_dag_schedule_interval():
+    """
+    Verify that 'activity_suggestion_dag' is scheduled to run daily.
+    """
+    dag = dag_bag.get_dag("activity_suggestion_dag")
+    assert dag is not None, "DAG 'activity_suggestion_dag' not found."
+    assert dag.schedule_interval == "@daily", "DAG schedule interval is not set to daily."
+```
+7. Type the second required function “test_task_workflow_order” to validate the precise task sequence:  
+```python
+def test_task_workflow_order():
+    """
+    Ensure tasks are ordered fetch_activity -> log_activity -> analyze_activity.
+    """
+    dag = dag_bag.get_dag("activity_suggestion_dag")
+    assert dag is not None, "DAG 'activity_suggestion_dag' not found."
+    # topological_sort returns tasks in execution order
+    task_ids = [task.task_id for task in dag.topological_sort()]
+    expected_order = ["fetch_activity", "log_activity", "analyze_activity"]
+    assert task_ids == expected_order, (
+        f"Tasks are not in the expected order. Expected {expected_order}, got {task_ids}"
+    )
+```
+8. Press Ctrl + S to save test_dag.py. A confirmation toast “File saved” should appear in the bottom right of VS Code.  
+9. Switch to the terminal pane titled “/home/user/projects/today_task” by clicking it in the bottom panel.  
+10. Execute the Airflow environment restart so pytest changes take effect:  
+```bash
+astro dev restart
+```  
+   Wait until the terminal prints “Docker containers refreshed, Airflow available on http://localhost:8080”.  
+11. Type the command below to run the new unit tests in the container and confirm they pass:  
+```bash
+astro dev run pytest tests/test_dag.py -q
+```  
+   Ensure the output ends with “3 passed” and no failures.  
+12. Click the “Chromium” icon on the left dock to open the Airflow web UI (usually http://localhost:8080).  
+13. Locate the DAG list row labeled “task_today”; if the toggle switch is grey, click it to unpause the DAG. The switch should turn blue.  
+14. Move your mouse to the far-right Action column of the same row and click the ▶ (triangle) button to trigger a manual run.  
+15. Watch the “Recent Tasks” column; wait until the status badge for the triggered run turns green with the word “success” (or red for “failed”).  
+16. If any task fails, click the colored square for that task to open the log dialog and review why; otherwise, testing and DAG execution are complete.

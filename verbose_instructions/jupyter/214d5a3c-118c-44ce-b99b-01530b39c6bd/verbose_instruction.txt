@@ -1,0 +1,42 @@
+1) Double-click “Categorical-Data.ipynb” in the left sidebar so it opens in the main notebook window.  
+2) Scroll to the bottom until you see the last executed cell; keep going until the grey “Click to add a cell” prompt appears.  
+3) Click the grey “Click to add a cell” prompt to create a brand-new code cell.  
+4) Type the import statement so that we have pandas available (skip this line if it already exists earlier in the notebook, but re-running it is harmless):  
+```python
+import pandas as pd
+```  
+5) Verify that the DataFrame containing the categorical survey data is loaded into a variable called df (many earlier cells in this notebook already create it). If the variable is named differently, mentally substitute that name in the two groupby commands we are about to write.  
+6) In the same new cell, directly below the import, write the code that aggregates the average hours-per-week by education level:  
+```python
+# Average weekly hours worked for each education level
+avg_hours_by_edu = (
+    df.groupby('education', observed=True)['hours-per-week']
+      .mean()
+      .sort_values(ascending=False)
+      .rename('avg_hours')
+      .reset_index()
+)
+```  
+7) Add a blank line and then write the second aggregation, this time grouping by the income category column (often named "income" or "salary_class"). We’ll assume it is called income:  
+```python
+# Average weekly hours worked for each income class
+avg_hours_by_income = (
+    df.groupby('income', observed=True)['hours-per-week']
+      .mean()
+      .sort_values(ascending=False)
+      .rename('avg_hours')
+      .reset_index()
+)
+```  
+8) Append a final block in the same cell to display both tables neatly next to each other for quick visual comparison:  
+```python
+display(avg_hours_by_edu.style.set_caption("Average Hours per Week by Education"),
+        avg_hours_by_income.style.set_caption("Average Hours per Week by Income"))
+```  
+9) Click the blue “Run” triangle on the left side of the cell (or press Shift+Enter) to execute the new code.  
+10) Confirm that two output tables appear: one titled “Average Hours per Week by Education” and the second titled “Average Hours per Week by Income”. Each should show two columns—category and avg_hours—and no error messages.  
+11) If a NameError appears (e.g., df is undefined), scroll up, locate the earlier cell that originally loaded the dataset, click it, then click “Run” ▶. Once that cell finishes, return to the new aggregation cell and rerun it.  
+12) If the column names differ (for instance, 'hours_per_week' instead of 'hours-per-week'), edit the strings in steps 6–7 accordingly, then rerun the cell.  
+13) After verifying both tables look correct, click the “Run” menu in the top toolbar and choose “Restart kernel and run all cells…”.  
+14) Click “Restart” in the confirmation dialog; Jupyter will restart Python, execute every cell, and ensure the notebook runs from a clean state.  
+15) Scroll back to the bottom; the two summary tables should re-appear without errors, confirming that the code integrating education- and income-based averages is fully operational in “Categorical-Data.ipynb”.

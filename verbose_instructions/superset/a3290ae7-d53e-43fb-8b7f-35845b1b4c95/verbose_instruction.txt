@@ -1,0 +1,34 @@
+1) Click the “SQL Lab” menu on the top navigation bar and choose “SQL Editor”  
+2) Select the Database drop-down and choose “PublicData” so every query will run against that database  
+3) Type the following DDL in the main editor pane exactly as shown to create the new annotation table (feel free to adjust the schema name if your instance uses something other than public):
+
+```sql
+CREATE TABLE public.public_annotations (
+    id           SERIAL PRIMARY KEY,
+    start_dttm   TIMESTAMP NOT NULL,
+    end_dttm     TIMESTAMP NULL,
+    short_descr  VARCHAR(250),
+    long_descr   TEXT,
+    json_metadata JSONB,
+    created_on   TIMESTAMP DEFAULT now()
+);
+```
+
+4) Click the blue “Run” ▶ button (or press Ctrl + Enter) to execute the statement  
+5) Check the “Results” panel at the bottom of the screen and verify that you see the green “Query OK” message – this confirms the table was created successfully  
+6) Click the “Save” disk icon (optional) if you want to keep this statement for audit purposes  
+7) Switch to the Data menu in the top bar and click “Datasets” so we can register the new table as a Superset Dataset  
+8) Click the + Dataset button in the upper-right corner of the Datasets list  
+9) In the “Add Dataset” modal select:  
+   • Database: PublicData  
+   • Schema: public  
+   • Table: public_annotations  
+10) Click “Add” – Superset navigates you to the Dataset detail page for public_annotations  
+11) Click the “Edit Dataset” (pencil) button to open the dataset configuration dialog  
+12) Scroll to the “Columns” section, locate the start_dttm column and click the small clock icon to edit its temporal settings  
+13) Check the “Is temporal” checkbox and then check the “Default datetime column” radio button so start_dttm becomes the dataset’s default time column  
+14) (Optional but recommended) Enter a readable “Datetim e Format” such as %Y-%m-%d %H:%M:%S so Superset parses timestamps correctly  
+15) Click the green “Save” button in the lower-right corner of the dialog  
+16) Verify back on the dataset detail page that a tiny clock icon now appears next to start_dttm confirming it is the default datetime column  
+17) (Optional) Navigate to Charts → + Chart → Pick any chart type and select the public_annotations dataset; ensure the “Time Column” is pre-selected as start_dttm to validate the configuration is active  
+18) Inform your teammates that the table public.public_annotations is ready for use as a public annotation table with start_dttm set as the default datetime field

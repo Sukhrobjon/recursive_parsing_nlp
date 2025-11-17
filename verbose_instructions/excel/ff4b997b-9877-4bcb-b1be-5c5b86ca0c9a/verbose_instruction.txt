@@ -1,0 +1,43 @@
+1. Click the “+” (Add New Sheet) tab at the bottom of the workbook.  
+2. Click the new tab that appears (it will be named “Sheet2” by default) to make it active.  
+3. Click cell A1, type Year, and press Tab.  
+4. Type CA changes in cell B1, press Tab.  
+5. Type FA changes in cell C1, press Tab.  
+6. Type OA changes in cell D1, press Enter.  
+7. Click cell A2 and type 2015.  
+8. Press Enter, then type 2016 in cell A3.  
+9. Continue pressing Enter and typing 2017, 2018, 2019 in cells A4, A5, A6 respectively.  
+10. Click cell B2.  
+11. Type =( in the formula bar.  
+12. Switch to the Sheet1 tab.  
+13. Click cell B3.  
+14. Type - (a minus sign).  
+15. Click cell B2 in Sheet1.  
+16. Type )/ (close parenthesis and a forward slash).  
+17. Click cell B2 in Sheet1 again.  
+18. Press Enter to complete the formula.  
+19. Switch back to Sheet2.  
+20. Click cell B2, then click the % icon on the toolbar to format it as a percentage.  
+21. Move the cursor to the lower-right corner of cell B2 until it changes to a small black plus (fill handle).  
+22. Drag the fill handle down to cell B6 to copy the percentage formula for all years in the CA changes column.  
+23. Click cell C2.  
+24. Type =( in the formula bar.  
+25. Go to Sheet1 and click cell C3.  
+26. Type - (minus sign).  
+27. Click cell C2 in Sheet1.  
+28. Type )/ (close parenthesis and slash).  
+29. Click cell C2 in Sheet1 again.  
+30. Press Enter.  
+31. Return to Sheet2, click cell C2, and click the % icon on the toolbar.  
+32. Drag the fill handle from cell C2 down to C6 to fill the FA changes column.  
+33. Click cell D2.  
+34. Type =( in the formula bar.  
+35. Switch to Sheet1 and click cell D3.  
+36. Type - (minus sign).  
+37. Click cell D2 in Sheet1.  
+38. Type )/ (close parenthesis and slash).  
+39. Click cell D2 in Sheet1 again.  
+40. Press Enter.  
+41. Switch back to Sheet2, select cell D2, and click the % button on the toolbar.  
+42. Drag the fill handle from cell D2 down to D6 to populate the OA changes column.  
+43. Review cells B2:D6 to ensure all values display percentage signs and the formulas reference the correct rows.

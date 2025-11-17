@@ -1,0 +1,15 @@
+1) Scroll to the very bottom of the notebook until you see a light-grey horizontal line that says “Click to add a cell” when you hover.  
+2) Hover over that grey line and Click the blue “+ Code” button that appears so a fresh code cell is inserted.  
+3) Type (or paste) the following exact Python snippet into that new cell:  
+```python
+with open('Desktop/code_content.txt', 'w') as file:      # writes to Desktop
+    file.write('\n'.join(In))                            # joins every code cell’s input
+```  
+   Note that `In` is the hidden Jupyter list that already stores the source of every executed code cell; concatenating it captures only code, not Markdown.  
+4) Click the top menu Run ▸ Run All Cells so every cell (including this new one) executes from top to bottom.  
+5) Wait a few seconds; in the left-hand Files pane a file named Desktop/code_content.txt will appear. If you do not see it, Click the circular “Refresh file list” icon once.  
+6) Double-click Desktop in the file tree, then double-click code_content.txt to open it in a new tab.  
+7) Scroll to the very bottom of code_content.txt; you will see the two lines you just added (the open/write block). Highlight those two lines and Press Delete so they are removed—this keeps the file from containing its own extraction command.  
+8) Press Ctrl + S (or Click the floppy-disk Save icon) to save the cleaned file; confirm the asterisk in the tab title disappears.  
+9) Switch back to the notebook tab and Press Ctrl + S once more to save the notebook state as well (optional but recommended).  
+10) Verify success: in code_content.txt make sure the last visible code line now corresponds to the final real code cell of the notebook, not the extraction snippet. We have now stored all notebook code into Desktop/code_content.txt without any Markdown.

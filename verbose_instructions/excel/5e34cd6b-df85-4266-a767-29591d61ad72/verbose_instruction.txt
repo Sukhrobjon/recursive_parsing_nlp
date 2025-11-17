@@ -1,0 +1,17 @@
+1. Double-click the file NetIncome.xlsx on your desktop (or in the file explorer) to open it in Excel  
+2. Click cell C1 to activate the header cell of the new column  
+3. Type Net Income in the formula bar (just below the ribbon) and press Enter so the header appears in C1  
+4. Click cell C2 to start entering the formula for the first detail row  
+5. Type the formula below exactly into the formula bar and press Enter to calculate the first net value  
+```excel
+=$A2-$B2
+```  
+   Note that we use absolute column references ($A and $B) so the column letters stay fixed while we copy the formula downward  
+6. Hover over the small green square (fill handle) in the bottom-right corner of C2 until the cursor changes to a thin black cross  
+7. Drag the fill handle straight down to row 20 (C20) and release the mouse so Excel copies the formula to every visible row; we can see each row now shows a numeric result in column C  
+8. Click cell A1, then while holding the mouse button drag to C20 so the entire rectangle A1:C20 turns orange (or your Excel selection color)  
+9. Right-click anywhere inside the highlighted area and choose Format Cells… from the context menu (it is the bottom option)  
+10. In the Format Cells dialog, click Accounting in the Category list on the left (this ensures negative numbers display with parentheses and values align to the currency symbol)  
+11. Leave the default decimal places at 2 (you can adjust later if needed) and click OK to apply the Accounting number format to every selected cell  
+12. Press Ctrl+S (or click the floppy disk icon in the Quick Access Toolbar) to save the updated workbook  
+13. Verify success: glance at column C to confirm all numbers show the same currency formatting as columns A and B and that each value equals the corresponding value in column A minus column B; if everything looks correct, the task is complete

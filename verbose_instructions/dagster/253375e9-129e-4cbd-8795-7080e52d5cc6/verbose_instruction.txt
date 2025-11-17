@@ -1,0 +1,55 @@
+1. Click the VS Code icon on the left Dock so the editor regains focus.  
+2. Navigate to the EXPLORER panel and click README.md once to open it in the main editor tab.  
+3. Read the “Airflow → Dagster Migration” section; note the MySQL values (host `localhost`, user `user`, password `password`, port `3306`). We will wire these into our Dagster definitions next.  
+4. In the same EXPLORER panel, double-click dagster_migration.py so it opens in a new tab.  
+5. Scroll to the very top of dagster_migration.py, place the cursor on the first empty line, and type (or paste) the migration helper code exactly as shown:  
+```python
+import os
+
+from airflow.models import Connection
+from dagster_airflow import make_dagster_definitions_from_airflow_dags_path
+
+# Create a Dagster repository from every DAG in ./dags
+migrated_airflow_definitions = make_dagster_definitions_from_airflow_dags_path(
+    os.path.abspath("./dags/"),
+    connections=[
+        Connection(
+            conn_id="mysql_conn",
+            conn_type="mysql",
+            description="MySQL connection",
+            host="localhost",
+            login="user",
+            password="password",
+            port=3306,
+        )
+    ],
+)
+```  
+6. Press Ctrl+S (or Cmd+S on macOS) to save dagster_migration.py; confirm VS Code’s status bar briefly shows “File saved”.  
+7. Switch to the integrated TERMINAL by clicking the “Terminal” tab at the bottom of VS Code. If the terminal is not open, press Ctrl+` to open one.  
+8. Type `pwd` and press Enter to verify you are inside the ~/wikipediaPageViews directory. The terminal should output something like `/home/<user>/wikipediaPageViews`.  
+9. Execute the Dagster development server with the migration file by typing:  
+```bash
+dagster dev -f dagster_migration.py
+```  
+10. Wait until the terminal prints “Dagster UI server listening at http://127.0.0.1:3000” and “Press CTRL+C to exit.” This confirms the repository loaded without errors.  
+11. Right-click directly on the URL `http://127.0.0.1:3000` that appears in the terminal output.  
+12. Click Open Link in the context menu; a Chromium tab loads the Dagster UI.  
+13. If a “Welcome” pop-up or telemetry prompt appears, click Dismiss to clear it so the main UI is visible.  
+14. On the top navigation bar, click Deployment.  
+15. In the left-hand Repository list, click dagster_migration.py. A panel showing Jobs, Schedules, Sensors appears.  
+16. Click the Schedules tab centered near the top of this panel.  
+17. Locate the schedule row named wikipediaPageViews_schedule. In the “Running” column, click the grey toggle so it turns blue. A toast “Schedule started” should appear in the lower-right corner.  
+18. Still in the Schedules table, click the blue text wikipediaPageViews_schedule to open its detail page.  
+19. Click the Test Schedule button in the top-right. A modal titled “Test Schedule” shows the latest tick.  
+20. Click Evaluate (bottom-right of the modal) to generate the run request; a new row appears in the results table.  
+21. In that same new row, click Open in Launchpad on the far-right. The Launchpad opens pre-filled with the run configuration produced by the schedule.  
+22. Review the YAML in the Configuration editor; ensure the `resources.mysql_conn` block shows host: localhost, user: user, and port: 3306.  
+23. Click the blue Launch Run button in the lower-right corner.  
+24. The browser automatically navigates to the Run Timeline. Wait for the status pill at the top-left to change from “STARTED” to “SUCCESS”.  
+25. As the run progresses, expand any solid in the timeline by clicking its colored bar; ensure each step lists “Step succeeded” in the right-hand log panel.  
+26. Once the overall run status shows a green “RUN SUCCESS | Finished execution of run for …”, confirm the migration worked.  
+27. (Optional) Click the `schedule` breadcrumb at the top to return to the schedule view, verifying the Next Tick column now shows a future timestamp, confirming the schedule is active.  
+28. Switch back to VS Code’s terminal window. Press Ctrl+C to gracefully stop Dagster if you are finished, or leave it running to allow future scheduled executions.  
+29. Type `grep -i "Completed successfully" "$(ls -t logs | head -1)"` (adjust path if needed) and press Enter to check the latest Dagster log contains a success message; this double-checks job health.  
+30. Celebrate—we have migrated the Airflow DAG, wired the MySQL connection, enabled the schedule, and executed a successful test run in Dagster.

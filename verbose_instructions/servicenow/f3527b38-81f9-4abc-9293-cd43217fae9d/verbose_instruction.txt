@@ -1,0 +1,24 @@
+1. Open your preferred web browser and navigate to the hardware store’s online portal (e.g., “https://hardware-store.example.com”).  
+2. Click the Search bar at the top-right corner of the homepage and type “Sales Laptop”; press Enter.  
+3. Locate the product listing labeled exactly “Sales Laptop” in the search results and click the product title to open its detail page.  
+4. Verify that the product page header shows “Sales Laptop” and scroll down to the “Configuration” or “Customize” panel.  
+5. Click the Quantity field (usually a small numeric input box) and type 3 so that we order three identical units.  
+6. Click the checkbox or toggle next to “Salesforce” under Additional Software to enable it (we need this later for CRM work).  
+7. Click the checkbox next to “Zoom” to enable video-conferencing capability.  
+8. Click the checkbox next to “Microsoft Office 365” to include the full Office suite; note that this will already cover Word, Excel, and Outlook.  
+9. Scroll to the “Adobe” subsection and confirm that “Adobe Acrobat” is unchecked (we do not need it).  
+10. Click the checkbox for “Adobe Photoshop” so graphic editing is available for the sales team.  
+11. Click the checkbox beside “Microsoft PowerPoint” to ensure presentation software is included.  
+12. Click the checkbox labeled “Siebel Client” in the CRM add-ons list so the laptops ship with Siebel preinstalled.  
+13. Review the summary in the right-hand “Configuration Preview” panel and confirm it shows: Salesforce, Zoom, Microsoft Office 365, Adobe Photoshop, Microsoft PowerPoint, Siebel Client, and explicitly indicates Adobe Acrobat: Off.  
+14. Click the blue “Add To Cart” button located just below the configuration section; wait for the confirmation pop-up that says “3 × Sales Laptop added to cart.”  
+15. Click the Cart icon (shopping-cart symbol) in the top-right navigation bar to open the mini-cart, then click “View Cart & Checkout.”  
+16. Verify in the Cart page that Quantity reads “3” and each laptop line item lists all selected software options.  
+17. Click the “Proceed to Checkout” button (often green or blue) at the bottom-right of the Cart summary.  
+18. Type your Shipping Address and Contact Information in the appropriate text boxes; double-check for typos since shipment depends on this.  
+19. Choose your preferred Shipping Method (e.g., “Standard – 3-5 business days”) via the radio button list.  
+20. Scroll to the Payment section, select your payment method (credit card, purchase order, or corporate account), and enter the required credentials.  
+21. Review the Order Summary panel one last time to ensure the total reflects 3 units and the correct software bundle.  
+22. Click the final “Place Order” button; wait for the confirmation screen displaying “Order #xxxx successfully submitted.”  
+23. Click the “Download Receipt (PDF)” button on the confirmation screen and save the file as “Sales_Laptop_Order.pdf” to your Desktop for record-keeping.  
+24. Open your email inbox and check for the automated order-confirmation email titled “Your Hardware Store Order #xxxx”; file this email in your “Purchases” folder for easy future reference.

@@ -1,0 +1,105 @@
+1) Switch to the VS Code window that is already pointed at your dbt project folder (if it isn’t, open a terminal, cd into the project, then Run → “New Window” in VS Code and File → “Open Folder…” to select the project root).  
+2) Click the Explorer panel’s triangle next to the models folder so you can see its contents.  
+3) Double-click models/customers.sql to open it in an editor tab.  
+4) Press ⌘+P (Ctrl+P on Windows) and type models/stg_customers.sql → hit Enter. VS Code will open the file; if it doesn’t exist it will create a new untitled tab in the correct path.  
+5) Repeat Step 4 for models/stg_orders.sql so all three tabs—customers.sql, stg_customers.sql, stg_orders.sql—are open side-by-side.  
+
+6) In customers.sql, highlight the block that pulls customers from the raw table:
+
+```sql
+select
+    id as customer_id,
+    first_name,
+    last_name
+from jaffle_shop.raw_customers
+```
+
+7) Press ⌘+X / Ctrl+X to CUT the highlighted block (removes it from customers.sql and keeps it on the clipboard).  
+8) Click into the stg_customers.sql tab.  
+9) Type (or paste) the following complete model code, replacing anything that is there:
+
+```sql
+{{ config(materialized='view') }}
+
+select
+    id         as customer_id,
+    first_name,
+    last_name
+from jaffle_shop.raw_customers
+```
+
+10) Hit ⌘+S / Ctrl+S to save stg_customers.sql.  
+
+11) Return to the customers.sql tab. Place the cursor at the exact location where that block used to be and type the dbt ref call:
+
+```sql
+select * from {{ ref('stg_customers') }}
+```
+
+12) In the same customers.sql file, locate the block that pulls orders from the raw table:
+
+```sql
+select
+    id as order_id,
+    user_id as customer_id,
+    order_date,
+    status
+from jaffle_shop.raw_orders
+```
+
+13) Highlight that block and press ⌘+X / Ctrl+X to CUT it.  
+14) Move to the stg_orders.sql tab.  
+15) Paste and wrap the code in a model, replacing anything in that file with:
+
+```sql
+{{ config(materialized='view') }}
+
+select
+    id         as order_id,
+    user_id    as customer_id,
+    order_date,
+    status
+from jaffle_shop.raw_orders
+```
+
+16) Save stg_orders.sql with ⌘+S / Ctrl+S.  
+
+17) Go back to customers.sql and, at the location of the removed orders block, type:
+
+```sql
+select * from {{ ref('stg_orders') }}
+```
+
+18) Verify customers.sql now contains only ref calls (plus any joins/logic you already had). Press ⌘+S / Ctrl+S to save.  
+
+19) Switch to the integrated terminal in VS Code (Terminal → New Terminal).  
+20) Ensure you are in the project root (`pwd` should end in your dbt project directory).  
+21) Run a quick compile to confirm the new references resolve:
+
+```bash
+dbt compile
+```
+
+22) Observe the terminal output: it should finish with “Compilation finished successfully” and no warnings about missing models.  
+
+23) Execute a full run to build the staged views and the customers model:
+
+```bash
+dbt run --select stg_customers stg_orders customers
+```
+
+24) Look for the green “OK” next to stg_customers, stg_orders, and customers indicating all three were built.  
+25) Optional sanity check: open a SQL client (or use `duckdb` CLI if you are on DuckDB) and run
+
+```sql
+select count(*) from {{ database }}.{{ schema }}.stg_customers;
+select count(*) from {{ database }}.{{ schema }}.stg_orders;
+```
+
+to verify row counts match the raw tables.  
+
+26) Commit your work:  
+   a. In the terminal run `git add models/stg_customers.sql models/stg_orders.sql models/customers.sql`  
+   b. Run `git commit -m "Split customers model into stg_customers and stg_orders with refs"`  
+
+You have successfully separated the logic into two staged models and updated the original customers model to reference them via `ref()`.

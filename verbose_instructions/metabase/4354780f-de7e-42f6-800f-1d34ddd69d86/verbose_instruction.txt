@@ -1,0 +1,21 @@
+1. Click the “New” button in the upper-right corner of Metabase.  
+2. Choose “Question” from the drop-down menu.  
+3. Click “Sample Database,” then select the “Orders” table.  
+4. Click the blue “Join data” button that appears just below the column list.  
+5. In the pop-up, click “Pick table…”, scroll or type to find “Products,” and select it.  
+6. In the “How do these tables connect?” prompt, leave the default “Orders → Product ID = Products → ID” join condition, then click “Done.” (Note: this uses the common key so we can pull the product information.)  
+7. Click the green “Summarize” button (bar-chart icon).  
+8. In the Summarize panel, under “Summarize by,” confirm “Count of rows” is present.  
+9. Under “Group by,” click “+ Add,” expand “Products,” and select “Category.” (Metabase will show it as “Products → Category.”)  
+10. Click “Done” to apply the aggregation.  
+11. Click the “Sort” button (two-arrow icon) in the toolbar.  
+12. In the Sort modal, choose “Count” as the field.  
+13. Click the small triangle next to “Count” so it points downward, setting the order to Descending. Then click “Done.”  
+14. Click the blue “Visualize” button (bottom-right) to open the chart options.  
+15. In the Visualization sidebar, click “Funnel” to switch the chart type. Metabase now shows a funnel ordered by Product Category, largest count at the top.  
+16. Review the chart quickly—confirm that the first segment has the highest count and the segments decrease downward (verifies descending sort).  
+17. Click the “Download” (cloud) icon at the bottom-right of the screen.  
+18. Select “.png” from the download format list and click “Download.”  
+19. In your system’s file dialog, navigate to /home/user/Downloads (Metabase automatically saves there for most browsers).  
+20. Rename the file to “funnel_chart.png” and click “Save.”  
+21. Open the file to confirm it displays the funnel with descending Product Category counts (verification step).

@@ -1,0 +1,152 @@
+1) Click the VS Code icon in the Astronomer left-hand dock to open the project workspace  
+2) Locate README.md in the dags/ folder on the Explorer panel and skim the “Connection info” and “Custom SQL check” paragraphs – we will use the path /tmp/birds.db and connection id sqlite_conn  
+3) Click the Chromium icon in the dock to switch to the Airflow web-UI that Astronomer started  
+4) Click Admin in the top menu bar  
+5) Click Connections in the drop-down list  
+6) Click the blue + button labelled Add in the upper-right of the Connections page  
+7) Type the following values in the Add Connection modal:  
+   • Connection Id: sqlite_conn  
+   • Connection Type: SQLite (choose from the Category drop-down)  
+   • Host: /tmp/birds.db  
+8) Click the Save button at the bottom of the modal – we should now see sqlite_conn in the connections table  
+
+9) Return to VS Code (click the VS Code icon in the dock)  
+10) Right-click the dags/ folder ➜ choose New File ➜ type custom_check.sql and press Enter  
+11) Write the custom check query exactly as below – it will fail if fewer than 20 distinct birds exist after 2019 or if average happiness < 8:
+
+```sql
+-- dags/custom_check.sql
+/* Custom data-quality assertion
+   1) At least 20 distinct birds observed since 2020
+   2) Average happiness of those birds must be >= 8
+   A single row returning 1 means “pass”, anything else means “fail”.
+*/
+SELECT
+    CASE
+        WHEN COUNT(DISTINCT bird_name) >= 20
+         AND AVG(bird_happiness) >= 8
+        THEN 1
+        ELSE 0
+    END AS quality_passed
+FROM observations
+WHERE observation_year >= 2020;
+```
+
+12) Click File ▸ Save or press Ctrl+S  
+
+13) Still in dags/, open sql_data_quality.py (double-click the file)  
+14) Replace its contents with the following complete DAG (everything required is included):
+
+```python
+# dags/sql_data_quality.py
+from datetime import datetime
+from airflow import DAG
+from airflow.providers.sqlite.operators.sqlite import SqliteOperator
+from airflow.providers.common.sql.operators.sql import SQLCheckOperator
+from pathlib import Path
+
+_CONN_ID = "sqlite_conn"
+_DB_TABLE = "observations"
+_SQL_DIR = Path(__file__).parent
+
+default_args = {"retries": 0}
+
+with DAG(
+    dag_id="sql_data_quality",
+    start_date=datetime(2024, 1, 1),
+    schedule=None,
+    catchup=False,
+    default_args=default_args,
+    tags=["quality", "sqlite"],
+) as dag:
+
+    # 1. Create table if it does not exist
+    create_table = SqliteOperator(
+        task_id="create_table",
+        sqlite_conn_id=_CONN_ID,
+        sql=f"""
+        CREATE TABLE IF NOT EXISTS {_DB_TABLE} (
+            bird_name TEXT,
+            observation_year INTEGER,
+            bird_happiness INTEGER
+        );
+        """,
+    )
+
+    # 2. Seed demo data – in a real case you would remove duplicates
+    seed_data = SqliteOperator(
+        task_id="seed_data",
+        sqlite_conn_id=_CONN_ID,
+        sql=f"""
+        INSERT INTO {_DB_TABLE} (bird_name, observation_year, bird_happiness)
+        VALUES
+            ('sparrow', 2020, 9),
+            ('eagle',   2021, 8),
+            ('crow',    2022, 8),
+            ('owl',     2023, 9),
+            ('finch',   2020, 8),
+            ('parrot',  2021, 10),
+            ('penguin', 2022, 9),
+            ('falcon',  2023, 8),
+            ('robin',   2022, 9),
+            ('lark',    2023, 9),
+            ('swan',    2020, 8),
+            ('goose',   2021, 8),
+            ('wren',    2022, 9),
+            ('hawk',    2023, 8),
+            ('dove',    2021, 9),
+            ('heron',   2022, 8),
+            ('crane',   2023, 9),
+            ('pigeon',  2023, 8),
+            ('stork',   2021, 9),
+            ('kiwi',    2020, 8);
+        """,
+    )
+
+    # 3. Custom SQL quality check using external file
+    custom_quality_check = SQLCheckOperator(
+        task_id="custom_quality_check",
+        conn_id=_CONN_ID,
+        sql=str(_SQL_DIR / "custom_check.sql"),
+        check_supports_autocommit=False,
+    )
+
+    create_table >> seed_data >> custom_quality_check
+```
+
+15) Press Ctrl+S to save sql_data_quality.py  
+16) Open the integrated terminal (click the >_ icon or choose Terminal ▸ New Terminal) – it should open at /home/astro  
+17) Execute the Astronomer dev restart so Airflow picks up new code:
+
+```bash
+astro dev restart
+```
+
+18) Wait until the terminal prints “Webserver healthy” and “Scheduler healthy” – this means the new DAG is loaded  
+19) Switch to Chromium again (click its dock icon)  
+20) In the Airflow UI, locate sql_data_quality in the DAGs list  
+21) Toggle the slider to the left of sql_data_quality to unpause the DAG  
+22) Click the play (triangle) icon in the same row under the Actions column to trigger a manual run  
+23) Monitor the grid view that appears; each task box should turn green. Wait until custom_quality_check shows Success  
+24) Click the colored square for custom_quality_check in the grid (it is the right-most task)  
+25) In the right-hand Task Instance panel click Logs – we should now see the SQLCheckOperator output with either “Test passed” or an AssertionError  
+26) Click the Download button above the log text to download the log file; note the file name (something like custom_quality_check__2024-...)  
+27) Open the terminal that is currently at /home/astro and change directory to Downloads:
+
+```bash
+cd ~/Downloads
+```
+
+28) List the files to confirm the downloaded log:
+
+```bash
+ls -1
+```
+
+29) Rename the log file to custom_quality_check.log (replace <original> with the exact name you saw in step 28):
+
+```bash
+mv "<original_file_name>.log" custom_quality_check.log
+```
+
+30) Type ls again to verify custom_quality_check.log exists – we can now review that file to validate the custom SQL data-quality check has succeeded

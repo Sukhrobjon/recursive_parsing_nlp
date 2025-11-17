@@ -1,0 +1,25 @@
+1. Open your web browser and navigate to https://console.cloud.google.com/bigquery so we can work in the BigQuery Web UI.  
+2. Click the blue-folder-shaped project name (for example, my-company-finance) in the left Explorer panel to reveal its datasets.  
+3. Click the small grey triangle ⏵ to the left of the dataset annual_reports to expand it and display its tables.  
+4. Click income_statement to highlight the table, then look at the right-hand pane where the Schema tab automatically opens; we can see numeric columns Revenue and Expenses that we will use in our calculation.  
+5. Click the + COMPOSE NEW QUERY button in the top bar to open a blank SQL workspace.  
+6. Type or paste the following SQL into the editor exactly as shown, creating a new column called `Net Income` and formatting every numeric value with an accounting-style mask (negative numbers render in parentheses, all numbers show two decimals and comma thousand separators):  
+```sql
+-- Calculate Net Income and format all columns as accounting numbers
+SELECT
+  FORMAT('%(,.2f', Revenue)    AS Revenue,
+  FORMAT('%(,.2f', Expenses)   AS Expenses,
+  FORMAT('%(,.2f', Revenue - Expenses) AS `Net Income`
+FROM
+  `my-company-finance.annual_reports.income_statement`;
+```
+Note that the FORMAT string '%(,.2f' includes:  
+• a comma for thousand separators,  
+• two decimal places, and  
+• parentheses for negative numbers—typical accounting style.  
+7. Click the green ► RUN button just above the query editor to execute the SQL.  
+8. Wait a few seconds; the Query results panel appears beneath the editor showing the three formatted columns Revenue, Expenses, and Net Income.  
+9. Verify that positive values appear like  1,234.56  and negative values appear like (1,234.56). If everything looks correct, continue.  
+10. Click SAVE RESULTS on the right side of the Query results header row, choose CSV (local file), and download the file when prompted.  
+11. When your browser finishes downloading, open your system’s file manager, move the file to the desired folder (e.g., ~/Downloads), and if needed rename it to income_statement_with_net_income.csv for easier reference later.  
+We have now added the Net Income column and formatted all numeric data in accounting number style.

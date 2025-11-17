@@ -1,0 +1,39 @@
+1. Switch to the terminal (or your preferred code editor) that has access to the file system.  
+2. Run the command below to display the contents of the JSON file and keep the values visible while you work:  
+   ```bash
+   cat /home/user/db_info.json
+   ```  
+   Note the values for: `db_type`, `name`, `host`, `port`, `db_name`, `db_user`, and `db_password`. We will use them in Metabase shortly.
+
+3. Return to the browser tab where Metabase is open.  
+4. Click the gear-shaped “Admin” icon in the top-right corner.  
+5. Click “Settings” in the left sidebar if it is not already selected.  
+6. Click “Databases” in the secondary sidebar.  
+7. Click the blue “Add a database” button in the upper-right corner.
+
+8. Type the exact text from `name` in the “Name” field.  
+9. Click the “Database type” dropdown and select the option that matches the `db_type` value (for example, “PostgreSQL”, “MySQL”, “SQL Server”, etc.).  
+10. In the “Host” field, type the value from `host`.  
+11. In the “Port” field, type the value from `port`.  
+12. In the “Database name” field, type the value from `db_name`.  
+13. In the “Database username” field, type the value from `db_user`.  
+14. In the “Database password” field, type the value from `db_password`.
+
+15. Scroll down and expand the “Advanced options” triangle.  
+16. If the JSON contains a `schema` key, type that value into “Schemas to include” (comma-separated if multiple).  
+17. Leave SSL or additional parameters at their defaults unless the JSON file specifies otherwise.
+
+18. Click the blue “Save” button at the bottom of the form.  
+19. Wait for Metabase to display the green “Successfully added!” toast in the lower-right corner. This confirms the connection was successful.
+
+20. Verify the new database appears in the list under Admin → Databases.  
+21. Click the new database name and then click the “Sync database schema now” button to run an immediate sync.  
+22. Wait for the sync progress bar to complete (a green check icon will appear). This ensures tables will be available for future questions.
+
+23. Switch back to the terminal and store a note that setup was successful:  
+   ```bash
+   echo "$(date): Added database '$name' to Metabase successfully." >> ~/metabase_setup.log
+   ```
+
+24. Return to Metabase and click “Browse data” in the top navigation bar.  
+25. Confirm the newly added database is listed and expandable, showing its schemas and tables.

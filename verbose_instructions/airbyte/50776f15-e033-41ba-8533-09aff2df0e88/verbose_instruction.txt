@@ -1,0 +1,39 @@
+1) Double-click the file “config.png” located on the Desktop to open it in the image viewer and keep it visible; we will copy these exact values in later steps (e.g., Host = localhost, Port = 5432, Database = sales_dw, Schema = public, Username = airbyte, Password = P0stgr3s!).  
+2) Switch to the browser window where the Airbyte Local UI is already open.  
+3) Click the “Sources” link in the dark-blue left navigation panel so the Sources catalog appears.  
+4) Type “Faker” in the “Search sources” input on the top-right; observe one tile labeled “Sample Data (Faker)”.  
+5) Click the tile “Sample Data (Faker)” to open its setup screen.  
+6) Click the blue “Set up source” button. Airbyte runs connectivity tests automatically; wait until the green badge “All tests passed” is displayed.  
+7) Click the “Destinations” link in the left navigation panel to open the Destinations catalog.  
+8) Type “Postgres” in the “Search destinations” bar; confirm a tile labeled “Postgres” appears.  
+9) Click the “Postgres” tile to open the destination wizard.  
+10) Enter the Postgres parameters exactly as shown in config.png:  
+   • Host: `localhost`  
+   • Port: `5432`  
+   • Database: `sales_dw`  
+   • Default schema: `public`  
+   • Username: `airbyte`  
+11) Click the grey “Optional fields” toggle so the hidden inputs expand.  
+12) Type `P0stgr3s!` into the “Password” field that is now visible.  
+13) Leave the remaining fields with their defaults (SSL = Prefer, SSH = No SSH) because they are not specified in config.png.  
+14) Click the blue “Set up destination” button; wait for the green “All tests passed” badge confirming a successful Postgres connection.  
+15) Click the “Connections” link in the left panel.  
+16) Click the blue “Create your first connection” button in the main workspace.  
+17) In the “Define source” step, click “Select an existing source” and then click the row titled “Sample Data (Faker)”.  
+18) In the “Define destination” step, click “Select an existing destination” and then click the row titled “Postgres”.  
+19) Wait a few seconds while Airbyte loads available streams.  
+20) Fill in the Connection configuration exactly as dictated by config.png:  
+   • Namespace format: `${SOURCE_NAMESPACE}`  
+   • Destination stream prefix: `faker_`  
+   • Sync mode: use the dropdown on each stream and choose “Full Refresh | Overwrite”.  
+   • Schedule type: open the “Schedule type” dropdown and choose “Manual”.  
+21) Click the blue “Set up connection” button at the bottom-right to save and create the connection.  
+22) Verify that the new connection page displays a status badge “Active” with the schedule set to “Manual” and that the first sync has not yet run.  
+23) Click “Sync now” to trigger an initial run; watch the progress bar until it shows the green check icon and “Succeeded”.  
+24) Switch back to the Postgres psql terminal (or another SQL client) and run a quick row count to confirm data landed:  
+
+```sql
+SELECT COUNT(*) FROM public.faker_users;
+```  
+
+You should receive a non-zero count, confirming the Faker → Postgres Airbyte connection works end-to-end.

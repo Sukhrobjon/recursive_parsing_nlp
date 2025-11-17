@@ -1,0 +1,15 @@
+1) Click the plus-icon tab just to the right of “Sheet1” at the bottom of the workbook to create a new sheet named “Sheet2”.  
+2) Press F2, type “Sheet2”, and hit Enter so the sheet is renamed (if it was not automatically).  
+3) Click the “Sheet1” tab to return to the original data sheet where the Sales and COGS table lives.  
+4) Drag to highlight cells A1:C11 (the header row plus the 10 weeks of numbers).  
+5) Press Ctrl + C to copy the selection (Excel will outline the range with marching ants).  
+6) Click the “Sheet2” tab to move back to the blank sheet where you want the chart.  
+7) Click cell A1 on Sheet2 so Excel knows where to anchor the upcoming chart.  
+8) Navigate to the Ribbon, click the “Insert” tab, then click the “Column or Bar Chart” icon in the Charts group.  
+9) In the drop-down gallery, click the first option under “2-D Column” labeled “Clustered Column”. Excel will drop a default clustered column chart in the middle of Sheet2.  
+10) While the chart is still selected, press Ctrl + V (or choose Home → Paste) to replace the placeholder data with the copied Sales & COGS range; you will see two colored series (one for Sales, one for COGS) and 10 category labels for the weeks.  
+11) Click once on the chart title placeholder that currently says “Chart Title”.  
+12) Type Sales & COGS, then hit Enter; the chart title now displays exactly “Sales & COGS”.  
+13) Verify that the legend shows both series names (“Sales” and “COGS”) and that the horizontal axis lists Week 1 through Week 10; if anything is missing, press Ctrl + Z to undo and repeat steps 4–12.  
+14) Click an empty cell outside the chart to finalize the selection.  
+15) Press Ctrl + S to save the workbook; if this is the first save, the Save As dialog will appear—type a file name like “Weekly_Sales_COGS.xlsx” and click Save.

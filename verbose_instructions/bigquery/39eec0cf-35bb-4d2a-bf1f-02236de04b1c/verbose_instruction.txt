@@ -1,0 +1,12 @@
+1. Open your web browser and navigate to https://console.cloud.google.com/bigquery so we are on the BigQuery console.  
+2. Click the blue “SELECT PROJECT” button in the blue banner (if it appears) and choose the project that currently contains the obsolete dataset; then click “OPEN”.  
+3. Locate the left-hand “Explorer” panel and Click the small grey disclosure triangle “►” (it becomes “▼” when open) next to the project name to expand all resources.  
+4. Scroll inside the Explorer list and find the dataset label customer_orders.  
+5. Hover over customer_orders and Click the vertical-ellipsis icon “⋮” that appears to the right of the dataset name.  
+6. Click the menu item “Delete” in the drop-down that opens.  
+7. Wait for the “Delete dataset” dialog to appear, read the warning text, then Click inside the confirmation textbox labeled “Type delete to confirm”.  
+8. Type exactly delete (lower-case, no quotes) in that textbox to acknowledge the permanent removal.  
+9. Click the red “DELETE” button in the lower-right corner of the dialog.  
+10. Watch the status toast in the lower-left corner of the console; it should display “Dataset ‘customer_orders’ deleted.” within a few seconds.  
+11. Verify deletion by looking back at the Explorer panel—ensure customer_orders no longer appears under the project list. If it still shows, Click the circular arrow “Refresh” icon at the top of the Explorer panel and confirm it is gone.  
+12. Optionally, open the “Activity” tab (left sidebar → Activity) and check the newest log entry; we can see an entry “Delete Dataset” with status “OK” confirming the operation completed successfully.

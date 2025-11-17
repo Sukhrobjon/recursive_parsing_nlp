@@ -1,0 +1,10 @@
+1) Open your browser tab that is already signed in to the Airbyte UI (usually http://localhost:8000 if you are running Airbyte locally).  
+2) Click the left-side menu item “Connections” to load the list of all configured connections.  
+3) Find the row whose “Source → Destination” column shows “HTTP File ➜ Local JSON”. (Tip: you can type “HTTP” in the search bar above the table to filter quickly.)  
+4) Click anywhere on that specific row to open the connection details page.  
+5) Observe the blue banner near the top; because the connection is disabled you will see a grey “Disabled” pill next to the connection name.  
+6) Click the grey toggle switch labelled “Disabled” so that it slides to the right and turns green; the label will change to “Enabled”.  
+7) Wait 2–3 seconds until a green toast notification appears in the bottom-right corner that says “Connection updated successfully”. This confirms the enable action has been persisted.  
+8) Click the “Sync now” button (blue, top-right corner) to trigger an immediate test run.  
+9) Watch the “Status” card; it should progress from “Pending” → “Running” → “Succeeded”.  
+10) Once the sync status shows “Succeeded”, click the breadcrumb “Connections” in the top-left to return to the main list and verify that the row is now marked “On manual” (or the previously saved schedule) instead of “Disabled”.

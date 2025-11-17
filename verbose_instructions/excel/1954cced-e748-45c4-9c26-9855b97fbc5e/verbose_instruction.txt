@@ -1,0 +1,14 @@
+1. Click any single cell inside the data range on Sheet1 that contains the column header “Invoice No.” (for example, cell A2).  
+2. Press Ctrl+A to select the entire contiguous data block; we want to be sure all “Invoice No.” entries are included.  
+3. Click the “Insert” tab on the Ribbon at the top of Excel.  
+4. Click the “PivotTable” button in the “Tables” group (it has a small grid-and-chart icon). A “Create PivotTable” dialog box appears.  
+5. Verify that the “Select a table or range” option is checked and that the correct range (e.g., Sheet1!$A$1:$D$5000) is displayed in the “Table/Range” box. If it is not, click the collapse-dialog icon, re-highlight the correct range on Sheet1, and click the expand-dialog icon.  
+6. Click the radio button “New Worksheet” in the “Choose where you want the PivotTable report to be placed” section. (Excel will create this new sheet automatically; it will appear as “Sheet2” because Sheet1 already exists.)  
+7. Click the “OK” button. Excel switches to the newly created Sheet2, and an empty PivotTable field list pane appears on the right.  
+8. In the PivotTable Fields pane, locate the field named “Invoice No.” under the upper “Fields” section.  
+9. Drag the “Invoice No.” field down to the “Rows” quadrant at the bottom of the pane. You should now see each distinct invoice number listed down the left side of the PivotTable.  
+10. Drag the “Invoice No.” field a second time into the “Values” quadrant. By default, Excel applies “Count of Invoice No.” and displays numeric counts in the PivotTable.  
+11. Confirm that the column header in the Values area reads “Count of Invoice No.” If it reads “Sum of Invoice No.” instead, click the small drop-down arrow next to the field in the Values quadrant, choose “Value Field Settings…”, select “Count”, and click “OK”.  
+12. Click anywhere outside the PivotTable field list to collapse the pane and view the finished PivotTable more clearly.  
+13. Scroll through the PivotTable on Sheet2 to visually verify that each invoice number has a corresponding count greater than zero and that no blank invoice numbers appear (blanks would indicate missing data).  
+14. Press Ctrl+S to save your workbook, preserving the new PivotTable on Sheet2.

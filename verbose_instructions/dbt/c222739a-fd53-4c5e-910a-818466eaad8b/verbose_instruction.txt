@@ -1,0 +1,22 @@
+1. Click the Deploy button at the top navigation bar of the console  
+2. Select Jobs from the drop-down menu that appears  
+3. Click the blue Create job button on the Jobs page  
+4. Choose Deploy job in the job-type selector that pops up  
+5. Type Thanksgiving_Day into the Job name input under the Job settings section (make sure no extra spaces)  
+6. Locate the Triggers section just below; toggle the Run on schedule switch so it turns blue (enabled)  
+7. Click the Timing drop-down that now appears and select Cron schedule from the list  
+8. Click into the Custom cron schedule (UTC) textbox that becomes visible and type the cron expression exactly as shown:  
+   ```
+   0 12 22-28 11 4
+   ```  
+   Note that:  
+   • 0 = minute 0  
+   • 12 = hour 12 (noon UTC)  
+   • 22-28 = possible calendar dates of Thanksgiving week  
+   • 11 = month November  
+   • 4 = day-of-week Thursday  
+   This combination fires only at 12:00 PM UTC on the Thursday that falls between 22–28 November, matching U.S. Thanksgiving Day.  
+9. Verify that the Preview next runs panel (if available) shows the next Thanksgiving date at 12:00 UTC—confirming the cron is correct  
+10. Scroll up (or simply look to the header) and click the Save button on the top right corner of the configuration page  
+11. Wait for the green toast notification Job saved successfully to confirm the new job has been persisted under the Thanksgiving_Sales environment  
+12. Navigate back to the Jobs list, find the row labeled Thanksgiving_Day, and check that its Schedule column displays Cron: 0 12 22-28 11 4 indicating the job is now scheduled correctly

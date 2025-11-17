@@ -1,0 +1,16 @@
+1. Click the “Hardware” panel in the left-hand navigation bar and wait until the catalog page finishes loading (progress spinner disappears).  
+2. Click the search box in the top-right corner that displays the placeholder text “Search catalog”.  
+3. Type “Sales Laptop” and press Enter to apply the filter.  
+4. Locate the tile labeled “Sales Laptop” in the results grid and click anywhere on that tile to open the configuration page.  
+5. Scroll down to the section titled “Optional Software”.  
+6. Click the check-box for “Adobe Photoshop” so a blue checkmark appears.  
+7. Click the check-box for “Microsoft PowerPoint” so it is also checked.  
+8. Click the check-box for “Siebel Client” so it becomes checked as well.  
+9. Verify that the check-box for “Adobe Acrobat” remains unchecked (no checkmark should be visible).  
+10. Move to the text area labeled “Additional software requirements”.  
+11. Type exactly: Salesforce, Zoom, Microsoft Office 365  
+12. Look at the right-hand summary panel and find the “Quantity” dropdown field; click it and select “3” from the list.  
+13. Confirm the summary now shows “Quantity: 3” and that Adobe Acrobat is listed as “Not selected”.  
+14. Click the blue “Order Now” button at the bottom of the summary panel.  
+15. Wait until the confirmation banner appears at the top of the screen saying “Request submitted” and note the REQ number displayed (we’ll use it for tracking later).  
+16. Click the link “View request” in the banner to verify the request shows status “Ordered” and quantity “3”.

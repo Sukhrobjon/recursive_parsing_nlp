@@ -1,0 +1,24 @@
+1. Open the ServiceNow instance in your browser and wait until the home page finishes loading.  
+2. Click the global filter at the very top-left, type “Change” in the search box, and press Enter.  
+3. Locate the module “Create New” under the “Change” application in the left navigation pane and click it; a blank Change Request form appears.  
+4. Click the input field labeled Short description (it is the first text box near the top) and type exactly:  
+   Switch Sales over to the new 555 prefix  
+5. Click directly into the large multi-line box labeled Description (immediately below Short description) and paste the full text, preserving all internal spaces:  
+   Sales has their own private dialing prefix now so they'll            always have an open outside line even if the PBX is full.  
+6. Click the input field labeled Number (directly under Description). Delete any auto-generated value and type:  
+   CHG0000002  
+7. Click the drop-down field labeled Category to the right of Number. Scroll (if necessary) and select the option: Telecom  
+8. Click the drop-down field labeled Risk (found just below Category) and choose: High  
+9. Click the drop-down field labeled Impact (immediately under Risk) and confirm or pick: 3 - Low  
+10. Verify that the Service field (above Category) remains empty; leave it blank as required.  
+11. Click the tab named Planning in the horizontal tab strip beneath the Basic Information section; the Planning form pane becomes visible.  
+12. Scroll to the Justification text area (first field in this pane) and type:  
+    unbigged didelphoid gigantology unimprovableness fistula  
+13. Click the next text area labeled Implementation plan and type:  
+    unfrocked pedunculus tensive pharmacodynamic immunology  
+14. Click the text area labeled Backout plan (below Implementation plan) and enter:  
+    nonproportional reassurance inchoateness pericementum wandoo  
+15. Click the final text area in the pane labeled Test plan and enter:  
+    strette cupriferous polylinguist unambitious Ganodonta  
+16. Confirm that the Service offering field in the left column of Basic Information is blank; do not populate it.  
+17. Review every filled field for accuracy, then click the blue Submit button at the bottom-left of the form. The page refreshes back to the Change list with no error, indicating the new Change Request has been created successfully.

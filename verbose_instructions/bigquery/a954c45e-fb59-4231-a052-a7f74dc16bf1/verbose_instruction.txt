@@ -1,0 +1,25 @@
+1. Open your web browser and Navigate to https://console.cloud.google.com/bigquery so we land on the BigQuery Studio welcome page.  
+2. Click the blue triangle ▶️ to the left of the heading “bigquery-public-data” in the Explorer panel; this expands the public-data project so we can browse its datasets.  
+3. Scroll down inside the Explorer list and Click the dataset name austin_bikeshare; a second-level triangle appears.  
+4. Click the new triangle ▶️ next to austin_bikeshare to reveal its tables, then Click bikeshare_stations; the Schema and Details tabs open in the right panel so we can confirm the column status exists (we will use it in our filter).  
+5. Click the + Compose new query button (white sheet icon with a plus) at the top of the BigQuery Studio window; this opens an “Untitled query” editor tab.  
+6. Type or Paste the following SQL into the blank editor:  
+```sql
+SELECT
+  COUNT(*) AS active_stations_count
+FROM
+  `bigquery-public-data.austin_bikeshare.bikeshare_stations`
+WHERE
+  status = 'active';
+```  
+7. Click the ► RUN button in the toolbar of the query editor to execute the query.  
+8. Wait a few seconds; the Query results panel appears below with a single row showing active_stations_count.  
+9. Click the Save Results button on the right edge of the Query results bar (floppy-disk icon).  
+10. Choose CSV (local file) from the dropdown; the file automatically downloads to ~/Downloads by default. Make a mental note of the downloaded filename—we will rename it in the next steps.  
+11. Switch to the desktop Terminal by Pressing Ctrl+Alt+T (or Click the Terminal icon in the dock).  
+12. Type the command `ls ~/Downloads` and Press Enter to list the recent download, e.g., results-2024-05-21T18_22_30.csv.  
+13. Type the following mv command, replacing <downloaded_file.csv> with the exact name you saw in step 12, then Press Enter:  
+```bash
+mv ~/Downloads/<downloaded_file.csv> /home/user/Downloads/answer.csv
+```  
+14. Type `ls /home/user/Downloads` and Press Enter to verify answer.csv is now present—this confirms the query output is saved at the required path.

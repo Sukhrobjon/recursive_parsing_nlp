@@ -1,0 +1,28 @@
+1. Click the blue “+” button located at the upper-right corner of the Snowflake web UI  
+2. Choose “SQL Worksheet” from the drop-down list that appears  
+3. Click the “⋮” (three-dot) icon on the new worksheet tab that now shows the default name (for example, “Worksheet 1”)  
+4. Choose “Rename” from the small menu  
+5. Type exactly  Top 10 customers from China with the most account balances  and press Enter to save the new worksheet name  
+6. Click the database selector box just above the worksheet editor (it likely reads “No database selected” at this moment)  
+7. Scroll, then click “SNOWFLAKE_SAMPLE_DATA” in the database list that drops down  
+8. Wait a second for the schema list to refresh, then click “TPCH_SF1” in the schema panel that appears to the right (the selector should now read SNOWFLAKE_SAMPLE_DATA.TPCH_SF1)  
+9. Click inside the blank editor pane of the worksheet  
+10. Type (or paste) the following SQL statement exactly as shown:
+
+```sql
+SELECT
+    C.*
+FROM
+    CUSTOMER AS C
+JOIN
+    NATION AS N
+    ON C.C_NATIONKEY = N.N_NATIONKEY
+WHERE
+    N.N_NAME = 'CHINA'
+ORDER BY
+    C.C_ACCTBAL DESC
+LIMIT 10;
+```
+
+11. Confirm visually that the status bar under the editor shows “Database: SNOWFLAKE_SAMPLE_DATA” and “Schema: TPCH_SF1” so we know the context is correct before running later  
+12. Leave the worksheet open and do NOT click the Run button or close the browser tab; we will execute the query in a later step

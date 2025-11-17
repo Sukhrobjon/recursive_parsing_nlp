@@ -1,0 +1,15 @@
+1. Locate the three small icons immediately to the left of the text “Hardware View: ITAM Workspace”; click the middle icon that looks like a funnel (this opens the filter builder).  
+2. Click the first grey input area labeled “-- choose field --” to open its drop-down list.  
+3. Type Serial into the tiny search bar at the top of that list to narrow results, then click Serial number when it appears.  
+4. Click the second selector (it defaults to “is”), ensure “is” is highlighted; if another operator is shown, click and pick is.  
+5. Leave the value box on the right completely blank so we filter for empty serial numbers (“Serial number is ‘’”).  
+6. Click the blue AND pill on the far right of the row to add a new condition.  
+7. In the new row, click the new “-- choose field --” box, type Model, and click Model category from the filtered list.  
+8. Make sure the operator reads is; if it doesn’t, click and select is.  
+9. Click into the value box on the right, type Computer, then press Enter to set the value.  
+10. Click AND again to create the third condition row.  
+11. Click the “-- choose field --” selector in that new row, type Asset, and choose Asset function.  
+12. Verify the operator is is, then click the value box, scroll or type Shared, and click Shared to select it.  
+13. Click AND a final time to insert the fourth condition.  
+14. Choose Display name as the field (type Display if needed to search), keep operator as is, and in the value box type Apple MacBook Pro 15" exactly (include the double quote at the end), then press Enter.  
+15. Click the green Run button in the top-right corner of the filter pane; wait until the spinning loader disappears and confirm that only rows matching all four criteria are displayed (Serial number column empty, Model category = Computer, Asset function = Shared, Display name = Apple MacBook Pro 15").

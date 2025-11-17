@@ -1,0 +1,32 @@
+1. Click the “New” button on the Metabase top-right toolbar.  
+2. Click “Question” in the drop-down panel that appears.  
+3. Click “Raw Data” > choose your database (e.g., “Sample Database”) > click the “Orders” table.  
+4. Click the blue “Summarize” button in the upper-right of the editor.  
+5. Under “Group by”, click “+ Add group”.  
+6. Select “User ID” (or “User → Name” if you prefer readable names). We need one row per user.  
+7. Under “Summarize by”, hover over the default “Count of rows”, click the trash-can icon to delete it (we’ll create two explicit counts instead).  
+8. Click “+ Add metric” → choose “Count of rows”.  
+   • Click the small pencil icon next to the metric label and type total_orders as the custom name, then press Enter.  
+9. Click “+ Add metric” again → choose “Count of rows” once more.  
+   • Click “Filter” (tiny funnel icon that appears beside the metric).  
+   • In the filter pop-up, select the “Tax” column, keep the operator “is greater than”, and type 5 as the value.  
+   • Click “Add filter”.  
+   • Click the pencil icon beside this second metric and rename it orders_with_tax_gt_5, then press Enter.  
+10. Click the blue “Done” button at the lower-right of the Summarize side panel.  
+    • We now see two numeric columns: total_orders and orders_with_tax_gt_5 for each user.  
+11. Click the “Custom column (fx)” button located just above the result table (to the right of “Summarize”).  
+12. In the “Custom expression” editor that opens, type the formula exactly as below:  
+
+```
+[orders_with_tax_gt_5] / [total_orders]
+```  
+
+13. In the “Custom column name” field below the editor, type tax percentage.  
+14. Click the “Formatting” drop-down, choose “Percentage”, and (optionally) set 1 decimal place.  
+15. Click the blue “Done” button to add this new column.  
+16. Verify that the result grid now shows three columns:  
+    • user_id (or user name)  
+    • total_orders  
+    • tax percentage (values such as 0 %, 33.3 %, 100 %)  
+    Confirm that users with every order over \$5 in tax show 100 %, while users with none show 0 %.  
+17. Since “You don’t need to save it,” simply leave the browser tab open or click “Close” when finished.

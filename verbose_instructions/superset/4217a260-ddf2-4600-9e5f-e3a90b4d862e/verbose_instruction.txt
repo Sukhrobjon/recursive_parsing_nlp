@@ -1,0 +1,63 @@
+1. Open a terminal in the folder where you downloaded the Apache Superset GitHub repository (we will call this folder $SUP_DIR).  
+
+2. Create and activate a fresh virtual environment so that Superset’s Python packages do not conflict with global packages:  
+```bash
+python -m venv venv
+source venv/bin/activate          # On Windows run: venv\Scripts\activate
+```
+
+3. Install the required build dependencies for Superset (these are listed in `requirements/development.txt` inside the repo):  
+```bash
+pip install --upgrade pip setuptools wheel
+pip install -r requirements/development.txt
+```
+   Note that installing the “development” requirements also pulls in Superset itself from the local repo because of the `-e .` line at the bottom of the file.
+
+4. Make sure the `superset` command is now available by running:  
+```bash
+superset --version
+```
+   If you see a version string (for example, `Apache Superset 3.0.0`), the CLI is ready.
+
+5. Initialize Superset’s metadata database (this creates the initial SQLite `superset.db` file in your home directory):  
+```bash
+superset db upgrade
+```
+
+6. Create an admin user who can log in. Replace the placeholder values with something memorable:  
+```bash
+export FLASK_APP=superset                 # Windows: set FLASK_APP=superset
+superset fab create-admin \
+  --username admin \
+  --firstname Superset \
+  --lastname Admin \
+  --email admin@example.com \
+  --password admin
+```
+
+7. (Optional) Load the example dashboards and charts so the homepage is not empty:  
+```bash
+superset load-examples
+superset init
+```
+   We call `superset init` afterwards so Superset registers the examples in the metadata.
+
+8. Launch the development web server on port 8088 with live-reload enabled:  
+```bash
+superset run -p 8088 --reload --debugger
+```
+   You should see “* Running on http://0.0.0.0:8088/ (Press CTRL+C to quit)” in the terminal.
+
+9. Open a browser (Chrome, Firefox, Edge—your choice).  
+
+10. Type the following address in the URL bar and press Enter:  
+```
+http://localhost:8088/
+```
+
+11. Log in with the username and password you created in step 6 (admin / admin in our example).  
+
+12. Confirm you are on the Superset Home page by checking that the left-hand navigation shows “Dashboards,” “Charts,” and “SQL Lab,” and the browser tab reads “Superset.”   
+    If you see these elements, the local server is running correctly at port 8088.
+
+13. Keep the terminal window open while working; press CTRL+C later to stop the server when you are finished.

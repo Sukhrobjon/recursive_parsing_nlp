@@ -1,0 +1,26 @@
+1) Navigate to https://console.cloud.google.com/bigquery so the BigQuery Web UI opens in your browser.  
+2) Click the triangle ▸ next to your working project (for example, my_project) in the Explorer pane to expand its datasets.  
+3) Click the triangle ▸ next to the dataset retail to reveal its tables, then click the table sales (full path: `my_project.retail.sales`) so we can inspect the schema.  
+4) Verify in the Schema tab that the table contains the columns sale_date (DATE) and sale_amount (NUMERIC). Note that sale_date will be used to derive the month and sale_amount will be summed.  
+5) Click the + Compose New Query button (paper-and-pencil icon) at the top of the BigQuery console to open a blank query editor tab.  
+6) Write the aggregation SQL below into the editor:  
+
+```sql
+-- Total sales by calendar month
+SELECT
+  FORMAT_DATE('%Y-%m', sale_date) AS Month,
+  SUM(sale_amount) AS Total
+FROM
+  `my_project.retail.sales`
+GROUP BY
+  Month
+ORDER BY
+  Month;
+```  
+
+7) Click the blue ▷ Run button in the query editor toolbar to execute the query. Wait until the green checkmark appears and the “Query complete” message shows.  
+8) Review the Query results pane: we now see two columns—Month and Total—with one row per month.  
+9) Click the SAVE RESULTS button in the upper-right of the Query results pane, then choose the option “Google Sheets”.  
+10) In the pop-up dialog, leave the default “New Spreadsheet” option selected (this automatically creates a new sheet), then click EXPORT to Sheets.  
+11) When the success toast appears, click the “Open” link; a new browser tab opens the Google Sheet containing our results.  
+12) Confirm the sheet displays a two-column table with headers “Month” and “Total”. The task is complete, and the data is now stored in a dedicated sheet for future reference.

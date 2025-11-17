@@ -1,0 +1,28 @@
+1. Double-click the “Spider002” folder inside Google Drive so we can inspect its contents.  
+2. Observe the two files listed—`data.jsonl` and `schema.txt`—which provide the raw data and the schema definition we will import into BigQuery.  
+3. Click once on `schema.txt`, then click the eye-icon “Preview” button on the top-right to confirm the file contains JSON-style field definitions (we will copy this later).  
+4. Switch to the BigQuery Web UI tab in Chrome (console.cloud.google.com/bigquery).  
+5. In the left “Explorer” panel, hover over the dataset named `information`, click the three-vertical-dots menu, and select “Create table”.  
+6. In the “Create table” panel that opens on the right, click the radio button “Drive” under “Create table from”.  
+7. Switch back to the Google Drive tab.  
+8. Hover over `data.jsonl`, click the three-vertical-dots “More actions” icon, then choose “Share”.  
+9. In the sharing dialog, click the dropdown labelled “Restricted”.  
+10. Select “Anyone with the link” to make the file publicly readable (BigQuery requires this).  
+11. Click the “Copy link” button to place the Drive link on the clipboard, then click “Done”.  
+12. Return to the BigQuery Web UI tab.  
+13. Click in the “Select Drive URI” input box and paste (Ctrl+V) the copied link.  
+14. Replace the pasted URL so it follows BigQuery’s Drive syntax by editing it from  
+   `https://drive.google.com/file/d/<FILE_ID>/view?usp=drive_link`  
+   to  
+   `https://drive.google.com/open?id=<FILE_ID>`  
+   (keep only the file ID portion between the slashes).  
+15. Open the “File format” dropdown and choose “JSONL (Newline-delimited JSON)”.  
+16. Under the “Destination” section: a) choose Dataset = `information`; b) type Table name = `data1`.  
+17. Scroll to the “Schema” section and click the grey “Edit as text” button. A text area labelled “Press Alt+F1 for Accessibility Options” appears.  
+18. Switch back to the Google Drive tab.  
+19. Double-click `schema.txt` so it opens in preview mode, press Ctrl+A to select all text, then Ctrl+C to copy the entire schema definition.  
+20. Return to the BigQuery Web UI, click inside the schema text area, and press Ctrl+V to paste the copied schema.  
+21. Verify that the pasted schema shows each field line ending with its data type (e.g., `name:STRING, age:INTEGER`).  
+22. Scroll to the bottom of the panel and click the blue “CREATE TABLE” button.  
+23. Wait for the green toast notification “Table data1 created” to appear in the lower-right corner; this confirms the table and load job succeeded.  
+24. In the “Explorer” panel, expand the `information` dataset and click `data1`. In the details pane, click the “Preview” tab. We should see rows from `data.jsonl`, confirming the data is loaded.

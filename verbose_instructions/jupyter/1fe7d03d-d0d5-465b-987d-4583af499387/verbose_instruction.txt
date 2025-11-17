@@ -1,0 +1,21 @@
+1. Scroll to the code cell inside the “Building the AdaBoost Model” markdown heading so that the full code is visible in edit mode.  
+2. Highlight the line that currently instantiates the model. It should look like:  
+```python
+ada = AdaBoostClassifier(n_estimators=1, learning_rate=0.1, random_state=42)
+```  
+3. Replace that line with the tuned hyper-parameters:  
+```python
+ada = AdaBoostClassifier(n_estimators=40, learning_rate=0.8, random_state=42)
+```  
+   Note that we only changed n_estimators from 1 → 40 and learning_rate from 0.1 → 0.8; all other arguments remain the same.  
+4. Press Shift + Enter to execute just this cell once and make sure no syntax errors appear.  
+5. Click the “Run” menu in the top-level Jupyter toolbar.  
+6. Select “Run All Cells” from the dropdown so every step—data loading, train/test split, model training, and accuracy calculation—executes with the new parameters.  
+7. Wait until the black “[*]” execution prompts next to each cell turn into numbers (e.g., “[12]”), indicating completion.  
+8. Scroll to the output underneath the evaluation cell that prints the test accuracy. Verify that it now reads exactly:  
+```
+Accuracy: 1.0
+```  
+   If the printed value is 1.0, the tuning was successful.  
+9. Click the “File” menu in the Jupyter top-bar.  
+10. Choose “Save All” (or “Save and Checkpoint” if that is the wording) to persist the updated notebook with the perfect-accuracy model.

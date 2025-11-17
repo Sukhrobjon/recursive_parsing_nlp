@@ -1,0 +1,123 @@
+1) Open VS Code and use the Explorer panel to expand the folder models.  
+2) Double-click customers.sql to open it in the editor tab.  
+3) Highlight the entire placeholder block (everything between the triple curly braces) and press Backspace to clear it—we will write the query from scratch.  
+4) Type the complete model code below exactly as shown (it already satisfies the join, aggregation, filter, and group_by requirements mentioned in the comments):
+
+```sql
+{{ config(materialized = 'table') }}
+
+with customers as (
+
+    -- base, cleaned customer records
+    select *
+    from {{ ref('stg_customers') }}
+
+), orders as (
+
+    -- base, cleaned order records
+    select *
+    from {{ ref('stg_orders') }}
+
+), aggregated as (
+
+    select
+        c.customer_id,
+
+        -- aggregation requirements
+        min(o.order_date)                    as first_order_date,
+        max(o.order_date)                    as most_recent_order_date,
+        count(o.order_id)                    as number_of_orders,
+        coalesce(sum(o.amount), 0)           as customer_lifetime_value
+
+    from customers c
+    left join orders o
+           on c.customer_id = o.customer_id
+
+    -- filter requirement (example: only currently active customers)
+    where c.is_active = true
+
+    group by c.customer_id
+)
+
+select * from aggregated
+```
+
+Note that:
+• We reference the staging models stg_customers and stg_orders with `ref()` so dbt can handle dependencies.  
+• We materialize as a table, which is common for a frequently-queried customer dimension.  
+
+5) Press Ctrl + S (Cmd + S on macOS) to save the file. We’ll need a schema file so dbt knows how to test this model.  
+6) Locate models/schema.yml in the Explorer; if it does not exist, right-click the models folder, choose “New File”, and type schema.yml.  
+7) Click inside schema.yml and append (or paste) the block below:
+
+```yaml
+version: 2
+
+models:
+  - name: customers
+    description: "One row per customer with order metrics and lifetime value."
+    columns:
+      - name: customer_id
+        tests:
+          - unique
+          - not_null
+      - name: first_order_date
+        description: "Date of the customer's very first order."
+      - name: most_recent_order_date
+      - name: number_of_orders
+        description: "Total count of orders placed by the customer."
+      - name: customer_lifetime_value
+        description: "Sum of all order amounts for the customer."
+```
+
+8) Save the schema.yml file (Ctrl + S / Cmd + S).  
+9) Switch to the terminal (click the VS Code integrated terminal or open a new one with Ctrl + ` ). Ensure you are at the project root (you should see dbt_project.yml in ls output). If not, type:
+
+```bash
+cd path/to/your_dbt_project
+```
+
+10) Run initial connectivity checks:
+
+```bash
+dbt debug
+```
+
+We expect all “Connection test” items to return “OK”.  
+11) Execute the build for just the new model first so failures are faster to catch:
+
+```bash
+dbt build --select customers
+```
+
+dbt will:
+• compile customers.sql,  
+• run its SQL against the warehouse to create or replace the customers table,  
+• perform the unique and not_null tests declared in schema.yml,  
+• report PASS/FAIL in the console.  
+
+12) Verify the row count and a sample of the output interactively:  
+    a) Still in the terminal, open a warehouse CLI (e.g., duckdb / psql / snowflake) if available, or use `dbt inspect`:
+
+```bash
+dbt run-operation describe_table --args '{relation: {{ ref("customers") }}}'
+```
+
+We should see columns customer_id, first_order_date, most_recent_order_date, number_of_orders, customer_lifetime_value.  
+13) Optionally, generate docs to view lineage:
+
+```bash
+dbt docs generate
+dbt docs serve
+```
+
+A browser tab will open—click the “customers” node, and we can see stg_customers and stg_orders feeding into it via the blue lineage graph.  
+14) When everything looks good, run a full project build:
+
+```bash
+dbt build
+```
+
+That recreates every model, seed, snapshot, and test, ensuring customers integrates smoothly with downstream objects.  
+
+15) Celebrate—our “customers” model now satisfies all join, aggregation, filter, and group_by requirements and is fully built, tested, and documented.

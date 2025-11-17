@@ -1,0 +1,27 @@
+1. Open a new browser tab and Navigate to console.cloud.google.com/bigquery to load the BigQuery Web UI.  
+2. Click the hamburger icon (three horizontal lines) in the upper–left corner if the Explorer panel is not visible, so we can see the list of projects and datasets.  
+3. Scroll in the Explorer panel and Click the triangle ▸ to the left of your current project name to expand its datasets.  
+4. Click the triangle ▸ next to the customer_orders dataset to reveal its tables.  
+5. Click orders so the right-side information panel shows the table schema; verify the columns we will export.  
+6. Click the + Compose Query button (white sheet with a SQL icon) at the top of the BigQuery toolbar to open a blank query editor tab.  
+7. Write the simple SELECT statement below to grab every row—this is what we will pipe into Google Sheets:  
+```sql
+SELECT *
+FROM `project-id.customer_orders.orders`;
+```  
+Replace project-id with the actual GCP project ID if it is not the default one already shown in the Explorer.  
+8. Click the blue ► Run button in the editor’s header to execute the query. Wait until the green check mark and “Query complete” message appear.  
+9. Confirm the results: we can see the total row count and the preview grid under the Query results panel.  
+10. Click the SAVE RESULTS button (top-right corner of the Query results panel) and then Click Google Sheets in the drop-down.  
+11. In the “Save results to Google Sheets” dialog, Select the option Create new spreadsheet.  
+12. Type Orders_Export in the Spreadsheet name box so it is easy to recognize later.  
+13. Click the Choose a different folder link (folder icon) in the lower-left of the same dialog, then in the Drive picker Double-click the spider001 folder to open it, and finally Click Select to save the sheet into that folder.  
+14. Click Save to start the export; BigQuery shows a snackbar notification with a link to “Open in Google Sheets”.  
+15. Click the Open in Google Sheets link; a new tab opens displaying the freshly created Orders_Export sheet populated with the query data.  
+16. In the new Google Sheets tab, Click the green Share button in the upper-right corner.  
+17. Click the “General access” drop-down and Choose Anyone with the link.  
+18. Ensure the permission is set to Viewer (we do not want accidental edits).  
+19. Click Copy link if you need to distribute it, then Click Done to apply the public-access setting.  
+20. Switch back to the BigQuery tab; note that the sheet URL is permanently linked in the Job History panel—this makes future refreshes or scheduled queries possible.  
+21. (Optional) Click the floppy-disk icon in the query editor toolbar and Type Export_Orders_to_Sheets as the saved query name, so you or teammates can rerun and overwrite the Google Sheet later.  
+22. You have now connected customer_orders.orders to a Google Sheet inside the spider001 folder and configured the sheet so anyone with the link can access it.

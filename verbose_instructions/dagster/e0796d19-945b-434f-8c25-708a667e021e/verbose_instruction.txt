@@ -1,0 +1,51 @@
+1. Open VS Code. In the Explorer left-hand navbar, expand the top-level folder of the Dagster project (for example “wizarding_brewer”).  
+2. Right-click the “tests” directory (create it if it does not exist) and click “New File”. Type `test_potions_assets.py` and press Enter.  
+3. Type the test code below into the new file, replacing <your_repo_package> with the actual repository-package name that already contains `defs` (commonly this is the root package created by `dagster project scaffold`). The file should look exactly like this:
+
+```python
+# tests/test_potions_assets.py
+"""
+pytest test that
+1) successfully materializes every asset in the Dagster Definitions object
+2) asserts the count of potions whose difficulty == "advanced" is 14
+"""
+
+from dagster import build_assets_job, materialize_to_memory
+from <your_repo_package> import defs     # update to real package, e.g. `wizarding_brewer`
+
+def test_potions_assets():
+    # Build a single job containing every asset so we can materialize in-memory
+    job = build_assets_job(
+        name="test_all_assets_job",
+        assets=defs.get_asset_definitions(),
+        resource_defs=defs.get_resource_definitions(),
+    )
+
+    # Materialize all of those assets to an in-memory store
+    outputs = materialize_to_memory(job)
+
+    # Assert every asset produced an output object (i.e. materialization succeeded)
+    assert len(outputs) == len(defs.get_asset_definitions()), "Some assets failed to materialize"
+
+    # The main potions asset is expected to be named 'potions'
+    potions_df = outputs["potions"]
+    advanced_potions = potions_df[potions_df["difficulty"] == "advanced"]
+
+    # Business rule check
+    assert len(advanced_potions) == 14, "Advanced-difficulty potions count mismatch"
+```
+
+4. Press Ctrl + S (or Cmd + S on macOS) to save `test_potions_assets.py`.  
+5. Switch to the integrated Terminal (Menu Bar → Terminal → “New Terminal”). Verify the prompt is at the project root (where `pyproject.toml` / `setup.py` lives). If not, `cd` there.  
+6. In the terminal, run the test suite:  
+   ```
+   pytest -q tests/test_potions_assets.py
+   ```  
+7. Observe the output. You should see a single dot “.” followed by “1 passed” and the command prompt returning. That confirms:  
+   • every asset materialized without error  
+   • exactly 14 potions have difficulty “advanced”.  
+8. Commit the new test:  
+   ```
+   git add tests/test_potions_assets.py
+   git commit -m "add test_potions_assets to check advanced potions count"
+   ```

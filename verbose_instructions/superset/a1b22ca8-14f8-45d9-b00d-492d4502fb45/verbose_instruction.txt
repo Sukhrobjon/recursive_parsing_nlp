@@ -1,6 +1,6 @@
-1. Click the “Settings” cog icon in the upper-right corner of the Superset web page.  
-2. Select the menu item labeled “Annotation layers” from the dropdown; the “Annotation Layers” list view opens.  
-3. Click the blue “+ ANNOTATION LAYER” button in the top-right corner of the list; a modal titled “Add Annotation Layer” appears.  
-4. Type Myannotation into the field labeled “Annotation Layer Name”.  
-5. Click the “ADD” button at the bottom of the modal; the dialog closes and the list view reappears.  
-6. Verify the creation by locating the new row whose “Layer name” column shows Myannotation; confirm the Status column displays “Available”.
+1. Click the blue “Settings” cog icon in the top-right corner of the Superset web page  
+2. Select “Annotation Layers” from the drop-down menu that appears  
+3. Click the “+ ANNOTATION LAYER” button in the upper-right corner of the Annotation Layers list  
+4. Type “Myannotation” into the “Annotation Layer Name” input box of the pop-up form  
+5. Click the blue “Add” button at the bottom of the pop-up to save the new global annotation layer  
+6. Observe the Annotation Layers table refresh; we can see a new row labeled “Myannotation”, confirming the layer was created successfully

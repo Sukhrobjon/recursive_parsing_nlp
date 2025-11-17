@@ -1,0 +1,10 @@
+1. Click the grey gear icon in the upper-right corner of the dbt Cloud window; this opens the account drop-down.  
+2. Click “Account settings” in the drop-down panel to load the administrative console.  
+3. Click “Projects” in the left-hand sidebar; the list of all projects appears in the main pane.  
+4. Click the single project row labeled “DesktopEnv”; a slide-out panel containing the project details opens on the right.  
+5. Click the green “Edit” button at the bottom of that slide-out panel to make the fields editable.  
+6. Type OSWorld into the “Project name” input located under the “Overview” subtitle, replacing the old value.  
+7. Click the green “Save” button at the bottom of the panel to submit the change.  
+8. If a warning modal appears about potential effects, click the blue “Continue” button to confirm the rename operation.  
+9. Observe that the heading in the slide-out now shows “OSWorld”; this confirms the update persisted.  
+10. Refresh the browser (Ctrl+R or ⌘+R) and verify in the Projects list that the entry formerly named “DesktopEnv” now reads “OSWorld,” ensuring the change is visible across sessions.

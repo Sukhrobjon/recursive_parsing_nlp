@@ -1,0 +1,6 @@
+1. Click the grey gear icon labeled “Settings” in the upper-right corner of the Metabase page  
+2. Choose “Admin settings” from the drop-down menu that appears  
+3. Click the “Databases” tab in the blue navigation bar at the top of the Admin panel  
+4. Locate and click the blue link “Bring the Sample Database back” that appears in the empty-state banner  
+5. Wait until the green toast notification “Sample Database restored” appears in the lower-left corner – this confirms the database is re-created  
+6. Scroll through the list on the Databases page and verify that “Sample Database” now shows status “✅ Connected” with the description “Metabase internal demo dataset”

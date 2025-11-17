@@ -1,0 +1,17 @@
+1. Click the “New” button in the Metabase top-right toolbar.  
+2. Choose “SQL query” from the drop-down panel (this opens the SQL editor).  
+3. Switch to the file viewer/editor on your computer and open question1.sql (double-click the file).  
+4. Select all text in question1.sql (Ctrl + A) and copy it (Ctrl + C).  
+5. Switch back to the Metabase browser tab.  
+6. Click inside the large SQL input pane and paste the copied text (Ctrl + V).  
+7. Click the blue “Run query” button on the right-hand side of the editor.  
+8. Verify that the results grid below populates with rows (confirm there are no red error banners).  
+9. Click the “Save” button in the top-right corner of the editor.  
+10. Type question1 in the “Name” field of the save dialog.  
+11. Leave “Collection” set to the default or choose the desired collection, then click the blue “Save” button.  
+12. When the prompt “Add this to a dashboard?” appears, click “Yes, please!”.  
+13. In the next dialog, click the button labeled “Create a new dashboard”.  
+14. Type New Dashboard in the “Name” field and click “Create”.  
+15. Confirm that the preview of question1 now appears on a blank dashboard canvas.  
+16. Click “Save” in the upper-right corner of the dashboard screen to persist the dashboard.  
+17. Verify success: the page title shows “New Dashboard”, and the tile underneath is labeled question1 and displays query results.

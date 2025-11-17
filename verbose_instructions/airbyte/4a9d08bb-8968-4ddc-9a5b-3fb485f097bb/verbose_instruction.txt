@@ -1,0 +1,26 @@
+1) Open the terminal application on your computer.  
+2) Type the command to move into the repository folder:  
+```bash
+cd ~/projects/airbyte
+```  
+3) Execute the script that prepares local environment variables:  
+```bash
+./run-ab-platform.sh
+```  
+   Note that this script automatically creates a `.env` file (if it does not exist) and pulls all required Docker images.  
+4) Wait until you see the line `Airbyte Platform is now running` in the console. This confirms the containers are healthy.  
+5) Press `Ctrl+C` once to stop viewing the log stream (the containers keep running in the background thanks to Docker).  
+6) Switch to your web browser.  
+7) Type the URL `http://localhost:8000` into the address bar and press Enter.  
+8) Observe the Airbyte onboarding page with the header “Welcome to Airbyte!”.  
+9) Click the purple “Next” button in the lower-right corner of the onboarding card.  
+10) In the “What’s your email?” input field, type any email, e.g., `user@example.com`.  
+11) Click the “Next” button again.  
+12) In the “What company do you work for?” input field, type any value, e.g., `ACME`.  
+13) Click the “Finish setup” button.  
+14) Verify that you are redirected to the Airbyte dashboard showing the title “Connections” in the left navigation panel.  
+15) Return to the terminal and run the command below to double-check that the web app is mapped to port 8000:  
+```bash
+docker ps --filter "name=airbyte-webapp" --format "table {{.Names}}\t{{.Ports}}"
+```  
+   You should see a line similar to `airbyte-webapp   0.0.0.0:8000->8000/tcp`, confirming the port binding is correct.

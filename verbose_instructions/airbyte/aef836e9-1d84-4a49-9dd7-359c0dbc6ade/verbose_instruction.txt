@@ -1,0 +1,15 @@
+1) Open your web browser and Navigate to the Airbyte UI at http://localhost:8000 (or the URL your team normally uses).  
+2) Click the left-hand menu item “Connections” so we see the list of existing pipelines.  
+3) Locate the row whose “Source” is “Sample Data (Faker)” and whose “Destination” is “Snowflake”. Click the blue hyperlinked connection name to open its detail page.  
+4) Click the “Replication” tab (some Airbyte versions label this tab “Streams”). We now see a table listing every available stream with columns Stream Name, Sync Mode, Destination Namespace, etc.  
+5) For quick visual scanning, Type “pro” in the search bar above the table. The list filters down; check that the row titled “products” appears.  
+6) In the “Enabled” column of the “products” row, Click the toggle so it turns blue (ON). Note that the entire row background should now highlight, confirming the stream is selected.  
+7) Delete the search text to return to the full list.  
+8) Type “pur” in the search bar, find the row “purchases”, and Click its “Enabled” toggle so it also turns blue (ON).  
+9) Clear the search bar again so all streams reappear.  
+10) Hold the keyboard shortcut Ctrl+F (or ⌘+F) in your browser, search for the word “Enabled” to quickly scroll through the list. For every other stream whose toggle is blue, Click the toggle once to turn it grey (OFF). We want ONLY “products” and “purchases” left in the enabled state.  
+11) Double-check: Scroll from top to bottom. You should see exactly two blue toggles—one for “products” and one for “purchases”; every other stream is greyed out.  
+12) Click the blue button “Save changes” (older versions say “Update connection”) at the bottom-right corner of the screen. Airbyte shows a toast notification “Connection saved successfully”.  
+13) In the banner that appears, Click the “Sync now” button so we immediately test the new stream configuration.  
+14) Wait until the status indicator in the right-hand “Status” panel shows “Completed”. Confirm the log summary lists only 2 streams (“products” and “purchases”) with records committed.  
+15) Take a screenshot or copy the Job ID from the success modal so you can reference this proof in your project ticket. The stream modification is now verified.

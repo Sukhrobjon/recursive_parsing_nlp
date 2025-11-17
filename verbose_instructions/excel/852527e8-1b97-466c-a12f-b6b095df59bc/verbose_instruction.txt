@@ -1,0 +1,17 @@
+1. Confirm the header row: verify that cell A1 reads “Week”, B1 reads “Sales”, and C1 reads “COGS”. We will use these three columns to build the summary sentence for every record.  
+2. Click cell D1 (the first blank column to the right of “COGS”).  
+3. Type “Week Sales COGS Summary” and press ENTER. This labels the new helper column.  
+4. Click cell D2 (first data row of the new column).  
+5. Type the following formula exactly, including quotation marks and commas, then press ENTER:  
+   ```excel
+   =CONCAT("Week: ", A2, ", Sales: ", B2, ", COGS: ", C2)
+   ```  
+   Note that:  
+   • CONCAT joins text fragments in order.  
+   • A2, B2, C2 pull the current row’s Week, Sales, and COGS values.  
+6. Hover over the small square “fill handle” in the bottom-right corner of cell D2 until the cursor turns into a thin black cross.  
+7. Double-click the fill handle. Excel auto-copies the formula down to the last contiguous row of data in columns A–C, generating a sentence for every record.  
+8. Scroll to the last populated row in column D and spot-check a few entries to ensure the pattern reads like:  
+   Week: 12, Sales: 34 000, COGS: 21 500  
+   (Your numbers will match each row’s underlying data.)  
+9. Press Ctrl+S to save the workbook so the newly added “Week Sales COGS Summary” column and formulas persist.

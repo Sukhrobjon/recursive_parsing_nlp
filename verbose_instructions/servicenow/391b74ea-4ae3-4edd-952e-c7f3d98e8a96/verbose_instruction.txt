@@ -1,0 +1,40 @@
+1. Double-click the already opened text file named `serial_number.txt` on your desktop to bring it to the foreground.  
+2. Highlight just the numeric portion after the literal text `Serial number:` (for example, if the file shows `Serial number: 9X5-7732-14`, copy `9X5-7732-14`).  
+3. Press Ctrl + C (Cmd + C on macOS) to copy the serial number to the clipboard—we will paste this value in the web form next.  
+
+4. Switch to the Chrome / Chromium window that is displaying the “New Hardware Asset” form (Alt + Tab until Chrome is active).  
+5. Click the text box labelled “Model category” (it has a red asterisk).  
+6. Type Computer and press Enter to confirm the value.  
+
+7. Click directly below on the text box labelled “Model.”  
+8. Type Apple MacBook Pro 17" (include the trailing double quote).  
+
+9. Scroll (if necessary) down to the “General” panel in the lower half of the page.  
+10. Click the text box labelled “Assigned to.”  
+11. Type Kira Papen and press Enter so the name resolves.  
+
+12. Click the first field on the left side of this panel labelled “Asset tag.”  
+13. Type P1000811.  
+
+14. Press Tab (or click) into the field immediately to the right labelled “Serial number.”  
+15. Press Ctrl + V (Cmd + V on macOS) to paste the serial number you copied in step 2.  
+
+16. Click the third box in the right column labelled “Location.”  
+17. Type 2-10-1 Yurakucho, Chiyoda-ku, Tokyo and press Enter.  
+
+18. Click the field directly below “Location” named “Department.”  
+19. Type Customer Support and press Enter.  
+
+20. Locate the large multi-line text area labelled “Comments” at the bottom of the “General” panel.  
+21. Type misarray overwelt Echinoderidae Heikum upset exactly as shown.  
+
+22. Click the “Financial” tab/button found in the horizontal tab bar above the current panel to switch forms.  
+23. Click the required field “Vendor” (marked with a red asterisk) in the Financial panel.  
+24. Type Apple and press Enter.  
+
+25. Click the field to the right labelled “Acquisition method.”  
+26. Open the drop-down list, scroll if necessary, and click the option Loan (it is the last entry).  
+
+27. Move your cursor to the top-right corner of the page and click the blue Submit button.  
+
+28. Wait until the page briefly reloads; verify that no red error banners or validation messages appear—this confirms the asset has been saved successfully.

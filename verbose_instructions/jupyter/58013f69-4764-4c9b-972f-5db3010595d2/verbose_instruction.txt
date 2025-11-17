@@ -1,0 +1,15 @@
+1) Navigate to the Desktop file browser pane on the left-hand side of JupyterLab (or Jupyter classic).  
+2) Double-click notebook_1.ipynb to open it in a new main-area tab.  
+3) Scroll to the very bottom of notebook_1 so the last cell is visible; we will append new cells after it.  
+4) Return to the file browser, locate notebook_2.ipynb, and double-click it so it opens in a second tab.  
+5) Click once on the first cell of notebook_2, then hold Shift and click the last cell to highlight the entire set of cells (they turn blue).  
+6) Press Ctrl + C (Cmd + C on macOS) or click the toolbar button “Copy Selected Cells” to copy every cell from notebook_2 into the clipboard—this preserves execution metadata.  
+7) Switch back to the notebook_1 tab by clicking its tab title.  
+8) Click the “+ Code” button at the bottom (or press B while a cell is selected) to create a brand-new blank cell after the current last cell.  
+9) Click inside that blank cell and press Ctrl + V (Cmd + V) or choose “Edit → Paste Cells Below” from the menu; all cells from notebook_2 now appear in notebook_1, maintaining their original order.  
+10) Verify the paste worked: scroll to ensure the last pasted cell in notebook_1 matches the last cell you saw in notebook_2 (this confirms nothing was skipped).  
+11) Press Ctrl + S (Cmd + S) or click the floppy-disk icon to save the merged notebook; the tab title loses its unsaved “●” indicator.  
+12) Click the menu “Kernel → Restart Kernel and Run All Cells…”.  
+13) In the confirmation dialog that appears, click “Restart and Run All”; Jupyter restarts the Python kernel and systematically executes every cell—including those from notebook_2 that you just appended.  
+14) Observe the blue execution progress bar at the top; wait until the last cell number stops incrementing and the asterisk “[*]” next to cells turns into concrete numbers—this confirms full execution.  
+15) Scroll through a few output cells (especially ones originally from notebook_2) to visually confirm they executed without errors; if everything looks correct, the task is complete and notebook_1 now permanently contains and has run all the code from notebook_2.

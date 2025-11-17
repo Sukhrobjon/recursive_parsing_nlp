@@ -1,0 +1,22 @@
+1. Open your browser and navigate to https://console.cloud.google.com/bigquery so that you are in the BigQuery Web UI.  
+2. Locate the Explorer panel on the left. Click the triangle ▸ next to the project that contains your data (for example, my-project-123) to reveal its datasets.  
+3. Click the triangle ▸ next to the dataset that stores the table (e.g., company_finance) so you can see its tables.  
+4. Click the table name financials to highlight it, then look at the Schema tab in the details panel on the right; verify it contains the columns Revenue and Total Expenses. We will use these exact column names in our query.  
+5. Click the + Compose New Query button (blue button at the top of the main pane). A blank query editor tab opens.  
+6. Type (or paste) the following SQL in the editor exactly as shown:  
+
+```sql
+SELECT
+  SUM(Revenue)           AS `Total Revenue`,
+  SUM(`Total Expenses`)  AS `Total Expenses`
+FROM
+  `my-project-123.company_finance.financials`;
+```  
+   Note that we wrap Total Expenses in back-ticks because the column name contains a space.  
+7. Click the ▷ RUN button in the top-center toolbar of the query editor to execute the query.  
+8. Wait a moment until the “Query results” panel appears below; you should see one row with two columns: Total Revenue and Total Expenses.  
+9. Click the Save Results button (down-arrow icon) at the far right of the “Query results” header.  
+10. In the dropdown, choose Google Sheets → Save to new sheet.  
+11. In the pop-up dialog, accept the default sheet name (or type Revenue_Expense_Summary), then click Save. BigQuery will create a new Google Sheet that contains the single row with the two columns Total Revenue and Total Expenses.  
+12. Click the Open button that appears (or follow the link in the notification) to open the new Google Sheet; confirm that the header row shows “Total Revenue” and “Total Expenses” and that the summed values appear beneath them.  
+13. (Optional) Rename the sheet tab or share the Google Sheet as needed; the task is now complete.

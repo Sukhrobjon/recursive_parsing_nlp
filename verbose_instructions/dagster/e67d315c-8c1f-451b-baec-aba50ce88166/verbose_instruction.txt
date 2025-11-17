@@ -1,0 +1,126 @@
+1) Open your web browser and navigate to the Airbyte UI  
+   (default URL is http://localhost:8000 if you started Airbyte with Docker Compose).
+
+2) Click “Connections” on the left sidebar, then click the existing MySQL → Local JSON connection.
+
+3) Copy the Connection ID shown in the “Settings” tab (it looks like `1234abcd‐...`).  
+   Note that we will map this ID inside Dagster shortly.
+
+4) Click the “Sync now” button once and ensure the Airbyte sync completes with a green “Success”.  
+   This guarantees the connector settings are valid before we migrate.
+
+5) Switch to the terminal where you manage your code repositories.
+
+6) Execute  
+   ```bash
+   pip install "dagster==1.6.*" "dagster-webserver==1.6.*" "dagster-airbyte==0.22.*" "airbyte-client==0.44.*"
+   ```  
+   This installs Dagster plus the Airbyte integration and the Airbyte Python client.
+
+7) Run  
+   ```bash
+   dagster project scaffold --name mysql_to_json_dagster
+   ```  
+   to generate a new Dagster project directory.
+
+8) Change into the new project folder:  
+   ```bash
+   cd mysql_to_json_dagster
+   ```
+
+9) Open the auto-generated `pyproject.toml` and add the same dependency versions you installed in step 6 under `[project] dependencies`.  
+   Press Ctrl+S to save.
+
+10) Create a new file `airbyte_resources.py` in the project’s `mysql_to_json_dagster` package.
+
+11) Write the Airbyte resource pointing to your running Airbyte instance:  
+```python
+# airbyte_resources.py
+from dagster_airbyte import AirbyteResource
+
+airbyte_instance = AirbyteResource(
+    host="localhost",
+    port="8000",          # match the port where Airbyte API is exposed
+    use_https=False,      # change to True if using TLS
+)
+```
+
+12) Create a folder `jobs` inside the same package and add the file `mysql_to_json_job.py`.
+
+13) Populate it with the Dagster job that calls your existing connection:  
+```python
+# jobs/mysql_to_json_job.py
+from dagster import Definitions, ScheduleDefinition
+from dagster_airbyte import build_airbyte_sync_op
+from .airbyte_resources import airbyte_instance
+
+# Replace with the Connection ID you copied in step 3
+CONNECTION_ID = "1234abcd-5678-efgh-9012-ijklmnopqrst"
+
+# Build the op that will trigger Airbyte
+mysql_to_json_sync_op = build_airbyte_sync_op(
+    connection_id=CONNECTION_ID,
+    name="mysql_to_json_sync_op",
+)
+
+# Define the Dagster job
+from dagster import job
+
+@job(
+    name="mysql_to_json",
+    resource_defs={"airbyte": airbyte_instance},
+)
+def mysql_to_json():
+    mysql_to_json_sync_op()
+```
+
+14) (Optional) If you need a schedule, append a nightly example at the bottom of the same file:  
+```python
+mysql_to_json_daily_schedule = ScheduleDefinition(
+    name="mysql_to_json_daily",
+    job=mysql_to_json,
+    cron_schedule="0 2 * * *",   # every day at 02:00
+)
+```
+
+15) Open `workspace.yaml` in the repo root and point it to the new package module:  
+```yaml
+load_from:
+  - python_file:
+      relative_path: mysql_to_json_dagster/jobs/mysql_to_json_job.py
+      attribute: mysql_to_json
+```
+   If you added the schedule, also add an entry for it (replace `attribute` with `mysql_to_json_daily_schedule`).
+
+16) Verify your code is syntactically correct:  
+```bash
+python -m compileall .
+```
+
+17) Launch the Dagster webserver in a new terminal tab:  
+```bash
+dagster dev
+```
+   You should see logs ending with “Dagster UI running on http://localhost:3000”.
+
+18) Open http://localhost:3000 in your browser to access Dagster UI.
+
+19) In the left sidebar, click “Jobs”. You should see “mysql_to_json”.
+
+20) Click the “mysql_to_json” job, then click the blue “Launch Run” button in the top-right corner.
+
+21) In the launch dialog, leave the default run config empty (none required for Airbyte) and click “Launch”.  
+    The run stream appears; wait until the Airbyte step finishes with a green “Succeeded”.
+
+22) Confirm the run passed: you will see a final status banner “Succeeded” and timestamps in the logs for `mysql_to_json_sync_op`.
+
+23) Switch back to the terminal where Airbyte logs are visible; you should see the connection `mysql_to_json` triggered with a new sync attempt ID.
+
+24) (Optional) Navigate to Airbyte UI → “Connections” and open the MySQL → Local JSON connection.  
+    Verify that the “Last sync” time matches the timestamp from Dagster, confirming end-to-end linkage.
+
+25) Commit your Dagster code so teammates can reproduce:  
+```bash
+git add .
+git commit -m "Migrate Airbyte MySQL→JSON connection to Dagster job mysql_to_json"
+```

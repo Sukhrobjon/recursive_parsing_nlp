@@ -1,0 +1,27 @@
+1) Open your browser and navigate to https://console.cloud.google.com/bigquery so we are inside the BigQuery web console.  
+2) Confirm you are in the correct GCP project (look at the blue project-selector bar on the top left). If the wrong project is shown, Click the project name and choose the project that owns the information dataset.  
+3) In the left Explorer panel, Click the triangle next to your project name to expand all datasets.  
+4) Click the triangle next to the information dataset so we can see its tables. Verify that data1 already exists (we will append rows to it).  
+5) Click the information dataset name (not the table) so the right-hand pane shows the Dataset info, then Click the blue CREATE TABLE button at the top of that pane.  
+6) In the Create table form, under Source, Click the Location radio button labeled Google Drive.  
+7) Click the Browse Drive link that appears, navigate through My Drive > Spider002, and select the file(s) you need to load (for example spider002_data.csv). Click Select to insert the Drive URI; it will look like:  
+   https://drive.google.com/uc?export=download&id=<FILE_ID>  
+8) Set File format to CSV (or change to JSON/Parquet if your Spider002 files use a different format).  
+9) Scroll to the Destination section, Click the Dataset dropdown and choose information.  
+10) In the Table name field, Type data1 so BigQuery knows we are targeting the existing table.  
+11) For Write preference, open the dropdown and Choose Append to table (this prevents overwriting the current contents).  
+12) Leave Schema section blank (BigQuery will use the current schema of information.data1).  
+13) Expand Advanced options and confirm values:  
+    • Header rows to skip = 1 (if the CSV has a header row)  
+    • Field delimiter = ,  
+    • Quoted newlines = Checked if your data contains multi-line fields  
+14) Click the blue CREATE TABLE button at the bottom. BigQuery now starts importing the Google Drive file rows into information.data1.  
+15) Wait for the green Job succeeded message in the Job details panel; note the Job ID in case we need to audit later.  
+16) Verify the load: in Explorer, Click the triangle next to information again, then Click data1. In the Table Details pane choose the Preview tab. We should see the new rows from Spider002.  
+17) Optionally Run a quick row-count query to be extra sure: Click the Query table button and Execute:  
+```sql
+SELECT COUNT(*) AS total_rows
+FROM `project_id.information.data1`;
+```  
+   Compare the total_rows value with the expected number after the append.  
+18) If everything looks correct, share the Job ID and row count with the team so they know the Spider002 data is successfully loaded.

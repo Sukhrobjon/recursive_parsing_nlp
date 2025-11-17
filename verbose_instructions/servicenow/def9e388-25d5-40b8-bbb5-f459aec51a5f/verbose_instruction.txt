@@ -1,0 +1,10 @@
+1. Click the “Hardware” menu item in the left navigation bar; the page refreshes and displays the hardware product catalog.  
+2. Click inside the top-right search field labeled “Search catalog”.  
+3. Type Apple Watch and press Enter to execute the search; the items list now shows only Apple Watch variants.  
+4. Click the product card titled “Apple Watch” (the card with the Apple logo thumbnail and price tag).  
+5. Wait until the product-detail pane appears on the right side of the screen; verify the title reads “Apple Watch” to confirm you opened the correct item.  
+6. Click the drop-down box labeled “Quantity” directly beneath the price.  
+7. Select 5 from the quantity list (or type 5 if the field is editable) so the total quantity shows “5”.  
+8. Click the green “Order Now” button at the bottom of the pane to submit the order.  
+9. Wait for the confirmation toast that says “Order placed successfully” and note the order number displayed.  
+10. Navigate to the “Orders” tab in the top navigation bar; verify a new entry for “Apple Watch” with Quantity = 5 and Status = “Processing” appears, confirming the order was recorded.

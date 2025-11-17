@@ -1,0 +1,38 @@
+1. Locate and open the workbook that already contains the raw expense data (assume it sits in Sheet1 with columns “Expense Account” in A and “Subtotal” in B).  
+2. Click any single cell inside the data range (e.g., A2) so Excel can automatically detect the entire block.  
+3. Press Ctrl + T to convert the range to an official Excel Table.  
+4. In the “Create Table” dialog that appears, confirm the range (e.g., $A$1:$B$5000) and ensure the checkbox “My table has headers” is ticked, then click OK.  
+   Note: Turning the list into a Table guarantees the PivotTable will dynamically pick up any new rows we add later.  
+5. Click anywhere in the new Table to activate the contextual “Table Design” tab; we will use this later if we need to rename the table, but for now continue.
+
+6. Navigate to the Ribbon tab “Insert” and click the button “PivotTable” (first icon in the PivotTable group).  
+7. In the “Create PivotTable” dialog:  
+   a. Verify the Table/Range field shows something like “Table1”.  
+   b. Select the radio button “New Worksheet.”  
+   c. Hit OK. Excel adds a new sheet automatically named “Sheet2” (or “PivotTable1”).  
+   We now see a blank PivotTable placeholder on the left and the “PivotTable Fields” pane on the right.
+
+8. Drag the field “Expense Account” from the top list into the area labeled “Rows.”  
+9. Drag the field “Subtotal” into the area labeled “Values.”  
+   Excel should immediately display “Sum of Subtotal.” If it shows “Count” instead, do the next sub-step, otherwise skip it:  
+      a. Click the small drop-down beside “Count of Subtotal” in the “Values” box, choose “Value Field Settings…,” select “Sum,” and press OK.
+
+10. Verify the PivotTable now lists every unique Expense Account down the left column and a grand total dollar amount in the right column.  
+   Check one or two numbers manually against the source data (e.g., use SUMIF) to confirm the aggregation is correct.
+
+11. With any cell still active inside the PivotTable, move to the Ribbon’s “PivotTable Analyze” tab, then click “PivotChart” in the “Tools” group.  
+12. In the “Insert Chart” dialog, choose “Bar” on the left, then select the variant “Clustered Bar” in the gallery, and click OK.  
+   Excel inserts a PivotChart right on the same worksheet.
+
+13. Click an empty area inside the new chart to ensure it is selected, then:  
+   a. Click the contextual “Chart Design” tab → “Move Chart.”  
+   b. In the “Move Chart” dialog pick “New sheet” and type the name “Expense Chart” before pressing OK.  
+   Now the bar chart sits on its own sheet, making it easy to present.
+
+14. Double-click the default chart title “Sum of Subtotal” and type “Total Subtotal by Expense Account,” then press Enter.  
+15. (Optional) Click the legend once and press Delete if you prefer to remove it—since each bar already has its account name, the legend is redundant.
+
+16. Switch back to the PivotTable sheet by clicking its tab (“Sheet2”) to confirm the chart and table remain linked.  
+   Change any subtotal directly in Sheet1 to test: the PivotTable → PivotChart should update as soon as you right-click the PivotTable and choose “Refresh.”
+
+17. Press Ctrl + S to save the workbook so that the PivotTable and bar chart persist.

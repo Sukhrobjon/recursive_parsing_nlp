@@ -1,0 +1,23 @@
+1. Click cell A12 directly beneath the last product row.  
+2. Type Total and press Enter so the row header is recorded.  
+3. Click cell B12 (the first numeric cell in the new “Total” row).  
+4. Type =SUM(B2:B11) into the Formula Bar and press Enter; Excel immediately shows the column total.  
+5. Verify that the value in B12 is non-zero and roughly matches an expected monthly sum (this confirms the formula worked).  
+6. Hover over the small square “fill handle” in the bottom-right corner of B12 until the cursor becomes a black plus sign.  
+7. Drag the fill handle horizontally from B12 across to G12, then release the mouse; Excel autofills totals for all remaining months.  
+8. Confirm that each cell C12:G12 now contains a SUM formula referencing its own column (e.g., in C12 you should see =SUM(C2:C11) in the Formula Bar).  
+9. Hold Ctrl and click cell A12 to include the “Total” label in the upcoming chart selection.  
+10. While still holding Ctrl, drag across B12:G12 so the entire total data range A12:G12 is highlighted.  
+11. Continue holding Ctrl, then drag across B1:G1 to add the month headings to the selection (your combined selection should now be A12:G12 plus B1:G1).  
+12. Release Ctrl so both header row and total row remain highlighted.  
+13. Click the Insert tab on the Ribbon.  
+14. Click the Insert Line or Area Chart icon (it looks like a jagged line).  
+15. In the drop-down gallery, click the first option under “2-D Line” labeled Line (Excel calls this the “Lines Only” style).  
+16. Observe that a new line chart appears on the worksheet; months populate the horizontal axis and totals form a single series.  
+17. Click anywhere on the blank chart title placeholder to activate edit mode.  
+18. Type Total and press Enter so the chart title updates.  
+19. Click once on the legend (it likely shows “Series1”) to select it.  
+20. Press Delete to remove the legend, satisfying the “no legend” requirement.  
+21. Review the chart: only one polyline is visible, the title reads “Total,” and no legend is displayed.  
+22. Click an empty cell to deselect everything and save the workbook with Ctrl+S.  
+23. Re-open or refresh the worksheet to verify the Total row still shows formulas and the chart still reflects your data.

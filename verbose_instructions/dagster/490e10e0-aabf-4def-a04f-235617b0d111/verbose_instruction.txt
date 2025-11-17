@@ -1,0 +1,17 @@
+1. Open the Terminal application from the dock so we can issue shell commands.  
+2. Type `cd ~/dagster-proj` and press ENTER to move into the project directory that contains the Dagster code.  
+   ```bash
+   cd ~/dagster-proj
+   ```  
+   Note that Dagster expects to find the workspace file and Python environment here.  
+3. Verify the folder change by executing `pwd` and confirming the output path ends with `/dagster-proj`; this prevents starting the server from the wrong location.  
+4. Run the development webserver on the requested port by typing the command below and pressing ENTER:  
+   ```bash
+   dagster dev -p 8004
+   ```  
+5. Wait until the terminal prints the confirmation line “Serving dagster-webserver on http://127.0.0.1:8004”. We must see this exact message; it indicates the server has started without errors.  
+6. Switch to the Chromium browser by clicking its icon on the left dock.  
+7. Click once inside the address bar (URL box) at the top of the window to focus it.  
+8. Type `http://127.0.0.1:8004` and press ENTER to navigate to the Dagster UI.  
+9. Confirm the page loads successfully: you should see the Dagster landing screen with the left-hand navigation (“Overview”, “Runs”, “Assets”, etc.). If it fails, return to the terminal and check for stack-trace errors.  
+10. Keep the terminal window running in the background; closing it will stop the dev server. We can now interact with Dagster locally on port 8004.

@@ -1,0 +1,29 @@
+1) Navigate to https://console.cloud.google.com/bigquery so the BigQuery Web UI opens in a browser tab.  
+2) Click the triangle ▸ to the left of your Google Cloud project name in the Explorer panel to expand all datasets.  
+3) Click the triangle ▸ next to the dataset that contains your sales table (for example, my_sales_dataset) so the list of tables appears.  
+4) Click the table name (for example, transactions) to display the schema in the details panel. Confirm the table has a DATE or TIMESTAMP column (for example, sale_date) and a numeric sales column (for example, amount). We will use these two columns in the query.  
+5) Click the + Compose new query button (white sheet icon with a plus) at the top-right of the Explorer panel. A new Query editor tab opens.  
+6) Write the aggregation SQL exactly as below, replacing dataset and table names if yours differ:
+
+```sql
+-- Monthly total sales with the column name "Total"
+SELECT
+  FORMAT_DATE('%Y-%m', sale_date) AS Month,
+  SUM(amount) AS Total
+FROM
+  `project_id.my_sales_dataset.transactions`
+GROUP BY
+  Month
+ORDER BY
+  Month;
+```
+
+7) Click the blue ▸ Run button on the toolbar of the query editor to execute.  
+8) Wait until the Query results pane appears beneath the editor. We should see two columns: Month and Total.  
+9) Click the Chart tab (right next to “Results”) that just appeared in the Query results pane. A default chart is generated from the query output.  
+10) Click the Chart type dropdown (currently maybe a bar chart icon) and choose Lines only. The view switches to a simple line chart.  
+11) Click the Edit (pencil) icon in the top-right corner of the Chart pane to open the Chart settings side panel.  
+12) Type Total in the “Chart title” field to set the title.  
+13) Scroll to the Legend section and toggle Legend off so it is not displayed.  
+14) Leave all other settings as they are (do not change axes, colors, gridlines, etc.).  
+15) Click the Close (X) icon on the settings side panel to apply the changes. The line chart now shows monthly totals with “Total” as the title, no legend, and months on the X-axis.

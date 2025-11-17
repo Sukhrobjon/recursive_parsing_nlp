@@ -1,0 +1,31 @@
+1) Navigate to https://console.cloud.google.com/bigquery to open the BigQuery Web UI.  
+2) Click the triangle ▸ next to your project (for example, my_project) in the left-hand Explorer pane to reveal its datasets.  
+3) Click the triangle ▸ next to dataset my_dataset to see its tables, then click table orders_table so we can inspect the schema.  
+   • We verify that the table contains at least these columns:  
+     – columnA (INTEGER) – the field we will sort on  
+     – Date_Time (TIMESTAMP) – will become our X-axis (BigQuery auto-converts underscores to spaces in the chart label)  
+     – quantity (INT64) – will become our Y-axis  
+   Note that we will use fully-qualified name `my_project.my_dataset.orders_table` in the query.  
+4) Click the + COMPOSE NEW QUERY button at the top of the main panel to open a blank query editor tab.  
+5) Write the SQL below into the blank editor. The query selects only the columns we need, sorts by columnA in ascending order, and deliberately keeps Date_Time un-aliased so BigQuery’s chart builder recognizes it as a TIMESTAMP field.  
+```sql
+SELECT
+  Date_Time,
+  quantity,
+  columnA
+FROM
+  `my_project.my_dataset.orders_table`
+ORDER BY
+  columnA ASC
+```  
+6) Click the blue ▸ RUN button in the query editor toolbar to execute the query. Wait until the green check mark and “Query complete” message appear.  
+7) Look at the grid under Query results – we can see the rows are now ordered by columnA from smallest to largest. We will visualize this next.  
+8) Click the CHART button located just above the result grid (to the right of “Explore data”). This opens the Visualization panel in the lower half of the screen.  
+9) In the Visualization panel, click the drop-down that currently says “Table” and choose Line chart.  
+10) Under “X-axis,” pick Date_Time from the field list.  
+11) Under “Y-axis,” pick quantity.  
+    • BigQuery automatically aggregates if multiple quantity values share the same timestamp; leave aggregation as SUM unless you need a different one.  
+12) Confirm the line chart renders—time runs left-to-right on the X-axis, quantity is plotted on the Y-axis, and because the underlying result set is already sorted by columnA ascending we can visually correlate ordering with the plotted quantities.  
+13) (Optional) Click the SAVE AS LOOKER STUDIO button (upper-right of the Visualization panel) if you want to preserve the chart in a Looker Studio report for future use.  
+14) Click SAVE RESULTS (just above the Query results grid) if you also need the ordered data set; choose “CSV (local file)” and download it to your machine.  
+15) Verify the downloaded file appears in your browser’s Downloads list (or ~/Downloads folder) so you can reference or share the underlying data later.

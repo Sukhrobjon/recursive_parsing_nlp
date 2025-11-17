@@ -1,0 +1,111 @@
+1. Open a terminal in the root of your Dagster project (the folder that already contains `workspace.yaml`).  
+   Execute  
+   ```bash
+   pip install scikit-learn==1.4.2
+   ```  
+   so the workers can import `LinearRegression` and the helpers we will call later.
+
+2. Switch to VS Code. In the Explorer sidebar, expand the folder `my_dagster_project/assets` (replace with your real asset-package path if different).
+
+3. Click `__init__.py` inside that folder. Scroll to the last import line and append two new imports so that the top of the file now contains:  
+   ```python
+   import pandas as pd
+   from sklearn.linear_model import LinearRegression
+   from sklearn.metrics import mean_squared_error, r2_score
+   from dagster import AssetIn, asset, MetadataValue
+   ```
+
+4. Still in `__init__.py`, go to the very bottom of the file and add the training asset.  
+   ```python
+   @asset(
+       name="linreg_model",
+       ins={"train_df": AssetIn("training_data")},
+       group_name="modeling",
+   )
+   def linreg_model(context, train_df: pd.DataFrame):
+       """
+       Train a scikit-learn Linear Regression model on the prepared training_data asset.
+       """
+       X = train_df.drop(columns=["target"])
+       y = train_df["target"]
+       model = LinearRegression()
+       model.fit(X, y)
+
+       # Save coefficients as metadata so they are visible in Dagster UI
+       context.add_output_metadata(
+           {
+               "coefficients": MetadataValue.json(model.coef_.tolist()),
+               "intercept": MetadataValue.float(model.intercept_),
+           }
+       )
+       return model
+   ```
+
+5. Below the previous snippet, add the evaluation asset.  
+   ```python
+   @asset(
+       name="linreg_metrics",
+       ins={
+           "model": AssetIn("linreg_model"),
+           "test_df": AssetIn("test_data"),
+       },
+       group_name="modeling",
+   )
+   def linreg_metrics(context, model, test_df: pd.DataFrame):
+       """
+       Evaluate the trained Linear Regression model on test_data.
+       """
+       X_test = test_df.drop(columns=["target"])
+       y_test = test_df["target"]
+
+       preds = model.predict(X_test)
+
+       mse = mean_squared_error(y_test, preds)
+       r2 = r2_score(y_test, preds)
+
+       # Log metrics in Dagster UI
+       context.add_output_metadata(
+           {
+               "mse": MetadataValue.float(mse),
+               "r2": MetadataValue.float(r2),
+           }
+       )
+
+       return {"mse": mse, "r2": r2}
+   ```
+
+6. Press `Ctrl+S` to save `__init__.py`.
+
+7. Switch to the Dagster UI (usually running at `http://localhost:3000`).  
+   Click the grey button “Reload definitions” in the upper-right corner.  
+   Wait a second; new assets `linreg_model` and `linreg_metrics` should now appear in the asset graph inside the “modeling” group.
+
+8. Click the “materialize all” button that appears at the top-right of the graph viewport.  
+   Dagster will queue a run containing four steps:  
+   - `training_data` (already up-to-date, will be skipped if fresh)  
+   - `test_data` (same)  
+   - `linreg_model`  
+   - `linreg_metrics`
+
+9. When the run page opens, watch each solid step turn green.  
+   Verification: in the logs of the `linreg_metrics` step you should see lines similar to  
+   ```
+   mse: 12.854
+   r2: 0.78
+   ```  
+   The exact numbers depend on your dataset but should be printed.
+
+10. Return to the Asset Graph. Click the `linreg_metrics` node, then click the right sidebar tab “Metadata”.  
+    Confirm two rows appear:  
+    • Key “mse” with a numeric value  
+    • Key “r2” with a numeric value close to 1 if the model performs well.  
+    This verifies the pipeline executed end-to-end: training asset produced a model object, evaluation asset computed metrics, and Dagster stored everything for lineage tracking.
+
+11. (Optional) Commit your changes:  
+    ```bash
+    git add my_dagster_project/assets/__init__.py requirements.txt
+    git commit -m "Add Linear Regression training and evaluation assets"
+    ```  
+    so the pipeline definition is version-controlled.
+
+All steps are finished. Your Dagster project now trains a Linear Regression model using the existing `training_data` asset and automatically evaluates it on `test_data`, surfacing the MSE and R² scores directly in the Dagster UI.

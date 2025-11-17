@@ -1,0 +1,10 @@
+1) Click the blue-and-white tile labeled “Python 3 (ipykernel)” in the center of the Jupyter Launcher page.  
+2) Wait until a new notebook tab opens; confirm the title in the top-left corner reads “Untitled.ipynb”.  
+3) Switch to the left sidebar (“File Browser”) and double-click the file named “code.py”. A new tab with the file’s source code opens.  
+4) Click inside the code.py editor pane, press Ctrl + A to highlight the entire script, then press Ctrl + C to copy it to the clipboard.  
+5) Switch back to the “Untitled.ipynb” notebook tab by clicking its tab title.  
+6) Click once inside the first empty code cell (it shows a light-blue border).  
+7) Press Ctrl + V to paste the copied script so that all code now appears in this single cell. (Note that we will not execute the cell.)  
+8) Press Ctrl + S. A modal dialog titled “Rename File” appears.  
+9) Type tensor (without the .ipynb extension) into the “Rename file” input box, then click the “Rename” button (or press Enter).  
+10) Verify the notebook’s title bar now displays “tensor.ipynb” and that the left File Browser lists tensor.ipynb, confirming the save succeeded.

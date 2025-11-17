@@ -1,0 +1,35 @@
+1. Open your browser and navigate to Google Cloud Console, then click “BigQuery” in the left-hand navigation so the BigQuery Web UI loads.  
+2. Locate the Explorer panel on the far left. Type “covid19_open_data” into the search bar if it is not immediately visible.  
+3. Click the small grey triangle ▸ to the left of bigquery-public-data to expand the public datasets list.  
+4. Click the triangle ▸ next to covid19_open_data so we can see its tables—there is only one table, covid19_open_data.  
+5. Click the table name covid19_open_data; the main panel switches to the Table details tab where we can view the Schema. Skim the column list—notice the fields date and cumulative_confirmed that we will need shortly.  
+6. Click the blue “+ COMPOSE NEW QUERY” button (or the + symbol just above the schema panel). A new SQL editor tab opens in the main work area.  
+7. Highlight any boilerplate text that appears and press Delete, then write this query exactly:  
+
+```sql
+SELECT
+  SUM(cumulative_confirmed) AS total_cases_worldwide
+FROM
+  `bigquery-public-data.covid19_open_data.covid19_open_data`
+WHERE
+  date = "2020-04-15"
+```
+
+   Note that we aggregate with SUM to get the global total for the chosen date.  
+8. Click the dark blue “▶ RUN” button in the toolbar above the editor to execute the query.  
+9. Wait a few seconds until the “Query complete” message appears and the results table shows a single row with the column total_cases_worldwide. We can see our answer here.  
+10. Click the “SAVE RESULTS” button located on the right side of the gray bar directly above the result grid.  
+11. In the dropdown, choose “CSV (local file)”. A file named something like results-*.csv will download automatically to your default Downloads folder.  
+12. Open your system’s terminal (or Finder/Explorer) and navigate to the Downloads directory:  
+
+```
+cd ~/Downloads
+```
+
+13. Rename the freshly downloaded file to result.csv so it matches the required filename. In the terminal you can type (replace <original> with the actual downloaded name):  
+
+```
+mv <original>.csv result.csv
+```
+
+   Now the file ~/Downloads/result.csv holds the total confirmed COVID-19 cases worldwide on 2020-04-15.

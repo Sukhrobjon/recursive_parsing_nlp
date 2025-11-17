@@ -1,0 +1,55 @@
+1. Double-click the file name  result.csv  in the left sidebar so we can inspect the target format (it should contain two columns, e.g., name and films_in_category).  
+2. Double-click  category.csv, film_actor.csv, film_category.csv, film.csv  one after another to preview their columns and verify they all load correctly (we will use these four tables in our query).  
+3. Double-click  notebook.ipynb  to open the Jupyter notebook.  
+4. Scroll to the very bottom of the notebook; hover the mouse just below the last cell until the gray “Click to add a cell” bar appears.  
+5. Click  Click to add a cell.  
+6. Type the following code block exactly; it reads the CSVs and loads them into an in-memory SQLite database:  
+```python
+import pandas as pd
+import sqlite3
+
+# read the raw CSV files
+film_actor     = pd.read_csv('./film_actor.csv')
+film_category  = pd.read_csv('./film_category.csv')
+film           = pd.read_csv('./film.csv')
+category       = pd.read_csv('./category.csv')
+
+# create / connect to a temporary SQLite database
+connection = sqlite3.connect('database.db')
+
+# load each DataFrame into SQLite (replace if the table already exists)
+film_actor.to_sql('film_actor', connection, if_exists='replace', index=False)
+film_category.to_sql('film_category', connection, if_exists='replace', index=False)
+film.to_sql('film', connection, if_exists='replace', index=False)
+category.to_sql('category', connection, if_exists='replace', index=False)
+```  
+Note that we load all four CSV files even though only category and film_category are strictly required; having the others available keeps the database consistent for future queries.  
+7. Hover below this new cell and click  Click to add a cell  again.  
+8. Paste the SQL aggregation query and export logic below:  
+```python
+query = """
+SELECT
+    c.name,
+    COUNT(fc.film_id) AS films_in_category
+FROM
+    category AS c
+    LEFT JOIN film_category AS fc
+        ON c.category_id = fc.category_id
+GROUP BY
+    c.category_id
+ORDER BY
+    films_in_category DESC;
+"""
+
+df = pd.read_sql_query(query, connection)
+
+# write the final output to result.csv
+df.to_csv('result.csv', index=False)
+
+# display the DataFrame so we can visually confirm
+df
+```  
+We use LEFT JOIN to ensure categories with zero films still appear; the ORDER BY clause sorts by the count in descending order.  
+9. Click the top menu item  Run , then select  Run All Cells  so every cell executes in sequence.  
+10. Watch the status indicator (a solid circle means running, an empty circle means idle). When it returns to idle—usually within 5-10 seconds—the code has finished.  
+11. Double-click  result.csv  again; we should now see each category name paired with its film count, sorted from highest to lowest. If the ordering or counts look off, repeat steps 9-10 to re-run the notebook.

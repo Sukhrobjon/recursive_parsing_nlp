@@ -1,0 +1,63 @@
+1) Switch to the browser tab where Airbyte is running at http://localhost:8000  
+2) Click the left-hand menu item “Sources” (database icon)  
+3) Click the blue “+ New source” button in the upper-right corner  
+4) Type “Postgres” into the modal’s search bar and click the card labelled “Postgres”  
+
+5) Fill out the Postgres source form exactly as stored in desktop config.json (replace with your real values):  
+```
+Host:           127.0.0.1
+Port:           5432
+Database:       obesity_db
+Schema:         public
+Username:       airbyte
+Password:       ********
+SSL mode:       disable          # or "require" if your DB enforces TLS
+```
+6) Scroll to the “Replication Method” section, select radio button “Scan changes with user-defined cursor (CDC)” (this is what Airbyte labels as “Incremental | user-defined cursor”)  
+7) Click the blue “Set up source” button at the bottom  
+8) Wait until the green banner “All tests passed” appears – this confirms the connector can reach Postgres  
+
+9) Click “Destinations” in the left menu  
+10) Click “+ New destination” (upper-right)  
+11) Type “Local SQLite” into the search bar and click the “Local SQLite” card  
+
+12) In the destination form enter exactly:  
+```
+Destination Path: /local/obesity.sqlite
+```
+(Leave “Journal Mode” and “Vacuum” at their defaults)  
+
+13) Click “Set up destination”  
+14) Wait for the green “All tests passed” banner to verify the SQLite file is writable  
+
+15) Click “Connections” in the left menu  
+16) Click the blue “+ New connection” button  
+
+17) In the “Define source” step click “Select existing source”, then choose the Postgres source you just created (it will be named the same as the database unless you changed it)  
+18) Click “Next” to move to the destination step  
+19) Click “Select existing destination”, then pick “Local SQLite”  
+
+20) After Airbyte finishes loading available streams, locate the stream table (usually shows one row per table). Find the row for the table you want, e.g., “connection_file”  
+
+21) Click the pill in that row under the “Sync mode” column (it defaults to “Full refresh | overwrite”)  
+22) In the pop-up choose “Incremental | Append” from the drop-down list  
+23) Notice the warning “Cursor field missing” turns red on the right; click that red text  
+
+24) In the “Cursor field” modal turn on the radio button for column “id” (this sets id as the cursor)  
+25) Click “Confirm” in the modal’s bottom-right corner to close it  
+
+26) Verify back in the stream list that the “Cursor” column now displays “id” and the “Sync mode” column shows “Incremental | Append”  
+
+27) Scroll to the bottom of the page and change “Frequency” to “Manual” (so we can test immediately)  
+
+28) Click the blue “Set up connection” button (bottom-right)  
+29) Wait until the status page loads and shows “Active” with a green check  
+
+30) Click “Sync now” to trigger the first incremental append run  
+31) Watch the log window; confirm it finishes with the green badge “Sync completed”  
+
+32) Switch to your terminal and run:
+```
+sqlite3 /local/obesity.sqlite "SELECT count(*) FROM connection_file;"
+```
+33) Confirm that rows now exist, proving the data was written via the incremental append sync.

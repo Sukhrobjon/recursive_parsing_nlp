@@ -1,0 +1,27 @@
+1) Open your web browser and navigate to the Airbyte UI (http://localhost:8000 if you are running Airbyte locally with Docker).  
+2) Click Sources in the left-hand navigation panel.  
+3) Click the blue button New source in the upper-right corner of the Sources page.  
+4) Type Sample Data (Faker) into the Search connectors input box; the tile with the Faker logo and the text “Sample Data (Faker)” should appear.  
+5) Click the tile Sample Data (Faker) to start the source creation wizard.  
+6) Type faker_source into the Source name field so it will be easy to identify later.  
+7) Leave the Source type as Sample Data (Faker) (it is selected automatically).  
+8) In the configuration pane that opens, fill in the exact values below (these are the only required fields for the Faker connector):  
+
+```json
+{
+  "seed": "airbyte_demo_seed",     // provides deterministic fake data
+  "rows": 1000,                    // number of rows to generate per table per sync
+  "dataset": "ecommerce"           // choose one dataset to keep things small for testing
+}
+```
+
+   Note that:
+   • Setting seed guarantees you always get the same fake records each sync – this is useful for testing.  
+   • rows controls the volume; we use 1 000 so the first sync finishes quickly.  
+   • dataset can be ecommerce, marketing, finance, or clickstream; we select ecommerce because we will load sales-style tables later.
+
+9) Scroll to the bottom of the form and click the blue button Set up source.  
+10) Wait a few seconds until a green banner appears with the text “Source connection test succeeded”. This confirms Airbyte can generate data with the parameters you provided.  
+11) Click the Finish button to close the wizard. You are automatically redirected to the Source Overview page where you can see faker_source marked as “Ready”.  
+12) (Optional but recommended) Click the Logs tab on the faker_source page, then click the most recent log entry. Confirm you see the line `INFO i.a.i.faker.FakerSource - Starting to generate 1000 rows for dataset ecommerce` – this verifies the connector generated the correct amount of records.  
+13) You have now fully configured the Sample Data (Faker) source. Next, click Destinations in the left panel (or Connections → New connection) to wire this source to your target database.

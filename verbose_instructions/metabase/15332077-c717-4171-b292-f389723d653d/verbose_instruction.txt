@@ -1,0 +1,48 @@
+1. Open the Terminal application so we can run shell commands.  
+2. Type the change-directory command to move into the folder that contains the Metabase JAR:  
+   ```bash
+   cd /home/user/projects/metabase
+   ```  
+3. Execute a process scan to see whether Metabase is already running:  
+   ```bash
+   ps ux | grep '[j]ava.*metabase'
+   ```  
+   • If the command returns a line with a PID (second column) we know Metabase is active; otherwise, nothing is running.  
+4. Stop any active Metabase process by replacing <PID> with the number you saw in step 3:  
+   ```bash
+   kill -9 <PID>
+   ```  
+   (If no PID returned, skip this step.)  
+5. Start Metabase so it can create/update its application database file:  
+   ```bash
+   java -jar metabase.jar
+   ```  
+   • Wait for the log line “Metabase Initialization COMPLETE” to appear—this confirms the application database has been touched.  
+6. Terminate Metabase gracefully by pressing Ctrl + C inside the same terminal window.  
+7. Confirm the database file exists in the current directory:  
+   ```bash
+   ls -lh metabase.db.mv.db
+   ```  
+   • We should see file size and timestamp; we will back up this exact file.  
+8. Create the target backup directory if it does not already exist:  
+   ```bash
+   mkdir -p /home/user/Metabase
+   ```  
+9. Copy the database file into the backup folder, preserving timestamp metadata:  
+   ```bash
+   cp -p metabase.db.mv.db /home/user/Metabase/metabase.db.mv.db.bak
+   ```  
+10. Verify the backup landed in the new location:  
+    ```bash
+    ls -lh /home/user/Metabase
+    ```  
+    • You should see metabase.db.mv.db.bak with the same size as the original.  
+11. Change back to the Metabase application directory to restart the service:  
+    ```bash
+    cd /home/user/projects/metabase
+    ```  
+12. Relaunch Metabase in the foreground:  
+    ```bash
+    java -jar metabase.jar
+    ```  
+    • Watch for “Metabase Initialization COMPLETE” again; this confirms the application is up and running using the original database, while the backup remains safe in /home/user/Metabase.

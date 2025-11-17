@@ -1,0 +1,75 @@
+1) Double-click the requirements.txt file located on your Desktop to open it, then copy down the exact values it lists for:  
+   • Dataset name (e.g. sales_data)  
+   • Target table name (e.g. daily_transactions)  
+   • Column list with data types (e.g. id INT64, product STRING, txn_date DATE, price NUMERIC)  
+   • Local data file name (e.g. daily_transactions_2023-10-01.csv).  
+   Keep this information handy—we will use it in subsequent steps.
+
+2) Open your web browser and Navigate to https://console.cloud.google.com/bigquery to reach the BigQuery Console.
+
+3) Verify you are in the correct GCP project: look at the blue project selector at the top-left of the BigQuery Console.  
+   • If it does NOT show the project that will host the new table, Click the project name, choose the correct project from the dropdown, and wait for the Explorer panel to refresh.
+
+4) Check whether the destination dataset already exists:  
+   • In the Explorer panel, Click the small triangle next to your project name to expand it.  
+   • Scroll to locate the dataset name you copied from step 1.  
+   • If you DO see that dataset, skip to step 6.  
+   • If you DON’T see it, continue to step 5 to create it.
+
+5) Create the dataset (only when it’s missing).  
+   a. Click the blue +CREATE DATASET button in the Explorer panel.  
+   b. Type the dataset ID exactly as listed in requirements.txt (e.g. sales_data).  
+   c. Leave default location settings unless requirements.txt specifies otherwise.  
+   d. Click CREATE DATASET—your new dataset should now appear in the Explorer panel.
+
+6) Click the triangle next to the dataset to expand it, then Click the blue +CREATE TABLE button in the right-hand pane.
+
+7) Configure the “Create table” form to set up the new empty table:  
+   a. In Source section → Set “Create table from” to Empty table.  
+   b. In Destination section → Verify Dataset is the one you expanded (e.g. sales_data).  
+   c. Type the Table name exactly as listed in requirements.txt (e.g. daily_transactions).  
+   d. Leave Table type = Native table.
+
+8) Define the schema manually using what you copied from the .txt file:  
+   a. Switch Schema section to “Edit as text”.  
+   b. Paste one column per line, like below (adjust to your exact schema):  
+```text
+id INT64,
+product STRING,
+txn_date DATE,
+price NUMERIC
+```  
+   c. Confirm each field name and data type matches the requirements.txt spec.  
+
+9) Scroll down and Click CREATE TABLE.  
+   • A green confirmation banner “Table created” should appear; if an error appears, read it, correct the schema entry, and Click CREATE TABLE again.
+
+10) Load the local data file you noted in step 1:  
+   a. In the Explorer panel, Click the table name you just created (e.g. daily_transactions).  
+   b. In the details pane, Click the blue Upload data button under the “Details” tab.  
+   c. In “Add a file”, Click BROWSE and navigate to your Desktop, select the file (e.g. daily_transactions_2023-10-01.csv), and Click OPEN.  
+   d. For File format, choose the correct format (CSV, JSON, or AVRO) as specified in requirements.txt—most likely CSV.  
+   e. Leave Field delimiter at comma unless the txt file says otherwise.  
+   f. Under Schema, leave “Use existing table schema” selected.  
+   g. At the bottom, Click NEXT, review the summary, then Click BEGIN IMPORT.
+
+11) Wait for the load job to finish. A green “Job succeeded” toast should appear in the lower-right corner.
+
+12) Verify the data loaded correctly:  
+   a. With the table still selected, Click the PREVIEW tab to visually confirm rows are present.  
+   b. Click the QUERY tab and Execute a quick count:  
+```sql
+SELECT COUNT(*) AS row_cnt
+FROM `project_id.sales_data.daily_transactions`;
+```  
+   c. Verify the returned row_cnt matches the expected record count listed in requirements.txt (or the record count you saw in the local file).
+
+13) (Optional) If you need to confirm specific column content, Execute another quick query:  
+```sql
+SELECT *
+FROM `project_id.sales_data.daily_transactions`
+LIMIT 10;
+```  
+   Review that values look correct (dates are parsed, numeric fields contain numbers, etc.).
+
+14) Celebrate—the new table has been created and populated with your local data file.

@@ -1,0 +1,33 @@
+1) Click cell J2 in “Sheet1”.  
+2) Type  =SUM(B2:D2)-SUM(F2:H2)  into the Formula Bar (the long white bar directly under the Ribbon).  
+3) Press ENTER; Excel should now display a number (the gross profit for row 2).  
+4) Double-click the small square “fill handle” at the bottom-right corner of cell J2; Excel automatically fills the formula down to J10 (rows 2-10).  
+5) Scroll down and visually confirm that cells J2 through J10 all contain numerical values and no “#VALUE!” errors.
+
+6) Click the white plus-sign icon labelled “+” (Insert Worksheet) to the right of the existing sheet tabs; Excel creates a new worksheet named “Sheet2”.  
+7) Double-click the new tab text “Sheet2”, type  Sheet2  (or any name you prefer), and press ENTER.
+
+8) Click cell A1 in “Sheet2”.  
+9) Type  Year  and press TAB.  
+10) Type  Gross Profit  in cell B1 and press ENTER; this sets up the two column headers.
+
+11) Switch to “Sheet1” by clicking its tab.  
+12) Drag to select cells A2 through A10 (the Year values).  
+13) Press CTRL+C (or right-click and choose Copy).  
+14) Switch back to “Sheet2”.  
+15) Click cell A2.  
+16) Press CTRL+V to paste; the years now appear in cells A2:A10.
+
+17) Switch again to “Sheet1”.  
+18) Drag to select cells J2 through J10 (the gross-profit numbers you calculated).  
+19) Press CTRL+C.
+
+20) Return to “Sheet2”.  
+21) Right-click cell B2 and choose Paste Special → Values (or, in Excel 365, click the arrow under the Paste button and choose the clipboard icon labelled “Values”); this pastes only the numeric results—not the formulas—into B2:B10.
+
+22) Check one random row (for example, row 5): confirm that the year in A5 matches the gross-profit figure in B5 exactly as it did in “Sheet1”; this verifies a correct copy.
+
+23) Press CTRL+S.  
+24) In the “Save As” dialog, choose the file type “Excel Workbook (*.xlsx)” to ensure compatibility with Excel 2007-365, pick a folder location, name the file, and click Save.
+
+The new worksheet now contains the Year column in A and its corresponding Gross Profit in B, ready for further analysis.

@@ -1,0 +1,29 @@
+1) Click the Chromium (or your default browser) icon on the left-hand dock to bring the already-opened Metabase tab to the front  
+2) Click the “Browse Data” button in the dark-blue sidebar  
+3) Click the card titled “Sample Database” in the main panel  
+4) Click the table name “People” in the list that appears  
+5) Click the grey “Summarize” button in the top-right toolbar  
+6) Click the “Pick a column to group by” drop-down that pops up  
+7) Select “State” from the alphabetical list of columns  
+8) Click the blue “Done” button at the bottom of the pop-over to run the aggregation  
+9) Look at the Region Map (and the accompanying table on the right). Note the counts that Metabase shows:  
+   • Iowa  → 104  
+   • Montana → 108  
+   • Texas → 194  
+10) Switch to the Ubuntu desktop by pressing Alt + Tab until “Files” is highlighted, then release  
+11) Double-click “Files” (the file manager) in the dock if it is not already open  
+12) Navigate to /home/user and locate people_state.xlsx  
+13) Double-click people_state.xlsx; LibreOffice Calc will open the spreadsheet  
+14) Click directly into the first blank cell that corresponds to Iowa and type `104`, then press Enter  
+15) Click into the second blank cell for Montana and type `108`, then press Enter  
+16) Click into the third blank cell for Texas and type `194`, then press Enter  
+17) Press Ctrl + S to save the spreadsheet (Calc status bar will briefly show “Saving…” → “Saved”)  
+18) Press Ctrl + W to close LibreOffice Calc  
+19) Return to Metabase in the browser (Alt + Tab back to Chromium) and confirm the counts are still visible for verification  
+20) Switch back to the terminal (Ctrl + Alt + T) and run the command below to make sure the file timestamp updated:  
+```bash
+ls -l /home/user/people_state.xlsx
+```  
+21) Verify that the “Modified” time reflects the current time, confirming the spreadsheet was successfully updated  
+
+The blanks in people_state.xlsx are now filled with the correct numbers: Iowa = 104, Montana = 108, Texas = 194.

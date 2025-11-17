@@ -1,0 +1,94 @@
+1) Open Google Chrome and navigate to console.cloud.google.com so we can add a new Cloud Scheduler job for our BigQuery-deployment workflow.  
+
+2) Click the hamburger icon (three horizontal lines) in the upper-left corner, then click “Cloud Scheduler” under the “Tools” section; the right-hand pane shows the existing jobs list.  
+
+3) Click the blue “CREATE JOB” button at the top. A “Create Job” form opens in a side panel.  
+
+4) Type Thanksgiving_Day into the “Name” text box. This uniquely identifies the deploy job that will run our BigQuery-based release.  
+
+5) Select “us-central1” (or your preferred region) from the “Region” drop-down so the job runs close to the datasets. We will reference the same region later from code.  
+
+6) In the “Frequency” field, type the exact cron expression that fires only on the 4th Thursday of every November at noon:  
+```
+0 12 22-28 11 4
+```  
+Note that:  
+   • 0 ⇒ minute 0  
+   • 12 ⇒ hour 12:00 PM  
+   • 22-28 ⇒ Thanksgiving always falls between Nov 22-28  
+   • 11 ⇒ month of November  
+   • 4 ⇒ Thursday (Sun=0)  
+
+7) Leave the “Time Zone” drop-down as “America/New_York” (adjust if your business logic needs a different zone). This guarantees noon local-time execution every Thanksgiving.  
+
+8) Scroll to “Target” and choose “Pub/Sub” (we will push a message that our Cloud Build pipeline listens for).  
+
+9) Click the “Browse” link, then select topic thanksgiving-deploy so that the job publishes to the deployment topic bound to environment “Thanksgiving_Sales”.  
+
+10) In the “Payload” box type the JSON we will consume downstream:  
+```
+{
+  "env": "Thanksgiving_Sales",
+  "job": "Thanksgiving_Day",
+  "action": "deploy"
+}
+```  
+We will use this payload later inside our Cloud Function trigger.  
+
+11) Click “CREATE” at the bottom of the panel. The job now shows up in the Cloud Scheduler list with schedule “0 12 22-28 11 4”.  
+
+12) Switch to VSCode (Alt + Tab).  
+
+13) Click the Explorer file tree, then click “schedule_thanksgiving.py” to create the helper script that reproduces the same job from code (useful for CI).  
+
+14) Type the following fully runnable Python code:  
+```python
+import os
+from google.cloud import scheduler_v1
+from google.protobuf import duration_pb2, timestamp_pb2
+
+PROJECT_ID = os.environ.get("GOOGLE_CLOUD_PROJECT", "my-project")
+LOCATION   = "us-central1"
+TOPIC_PATH = f"projects/{PROJECT_ID}/topics/thanksgiving-deploy"
+
+def create_thanksgiving_job():
+    client = scheduler_v1.CloudSchedulerClient()
+    parent = f"projects/{PROJECT_ID}/locations/{LOCATION}"
+
+    job = {
+        "name": f"{parent}/jobs/Thanksgiving_Day",
+        "pubsub_target": {
+            "topic_name": TOPIC_PATH,
+            "data": b'{"env":"Thanksgiving_Sales","job":"Thanksgiving_Day","action":"deploy"}',
+        },
+        "schedule": "0 12 22-28 11 4",
+        "time_zone": "America/New_York",
+    }
+
+    try:
+        response = client.create_job(request={"parent": parent, "job": job})
+        print(f"Job created: {response.name}")
+    except Exception as e:
+        if "ALREADY_EXISTS" in str(e):
+            print("Job already exists – nothing to do.")
+        else:
+            raise
+
+if __name__ == "__main__":
+    create_thanksgiving_job()
+```  
+
+15) Press Ctrl + S to save the file.  
+
+16) Switch to the integrated terminal at the bottom of VSCode. If it is closed, click “Terminal → New Terminal”.  
+
+17) Type and run:  
+```
+pip install google-cloud-scheduler --quiet
+python schedule_thanksgiving.py
+```  
+The terminal should print “Job created: projects/…/jobs/Thanksgiving_Day”. If the job exists already you’ll see the graceful “Job already exists” message.  
+
+18) Return to Chrome, refresh the Cloud Scheduler page, and verify that “Thanksgiving_Day” shows “Ready” status with the proper cron string and next run time (e.g., Thu Nov 28 12:00 PM).  
+
+19) Finally click the vertical-dots menu next to the job, choose “Run now”, and confirm; the execution log appears in the “Job History” tab. This proves the topic receives the payload and your “Thanksgiving_Sales” deployment pipeline can react.

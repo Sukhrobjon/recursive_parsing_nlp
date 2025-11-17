@@ -1,0 +1,120 @@
+1. Open the Terminal application from your desktop/dock  
+2. Create an installation script for Docker’s apt repository  
+   ```bash
+   cat > install.sh <<'EOF'
+   #!/usr/bin/env bash
+   # 1) Refresh package index and install pre-reqs
+   sudo apt-get update
+   sudo apt-get install -y ca-certificates curl gnupg lsb-release
+   # 2) Add Docker’s official GPG key
+   sudo install -m 0755 -d /etc/apt/keyrings
+   curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo tee /etc/apt/keyrings/docker.asc > /dev/null
+   sudo chmod a+r /etc/apt/keyrings/docker.asc
+   # 3) Add Docker repository
+   echo \
+     "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] \
+     https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | \
+     sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+   # 4) Update index again so Docker packages become visible
+   sudo apt-get update
+   EOF
+   ```
+3. Execute the script with elevated privileges (we pass in the sudo password automatically)  
+   ```bash
+   echo password | sudo -S bash install.sh
+   ```
+   Note that we use `-S` to read the password from STDIN so no manual typing is required.
+
+4. Install the latest Docker engine, CLI, Containerd, Buildx, and Compose plugin  
+   ```bash
+   echo password | sudo -S apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+   ```
+
+5. Create the docker group (if it doesn’t already exist) so we can run Docker without sudo  
+   ```bash
+   echo password | sudo -S groupadd docker || true
+   ```
+   (The `|| true` lets the command continue silently if the group already exists.)
+
+6. Add the current user to that group  
+   ```bash
+   echo password | sudo -S usermod -aG docker $USER
+   ```
+
+7. Apply the new group membership immediately in the current shell  
+   ```bash
+   newgrp docker
+   ```
+
+8. Verify that Docker works without sudo  
+   ```bash
+   docker run hello-world
+   ```
+   Successful output confirming “Hello from Docker!” shows the permission change worked.
+
+9. Enable Docker and Containerd to auto-start on boot  
+   ```bash
+   echo password | sudo -S systemctl enable docker.service
+   echo password | sudo -S systemctl enable containerd.service
+   ```
+   We will use this later when the machine reboots; Docker will be ready automatically.
+
+10. Confirm both services are enabled  
+    ```bash
+    systemctl is-enabled docker.service
+    systemctl is-enabled containerd.service
+    ```
+
+11. Install the Astronomer CLI (astro) through the official one-liner  
+    ```bash
+    curl -sSL install.astronomer.io | sudo bash -s
+    ```
+    Enter `password` if prompted. The installer adds astro to `/usr/local/bin`.
+
+12. Verify the Astro CLI installation  
+    ```bash
+    astro version
+    ```
+    You should see a version string such as `Astro CLI Version: 1.x.x`.
+
+13. Install PostgreSQL along with common extensions  
+    ```bash
+    echo password | sudo -S apt-get install -y postgresql postgresql-contrib
+    ```
+
+14. Enable PostgreSQL to start automatically on system boot  
+    ```bash
+    echo password | sudo -S systemctl enable postgresql
+    ```
+
+15. Start PostgreSQL right now and confirm it is active  
+    ```bash
+    echo password | sudo -S systemctl start postgresql
+    systemctl status --no-pager postgresql
+    ```
+
+16. Test a local database connection by switching to the postgres user and opening psql  
+    ```bash
+    echo password | sudo -S -u postgres psql -c "\l"
+    ```
+    We can see the default databases (`postgres`, `template0`, `template1`) indicating PostgreSQL is working.
+
+17. Reboot the machine to validate auto-start services and password-less Docker access  
+    ```bash
+    echo password | sudo -S reboot
+    ```
+    After the machine comes back online:
+
+18. Open the Terminal again and confirm Docker starts without sudo  
+    ```bash
+    docker ps
+    ```
+    An empty list with column headers confirms the daemon is running and permissionless access is set.
+
+19. Verify PostgreSQL service is up after reboot  
+    ```bash
+    systemctl is-active postgresql
+    ```
+    The output `active` proves the auto-start configuration succeeded.
+
+20. You now have Docker, Astronomer CLI, and PostgreSQL installed, all starting automatically at boot, and Docker runs without requiring sudo.

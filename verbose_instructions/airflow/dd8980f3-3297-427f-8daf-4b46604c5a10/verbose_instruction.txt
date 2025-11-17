@@ -1,0 +1,84 @@
+1. Click the Visual Studio Code icon in the Dock/left application panel to bring the editor to the foreground.  
+2. Navigate in the Explorer side-bar to dags → jaffle_shop_dag.py and click the file name so it opens in the right-hand editor tab (create the file if it does not yet exist).  
+3. Type or paste the entire code block below into jaffle_shop_dag.py, replacing any placeholder content you may see:  
+```python
+# dags/jaffle_shop_dag.py
+# Airflow DAG that runs the existing dbt project under dags/dbt/jaffle_shop
+from airflow.decorators import dag
+from cosmos import DbtTaskGroup, ProjectConfig, ProfileConfig, ExecutionConfig
+from cosmos.profiles import PostgresUserPasswordProfileMapping
+from pendulum import datetime
+
+# ---------------------------------------------------------------------
+# CONSTANTS – adjust only if your environment is different
+# ---------------------------------------------------------------------
+DBT_PROJECT_PATH = "/usr/local/airflow/dags/dbt/jaffle_shop"   # path inside the Astro container
+DBT_EXECUTABLE_PATH = "/usr/local/bin/dbt"                     # dbt installed in image
+CONNECTION_ID = "postgres_dbt"                                 # Airflow conn id already created
+SCHEMA_NAME = "analytics"                                      # target schema for models
+TARGET_NAME = "dev"                                            # dbt target profile name
+# ---------------------------------------------------------------------
+
+profile_config = ProfileConfig(
+    profile_name="default",
+    target_name=TARGET_NAME,
+    profile_mapping=PostgresUserPasswordProfileMapping(
+        conn_id=CONNECTION_ID,
+        profile_args={"schema": SCHEMA_NAME},
+    ),
+)
+
+execution_config = ExecutionConfig(
+    dbt_executable_path=DBT_EXECUTABLE_PATH,
+)
+
+@dag(
+    dag_id="jaffle_shop_dag",
+    start_date=datetime(2024, 1, 1),
+    schedule="0 10 * * *",     # 10:00 a.m. every day
+    catchup=False,
+    default_args={"retries": 2},
+    tags=["dbt", "cosmos", "jaffle_shop"]
+)
+def jaffle_shop_dag():
+    # Create a single task group that will run all models in the project
+    transform_data = DbtTaskGroup(
+        group_id="transform_data",
+        project_config=ProjectConfig(DBT_PROJECT_PATH),
+        profile_config=profile_config,
+        execution_config=execution_config,
+    )
+
+    transform_data
+
+jaffle_shop_dag()
+```  
+4. Press Ctrl + S (or Cmd + S on macOS) to save the file. Wait until “✓” appears in the VS Code tab title confirming the write to disk.  
+5. Click the Terminal tab that is already running inside VS Code (or open a new one with Ctrl + ` if none is visible).  
+6. Type the command below and press Enter to restart the local Astro stack so the new DAG is loaded:  
+```bash
+astro dev restart
+```  
+7. Wait until the terminal prints “Airflow webserver is healthy” and “Scheduler heartbeat” messages—this means the services have fully restarted with the new code.  
+8. Click the Chromium (or Google Chrome) icon on the left panel to switch to the Airflow web UI.  
+9. Locate the control bar above the DAG list and click the circular arrow icon to the right of the text “Auto-refresh” to refresh the list of DAGs.  
+10. If “jaffle_shop_dag” is still not listed, press Ctrl + R (Cmd + R on macOS) in the browser to force-reload the entire page, then wait a few seconds for the scheduler to parse DAGs.  
+11. Verify that a new row named jaffle_shop_dag now appears in the table.  
+12. Click the toggle switch in the first column of that row to the On (blue) position to unpause and activate the DAG.  
+13. Confirm a green “ON” label replaces the grey “OFF”—this means the DAG is now eligible to run on its 10:00 a.m. schedule.  
+14. Click the play (triangle) icon in the same row under the Actions column to manually trigger the DAG for an immediate test run.  
+15. Observe the toast notification “DAG jaffle_shop_dag triggered” in the lower-left corner; this indicates the scheduler has queued a run.  
+16. Click the DAG name jaffle_shop_dag to open the Graph View.  
+17. Wait until the single task group node transform_data turns from light blue (“queued”) to dark green (“success”). This validates that Cosmos was able to call dbt successfully.  
+18. Hover over the transform_data box and click it once to open the task-group details panel on the right.  
+19. Click the “View Logs” link; scan the log for lines like “Running with dbt=1.x.x” and “Finished running X models” to ensure models built without error.  
+20. Click the “X” in the upper-right of the log pane to close it and return to the DAG graph.  
+21. Switch back to the Terminal window in VS Code. Type the command below to inspect the target schema and confirm that tables/views have been created by dbt:  
+```bash
+psql "$(astro dev connection postgres_dbt --uri)" -c "\dt analytics.*"
+```  
+22. Verify the output lists dbt-generated relations such as dim_customers, fct_orders, etc. (names depend on your jaffle_shop models).  
+23. Type Exit or press Ctrl +D to leave psql and return to the shell prompt.  
+24. (Optional) Run a dbt test task from Airflow: in the Graph View, press the play icon on transform_data again and watch logs for “dbt test” if it is configured inside the project.  
+25. Switch to the Airflow “DAGs” tab by clicking the bread-crumb arrow in the upper-left, then ensure the Next Run column for jaffle_shop_dag shows tomorrow’s 10:00:00 scheduled time.  
+26. Pat yourself on the back—we have now integrated the existing dbt project into an Astro + Airflow DAG, scheduled it at 10 a.m. daily, and verified it runs end-to-end.

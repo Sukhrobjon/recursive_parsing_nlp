@@ -1,0 +1,24 @@
+1) Open your browser and navigate to https://console.cloud.google.com/bigquery so we land in the BigQuery Web UI.  
+2) Verify you are in the correct project (look at the blue project-picker bar on the top left). If not, click the project name and pick the one that contains the loan data.  
+3) In the left-hand Resources panel, click the triangle ▸ next to your project name to expand the datasets list.  
+4) Click the triangle ▸ next to the dataset that stores the loan table (for example `finance_dataset`).  
+5) Click the table name `loans` to display its Details tab and confirm the schema. We should see at least these two columns:  
+   • `loan_start_date` (DATE type) – the date the loan originated  
+   • `loan_term_months` (INTEGER type) – number of months in the loan term  
+   We will use both columns in our calculation.  
+6) Click the + Compose Query button (usually at the top of the main work area) to open a new, blank query editor tab.  
+7) Type (or paste) the following SQL into the editor; it keeps every original column and appends a new one called `Maturity Date` that adds the loan term in months to the start date:
+
+```sql
+SELECT
+  *,
+  DATE_ADD(loan_start_date, INTERVAL loan_term_months MONTH) AS `Maturity Date`
+FROM
+  `your-project-id.finance_dataset.loans`;
+```
+
+   Note: Replace `your-project-id` and `finance_dataset` with your actual project ID and dataset name if they differ.  
+8) Click the blue ► RUN button in the query toolbar to execute the query.  
+9) Wait a few seconds until the Query results panel appears below showing the extra column “Maturity Date.” Verify a few rows to ensure the date math looks correct (start date + term = maturity).  
+10) (Optional) If you want to keep the query for future use, click the SAVE button just left of RUN and choose “Save as new view” or “Save query,” giving it a descriptive name like “loan_maturity_dates.”  
+11) (Optional) To export the results, click the down-arrow icon labeled SAVE RESULTS in the Query results panel, pick “CSV (local file),” and let the download complete. We can now use the file in downstream analysis or share it with stakeholders.

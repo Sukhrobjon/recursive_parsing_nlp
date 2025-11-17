@@ -1,0 +1,20 @@
+1. Open your web browser and navigate to the hardware store’s site (e.g., https://hardware.example.com).  
+2. Click the “Sign In” button in the upper-right corner and log in with your corporate SSO credentials (email + password or “Login with Google/Microsoft” as required).  
+3. Click in the top-center Search bar, type “Loaner Laptop”, and press Enter.  
+4. Scan the search results list and click the product card titled “Loaner Laptop” (make sure the SKU or part number matches your company’s standard if multiple appear).  
+5. On the product detail page, click the Quantity field, type 9, and press Enter so the total quantity shows “9”.  
+6. Scroll to the “Configuration” or “Customize” section directly beneath the price.  
+7. Click the dropdown labeled “How long do you need it for ?”, then select “1 day” from the list.  
+8. Click the second dropdown labeled “When do you need it ?”, then choose the option “By the end of the month”.  
+9. Verify both configuration selections now display:  
+   • How long do you need it for ?  1 day  
+   • When do you need it ?          By the end of the month  
+10. Click the blue “Add to Cart” button on the right-hand panel; wait until the confirmation banner (“Added to cart”) appears at the top.  
+11. Click the Cart icon (shopping-cart graphic) in the upper-right corner to open the Cart drawer.  
+12. Confirm the line item shows “Loaner Laptop × 9” and the two configuration notes under it; adjust if needed by pressing the pencil icon and repeating steps 5–8.  
+13. Click the “Checkout” button at the bottom of the Cart drawer.  
+14. On the Shipping page, verify your default address; if necessary, click “Change Address” and select the correct office location.  
+15. Click “Continue to Payment”; if a purchase order (PO) number is required, type it into the “PO Number” text field.  
+16. Review the Order Summary on the right: quantity 9, configurations listed, tax and shipping estimates.  
+17. Click the green “Place Order” button. Wait for the order confirmation page to load.  
+18. Note the Order Number displayed in bold (e.g., “Order #HW-35467”)—copy it to Slack or email for team tracking.

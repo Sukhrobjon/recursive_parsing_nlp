@@ -1,0 +1,19 @@
+1. Click the ⚙️ “Settings” icon in the upper-right corner of Metabase.  
+2. Choose “Admin” from the drop-down menu.  
+3. Navigate to the left sidebar and click “People”.  
+4. Click the “Groups” tab at the top of the screen (next to “People”).  
+5. Click the blue “Add a group” button.  
+6. Type Project Users into the “Group name” field.  
+7. (Optional) Type “Regular users for the new project” in the “Description” box so future admins know the purpose.  
+8. Click the blue “Save” button.  
+9. Verify the new group appears in the groups list with the name “Project Users”. We will use this group in the next steps.
+
+10. Click the “People” tab to return to the list of users.  
+11. Type John Wilson into the “Search people” box in the upper-right, then press Enter.  
+12. Click John Wilson’s name in the results to open the user detail pane.  
+13. Click the “Edit groups” button (located in the “Groups” section on the right side).  
+14. Check the box next to Project Users.  
+15. Leave any existing group memberships as they are, then click “Save” in the “Edit groups” dialog.  
+16. Confirm that “Project Users” now appears under the “Groups” heading on John Wilson’s profile.  
+
+17. Switch to the “Groups” tab again, click Project Users, and confirm John Wilson is listed in the “Members” area—verifying that the assignment succeeded.

@@ -1,0 +1,27 @@
+1) Navigate to https://console.cloud.google.com/bigquery so you land on the BigQuery Web UI.  
+2) In the left-hand Explorer panel, click the triangle to the left of bigquery-public-data to expand the public datasets list.  
+3) Scroll down and click the triangle next to the olympics dataset to reveal its tables.  
+4) Click the games table (bigquery-public-data.olympics.games).  
+5) Observe the schema that appears in the Details panel; note the season STRING field (values “Summer” or “Winter”) and the games STRING field (unique identifier for each Olympic Games). We will use these columns to count distinct Games by season.  
+6) Click the + Compose new query button (blue “+” icon) at the top of the main workspace; a blank SQL editor tab opens.  
+7) Type the SQL below into the editor:  
+
+```sql
+-- Count how many distinct Olympic Games have been held by season
+SELECT
+  season,                       -- Summer or Winter
+  COUNT(DISTINCT games) AS total_games  -- distinct Games per season
+FROM
+  `bigquery-public-data.olympics.games`
+GROUP BY
+  season
+ORDER BY
+  season;
+```  
+
+8) Click the ▷ RUN button (upper-right of the query editor) to execute the query.  
+9) Wait until Query results appears below; you should see two rows, one for Summer and one for Winter, with their respective total_games counts.  
+10) Click the SAVE RESULTS button on the right edge of the Query results header row.  
+11) In the dropdown, select CSV (local file).  
+12) When the file browser window appears, navigate to your Downloads folder, type allGames.csv as the filename, and click Save.  
+13) Confirm in your file system that ~/Downloads/allGames.csv now contains the two-row summary of total Games for the Summer and Winter Olympics.

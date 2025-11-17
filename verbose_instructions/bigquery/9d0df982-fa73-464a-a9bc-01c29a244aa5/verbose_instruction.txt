@@ -1,0 +1,15 @@
+1. Open a browser tab and Navigate to console.cloud.google.com/bigquery so the BigQuery web UI loads.  
+2. Wait until the left-hand Explorer pane appears, then Click the blue “+ Add” button to the right of the word “Explorer”.  
+3. In the “Add data” dialog that pops up, Click the radio-button row labeled “Public datasets” (the icon looks like a small storefront).  
+4. In the new Marketplace panel, Click once inside the search bar beneath the “Marketplace” heading, Type baseball, and Press Enter.  
+5. Locate the single search result card titled “MLB 2016 Pitch-by-Pitch” (the publisher shows “bigquery-public-data”). Click the dataset name to open its details page.  
+6. After the details load, Click the blue “VIEW DATASET” button in the top-right corner of the card. A new browser tab opens that shows the dataset schema and tables.  
+7. Switch to the newly opened tab by Clicking on it; we can see the dataset identifier bigquery-public-data.baseball in the header area along with a list of tables such as games_wide, pitch_by_pitch, and person_codes.  
+8. Return to the original BigQuery tab, Observe that the Explorer pane now contains a new entry bigquery-public-data ➞ baseball. Click the small ► triangle next to baseball to expand it and verify that the same tables are listed.  
+9. Click the table pitch_by_pitch and then Click “Preview” in the right-hand panel; verify that a sample of rows (pitch_type, batter_id, pitcher_id, etc.) appears, confirming the dataset is accessible.  
+10. (Optional quick test) Click “Query” then paste the SQL below into the editor to count rows, and Click the blue “Run” button:  
+```sql
+SELECT COUNT(1) AS total_pitches
+FROM `bigquery-public-data.baseball.pitch_by_pitch`;
+```  
+11. Confirm the Job completes with a green check-mark and the Results grid displays a non-zero total_pitches value, proving the dataset was added successfully.

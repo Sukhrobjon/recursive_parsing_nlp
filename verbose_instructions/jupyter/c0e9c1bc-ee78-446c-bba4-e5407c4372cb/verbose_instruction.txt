@@ -1,0 +1,18 @@
+1. Switch to the Terminal window that is already open beside your JupyterLab browser tab (or press Ctrl+Shift+` in JupyterLab to open a new “Terminal” tab).  
+2. Type the command exactly as shown to list all installed kernels so we can confirm the existing name:  
+```bash
+jupyter kernelspec list
+```  
+3. Press Enter and verify that one of the listed entries is labeled “jupyterlab”. (We need this exact name for the removal command.)  
+4. Type the removal command:  
+```bash
+jupyter kernelspec remove jupyterlab
+```  
+5. Press Enter. The prompt will ask “Remove kernel spec jupyterlab? [y/N]”.  
+6. Type y and press Enter to confirm.  
+7. Wait until the terminal prints “Kernel spec jupyterlab removed.” – this message verifies the deletion was successful.  
+8. Re-run the kernel list to double-check the kernel is gone:  
+```bash
+jupyter kernelspec list
+```  
+9. Look through the returned list; confirm that “jupyterlab” no longer appears. If it is absent, we’re done; if it’s still present, repeat steps 4–6 ensuring the name matches exactly.

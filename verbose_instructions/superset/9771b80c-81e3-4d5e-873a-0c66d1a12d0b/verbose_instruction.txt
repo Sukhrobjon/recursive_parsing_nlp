@@ -1,0 +1,16 @@
+1. Click the plus-sign (“+”) Add icon in the top-right corner of the Superset navbar.  
+2. Select Data from the drop-down.  
+3. Click Create Dataset in the slide-out menu that appears.  
+4. In the New Dataset modal, click the DATABASE field.  
+5. Choose PublicData from the list of available databases.  
+6. Click the SCHEMA field.  
+7. Select public (or Public) from the schema list.  
+8. Click the TABLE field.  
+9. Choose annotation from the table list.  
+10. Click the blue CREATE DATASET AND CREATE CHART button at the bottom of the modal. Superset redirects you to the Explore view.  
+11. Click Datasets in the top navigation bar to return to the dataset list.  
+12. Locate annotation in the main table and click the Edit (pencil) icon in the Actions column on the right.  
+13. In the Edit Dataset modal, click the COLUMNS tab at the top.  
+14. Scroll to find the start_dttm row, then tick the checkbox in the Default datetime column for that row.  
+15. Click the green Save button in the lower-right corner of the modal.  
+16. Verify that a “Saved!” toast notification appears and that the Default datetime column for start_dttm now shows a checked box in the COLUMNS tab.

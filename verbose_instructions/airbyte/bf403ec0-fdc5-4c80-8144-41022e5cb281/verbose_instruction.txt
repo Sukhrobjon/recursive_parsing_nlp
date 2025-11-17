@@ -1,0 +1,44 @@
+1) Click the existing PostgreSQL→PostgreSQL connection row in the Airbyte UI Home page main panel  
+   (Its status chip and last-sync timestamp appear in the row—click anywhere on the row, not the “⋮” menu).
+
+2) Click the turquoise “Sync now” button in the top-right of the Connection page.
+
+3) Wait until the status badge in the top banner turns green and reads “SUCCEEDED”  
+   (this usually takes <60 s for a small cities table).  
+   Note that Airbyte has now loaded the latest data into the destination Postgres container.
+
+4) Switch to the terminal application (Terminal, iTerm, Windows PowerShell—whichever you are using).
+
+5) Type the container list command to double-check the exact destination container name:  
+   ```bash
+   docker ps --format "{{.Names}}"
+   ```  
+   We should see a container whose name starts with airbyte-destination (exactly airbyte-destination if you used the default Docker-Compose). We will use this name in the next step.
+
+6) Execute the psql-copy command inside that container to export only the required columns as a CSV with a header row:  
+   ```bash
+   docker exec -it airbyte-destination \
+     bash -c "psql -U postgres -c \"\\copy (SELECT city, city_code FROM public.cities) TO '/data/cities.csv' WITH CSV HEADER\""
+   ```  
+   • The `\\copy` meta-command runs server-side and puts the file in /data inside the container.  
+   • Verify the command returns `COPY <n>` (n = number of exported rows).
+
+7) Run an ls inside the container to confirm the file is there (optional but reassuring):  
+   ```bash
+   docker exec airbyte-destination ls -lh /data/cities.csv
+   ```
+
+8) Still in your local terminal (host), copy the file from the container to your Desktop:  
+   ```bash
+   docker cp airbyte-destination:/data/cities.csv ~/Desktop/cities.csv
+   ```  
+   (On Windows PowerShell use `%USERPROFILE%\Desktop\cities.csv`.)
+
+9) Navigate to the Desktop folder and open cities.csv with any viewer (VS Code, Excel, cat) to verify the first few lines look like:  
+   ```
+   city,city_code
+   New York,NYC
+   Los Angeles,LAX
+   ...
+   ```  
+   Congratulations—‘cities.csv’ containing only the city and city_code columns is now saved on your Desktop.

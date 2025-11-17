@@ -1,0 +1,8 @@
+1. Navigate to the left-hand “Filter Navigator” search box, click it, and type `incident.list` then press Enter so the “Incidents” list view opens in the main content frame.  
+2. Wait until the list grid loads; we can see column headers such as “Number”, “Caller”, “Short description”, “State”, etc.  
+3. Hover over the “Caller” column header until a small downward-facing triangle (list-header menu icon) appears on the right edge of the header cell.  
+4. Click the triangle next to “Caller” to open the column menu.  
+5. In the drop-down menu that appears, click “Sort (A to Z)”. This will immediately reload the list, ordering records with the caller names in ascending (alphabetical) order.  
+6. Verify the sort: Look at the first several rows under the “Caller” column and confirm the names progress alphabetically (e.g., “Aaron Davis”, “Adam Hills”, “Adriana Rodriguez”…).  
+7. (Optional) Check the list sort indicator: a small upward-pointing arrow should now be visible inside the “Caller” header, signaling active ascending sort; if you see a downward arrow instead, repeat steps 3–5 and choose “Sort (A to Z)” again.  
+8. Congratulations—we have sorted the “Incidents” list by Caller in ascending order; the operation is complete.

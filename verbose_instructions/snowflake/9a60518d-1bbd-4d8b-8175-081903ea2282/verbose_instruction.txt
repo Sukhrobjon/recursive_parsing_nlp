@@ -1,0 +1,16 @@
+1. Click the left-side navigation item “Data Products”, then click the sub-menu “Marketplace”.  
+2. Type “worldwide addresses” into the Search bar at the top of the Marketplace page and press Enter.  
+3. Click the first search result titled “Worldwide Address Data (OpenAddresses)”.  
+4. On the right-hand details pane, click the blue “Get” button located under the text “Free • Unlimited access”.  
+5. In the pop-up window, click the small “Options” link to reveal additional settings.  
+6. Highlight the default database name, type WORLDWIDE_ADDRESSES, and press Tab to confirm the change. (We rename it so our analysts can remember it easily.)  
+7. Click the blue “Get” button at the bottom of the pop-up and wait until the status displays “Ready to use” (usually < 30 seconds).  
+8. Click “Done” to close the window; the Marketplace page now shows a green badge “Added”.  
+9. Switch to the top-right drop-down “Worksheets” (Snowsight automatically opens a new tab).  
+10. Type the following verification commands in the worksheet:  
+```sql
+USE ROLE accountadmin;
+USE DATABASE WORLDWIDE_ADDRESSES;
+SHOW SCHEMAS;
+```  
+11. Click the ► Run button. Confirm the output includes multiple schemas such as “MAIN” or “PUBLIC”; this proves the dataset was imported successfully.

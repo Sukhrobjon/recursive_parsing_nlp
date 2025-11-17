@@ -1,0 +1,19 @@
+1. Open VSCode and click the Explorer icon (two stacked files) on the Activity Bar so we can see all project files.  
+2. Navigate to models/schema.yml in the tree and double-click it to open the file in an editor tab.  
+3. Scroll to the bottom of schema.yml. If you see an existing `sources:` block, place your cursor just after it; otherwise, place the cursor on a new blank line.  
+4. Type (or paste) the following YAML, making sure the indentation is exactly two spaces for each level:  
+```yml
+sources:
+  - name: analytics          # logical source name referenced by snapshots
+    schema: analytics        # physical schema in the warehouse
+    tables:
+      - name: orders         # table the snapshot depends on
+```  
+5. Press Ctrl+S (or ⌘+S on macOS) to save schema.yml. Confirm there are no red squiggly lines—YAML must be valid for dbt to parse it.  
+6. Switch to the terminal by clicking the Terminal tab at the bottom of VSCode (or press Ctrl+` to toggle it).  
+7. Type `dbt debug` and press Enter. This validates the profile and the new source definition; you should see “All checks passed!” at the end.  
+8. Execute `dbt seed` and press Enter so any seed files are loaded. Wait for a green “Completed successfully” message.  
+9. Run `dbt run` and press Enter to build all models that rely on the new source. dbt will compile, then execute SQL. Ensure every model finishes with status “SUCCESS”.  
+10. Run `dbt snapshot` and press Enter. The command should now find the source `analytics.orders` without errors and create or update the `orders_snapshot` table.  
+11. Type `dbt ls --resource-type snapshot` and press Enter to list snapshots; verify `orders_snapshot` appears.  
+12. (Optional) Open your warehouse UI, navigate to the analytics schema, and preview the `orders_snapshot` table to confirm records exist.

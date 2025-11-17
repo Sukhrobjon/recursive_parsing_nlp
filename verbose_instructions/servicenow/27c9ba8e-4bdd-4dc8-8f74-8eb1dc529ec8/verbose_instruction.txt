@@ -1,0 +1,13 @@
+1. Click the “Hardware” icon in the left-hand navigation bar and wait until the “Hardware Catalog” page is fully rendered (you should see a grid of product tiles).  
+2. Click the first product tile labeled “Developer Laptop (Mac)” to open the product-detail page for the Mac developer laptop.  
+3. Scroll to the section titled “Optional Software” and locate the three checkboxes: “Adobe Acrobat,” “Adobe Photoshop,” and “Eclipse IDE.”  
+4. Click the checkbox in front of “Adobe Photoshop” so that a blue ✔ appears (this enables Photoshop).  
+5. Verify that the checkboxes in front of “Adobe Acrobat” and “Eclipse IDE” are empty; if either one is checked, click it once to remove the checkmark.  
+6. Scroll slightly to the text field labeled “Additional software requirements.” Click inside the field and type exactly:  
+   Salesforce, QuickBooks, Zoom, Microsoft Office 365, Asana, Adobe Creative Cloud  
+   (Note that we include all six items in a single comma-separated line.)  
+7. Locate the “Quantity” dropdown on the right-hand side of the page. Click the dropdown to expand it, then click the value “3” from the list. Confirm the dropdown now shows “3.”  
+8. Review the summary panel on the right: you should see “Developer Laptop (Mac), Qty: 3, Adobe Photoshop: Yes, Adobe Acrobat: No, Eclipse IDE: No, Additional software requirements: Salesforce...” If everything matches, continue.  
+9. Click the green “Order Now” button at the bottom of the summary panel.  
+10. Wait for the confirmation dialog to appear. Verify the confirmation message reads “Your order for 3 Developer Laptop (Mac) has been placed successfully” (or similar). Click “OK” to close the dialog.  
+11. Open your email client (or the notification bell in the web UI) and check for an order confirmation message; confirm the quantity is 3 and the options match the selections we made.

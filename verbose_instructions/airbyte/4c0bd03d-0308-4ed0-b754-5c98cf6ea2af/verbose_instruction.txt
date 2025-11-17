@@ -1,0 +1,17 @@
+1) Locate the running browser tab that shows the Airbyte dashboard; if you are not already there, open a new tab and navigate to the Airbyte URL supplied by your team (e.g. http://localhost:8000).
+
+2) Click the menu item “Connections” on the dark-grey left sidebar—this opens the list of all existing connections.
+
+3) Identify the row whose Source column reads “Sample Data (Faker)” and whose Destination column reads “Snowflake”; click anywhere on that row (not on the three-dot kebab) to open the connection details.
+
+4) Click the “Replication” tab near the top centre of the screen (next to “Status” and “Settings”) so the Streams table becomes visible.
+
+5) Confirm you presently see three rows in the Streams table labelled “users”, “products”, and “purchases”; note that each row has a blue toggle switch at the far left showing the current enabled state.
+
+6) Click the blue toggle switch on the “users” row once—when it goes grey, the “users” stream is now disabled. Leave the “products” and “purchases” toggles untouched so they remain blue (enabled).
+
+7) Scroll to the bottom-right corner of the page and click the blue “Save changes” button.
+
+8) Watch for the green toast message “Your changes were saved!” that slides up from the bottom; this confirms the configuration has been persisted.
+
+9) (Optional verification) Stay on the Replication tab and refresh the browser (Ctrl+R); after reload, verify only “products” and “purchases” rows display a blue enabled toggle while “users” remains grey.

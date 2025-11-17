@@ -1,0 +1,29 @@
+1. Navigate to https://console.cloud.google.com/bigquery in your browser and sign in to the Google Cloud project that contains the dataset.  
+2. Click the triangle ▸ to the left of the dataset name game_sales in the left-hand “Explorer” panel to expand it and view its tables.  
+3. Click the table game_sales (inside the same-named dataset) so we can inspect its schema in the right panel. Confirm that there is a numeric column named global_sales (total worldwide sales) and a date or integer column named year (or year_of_release). Remember these exact column names—we will use them in the query.  
+4. Click the + Compose Query button at the top of the main pane to open a new blank SQL editor tab.  
+5. Write the SQL below, replacing the column names if your schema uses slightly different ones (e.g., year_of_release instead of year):  
+```sql
+-- Average global sales per calendar year
+SELECT
+  year                                 AS sales_year,
+  AVG(global_sales)                    AS avg_global_sales
+FROM
+  `game_sales.game_sales`
+GROUP BY
+  sales_year
+ORDER BY
+  sales_year;
+```  
+6. Click the ▸ Run button in the toolbar of this query tab to execute the SQL.  
+7. Wait a few seconds. The “Query results” grid appears below the editor, showing two columns: sales_year and avg_global_sales.  
+8. Click the small chart icon (looks like a line graph) on the right side of the “Query results” header row, then choose Create chart. A “Chart Editor” panel opens.  
+9. In the Chart Editor:  
+   a) Click the drop-down labeled Chart type and select Line chart.  
+   b) Drag the field sales_year to the X-Axis box.  
+   c) Drag the field avg_global_sales to the Y-Axis (Values) box.  
+   d) Confirm the preview shows a line trending across years—this reflects the average global sales per year.  
+10. Click the blue Save button in the upper-right of the Chart Editor.  
+11. Type linechart in the Name field of the “Save chart” dialog and press Save. (Note that BigQuery stores the chart object inside the project so you can reopen it later.)  
+12. Optionally, to download an image, click the three-dot ⋮ menu on the saved chart’s upper-right corner and choose Download PNG; the file will download to your browser’s default downloads folder.  
+13. You have now created and saved a line chart named linechart that shows the trend of average global video-game sales per year.

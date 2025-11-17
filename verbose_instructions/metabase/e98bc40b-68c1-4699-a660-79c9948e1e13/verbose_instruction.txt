@@ -1,0 +1,45 @@
+1) Open Microsoft Excel and click “Blank workbook” to create a new empty workbook.  
+2) Navigate to the ribbon tab Data ➜ Get Data ➜ From Database ➜ From SQL Server Database (or the connector your “Sample Database” supports).  
+3) In the “SQL Server database” dialog, type the server name that hosts Sample Database, leave the database field blank, and click “OK”.  
+   • If you are asked for credentials, choose “Database” authentication, type your user name / password, and click “Connect”.  
+4) In the Navigator window, select the table Orders (check the box to the left of “Orders”).  
+5) Click the “Load” button at the bottom-right (NOT “Transform”) so the entire Orders table is placed into a new worksheet called “Orders”.  
+   • We will use this table as the source for the pivot table in the next step.  
+
+6) Click any single cell inside the newly loaded Orders table.  
+7) Switch to the ribbon tab Insert ➜ PivotTable ➜ From Table/Range.  
+8) In the “Create PivotTable” dialog, ensure the Table/Range box shows something like `Orders[#All]` and select “New Worksheet”; then click “OK”.  
+   • A new worksheet named “Sheet1” (or “PivotTable1”) opens with an empty PivotTable frame and the PivotTable Fields pane on the right.  
+
+9) In the PivotTable Fields pane, check the field “Subtotal” first.  
+   • Excel automatically places the field in the Values area as “Sum of Subtotal” (this is exactly the metric we need).  
+
+10) In the field list scroll to the date column “Created At” (sometimes named “CreatedAt” or similar).  
+    • Drag “Created At” into the Rows area.  
+11) Right-click any date that now appears inside the Row Labels of the pivot ➜ choose Group…  
+12) In the Grouping dialog, uncheck “Months,” “Days,” etc., so only “Years” remains checked; click “OK”.  
+    • Row labels now show 2019, 2020, 2021… (grouped by Year).  
+
+13) Drag the field “Product → Category” (it may appear just as “Category” in Orders or inside a “Product” folder) into the Columns area.  
+    • Categories (Electronics, Furniture, etc.) now appear as column headers across the top of the pivot table.  
+
+14) Drag the field “User → State” (often listed simply as “State” inside a “User” folder) beneath “Created At” inside the Rows area.  
+    • The Rows area should now list “Years” at the top level and “State” nested underneath each year, giving a hierarchy of Year → State.  
+
+15) Verify that the PivotTable Fields areas read:  
+    Rows: Created At (Years) above State  
+    Columns: Category  
+    Values: Sum of Subtotal  
+    • If anything is misplaced, drag the fields until the layout matches the description above.  
+
+16) Click any number inside the Sum of Subtotal values.  
+17) Right-click ➜ Sort ➜ Sort Smallest to Largest.  
+    • Because we have two Row fields, Excel prompts, “Sort this column by Sum of Subtotal.” Click “OK” so each Year/State pair is sorted ascendingly by Sum of Subtotal.  
+
+18) Press Ctrl + S to open the Save dialog.  
+19) In the left panel, click “Browse” (or “More locations”), then navigate to the folder path /home/user (create it if necessary).  
+20) In the “File name” box type query_result.xlsx  
+21) Ensure “Save as type” is set to “Excel Workbook (*.xlsx)” and click “Save”.  
+    • Excel writes the file to /home/user/query_result.xlsx.  
+
+22) Confirm success: look at the worksheet tab containing the pivot table—Years appear in the first column, States nested beneath, Categories run across columns, and every block of numbers is sorted in ascending order within its Year/State group. The file path in the title bar now shows “…/query_result.xlsx”.

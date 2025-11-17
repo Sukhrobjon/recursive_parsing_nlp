@@ -1,0 +1,60 @@
+1. Open a terminal window on the Metabase server (Ctrl + Alt + T if you’re on a Linux desktop).  
+2. Navigate to the folder where you run the JAR so we can gracefully stop the process:  
+   ```bash
+   cd /home/user/projects/metabase
+   ```  
+3. Press Ctrl + C in the terminal that is currently running `java -jar metabase.jar` (or run the command below in a different terminal) to stop Metabase cleanly:  
+   ```bash
+   pkill -f metabase.jar
+   ```  
+   Note that Metabase must be completely shut down before copying its database file, otherwise the backup can be corrupted.  
+4. Verify the process is no longer running:  
+   ```bash
+   ps -ef | grep metabase.jar | grep -v grep
+   ```  
+   You should see no output. If you still see the process, wait a few seconds and run the command again until it disappears.  
+5. Navigate to the directory that stores the Metabase application database:  
+   ```bash
+   cd /home/user/Metabase
+   ```  
+6. Create a date-stamped backup folder so we can keep historical copies:  
+   ```bash
+   backup_dir="metabase_backup_$(date +%Y-%m-%d_%H-%M-%S)"
+   mkdir "$backup_dir"
+   ```  
+7. Copy every file that starts with `metabase.db` (H2 keeps multiple files with the same prefix) to the new backup folder:  
+   ```bash
+   cp -v metabase.db* "$backup_dir"/
+   ```  
+   The `-v` flag prints each file name as it is copied so we can confirm the action.  
+8. (Optional) Compress the backup folder to save space and make it easier to move off the server:  
+   ```bash
+   tar -czvf "$backup_dir".tar.gz "$backup_dir"
+   ```  
+9. List the newly created archive (or folder) to verify it exists and has content:  
+   ```bash
+   ls -lh "$backup_dir"*
+   ```  
+   You should see file sizes greater than 0 B for each file.  
+10. Restart Metabase so your users can log back in:  
+    ```bash
+    cd /home/user/projects/metabase
+    nohup java -jar metabase.jar &> metabase.out  &
+    ```  
+    • `nohup` lets Metabase keep running after you close the terminal.  
+    • Output is sent to `metabase.out` in the same directory.  
+11. Confirm Metabase has started successfully by tailing the log until you see “Metabase Initialization COMPLETE”:  
+    ```bash
+    tail -f metabase.out
+    ```  
+    Press Ctrl +C when you see the success message.  
+12. (Optional) Move the compressed backup off-server (for example, to an S3 bucket or another host) to protect against disk failure:  
+    ```bash
+    aws s3 cp "$backup_dir".tar.gz s3://your-bucket-name/backups/
+    ```  
+    Adjust the command to match your storage solution.  
+13. Store a quick note in your team’s documentation that states:  
+    • Date/time of the backup  
+    • Location of the archive (`/home/user/Metabase/<timestamp>.tar.gz` or S3 URL)  
+    • Metabase version (check with `tail -n 20 metabase.out | grep 'Metabase version'`)  
+14. You’re done! The Metabase database file is safely backed up and Metabase is running again.

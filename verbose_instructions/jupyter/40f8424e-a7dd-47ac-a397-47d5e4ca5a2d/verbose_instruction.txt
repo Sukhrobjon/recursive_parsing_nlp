@@ -1,0 +1,23 @@
+1) Double-click the file name ​Categorical-Data.ipynb​ in the file browser so it opens in a new notebook tab.  
+2) Click the top menu Run ▸ Restart the kernel and run all cells.  
+3) Press the Restart button in the confirmation dialog so every existing cell is re-executed with a fresh kernel.  
+4) Scroll through the notebook output; confirm that variables adult, Education, Above/Below 50k, and Hours/Week now exist—we will use them shortly.  
+5) Keep scrolling to the very bottom of the notebook until you see an empty gray area and a faded “Click to add a cell” prompt.  
+6) Click the prompt “Click to add a cell” so a new code cell appears.  
+7) Type (or paste) the complete aggregation code into the new cell:  
+
+```python
+# Average weekly working hours by Education level and by Income category
+user_list = ['Education', 'Above/Below 50k']
+gb = adult.groupby(user_list)
+avg_hours = gb['Hours/Week'].mean()
+
+print("Average weekly hours worked:")
+print(avg_hours)
+```  
+
+   Note that we store the Series in avg_hours; printing it lets us immediately see the two-level grouping result.  
+8) Click the triangular Run ▶ icon in the left margin of this cell (or press Shift+Enter) to execute it and advance.  
+9) Verify the output appears directly under the cell: we should see a two-column index (Education, Above/Below 50k) with the corresponding mean Hours/Week values. Confirm a few numbers look reasonable (e.g., values between 20 and 60).  
+10) Press Ctrl+S (or ⌘+S on macOS) to save the updated notebook so the new analysis is stored.  
+11) Optionally scroll back up to any earlier cell to ensure no error messages were introduced; if everything ran without errors, the task is complete.

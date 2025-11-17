@@ -1,0 +1,26 @@
+1. Click the blue “New” button in the upper-right corner of Metabase.  
+2. Click “Question” in the drop-down panel that appears.  
+3. Click “Raw data” → choose “Sample Database”.  
+4. Click the “Orders” table in the list so it is highlighted, then click the blue “Next” (or “Visualize”) button in the bottom-right corner.  
+5. Click the “Summarize” button (top-right of the data table). A grey summarize bar appears above the columns.  
+6. Confirm “Count of rows” is already listed under Summarize by (that’s the “Count” we need). If you see any extra metrics, hover over them and click the “×” to remove.  
+7. Click “Add group” (still in the summarize bar) → choose “Total” (the numeric column). The pill “Total” now shows under Group by.  
+8. Click the blue “Done” button on the right side of the summarize bar. Metabase switches to the default “Bar” visualization.  
+9. Click the “Visualization” button (paint-brush icon) at the bottom-left to open the Visualization sidebar.  
+10. Click “Bar” → choose the “Histogram” style (second option in the bar menu). A histogram now appears.  
+11. Click the “Settings” (gear) icon directly beneath the visualization to open the Visualization settings panel.  
+12. Click the “Data” tab → find “Bins” (or “Auto-binning”) → toggle OFF “Auto” so manual controls appear.  
+13. Type “10” in the “Number of bins” box, then press Enter.  
+    Note: With 3,000+ orders, 10 bins puts each bar at roughly 300 counts. The tallest bar should now be close to 1,400.  
+14. Verify the y-axis maximum is ≈1,400. If it is far off, adjust the “Number of bins” (e.g., try 9 or 11) and re-check until the tallest bar hovers around 1,400.  
+15. Still in the settings panel, click the “Display” tab.  
+16. Toggle ON “Show value labels”. Each bar now shows its exact count on top.  
+17. In the same Display tab, click “Value format” → select “Compact” from the dropdown. The labels now abbreviate large numbers (e.g., “1.4K”).  
+18. Click “Done” at the bottom of the settings panel to save these visual choices.  
+19. Click anywhere outside the sidebar to close it and verify: a histogram with approx. 1,400 on the y-axis, value labels, and compact formatting.  
+20. Click the cloud-shaped “Download” icon (bottom-right of the Metabase window).  
+21. Select “.png” in the download modal, then click “Download”. The file saves to your browser’s default download location (usually ~/Downloads).  
+22. Open your file browser and navigate to that download location.  
+23. Right-click the newly downloaded PNG file (name starts with “Orders …”) → choose “Rename” → type histogram.png → press Enter.  
+24. Optional: Drag histogram.png to your Desktop (or desired folder) for easy access.  
+25. Switch back to the Metabase tab and visually confirm the question still shows the correct histogram; we’re done!

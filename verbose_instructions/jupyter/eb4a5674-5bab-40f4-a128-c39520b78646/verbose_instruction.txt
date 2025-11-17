@@ -1,0 +1,29 @@
+1. Scroll to the last cell of the currently-opened notebook so you have a clean spot to insert a new cell.  
+2. Click the “+ Code” button (or press the B key in command mode) to add a new code cell beneath the current one.  
+3. Type the following Python snippet exactly as shown, replacing ONLY the string CURRENT_NOTEBOOK_NAME.ipynb with the actual name of this notebook file (include the .ipynb extension). Make sure the path is correct if the notebook is inside a folder.
+
+```python
+import nbformat
+from pathlib import Path
+
+# --- 1) Read the current notebook file --------------------------------------
+nb_path = Path('CURRENT_NOTEBOOK_NAME.ipynb')        # <--- update this name
+nb_node = nbformat.read(nb_path, as_version=4)
+
+# --- 2) Gather all code cells ------------------------------------------------
+code_cells = [cell.source for cell in nb_node.cells if cell.cell_type == 'code']
+combined_code = '\n\n'.join(code_cells)             # double line-break between cells
+
+# --- 3) Write the combined code to Desktop ----------------------------------
+desktop_file = Path.home() / 'Desktop' / 'code_content.txt'
+desktop_file.write_text(combined_code, encoding='utf-8')
+
+print(f'✅  All code cells saved to {desktop_file}')
+```
+
+4. Press Shift + Enter (or click “Run”) to execute the new cell.  
+5. Look for the printed confirmation message “✅  All code cells saved to …Desktop\code_content.txt”. This confirms the file was created successfully.  
+6. Minimize or move your Jupyter window, then open your system’s Desktop folder and double-click code_content.txt to verify that:  
+   • Only code appears (no Markdown text).  
+   • Code from every code cell is present and separated by a blank line.  
+7. Return to the notebook and optionally delete the helper cell to keep the notebook tidy (select the cell, press DD in command mode).

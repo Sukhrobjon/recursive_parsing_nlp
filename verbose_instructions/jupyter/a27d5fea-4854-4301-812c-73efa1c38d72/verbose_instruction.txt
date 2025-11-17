@@ -1,0 +1,38 @@
+1. Double-click the file name result.csv in the left “Files” sidebar so we can inspect its predefined column layout; you’ll see it is empty but has headers (actor_id, first_name, last_name, rented_times).  
+2. Double-click notebook.ipynb in the same sidebar to open the Jupyter Notebook.  
+3. Scroll all the way to the bottom of the notebook; hover your mouse just below the last cell until the grey “+ Code” button labelled Click to add a cell appears.  
+4. Click the Click to add a cell button to create a new code cell.  
+5. Type (or copy-paste) the entire code block below into the empty cell exactly as shown:
+
+```python
+import sqlite3, pandas as pd
+
+# Connect to the local SQLite database
+connection = sqlite3.connect('database.db')
+
+query = """
+SELECT
+    actor.actor_id,
+    actor.first_name,
+    actor.last_name,
+    COUNT(rental.rental_id)            AS rented_times
+FROM actor
+LEFT JOIN film_actor ON actor.actor_id = film_actor.actor_id
+LEFT JOIN film       ON film_actor.film_id = film.film_id
+LEFT JOIN inventory  ON film.film_id      = inventory.film_id
+LEFT JOIN rental     ON inventory.inventory_id = rental.inventory_id
+GROUP BY actor.actor_id
+ORDER BY rented_times DESC
+LIMIT 10;
+"""
+
+# Run the SQL, load into a DataFrame, and export to CSV
+df = pd.read_sql_query(query, connection)
+df.to_csv('result.csv', index=False)
+connection.close()
+```
+
+Note that we JOIN the five relevant tables, aggregate with COUNT(rental_id), then sort by rented_times in descending order and LIMIT to 10 actors. This directly answers the task requirement.  
+6. Click the Run (▶) icon in the Notebook toolbar, then choose Run All Cells from the dropdown so the entire notebook, including the new cell, executes.  
+7. Wait until the status indicator shows “Kernel idle” (usually ~10 s). A green check mark next to the new cell confirms it ran without errors.  
+8. Switch back to the left “Files” panel and single-click result.csv. Jupyter refreshes the preview; verify it now displays exactly 10 rows sorted from highest to lowest rented_times, proving the query succeeded.

@@ -1,0 +1,27 @@
+1) Double-click the file “notebook.ipynb” in the left sidebar so it opens in Jupyter Lab.  
+2) Scroll until you see a code cell that ends with the comment `#TODO 1`.  
+3) Click inside that cell, press Enter to add a new line below the comment, then type:  
+```python
+from sklearn import svm
+```  
+4) Scroll to the next cell that ends with the comment `#TODO 2`. Click, add a new line, and type:  
+```python
+clf = svm.SVC(kernel='linear')
+```  
+5) Locate the cell containing the comment `#TODO 3`. Click, add a line, and write:  
+```python
+clf.fit(X_train, y_train)
+```  
+6) Find the cell with the comment `#TODO 4`. Click, insert a line, and type:  
+```python
+y_pred = clf.predict(X_test)
+```  
+7) Move to the cell ending with `#TODO 5`. Click, add a line, and write:  
+```python
+print(metrics.accuracy_score(y_test, y_pred))
+```  
+8) Switch to the top menu bar, click “Run”, then select “Run All Cells”.  
+9) Wait until every cell shows a blue checkmark or the solid circle disappears, confirming the kernel has finished executing.  
+10) Verify success: in the last code cell’s output area you should see a numeric accuracy value (for example, `0.96`). This confirms the SVM ran and produced a score.  
+11) Click “File” in the menu bar, then choose “Save All” (or press Ctrl+S) to write the executed notebook to disk.  
+12) Glance at the left sidebar; the notebook name should no longer be marked with a hollow circle, indicating it is fully saved and the task is complete.

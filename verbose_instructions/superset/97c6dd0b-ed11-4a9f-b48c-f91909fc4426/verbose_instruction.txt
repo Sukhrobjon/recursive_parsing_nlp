@@ -1,0 +1,24 @@
+1. Navigate to https://console.cloud.google.com/bigquery so the BigQuery Web UI loads in your browser.  
+2. Click the triangle ▸ to the left of your project name (e.g., my-project) in the Explorer panel so we can see all datasets.  
+3. Click the triangle ▸ next to the dataset that contains the flights table (e.g., my_dataset).  
+4. Click flights to highlight it, then look at the Schema pane on the right—verify that columns like department and cost exist (we will need them for our average calculation).  
+5. Click the + Compose new query button at the top of the Editor pane to open a blank SQL tab.  
+6. Write this aggregation query that averages cost by department:  
+```sql
+SELECT
+  department,
+  AVG(cost) AS avg_cost
+FROM
+  `my-project.my_dataset.flights`
+GROUP BY
+  department
+ORDER BY
+  avg_cost DESC;
+```  
+7. Click the ► RUN button in the query toolbar to execute the SQL.  
+8. Wait until the Query results grid appears below the Editor; first we see the Data tab with rows of department and avg_cost.  
+9. Click the Chart tab just to the right of Data; BigQuery auto-generates a visualization.  
+10. In the Visualization Type dropdown (upper-left of the Chart area), select Table so the results display as a sortable table chart.  
+11. Click the Save chart… icon (floppy-disk symbol) in the Chart toolbar. A “Save chart” dialog opens.  
+12. Type Mychart in the Name field, confirm the Dataset (default is fine), and click Save. The chart is now stored and listed under the “Saved charts” section in the left panel.  
+13. (Optional) Verify the save: in the Explorer panel, expand Saved charts and ensure Mychart appears; click it to preview the table visualization again.

@@ -1,0 +1,59 @@
+1. Navigate to https://console.cloud.google.com/bigquery so the BigQuery Web UI opens in a new browser tab.  
+2. In the left Explorer panel, click the triangle ▸ next to your project name (for example, `my_project`) so that all datasets become visible.  
+3. Click the triangle ▸ to the left of the raw data-set (for example, `raw`) and then click the table `raw.customers` so its schema appears in the right-hand “Table Details” panel—notice columns such as `customer_id`, `email_address`, `first_name`, `created_at`, etc.  
+4. Still in the Explorer panel, expand the analytics dataset (e.g., `analytics`) and click the model (table or view) `analytics.top_level_email_domains`. In the schema preview you’ll see a single column—`tld`—containing the list of valid top-level domains. We will join to this list in a moment.  
+5. Click the “+  Compose New Query” button (white sheet icon) in the top toolbar; a blank Query Editor tab opens.  
+6. Write the complete transformation query below into the editor. It 1) extracts the TLD from each customer email, 2) flags whether the TLD is in the valid list, 3) orders valid emails first, and 4) writes the result into the dimensional model.  
+
+```sql
+-- Create or replace the dimension table with an added boolean column
+CREATE OR REPLACE TABLE `my_project.marts.dim_customers` AS
+WITH
+-- step A: pull raw customer data
+cust AS (
+  SELECT
+    customer_id,
+    email_address,
+    first_name,
+    last_name,
+    created_at
+  FROM `my_project.raw.customers`
+),
+
+-- step B: pull valid TLD list
+valid_tlds AS (
+  SELECT
+    LOWER(tld) AS tld
+  FROM `my_project.analytics.top_level_email_domains`
+),
+
+-- step C: enrich customers with an email validity flag
+cust_enriched AS (
+  SELECT
+    c.*,
+    -- extract everything after the final dot of the email, e.g. "com"
+    LOWER(REGEXP_EXTRACT(email_address, r'\\.([A-Za-z]+)$')) AS extracted_tld
+  FROM cust AS c
+)
+
+SELECT
+  customer_id,
+  email_address,
+  first_name,
+  last_name,
+  created_at,
+  -- boolean column requested
+  IF(v.tld IS NOT NULL AND email_address IS NOT NULL, TRUE, FALSE) AS is_valid_email_address
+FROM cust_enriched AS ce
+LEFT JOIN valid_tlds AS v
+  ON ce.extracted_tld = v.tld
+ORDER BY
+  is_valid_email_address DESC,        -- valid emails first
+  customer_id;                         -- stable secondary sort
+```
+
+7. Click the blue “▶  Run” button at the top of the Query Editor. A spinner appears while BigQuery processes the job.  
+8. Wait until the “Query results” panel shows the first rows with the new column `is_valid_email_address`—`true` rows appear at the top, followed by `false`.  
+9. Verify the destination table was created: in the Explorer panel, click the triangle ▸ next to the `marts` dataset, then click `marts.dim_customers`. Confirm that the schema shows the new boolean column `is_valid_email_address`.  
+10. (Optional) If you need to download a sample of the results, click the “Preview” tab, then the “EXPORT” dropdown → choose “CSV (local file)” and save the file locally using the system dialog; this is not required for the model itself but is useful for validation.  
+11. Share or commit `dim_customers.sql` (the query you just wrote) to version control if you are using dbt or a similar workflow—this keeps the model reproducible for teammates.

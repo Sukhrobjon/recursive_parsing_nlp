@@ -1,0 +1,24 @@
+1) Open your browser and navigate to the Superset web UI (e.g., http://localhost:8088) and log in with your Superset credentials  
+2) Click the top-navigation item “Data”  
+3) Click the submenu entry “Databases”  
+4) Click the blue “+ Database” button in the upper-right corner of the Databases list  
+5) Type “PostgreSQL” into the search bar of the modal and click the “PostgreSQL” tile that appears  
+6) Click the “Connect” button in the lower-right of that tile to open the PostgreSQL connection form  
+7) Select the radio button “SQLAlchemy URI” so we can paste a single URI string  
+8) Type (or paste) the following URI in the “SQLAlchemy URI” textbox, replacing <PWD> if needed:  
+```text
+postgresql+psycopg2://superset_user:<PWD>@localhost:5432/my_local_db
+```  
+   • Host: localhost  
+   • Port: 5432  
+   • Database: my_local_db  
+   • Username: superset_user  
+   • Password: use the real password for `superset_user`  
+   (The form parses these automatically from the URI, so we only need the one line)  
+9) Scroll down to the section “Other” and check that “Expose in SQL Lab” is toggled ON (so we can query later)  
+10) Click the blue “Test Connection” button near the bottom of the form  
+11) Wait for the green toast message “Connection looks good!” in the upper-right corner—this confirms Superset can reach the Postgres instance  
+12) Click the blue “Add” button to save the database configuration  
+13) Observe you are returned to the Databases list and your new entry “my_local_db” now appears with a green status dot—this means it is ready for use  
+14) Click the link “my_local_db” in the Name column to open its detail page, then click “Update Resources” → “Refresh Metadata” so Superset pulls the latest list of schemas and tables  
+15) Click “Data” → “Datasets” → “+ Dataset,” pick Database = “my_local_db,” select the schema (e.g., public) and choose a table, then click “Add”—this registers a dataset for immediate analysis in Explore or SQL Lab

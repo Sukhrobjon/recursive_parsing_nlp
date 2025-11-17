@@ -1,0 +1,33 @@
+1) Open your default web browser and log in to your dbt Cloud account.  
+2) Click your avatar in the top-right corner, then click the menu item labeled “Account Settings”.  
+3) Inside the left sidebar, click “CLI Authentication”. A panel titled “Step 1: Install” appears with a shell command that looks similar to:  
+```
+curl -L https://github.com/dbt-labs/dbt-cloud-cli/releases/latest/download/dbt-cloud-cli-linux-amd64.tar.gz --output dbt-cloud-cli.tar.gz
+```  
+(We will copy this exact command in the next step.)
+
+4) Highlight the entire command in “Step 1: Install”, press Ctrl + C (Cmd + C on Mac) to copy it.
+
+5) Switch to your terminal application.
+
+6) Type `cd ~/projects/analytics` and press Enter so that the CLI will be downloaded directly into the dbt project folder named `analytics`.
+
+7) Paste the copied command into the terminal (Ctrl + Shift + V or Cmd + V) and press Enter.  
+   • The file `dbt-cloud-cli.tar.gz` now downloads into `~/projects/analytics`.
+
+8) Run the extraction command to unpack the binary:  
+```
+tar -xzf dbt-cloud-cli.tar.gz
+```  
+   • This creates an executable file named `dbt-cloud-cli` in the same `analytics` directory.
+
+9) (Optional) Remove the archive file to keep the folder clean:  
+```
+rm dbt-cloud-cli.tar.gz
+```
+
+10) Verify the CLI works by executing:  
+```
+./dbt-cloud-cli --version
+```  
+   • If the version number prints without errors, the installation is successful and the binary sits alongside your dbt project files.

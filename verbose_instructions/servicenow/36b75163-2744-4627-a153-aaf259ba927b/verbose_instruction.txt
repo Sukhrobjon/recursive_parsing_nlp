@@ -1,0 +1,45 @@
+1) Open your Chrome browser and navigate to https://console.cloud.google.com/bigquery so we are inside the BigQuery Web UI.  
+2) Click the triangle ▸ to the left of the project bigquery-public-data to expand its datasets list.  
+3) Scroll down and click the triangle ▸ beside the dataset hardware_store so its tables become visible—we will use them in a moment.  
+4) Click the table products; the Schema, Details, and Preview tabs appear in the right-hand panel so we can verify the column names (product_id, product_name, price, stock_qty, etc.).  
+5) Click the + Compose Query button at the top of the main panel to open a new blank SQL editor tab.  
+6) Type the following query to locate the exact Apple Watch record; this returns its product_id and confirms stock:  
+
+```sql
+SELECT
+  product_id,
+  product_name,
+  stock_qty
+FROM
+  `bigquery-public-data.hardware_store.products`
+WHERE
+  LOWER(product_name) LIKE '%apple watch%'
+LIMIT 1;
+```  
+
+7) Click the blue ▶︎ RUN button in the toolbar of this query editor.  
+8) Once the results appear below, verify stock_qty is at least 5. Note or copy the returned product_id—we will use it to create an order.  
+9) In the Resources panel, click the table orders under the same hardware_store dataset; quickly review its schema (order_id, product_id, quantity, order_timestamp, etc.) so we know which columns must be provided.  
+10) Click + Compose Query again to open a second SQL tab.  
+11) Write the INSERT statement that creates the order for 5 Apple Watches (replace AAA with the product_id you noted in step 8):  
+
+```sql
+INSERT INTO `bigquery-public-data.hardware_store.orders`
+  (product_id, quantity, order_timestamp)
+VALUES
+  ('AAA', 5, CURRENT_TIMESTAMP());
+```  
+
+12) Press ▶︎ RUN to execute the INSERT; a green checkmark in the Job Information panel confirms the order has been queued.  
+13) Still in this tab, immediately query the orders table to double-check the new record:  
+
+```sql
+SELECT *
+FROM `bigquery-public-data.hardware_store.orders`
+ORDER BY order_timestamp DESC
+LIMIT 10;
+```  
+
+14) RUN the verification query; the most recent row should show product_id = 'AAA' and quantity = 5, meaning the order was placed.  
+15) Click SAVE RESULTS above the Query results grid, choose “CSV (local file)”, and download the confirmation list.  
+16) In the save dialog, rename the file apple_watch_order.csv and choose your Downloads folder so you have a local record of the transaction.

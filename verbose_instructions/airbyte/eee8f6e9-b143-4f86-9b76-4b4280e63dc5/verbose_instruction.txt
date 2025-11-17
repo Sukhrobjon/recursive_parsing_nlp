@@ -1,0 +1,34 @@
+1) Open your browser and Navigate to http://localhost:8000 to reach the Airbyte local UI.  
+2) Click the blue button “Create your first connection” (or “New connection” if you already have others).  
+3) Type “Sample Data (Faker)” into the Source search bar.  
+4) Click the card titled “Sample Data (Faker)” that appears in the filtered list.  
+5) Hit the “Set up source” button in the right-side fly-out panel. (No additional parameters are needed for Faker, so Airbyte immediately takes you to the destination picker.)  
+6) In the Destination search bar, type “JSON” and select “Local JSON (File)” from the dropdown.  
+7) Click “Set up destination” to open its settings page.  
+8) Type the absolute output directory in the “Destination Path” field:  
+   ```
+   /local/json_destination
+   ```  
+   Note that Airbyte will create one JSON file per stream in this directory after each sync.  
+9) Leave all other destination fields at their defaults and press the blue “Set up destination” button at the bottom.  
+10) In the “Configuration” step for the new connection, scroll to “Choose which streams to sync.”  
+11) Click the small downward triangle next to “ALL STREAMS” to collapse the list, then un-check the master checkbox so every stream is disabled.  
+12) Find the row labeled “products” and re-check only that single checkbox. All other streams (customers, orders, etc.) remain off.  
+13) In the “Sync mode” column of the products row, keep the default “Full Refresh | Overwrite.”  
+14) Above the stream table, open the “Schedule type” dropdown and select “Manual.” This disables automatic syncing and exposes a “Sync now” button you will trigger yourself.  
+15) Scroll to the bottom and click the blue “Set up connection” button.  
+16) Verify that you land on the new connection’s overview page showing:  
+    • Status: Active  
+    • Schedule: Manual  
+    • Enabled streams: 1 (products)  
+17) Click “Sync now” in the upper-right corner of the status panel to run the first manual sync. You should see real-time logs; wait until the banner changes to “Sync succeeded.”  
+18) Switch to your terminal and list the destination directory to confirm the file landed:  
+    ```
+    ls -l /local/json_destination
+    ```  
+    You should see a file similar to `products/part-0000.jsonl` (exact name may vary).  
+19) Run a quick sanity check by printing the first line:  
+    ```
+    head -n 1 /local/json_destination/products/part-0000.jsonl
+    ```  
+    We can see a JSON object with product fields, confirming that only the products stream was written.

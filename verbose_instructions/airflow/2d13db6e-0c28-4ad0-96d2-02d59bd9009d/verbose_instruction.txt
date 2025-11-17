@@ -1,0 +1,71 @@
+1) Click the “Visual Studio Code” icon in the left-hand dock to bring the editor to the foreground.  
+2) Navigate in the Explorer panel and double-click `dags/cocktail_producer_dag.py` to open it.  
+3) Scroll to the import block at the top and type the extra import exactly as shown:  
+```python
+from airflow.datasets import Dataset   # NEW: enables data-aware scheduling
+```  
+4) Directly below the existing imports, create two Dataset objects that point at the files produced by this DAG:  
+```python
+INSTRUCTIONS = Dataset("file://localhost/airflow/include/cocktail_instructions.txt")
+INFO         = Dataset("file://localhost/airflow/include/cocktail_info.txt")
+```  
+   Note that we prefix with `file://localhost` so Airflow treats the path as a URI; we will reuse exactly the same string in the consumer DAG.  
+
+5) Scroll to the task definitions.  Locate the function that writes instructions to disk (`write_instructions_to_file`).  Amend its decorator so the task advertises the dataset it updates:  
+```python
+@task(outlets=[INSTRUCTIONS])          # ADDED outlets
+def write_instructions_to_file(response):
+    ...
+```  
+6) Repeat the previous step for the information-writing task:  
+```python
+@task(outlets=[INFO])                  # ADDED outlets
+def write_info_to_file(response):
+    ...
+```  
+   We leave the `get_cocktail` extraction task unchanged because it does not write to the datasets.  
+
+7) Press Ctrl+S (⌘+S on macOS) to save `cocktail_producer_dag.py`.  VS Code should show “✓” replacing the white dot in the tab title, indicating the file is saved.  
+
+8) In the Explorer, double-click `dags/cocktail_consumer_dag.py` to open the consumer DAG.  
+9) Add the Dataset import to the top of the file:  
+```python
+from airflow.datasets import Dataset
+```  
+10) Paste the same two Dataset definitions so the consumer references the identical URIs:  
+```python
+INSTRUCTIONS = Dataset("file://localhost/airflow/include/cocktail_instructions.txt")
+INFO         = Dataset("file://localhost/airflow/include/cocktail_info.txt")
+```  
+11) Scroll to the `@dag` decorator and replace the fixed cron string with a list containing the two datasets:  
+```python
+@dag(
+    dag_id="cocktail_consumer_dag",
+    start_date=datetime(2024, 1, 1),
+    schedule=[INSTRUCTIONS, INFO],     # TRIGGERS on either dataset update
+    catchup=False,
+)
+```  
+   Airflow now understands “run whenever *either* dataset is updated.”  
+
+12) Press Ctrl+S again to save `cocktail_consumer_dag.py`.  
+
+13) Switch to the integrated terminal tab at the bottom of VS Code (or open one with Ctrl+`).  
+14) Execute the command to reload Airflow so the code changes take effect:  
+```bash
+astro dev restart          # or `docker compose restart` if you are not on Astronomer
+```  
+15) Wait until the terminal prints “Airflow webserver is ready” and “Scheduler started.”  This confirms the DAG files have been re-parsed.  
+
+16) Click the Chromium (or default browser) icon in the dock to bring up the Airflow Web UI.  
+17) Press Ctrl+R to refresh the page.  In the DAG list, locate `cocktail_consumer_dag`.  Verify the value in the Schedule column now reads `Dataset`.  
+18) (Optional) Click the toggle switch in the first column if the DAG is still paused, ensuring it is set to “On.”  
+
+19) Trigger a test by clicking the play button (triangle) in the “Actions” column for `cocktail_producer_dag`.  This manually runs the producer to generate new files.  
+20) Wait on the DAGs page until the “Last Run” for `cocktail_producer_dag` shows a green checkmark.  Then observe that a new run appears automatically in the “Recent Tasks” column for `cocktail_consumer_dag` without manual intervention—confirming dataset scheduling works.  
+
+21) Click “cocktail_consumer_dag” in the DAG list, then click the most recent run in the grid.  Ensure each task box is green.  If any show red, open the log via the right-hand panel to debug.  
+
+22) Return to the browser tab listing DAGs and refresh once more.  We can see `cocktail_consumer_dag` continues to show “Dataset” in the Schedule column, indicating future file updates will re-trigger it automatically.  
+
+23) Celebrate—data-aware scheduling is now live!

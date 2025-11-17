@@ -1,0 +1,127 @@
+1) Double-click the file ​“notebook.ipynb”​ in the left sidebar so the California Housing notebook opens in the main pane.
+
+2) Scroll until you reach the first empty code cell under the comment line  
+`# 1. Load California Housing dataset`.  
+Click once inside the cell so the green cursor bar appears.
+
+3) Write the loading code:
+```python
+from sklearn.datasets import fetch_california_housing
+import pandas as pd
+
+california = fetch_california_housing(as_frame=True)
+X = california.data          # features
+y = california.target        # target (median house value)
+df = pd.concat([X, y.rename("MedHouseVal")], axis=1)
+df.head()
+```
+
+4) Run the cell by pressing ​Shift+Enter​.  
+Verify that the output shows the first 5 rows with 9 columns (8 feature columns plus “MedHouseVal”).
+
+5) Scroll to the next empty code cell under the comment  
+`# 2. Train-test split`.  
+Click inside it and type:
+```python
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+print("Train shape:", X_train.shape, " Test shape:", X_test.shape)
+```
+
+6) Execute the cell (Shift+Enter) and confirm the console prints “Train shape: (16512, 8)  Test shape: (4128, 8)” (the exact numbers may differ slightly if the dataset version changes).
+
+7) Scroll to the code cell labeled  
+`# 3. Apply Standard Scaling`.  
+Click in that cell and enter:
+```python
+from sklearn.preprocessing import StandardScaler
+
+std_scaler = StandardScaler()
+X_train_std = std_scaler.fit_transform(X_train)  # fit on train, transform train
+X_test_std  = std_scaler.transform(X_test)       # transform test with same params
+
+print("After StandardScaler – mean (train):", X_train_std.mean(axis=0).round(4))
+print("After StandardScaler – std  (train):", X_train_std.std(axis=0).round(4))
+```
+
+8) Run the cell.  
+Confirm the printed means are all ~0 and stds are all ~1.
+
+9) Move to the next empty code cell titled  
+`# 4. Apply Min-Max Scaling`.  
+Type:
+```python
+from sklearn.preprocessing import MinMaxScaler
+import numpy as np
+
+mm_scaler = MinMaxScaler()
+X_train_mm = mm_scaler.fit_transform(X_train)
+X_test_mm  = mm_scaler.transform(X_test)
+
+print("After MinMaxScaler – min (train):", np.min(X_train_mm, axis=0).round(3))
+print("After MinMaxScaler – max (train):", np.max(X_train_mm, axis=0).round(3))
+```
+
+10) Execute the cell and verify the min array shows zeros and the max array shows ones for each feature.
+
+11) Scroll to the next code cell marked  
+`# 5. Compare distributions`.  
+Enter:
+```python
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+plt.figure(figsize=(14,5))
+plt.subplot(1,2,1)
+sns.kdeplot(X_train['MedInc'], label='Original')
+sns.kdeplot(X_train_std[:,0], label='StandardScaled')
+sns.kdeplot(X_train_mm[:,0], label='MinMaxScaled')
+plt.title('Income Feature Distribution')
+plt.legend()
+
+plt.subplot(1,2,2)
+sns.boxplot(data=pd.DataFrame({
+    'Original': X_train['MedInc'],
+    'Standard': X_train_std[:,0],
+    'MinMax'  : X_train_mm[:,0]
+}))
+plt.title('Income Feature Boxplots')
+plt.show()
+```
+
+12) Run the cell.  
+Visually confirm we see three KDE curves and a grouped boxplot comparing scaling effects.
+
+13) Scroll to the cell tagged  
+`# 6. Save processed arrays for later use`.  
+Type:
+```python
+import numpy as np
+
+np.savez_compressed(
+    'california_scaled.npz',
+    X_train_std=X_train_std,
+    X_test_std=X_test_std,
+    X_train_mm=X_train_mm,
+    X_test_mm=X_test_mm,
+    y_train=y_train.to_numpy(),
+    y_test=y_test.to_numpy()
+)
+print("File 'california_scaled.npz' written to disk.")
+```
+
+14) Execute the cell and watch for the confirmation message.
+
+15) Switch to the notebook menu bar and click ​“Kernel → Restart & Run All”​.  
+Click ​“Restart and Run All”​ in the dialog so every cell executes sequentially using a fresh kernel.
+
+16) Wait until the execution completes (the filled solid circle at the top right turns back to an empty outline).  
+Scroll quickly through the notebook verifying that every code cell shows output without red error tracebacks.
+
+17) Click ​“File → Save and Checkpoint”​.  
+Observe the small save icon momentarily appears, confirming the notebook is written to disk.
+
+18) Locate the newly created file ​“california_scaled.npz”​ in the sidebar to ensure it exists; this serves as our final verification that scaling outputs were saved successfully.

@@ -1,0 +1,19 @@
+1. Open your web browser and go to the hardware store’s website (e.g., type the URL in the address bar and press Enter).  
+2. Click the magnifying-glass icon (or the “Search” field) in the top-right corner of the homepage.  
+3. Type “iPad mini” in the search box and press Enter to bring up product results.  
+4. Locate the product tile that exactly matches “iPad mini” (verify the latest generation if multiple appear). Click the product name or image to open its product detail page.  
+5. Inside the product page, click the drop-down labeled “Choose the colour.” Select “Purple” from the list. (The product photo should update to a purple device—confirm visually before proceeding.)  
+6. Click the second drop-down labeled “Choose the storage.” Select “256 GB.”  
+7. Click the quantity field (typically set to “1” by default). Type “8” or use the up-arrow until the quantity reads 8.  
+8. Click the “Add to Cart” or “Add to Basket” button (often a solid-colored button near the price). Wait for the confirmation pop-up or mini-cart indicator to update to “8” items.  
+9. Click the shopping-cart icon in the site’s header (usually top-right). This opens the cart summary page.  
+10. Review the cart line item: confirm “iPad mini,” Colour = Purple, Storage = 256 GB, Quantity = 8, and verify the unit price and subtotal.  
+11. Click the “Checkout” or “Proceed to Checkout” button (often highlighted) beneath the order summary.  
+12. Sign in with your store account if prompted; otherwise, choose “Guest Checkout” and enter your email so you receive order confirmation later.  
+13. Fill in shipping information: name, address, phone number. Double-check the address for accuracy—it will appear on the delivery label.  
+14. Click “Continue” or “Next” to reach the shipping-method section. Select your preferred shipping speed (e.g., “Standard” or “Express”).  
+15. Click “Continue” to advance to payment. Enter payment details (credit card, debit card, PayPal, or store account).  
+16. Review the final order summary one last time—ensure it still reads 8 × iPad mini (Purple, 256 GB).  
+17. Click the “Place Order,” “Submit Order,” or similarly labeled button to finalize the purchase.  
+18. Wait for the confirmation screen; note the order number and estimated delivery date. We will use this reference if any follow-up is required.  
+19. Open your email inbox and verify the hardware store sent a confirmation message—this serves as proof the order for eight purple 256 GB iPad minis is successfully placed.

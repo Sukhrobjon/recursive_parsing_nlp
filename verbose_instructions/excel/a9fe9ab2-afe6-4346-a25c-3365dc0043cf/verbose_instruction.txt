@@ -1,0 +1,15 @@
+1. Click cell J2 in Sheet1.  
+2. Type `=B2-C2-D2-F2-G2-H2` into the Formula Bar and press ENTER to calculate the Gross Profit for the first record.  
+3. Click cell J2 again and move the cursor to the small square “fill handle” at the bottom-right corner of the cell.  
+4. Drag the fill handle straight down until you reach the last used row in column J (for example, row 10). Release the mouse button so the Gross Profit formula replicates for every row in the column.  
+5. Quickly verify a few random cells (e.g., J5 and J9) by selecting them and checking that their formula displays correctly in the Formula Bar.  
+6. Click the plus (+) icon labeled “New sheet” to the right of the Sheet1 tab to create a new worksheet.  
+7. Immediately type `Sheet2` and press ENTER to rename the new worksheet.  
+8. Switch to Sheet2 by clicking its tab.  
+9. Click cell A1.  
+10. Type `Year_Profit` and press ENTER to establish the column header.  
+11. Click cell A2.  
+12. Type `=CONCATENATE(Sheet1!A2,"_",Sheet1!J2)` and press ENTER to join the Year from Sheet1 column A with the calculated Gross Profit from Sheet1 column J, separated by an underscore.  
+13. Click cell A2 again, grab the fill handle at the bottom-right corner, and drag it down through the last matching row (e.g., A10). Release to copy the concatenation formula for every record.  
+14. Inspect two or three cells in column A (Sheet2) to confirm that each displays text in the pattern `Year_GrossProfit` (for instance, `2021_15000`).  
+15. Press Ctrl+S to save the workbook and preserve all changes.

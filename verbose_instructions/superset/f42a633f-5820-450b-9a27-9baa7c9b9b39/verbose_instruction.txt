@@ -1,0 +1,30 @@
+1. Navigate to the Superset web-UI in your browser and wait until the main landing page finishes loading.  
+2. Click the “Charts” menu entry in the blue top navigation bar—we land on the Charts list view.  
+3. Click the green “+ CHART” button in the upper-right corner to start the new-chart workflow.  
+4. Click the grey “Choose a dataset” drop-down field in the modal that appears.  
+5. Select the dataset named “flights” from the list (type flights in the search box if you do not see it immediately).  
+6. Scroll the “Visualization Type” gallery on the right, single-click “Pivot Table”, and confirm the card is highlighted in blue.  
+7. Click the blue “CREATE NEW CHART” button in the bottom-right of the modal—Superset now opens the chart builder.  
+8. Drag the column “department” from the “Columns & Metrics” side panel into the “COLUMNS” pill area; release when the blue highlight shows.  
+9. Drag the column “Travel Class” into the same “COLUMNS” pill area—it automatically nests after department.  
+10. Drag the column “Travel Date” into the “COLUMNS” pill area so it becomes the third level of hierarchy (department ▸ travel class ▸ Travel Date).  
+11. Click the grey “TIME GRAIN” drop-down directly beneath “Travel Date” in the control panel.  
+12. Select “Month” so each Travel Date entry is truncated to the month bucket—we will see “MONTH” appear under the Travel Date pill.  
+13. Drag the numeric column “Cost” to the “METRICS” pill area on the right side; Superset instantly wraps it in a SUM( Cost ) aggregate.  
+14. Verify the “Rows” pill area is empty—this ensures all grouping is done on the column side only.  
+15. Click the small blue floppy-disk icon that pops up near the top of the control panel (it appears once we make changes) to persist interim edits.  
+16. Locate the “FILTERS” section just below the pill areas and click the “+ ADD FILTER” link.  
+17. Choose “Travel Date” from the field drop-down that appears inside the new filter row.  
+18. Click the grey “TIME RANGE” input inside that same filter row to open the date-range dialog.  
+19. Click the “RANGE TYPE” selector in the upper-left of the dialog and choose “Custom”.  
+20. Click the “START (INCLUSIVE)” calendar field, switch to “Specific Date/Time” (bottom tab), set “2011-01-01 00:00:00”, then press the blue “Ok” button.  
+21. Click the “END (INCLUSIVE)” calendar field, again switch to “Specific Date/Time”, set “2011-06-30 00:00:00”, and press “Ok”.  
+22. Click the blue “APPLY” button in the lower-right of the date-range dialog—notice the filter pill now shows the precise range.  
+23. Click the large blue “RUN” button in the upper-left of the chart canvas; Superset queries the backend and renders a pivot table whose columns read Department ▸ Travel Class ▸ 2011-01, 2011-02 … 2011-06 and whose cell values are sums of cost.  
+24. Confirm that each column header is a three-level breadcrumb (hover to see full path) and that no months outside Jan-Jun 2011 are present—this validates our grouping and time filter.  
+25. Click the purple “SAVE” button in the top-right corner of the window to open the Save Chart dialog.  
+26. Type “TravelPrivot” (exact spelling) into the “CHART NAME” input field.  
+27. Ensure “Save as new” is selected (radio button) so we do not overwrite any existing chart.  
+28. Click the blue “SAVE” button at the bottom of the dialog—Superset writes the chart definition to metadata.  
+29. Observe the green toast notification “Chart TravelPrivot was saved successfully” in the lower-right corner—this is our success confirmation.  
+30. Click the left-facing arrow next to “Charts” in the breadcrumb bar to return to the Charts list; type TravelPrivot into the search box and verify the row appears with Visualization Type “Pivot Table” and last modified timestamp matching the current time.

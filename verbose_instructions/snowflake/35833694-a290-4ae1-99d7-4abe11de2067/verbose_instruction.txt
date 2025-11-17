@@ -1,0 +1,46 @@
+1. Click the left-hand navigation item “Data” and then click the sub-item “Databases”.  
+2. Click the blue “+ Database” button on the upper-right of the Databases page.  
+3. Type WIND_DB in the “Name” field of the modal dialog and press the “Create” button.  
+4. Locate the new WIND_DB entry in the center pane; click “WIND_DB ▸ PUBLIC” to select the default PUBLIC schema (if it is not visible, click the 3-dot icon above the list and choose “Refresh” first).  
+5. Click the “Create” button in the right-hand details panel, hover over “Table”, and choose “From File”.  
+6. In the file-loader dialog, click “Browse”, navigate to Desktop, select wind_dataset.csv, and choose “Open”.  
+7. Scroll to the “Name” field in the same dialog, type WIND as the target table name, then click the “Load” button at the bottom-right.  
+8. Wait for the green “Successfully Loaded Data” message, then click “Done”.
+
+9. Click “Projects” in the left navigation and then “Worksheets”.  
+10. Click the “+” icon at the top of the worksheets list and choose “SQL Worksheet”.  
+11. At the top of the new worksheet, click the grey “No database selected” selector, pick Database: WIND_DB and Schema: PUBLIC, then click outside the selector to close it.  
+12. Copy and paste the following query into the worksheet editor:
+
+```sql
+SELECT
+        SUBSTR(date, 1, 4)        AS YEAR,
+        AVG(wind)                 AS AVG_WIND_SPEED
+FROM    WIND
+GROUP BY
+        YEAR
+ORDER BY
+        YEAR;
+```
+
+13. Click the blue “Run” triangle in the upper-right of the worksheet; confirm the result grid now shows two columns: YEAR and AVG_WIND_SPEED.
+
+14. In the worksheet list on the left, hover over your current worksheet name, click the 3-dot icon, choose “Move → + New Dashboard”.  
+15. In the “Dashboard name” field type wind_dashboard, then click “Create Dashboard”.
+
+16. The worksheet is now embedded as a tile in wind_dashboard. Click the 3-dot icon on the tile’s upper-right corner and choose “View Table” so the full result grid is visible.  
+17. Click “Download results” on the result grid’s header and choose “Download as .csv”. A file named similar to query_result_<timestamp>.csv is saved to the browser’s default Downloads folder.  
+18. Click the “Chart” tab located just above the result grid.  
+19. In the chart controls on the right, set “Chart type” to “Bar”. Verify the X-axis shows YEAR and the Y-axis shows AVG_WIND_SPEED.  
+20. Click “Download chart” (down-arrow icon) in the upper-right of the chart area; the file downloads as a PNG image.
+
+21. Switch to the terminal (or file explorer in the virtual machine).  
+22. Run the following two commands to rename the downloaded artifacts:
+
+```bash
+mv ~/Downloads/query_result_*.csv ~/Downloads/avg_wind_speed.csv
+mv ~/Downloads/chart_*.png        ~/Downloads/avg_speed_chart.png
+```
+(Adjust paths if your environment stores downloads elsewhere.)
+
+23. Return to the Chromium browser tab titled “wind_dashboard” by clicking its tab in the top bar; you are now back on the dashboard page and ready for further work.

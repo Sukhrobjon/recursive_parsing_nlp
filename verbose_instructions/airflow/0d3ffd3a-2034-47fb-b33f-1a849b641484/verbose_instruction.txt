@@ -1,0 +1,41 @@
+1) Click the Terminal icon on the left dock of Astronomer VS Code to open an integrated shell.  
+2) Type the command below to list every DAG and capture the full metadata in JSON (this runs the Airflow CLI inside the Astronomer container):  
+```bash
+astro dev run airflow dags list --output json > /tmp/all_dags.json
+```  
+   • We redirect the JSON to /tmp/all_dags.json so we can filter it in the next step.
+
+3) Execute the jq one-liner to extract only DAGs whose owner field contains the string Astro and sort the resulting dag_id values alphabetically:  
+```bash
+cat /tmp/all_dags.json \
+  | jq -r '.[] | select(.owners[] == "Astro") | .dag_id' \
+  | sort
+```  
+   • The terminal prints something similar to  
+```
+astro_data_pipeline
+astro_ingestion
+astro_quality_check
+```  
+   These are the exact dag_id values we must later see in the UI.
+
+4) Note the final, sorted list on-screen (we will verify it in the browser next).
+
+5) Switch to the Chromium icon in the left dock to return to the Airflow web UI.
+
+6) In the top navigation bar, click the “DAGs” link to ensure you are on the main DAGs page.
+
+7) Locate the “Filter” panel directly above the DAG list and click the “Owner” multi-select drop-down.
+
+8) Scroll (or type) until you see Astro, then click the checkbox next to “Astro”.  
+   • The list immediately refreshes, showing only DAGs owned by Astro.
+
+9) Click once on the “DAG Id” column header so that a small upward-pointing triangle appears.  
+   • This sorts the currently-filtered list in ascending (A→Z) order.
+
+10) Verify that the DAG ids now displayed match exactly the list you captured in step 3 (astro_data_pipeline, astro_ingestion, astro_quality_check, etc.).  
+    • If any DAG is missing or out of order, click the “DAG Id” header again and re-confirm the sort indicator is still ascending.
+
+11) (Optional) For additional assurance, hover over each DAG row and check the “Owner” chip—each should read Astro.
+
+We have now filtered all DAGs with owner ‘Astro’ and confirmed they are sorted in ascending order of dag_id both via CLI and on the Airflow website.

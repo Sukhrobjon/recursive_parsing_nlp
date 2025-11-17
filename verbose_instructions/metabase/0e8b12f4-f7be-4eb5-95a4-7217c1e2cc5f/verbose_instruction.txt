@@ -1,0 +1,15 @@
+1. Click the “New” button in the top-right corner of the Metabase header.  
+2. Select “Question” from the drop-down menu that appears.  
+3. Click “Sample Database,” then choose the “Orders” table from the list.  
+4. Click the blue “Pick the metric you want to see” button in the editing pane.  
+5. Select “Average of …” from the aggregation options.  
+6. Choose the “Total” field in the column list so the metric now reads “Average of Total.”  
+7. Click the gray “Pick a column to group by” button directly beneath the metric.  
+8. Select “User ID” to group the averages by each user.  
+9. Click the “Sort” button (down-arrow icon) in the top bar of the editor.  
+10. In the “Sort by” pop-up, choose “Average of Total” so the results are ordered by the calculated average.  
+11. Click the “+” (plus) icon to the right of “Average of Total” in the sort dialog.  
+12. Choose “User ID” so a secondary alphabetical sort is added after the primary numeric sort.  
+13. Click the “Row limit” link that appears under the table preview.  
+14. Type 10 in the input box and press Enter to limit the result set to the top 10 rows.  
+15. Verify that the preview table now shows exactly 10 rows, grouped by “User ID,” sorted by “Average of Total,” and matching the expected output of the SQL query.

@@ -1,0 +1,49 @@
+1. Click the “+ Worksheet” button in Snowflake’s web UI so we have a fresh SQL canvas to work in.
+
+2. Type the following two commands to make sure you have the privileges to recover objects, then click the ▶ “Run” button:  
+```sql
+USE ROLE accountadmin;
+USE WAREHOUSE compute_wh;
+```
+(We use ACCOUNTADMIN because it has the power to undrop objects across all databases.)
+
+3. Write and run a quick sanity check to confirm the table really is in the “dropped” state and still within the Time-Travel retention window:  
+```sql
+SHOW TABLES HISTORY IN MALL.PUBLIC LIKE 'CUSTOMERS';
+```
+A row should appear with “dropped_on” populated and “is_deleted” = TRUE. Note the “dropped_on” timestamp—you must restore before your retention window expires.
+
+4. Type the recovery command and run it:  
+```sql
+USE DATABASE MALL;
+USE SCHEMA PUBLIC;
+UNDROP TABLE CUSTOMERS;
+```
+Snowflake will return “Table CUSTOMERS successfully restored.”
+
+5. Verify that the table is present again:  
+```sql
+SHOW TABLES IN MALL.PUBLIC LIKE 'CUSTOMERS';
+```
+You should now see “is_deleted” = FALSE.
+
+6. Run a quick row-count query to ensure the data was restored:  
+```sql
+SELECT COUNT(*) AS row_count
+FROM MALL.PUBLIC.CUSTOMERS;
+```
+If the count matches what you expect (or is non-zero), the recovery succeeded.
+
+7. (Optional) For extra peace of mind, preview a few rows:  
+```sql
+SELECT *
+FROM MALL.PUBLIC.CUSTOMERS
+LIMIT 10;
+```
+
+8. Switch back to your normal role/warehouse if desired:  
+```sql
+USE ROLE sysadmin;
+USE WAREHOUSE analytics_wh;
+```
+Now the CUSTOMERS table has been fully recovered, and we can continue using it as before.

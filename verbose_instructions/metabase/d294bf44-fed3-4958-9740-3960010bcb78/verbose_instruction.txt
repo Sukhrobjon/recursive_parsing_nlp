@@ -1,0 +1,31 @@
+1. Click your user avatar in the upper-right corner of Metabase, then click “Admin” to switch to the Administration panel.
+
+2. Click “Databases” in the left-hand sidebar so we can see the list of existing connections.
+
+3. Click the blue “Add a database” button in the top-right corner.
+
+4. Type “Sample Database” into the “Name” field (exactly this text—Metabase will display this label everywhere).
+
+5. Click the drop-down labelled “Database type” and choose “H2” (this is the embedded file-based database Metabase ships with).
+
+6. Click in the “Database file” (or “DB file”) field and paste the exact class-path location of the sample file:
+```text
+jar:file:/app/metabase.jar!/sample-database.db
+```
+   Note that the string starts with jar:file: and ends with sample-database.db; it tells Metabase to open the H2 file packaged inside the running JAR.
+
+7. Leave “Database username”, “Password”, “SSL”, and “Additional JDBC connection string options” blank—those are not required for the embedded sample.
+
+8. Toggle the switch “Use a secure connection (SSL)” to OFF if it is not already (H2 embedded files do not use SSL).
+
+9. Scroll to the bottom and click the blue “Save” button.
+
+10. Wait for the green toast message “Successfully added” to appear; this confirms Metabase can read the sample file.
+
+11. Click “Browse data” on the left sidebar, then click the new entry “Sample Database” to open it. We should see tables like “Orders”, “Products”, “People”, etc. This visually confirms the schema is present.
+
+12. Click the “Orders” table, then click “Summarize” > “Count”, and press the blue “Done” button to run a quick query; a bar of any result (e.g., “2,999 rows”) confirms read access is working.
+
+13. Optional—if you plan to let all users explore the sample, click your avatar > Admin > Permissions > Sample Database and ensure “All Users” (or the groups you want) have at least “Unrestricted” or “View data only” access. Click “Save” if you changed anything.
+
+14. Switch back to your main workspace (click the Metabase logo). The Sample Database has now been fully restored and is ready for dashboards, questions, and tutorials.

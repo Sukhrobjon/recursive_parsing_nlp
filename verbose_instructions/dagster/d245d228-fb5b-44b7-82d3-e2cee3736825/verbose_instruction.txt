@@ -1,0 +1,33 @@
+1. Navigate to VS Code. In the Explorer on the left, expand the folder harry_potter_potions_tests.  
+2. Click the file test_assets.py. (If it doesn’t exist, right-click harry_potter_potions_tests, choose “New File”, type test_assets.py, and press Enter.)  
+3. Type the complete test code exactly as shown:  
+```python
+from dagster import materialize
+from harry_potter_potions.assets import all_potions, count_advanced_difficulty_potions
+
+
+def test_potions_assets():
+    # Materialize both assets in an in-process Dagster run
+    assets = [all_potions, count_advanced_difficulty_potions]
+    result = materialize(assets)
+
+    # 1) The run itself must succeed
+    assert result.success, "Dagster materialization failed"
+
+    # 2) The count returned by the asset must be exactly 14
+    cnt = result.output_for_node("count_advanced_difficulty_potions")
+    assert cnt == 14, f"Expected 14 advanced potions, got {cnt}"
+```
+4. Press Ctrl+S to save test_assets.py (watch the blue dot on the tab disappear).  
+5. Switch to the integrated Terminal (View → Terminal, or press Ctrl+` ).  
+6. Type the change-directory command and press Enter:  
+```bash
+cd /home/user/harry-potter-potions/
+```  
+   Verify the prompt now ends with harry-potter-potions $ .  
+7. Run the test suite:  
+```bash
+pytest harry_potter_potions_tests
+```  
+8. Observe the output: we expect “1 passed” with zero failures. Confirm that the line similar to “harry_potter_potions_tests/test_assets.py::test_potions_assets PASSED” is displayed.  
+9. Celebrate—we have a green test ensuring that all assets materialize and exactly 14 advanced-difficulty potions are produced.

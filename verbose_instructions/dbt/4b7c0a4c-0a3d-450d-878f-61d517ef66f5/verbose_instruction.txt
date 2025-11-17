@@ -1,0 +1,36 @@
+1. Open VSCode and Click the file explorer icon on the Activity Bar so we can see the project tree.  
+2. Navigate to models ➔ schema.yml and Double-click the file to open it in the editor tab.  
+3. Scroll (or search with Ctrl + F) for the existing `sources:` block. If none exists, we will create one at the top of the file right under the first `version:` key.  
+4. Write the following YAML exactly, taking care with spacing (two spaces per indent) and quoting. If a `sources:` section already exists, Append only the nested part beginning with `- name: analytics`.  
+```yml
+sources:
+  - name: analytics
+    database: analytics
+    tables:
+      - name: orders
+        freshness:
+          error_after: {count: 5, period: hour}
+        loaded_at_field: "run_at"
+```  
+   Note that `error_after: {count: 5, period: hour}` instructs dbt to raise an error when the `run_at` timestamp is more than 5 hours old.  
+5. Press Ctrl + S to save schema.yml.  
+6. Switch to the integrated Terminal in VSCode by clicking Terminal ➔ New Terminal from the top menu so we can test the new freshness rule.  
+7. Type the command below to make sure dbt can parse the YAML we just edited:  
+```bash
+dbt compile
+```  
+   We expect “Compilation finished successfully”. If you see a YAML syntax error, return to step 4 and fix the indentation.  
+8. Run the freshness check specifically for this source so we do not wait on other sources:  
+```bash
+dbt source freshness --select source:analytics.orders
+```  
+9. Observe the output. dbt will display the most recent `run_at` value for analytics.orders and compare it to the current time.  
+   • If the timestamp is ≤ 5 hours old, the run finishes green and prints “Status: pass”.  
+   • If the timestamp is > 5 hours old, dbt exits with a non-zero status, prints “Status: error”, and explicitly states the table is stale.  
+10. (Optional) Simulate staleness by updating the `run_at` column in your dev warehouse to an older date, then Re-run step 8 to confirm that dbt correctly raises the error.  
+11. Commit the change so teammates inherit the freshness rule:  
+```bash
+git add models/schema.yml
+git commit -m "Add source freshness check for analytics.orders (error if >5h)"
+```  
+12. Push your commit with `git push`, and inform your team that they can now rely on `dbt source freshness` to catch stale data in analytics.orders automatically.

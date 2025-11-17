@@ -1,0 +1,8 @@
+1. Open the Jupyter Notebook interface in your browser and Navigate to the file browser panel on the left.  
+2. Click the notebook file (e.g., `analysis.ipynb`) to load it so we can see all current cell outputs.  
+3. Click the Menu item “Kernel” on the top menu bar.  
+4. Select “Restart Kernel and Clear All Outputs…” from the dropdown list. A confirmation dialog appears.  
+5. Click the blue “Restart and Clear All Outputs” button in the dialog. The notebook kernel restarts and every cell output area is now empty.  
+6. Scroll through the notebook from top to bottom to visually Verify that no cell shows plots, tables, or printed text—only empty gray output areas.  
+7. Press Ctrl + S (or Click “File → Save Notebook”) to save the cleared notebook so the output-free state is written to disk.  
+8. Close the notebook tab, then Re-open it from the file browser to double-check that the outputs remain cleared—this confirms success.

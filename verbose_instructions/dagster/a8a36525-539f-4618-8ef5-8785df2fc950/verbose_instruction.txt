@@ -1,0 +1,38 @@
+1. Switch to VS Code. In the Explorer left-hand navbar, single-click the folder named “iris_analysis” so its contents expand.  
+2. Double-click the file “assets.py” to open it in the editor pane.  
+3. Scroll to the very bottom of “assets.py”. Verify you can see the existing definition of the asset `iris_dataset` so we can declare the downstream dependency.  
+4. Type the following new Dagster asset immediately after the last line of the file:  
+   ```python
+   from dagster import asset
+   from resources import DuckDBResource  # ensure this import already exists; add if missing
+
+   # ------------------------------------------------------------------
+   # Asset: iris_virginica
+   # Filters the Iris dataset to only include rows where species is
+   # 'Iris-virginica' and stores them in a DuckDB table.
+   # ------------------------------------------------------------------
+   @asset(deps=[iris_dataset])
+   def iris_virginica(duckdb: DuckDBResource) -> None:
+       with duckdb.get_connection() as conn:
+           conn.execute(
+               """
+               CREATE OR REPLACE TABLE iris_virginica AS
+               SELECT *
+               FROM iris_dataset
+               WHERE species = 'Iris-virginica'
+               """
+           )
+   ```  
+   Note that we use `CREATE OR REPLACE` so repeated materializations simply overwrite the table.  
+5. Press Ctrl+S to save “assets.py”; confirm you see “●” disappear from the tab title indicating the file is saved.  
+6. Switch to the Chromium browser tab that shows the Dagster UI.  
+7. Click the blue “Reload definitions” button located in the top-right corner of the page; wait until the toast notification “Workspace rebuilt successfully” appears.  
+8. In the lineage graph, look for the new node labeled “iris_virginica”. Verify it is downstream of “iris_dataset”.  
+9. Click the green “Materialize all” button in the top-right corner of the graph. Dagster opens a Run page showing live logs.  
+10. Observe the logs until the status badge turns “Succeeded”. Ensure you see a log entry like `CREATE OR REPLACE TABLE iris_virginica ...` confirming the SQL executed.  
+11. (Optional) Open a terminal tab:  
+    ```bash
+    duckdb iris.duckdb "SELECT COUNT(*) FROM iris_virginica;"
+    ```  
+    Confirm the row count equals the number of Iris-virginica samples (expected 50).  
+12. Celebrate— the asset “iris_virginica” is now part of your pipeline and materialized successfully!

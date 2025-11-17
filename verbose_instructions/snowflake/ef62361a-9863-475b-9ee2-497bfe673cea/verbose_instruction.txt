@@ -1,0 +1,24 @@
+1. Click the left-hand menu item “Projects ›› Worksheets” to bring up the list of worksheets in Snowsight.  
+2. Click the blue “+” icon in the upper-right corner of the Worksheets pane.  
+3. Select “SQL Worksheet” from the drop-down so a new blank worksheet opens.  
+4. Type the following command to make sure you have sufficient privileges (substitute another role if you normally administer with a different one):  
+```sql
+USE ROLE accountadmin;
+```  
+5. Press the triangular “► Run” button in the upper-right corner of the worksheet to activate the role.  
+6. Type the next two lines to point the session at the correct warehouse and database:  
+```sql
+USE WAREHOUSE compute_wh;
+USE DATABASE MALL;
+```  
+7. Click “Run” again so the session context is now MALL.PUBLIC.  
+8. Write the actual recovery command in the worksheet immediately below the previous statements:  
+```sql
+UNDROP TABLE MALL.PUBLIC.CUSTOMERS;
+```  
+9. Hit “Run” once more. A result grid should appear showing “Statement executed successfully” with 1 row affected, confirming the table has been restored.  
+10. Type a quick verification query to be certain the metadata is back:  
+```sql
+DESCRIBE TABLE MALL.PUBLIC.CUSTOMERS;
+```  
+11. Click “Run”. If the DESCRIBE statement returns column definitions, we have successfully recovered the table; if not, verify that the original drop happened within the Time-Travel retention period and that no subsequent “PURGE” operation occurred.

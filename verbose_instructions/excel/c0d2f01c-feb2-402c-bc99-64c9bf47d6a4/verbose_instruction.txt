@@ -1,0 +1,20 @@
+1. Click cell B2 to activate the cell that already contains the acceleration formula.  
+2. Drag the small square (fill handle) in the bottom-right corner of B2 straight down to the last data row you need (for example B30) so Excel auto-copies the formula through the entire B column range.  
+3. Click cell D2 to select the first cell of the other calculated column.  
+4. Drag the fill handle of D2 straight down to the matching last row (for example D30) so every row in column D now holds the same formula pattern.  
+5. Click cell E1—the next empty column header—to prepare the new output column.  
+6. Type the text Combined Data and press Enter so the header is stored in E1.  
+7. Click cell E2 (first data row under the new header) to begin the concatenation formula.  
+8. Type or paste the formula below exactly, which builds the “Header: value” pattern with two-decimal rounding:  
+
+```excel
+=$A$1 & ": " & FIXED(A2, 2) & ", " &
+ $B$1 & ": " & FIXED(B2, 2) & ", " &
+ $C$1 & ": " & FIXED(C2, 2) & ", " &
+ $D$1 & ": " & FIXED(D2, 2)
+```  
+
+9. Press Enter; E2 now displays the combined, rounded text for row 2.  
+10. Drag the fill handle of E2 down to the same last row used in steps 2 and 4 (for example E30) so every row receives its own concatenated string.  
+11. Scroll through column E to verify each entry follows the pattern “Header: 00.00, … , Header: 00.00” and that the numeric parts show exactly two decimals.  
+12. Press Ctrl+S to save all completed calculations and the new Combined Data column.

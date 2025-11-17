@@ -1,0 +1,26 @@
+1. Click the “Data Products” menu in the left navigation pane, then click “Marketplace” in the sub-menu that appears.  
+2. Click into the search bar labeled “Search providers and data products” at the very top of the Marketplace window.  
+3. Type `American` and press Enter.  
+4. Scan the results list; click the card titled “American Community Survey, 2016” (it should show the U.S. Census Bureau as provider).  
+5. Click the blue “Get” button in the upper-right corner of the listing details page.  
+6. In the confirmation dialog, click the secondary blue “Get” button at the bottom-right.  
+7. Wait several seconds until the success dialog appears, then click the “Done” button.  
+8. Click the “Databases” icon (cylinder symbol) in the left navigation pane to verify the share was added; the new database will have the provider’s default name (e.g., `AMERICAN_COMMUNITY_SURVEY_2016`).  
+9. Click the triangle ▶ to the left of the new database name to expand it, then click to expand the only schema (usually `PUBLIC`).  
+10. Scroll down the object list and confirm the table `ACS-2016-5-E-INDUSTRY_01_TABLEKEY` is present; this verifies the correct dataset is available.  
+11. Click the “SQL Worksheet” button (paper & pen icon) in the top-right of Snowsight to open a new worksheet.  
+12. Type the following commands to set context and preview data:  
+
+```sql
+-- Use the provider’s default database and schema
+USE DATABASE AMERICAN_COMMUNITY_SURVEY_2016;
+USE SCHEMA PUBLIC;
+
+-- Inspect the first 10 rows of the target table
+SELECT *
+FROM "ACS-2016-5-E-INDUSTRY_01_TABLEKEY"
+LIMIT 10;
+```  
+
+13. Click the “► Run” button in the upper-right of the worksheet.  
+14. Confirm the results grid returns 10 rows without error; this final check proves the Marketplace import and access are successful.

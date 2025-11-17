@@ -1,0 +1,93 @@
+1) Click the VS Code icon in the dock to open the editor that already shows the file  Desktop/s3_to_snowflake.txt  (the spec sheet)  
+2) Read the bucket URI, AWS IAM Role and CSV structure from the file; assume we find:  
+   • Bucket: s3://acme-datalake/landing/sales/2024/*.csv  
+   • AWS_ROLE: arn:aws:iam::123456789012:role/snowflake-s3-access  
+   • Columns: id (NUMBER), sale_date (DATE), amount (FLOAT), region (VARCHAR)  
+   We will use these values in later commands  
+3) Switch to the macOS Terminal (⌘+Space → type “Terminal”) so we can run SnowSQL CLI  
+4) Execute the login command to Snowflake (replace <> with your real info):  
+```bash
+snowsql -a <account_name> -u <user_name> -r SYSADMIN
+```  
+5) Type the warehouse you want to use so large CSVs will parse quickly:  
+```sql
+USE WAREHOUSE ETL_WH;
+```  
+   Note that SYSADMIN + ETL_WH is enough to create stages and tables; we will grant finer access later  
+6) Create a dedicated database and schema to keep raw files organized:  
+```sql
+CREATE DATABASE IF NOT EXISTS RAW_DB;
+CREATE SCHEMA IF NOT EXISTS RAW_DB.SALES;
+USE SCHEMA RAW_DB.SALES;
+```  
+7) Write the FILE FORMAT definition so Snowflake understands the incoming CSVs (comma-delimited, header row):  
+```sql
+CREATE OR REPLACE FILE FORMAT CSV_SALES_FF
+  TYPE = 'CSV'
+  FIELD_DELIMITER = ','
+  SKIP_HEADER = 1
+  FIELD_OPTIONALLY_ENCLOSED_BY = '"'
+  NULL_IF = ('', 'NULL');
+```  
+8) Create the external STAGE that points at the S3 bucket and leverages the IAM role we saw in step 2:  
+```sql
+CREATE OR REPLACE STAGE STG_SALES_S3
+  URL = 's3://acme-datalake/landing/sales/2024/'
+  CREDENTIALS = (AWS_ROLE = 'arn:aws:iam::123456789012:role/snowflake-s3-access')
+  FILE_FORMAT = CSV_SALES_FF;
+```  
+   We will use this later in the COPY INTO statement  
+9) Verify Snowflake can list the bucket by running:  
+```sql
+LIST @STG_SALES_S3;
+```  
+   We should see several *.csv files and their sizes — if you see “Access Denied” check the ARN again  
+10) Create the target TABLE following the column order provided in the spec:  
+```sql
+CREATE OR REPLACE TABLE SALES_RAW (
+    id          NUMBER,
+    sale_date   DATE,
+    amount      FLOAT,
+    region      VARCHAR
+);
+```  
+11) Load the objects from S3 into the table:  
+```sql
+COPY INTO SALES_RAW
+  FROM @STG_SALES_S3
+  FILE_FORMAT = (FORMAT_NAME = 'CSV_SALES_FF')
+  ON_ERROR = 'CONTINUE';   -- We keep going; bad rows will be skipped and reported
+```  
+12) Confirm the row count so we know the data actually landed:  
+```sql
+SELECT COUNT(*) AS total_rows FROM SALES_RAW;
+```  
+   We expect the number to match the combined record count shown in the LIST output earlier  
+13) Optionally check a sample of the data to ensure the date and numeric parsing looks correct:  
+```sql
+SELECT * FROM SALES_RAW LIMIT 20;
+```  
+14) Persist metadata for later users; grant SELECT rights to the BI_ROLE group:  
+```sql
+GRANT USAGE ON DATABASE RAW_DB TO ROLE BI_ROLE;
+GRANT USAGE ON SCHEMA RAW_DB.SALES TO ROLE BI_ROLE;
+GRANT SELECT ON TABLE SALES_RAW TO ROLE BI_ROLE;
+```  
+15) Switch back to VS Code to update a README for future reference:  
+   a) Add the stage, file format and table DDL we just executed into  docs/snowflake_loads.md  
+   b) Save the file (⌘+S)  
+16) Return to SnowSQL Terminal and describe the table so we can archive the metadata into a ticket:  
+```sql
+DESC TABLE SALES_RAW;
+```  
+   Copy the output and paste it into your Jira/Notion card  
+17) Finally, validate AWS billing isn’t surprised:  
+```sql
+SELECT * FROM TABLE(VALIDATE(@STG_SALES_S3, JOB_ID => '_last')); 
+```  
+   We can see skipped rows or parse errors, if any, and address them tomorrow  
+18) Exit SnowSQL cleanly so tokens aren’t left hanging:  
+```sql
+!exit
+```  
+19) Close Terminal (⌘+Q) and VS Code (⌘+Q). The S3-to-Snowflake load and schema modification task is now complete.

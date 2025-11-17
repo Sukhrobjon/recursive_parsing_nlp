@@ -1,0 +1,7 @@
+1) Confirm the notebook is open in your browser and you can see both the menu bar (File, Edit, View…) and at least one code cell with visible output (e.g., printed text, tables, or plots).  
+2) Click the Edit menu in the top-most menu bar (it sits between File and View).  
+3) Locate the option labeled “Clear Outputs of All Cells” (in some Jupyter versions it appears as “Clear All Outputs”).  
+4) Click “Clear Outputs of All Cells”.  
+5) Wait 1–2 seconds; the previously visible outputs beneath every code cell should disappear, leaving blank white space.  
+6) Verify success by scrolling through the notebook—no cell should show printed text or images; only input cells remain.  
+7) (Optional) Press Ctrl+S or click File ➜ Save Notebook to store the now-clean version without outputs.

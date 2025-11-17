@@ -1,0 +1,110 @@
+1. Click the VS Code icon in the left dock to open the editor that is mounted to your Astro project.  
+2. Navigate in the Explorer panel to the file requirements.txt and click it.  
+3. Type the two extra lines below to add Cosmos and dbt/Postgres support, then press Ctrl + S:  
+   ```text
+   astronomer-cosmos[postgres]==0.8.2
+   dbt-postgres==1.6.0
+   ```  
+   Note that the `[postgres]` extra pulls in dbt-core automatically, but pinning dbt-postgres explicitly guarantees version alignment with your local dbt project.
+
+4. Switch to the integrated Terminal tab at the bottom of VS Code (or click the Terminal icon on the left panel if it is not visible).  
+5. Execute a container rebuild so the new Python packages are baked into the Airflow image:  
+   ```bash
+   astro dev restart
+   ```  
+   Wait until the CLI prints “Airflow webserver health check healthy” – we’ll use the rebuilt image next.
+
+6. In the Explorer, right-click the dags folder ▸ New File ▸ type jaffle_shop_dag.py and press Enter.  
+7. Write the following DAG code and press Ctrl + S.  This uses Astro + Cosmos to wrap the existing dbt project in a task group that will run every day at 10 a.m.
+
+   ```python
+   # dags/jaffle_shop_dag.py
+   from datetime import datetime
+   from airflow import DAG
+
+   # Cosmos imports
+   from cosmos import DbtTaskGroup, ProjectConfig, ExecutionConfig, RenderConfig
+   from cosmos.profiles import PostgresUserPasswordProfileMapping
+
+   DBT_PROJECT_PATH = "/opt/airflow/dags/dbt/jaffle_shop"  # Container path
+   POSTGRES_CONN_ID = "postgres_default"  # replace if you created a custom conn
+
+   with DAG(
+       dag_id="jaffle_shop_dag",
+       description="Daily dbt run for the Jaffle Shop project (Cosmos)",
+       schedule="0 10 * * *",        # 10:00 a.m. every day
+       start_date=datetime(2024, 1, 1),
+       catchup=False,
+       tags=["dbt", "cosmos", "jaffle_shop"],
+   ) as dag:
+
+       jaffle_tg = DbtTaskGroup(
+           group_id="dbt_jaffle_shop",
+           project_config=ProjectConfig(
+               project_path=DBT_PROJECT_PATH
+           ),
+           # Map the Airflow connection into a dbt profile on-the-fly
+           profile_config=PostgresUserPasswordProfileMapping(
+               conn_id=POSTGRES_CONN_ID,
+               profile_name="jaffle_shop",
+               target_name="prod",
+           ),
+           execution_config=ExecutionConfig(
+               dbt_executable_path="/usr/local/bin/dbt"  # inside the container
+           ),
+           render_config=RenderConfig(
+               load_source=True      # show model SQL in Airflow log links
+           ),
+       )
+
+       # Task group is the lone node in this simple DAG
+       jaffle_tg
+   ```
+
+   • Reasoning: Cosmos’ `PostgresUserPasswordProfileMapping` dynamically builds profiles.yml from your existing Airflow connection, so no hard-coded credentials are checked into Git.
+
+8. Still in the Explorer, expand dags ▸ dbt ▸ jaffle_shop.  Confirm that your dbt project folders (`models`, `macros`, etc.) already exist there—Cosmos relies on this path at run-time.
+
+9. If the dbt project does NOT yet contain a profiles.yml, right-click the jaffle_shop folder ▸ New File ▸ type profiles.yml and paste the minimal stub below, then save.  (Cosmos will overwrite values at execution, but the file must be present for dbt to load a profile.)
+
+   ```yaml
+   jaffle_shop:
+     target: prod
+     outputs:
+       prod:
+         type: postgres
+         host: "{{ env_var('POSTGRES_HOST') }}"
+         user: "{{ env_var('POSTGRES_USER') }}"
+         password: "{{ env_var('POSTGRES_PASSWORD') }}"
+         port: "{{ env_var('POSTGRES_PORT') }}"
+         dbname: "{{ env_var('POSTGRES_DB') }}"
+         schema: public
+         threads: 4
+   ```
+
+10. Switch back to the Terminal and restart the stack one more time so the new DAG file is detected:  
+    ```bash
+    astro dev restart
+    ```
+
+11. Click the Chromium icon in the left dock to open the Airflow UI (usually at http://localhost:8080).  
+12. Log in if prompted (default astro / astro).  
+13. Locate jaffle_shop_dag in the DAGs list.  
+14. Click the grey toggle switch to the left of the DAG name to unpause it—Airflow now schedules it automatically for 10:00 a.m. every day.  
+15. Verify the schedule: look in the “Next Run” column and confirm the timestamp is today at 10:00:00 with your server’s timezone offset.  
+
+16. Click the ▶ triangle in the Action column to trigger an immediate run so we can test everything now.  
+17. Wait until the status dot in the “Runs” column turns green (success) or red (failure).  For a medium-sized Jaffle Shop project this is usually < 1 min on a local Postgres DB.
+
+18. Click jaffle_shop_dag to open the DAG details screen, then click the Graph tab.  We can see a single turquoise box labelled dbt_jaffle_shop; double-click it to view the auto-generated sub-DAG of dbt tasks (models/tests).  
+19. Click any model task (e.g., orders) ▸ Logs in the right-hand side panel to inspect output; we should see standard dbt run output ending with “Completed successfully”.  
+
+20. Switch back to the integrated Terminal and run a quick Airflow CLI query to confirm that the DAG is activated and has no import errors:  
+    ```bash
+    astro dev psql airflow
+    SELECT dag_id, is_paused FROM dag WHERE dag_id = 'jaffle_shop_dag';
+    \q
+    ```  
+    The query must return `is_paused | False`.
+
+21. Celebrate—the existing dbt project is now fully orchestrated by Airflow via Cosmos, scheduled daily at 10 a.m., and the DAG is active.

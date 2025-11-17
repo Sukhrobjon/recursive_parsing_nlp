@@ -1,0 +1,25 @@
+1. Click the top-level menu item “Charts” so we land on the main Charts gallery.  
+2. Click the blue “+ CHART” button in the upper-right corner to start a new visualization.  
+3. Click the “Choose a dataset” drop-down that pops up in the modal.  
+4. Select the dataset named flights (you should now see “flights” highlighted).  
+5. In the right-hand pane, click the thumbnail labeled “Line Chart” under the Time Series section.  
+6. Click the blue “CREATE NEW CHART” button at the bottom of the modal; the Chart Builder opens.  
+7. Drag the field “Travel Date” from the left Data panel into the X-AXIS input box—this tells the chart to plot by date.  
+8. Drag the field “Cost” from the same Data panel into the METRICS box.  
+9. Click the small caret ▼ inside the METRICS pill to expand its settings.  
+10. Click the “Aggregate” selector and choose “AVG” so the metric now reads AVG(Cost).  
+11. Click the green “SAVE” button inside that metrics pop-over to confirm.  
+12. Click the large blue “CREATE CHART” button at the bottom of the screen to render the initial line chart.  
+13. Scroll down the right configuration sidebar until you see the accordion titled “Advanced analytics.”  
+14. Click “Advanced analytics” to expand it.  
+15. Click the toggle or > icon next to “Rolling function” so a new set of controls appears.  
+16. Select “mean” from the “Rolling function” drop-down (we want a rolling mean, not sum or std).  
+17. Type 7 in the “Periods” input—this defines our 7-day window.  
+18. Type 7 in the “Min periods” input so partial windows are not included.  
+19. Click the blue “CREATE CHART” button again; the preview should now smooth out into a 7-day rolling mean line.  
+20. Verify the tooltip by hovering over any point—confirm it reads “AVG(Cost) – Rolling Mean (7)” and values are smoothed.  
+21. Click the green “SAVE” button in the upper-right corner of the page.  
+22. Type rolling_mean into the “Chart name” text box of the save dialog.  
+23. (Optional) Choose or create the appropriate “Dashboard” or folder if you want to store it somewhere specific.  
+24. Click the green “SAVE” button at the bottom of the dialog; you are redirected back to the Charts gallery.  
+25. Confirm success by locating “rolling_mean” in the list—its Type column should read “Line chart” and clicking it should show the smoothed trend line with a legend entry “AVG(Cost) – Rolling Mean (7).”

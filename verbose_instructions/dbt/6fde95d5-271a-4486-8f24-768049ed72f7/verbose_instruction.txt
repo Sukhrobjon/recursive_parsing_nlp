@@ -1,0 +1,69 @@
+1) Switch to the terminal  
+
+2) Type `dbt debug` and press Enter to confirm the project can connect to the target warehouse; wait until you see the green line `All checks passed!`  
+
+3) Run `dbt seed` to load the two seed files; ensure the terminal prints `Finished running 2 seeds` so we know `raw_customers` and `raw_orders` are now available  
+
+4) Switch to VS Code  
+
+5) In the Explorer panel, click the triangle next to the `models` folder, then click `customers.sql` to open it in a new tab  
+
+6) Highlight the empty `select` block (it probably reads `-- TODO: add columns here`) and replace its contents with the exact column list below:  
+```sql
+customers.customer_id,
+customers.first_name,
+customers.last_name,
+customer_orders.first_order_date,
+customer_orders.most_recent_order_date,
+coalesce(customer_orders.number_of_orders, 0) as number_of_orders
+```  
+
+7) Verify the file now contains a valid CTE chain. If it is still incomplete, copy-paste this full template to overwrite the file:  
+```sql
+{{ config(materialized='table') }}
+
+with customers as (
+
+    select *
+    from {{ ref('raw_customers') }}
+
+), orders as (
+
+    select *
+    from {{ ref('raw_orders') }}
+
+), customer_orders as (
+
+    select
+        customer_id,
+        min(order_date)  as first_order_date,
+        max(order_date)  as most_recent_order_date,
+        count(*)         as number_of_orders
+    from orders
+    group by customer_id
+
+)
+
+select
+    customers.customer_id,
+    customers.first_name,
+    customers.last_name,
+    customer_orders.first_order_date,
+    customer_orders.most_recent_order_date,
+    coalesce(customer_orders.number_of_orders, 0) as number_of_orders
+from customers
+left join customer_orders using (customer_id)
+```  
+Note that the final `select` satisfies every requirement listed in the comment header of `customers.sql`. We will use this completed model in the next step.  
+
+8) Press Ctrl+S (or ⌘+S on macOS) to save the file  
+
+9) Switch back to the terminal  
+
+10) Run `dbt run` to build the `customers` model; watch the output until you see `1 of 1 OK created` (or `materialized as table`), confirming the model built successfully  
+
+11) Type `dbt test --models customers` and press Enter to execute any schema tests that might exist; ensure all tests return `PASS` so we know the data matches expectations  
+
+12) Optionally, run `dbt docs generate && dbt docs serve` to open the docs site in your browser—navigate to `customers` in the DAG to visually confirm lineage from `raw_customers` and `raw_orders`  
+
+13) Celebrate—we have completed the declaration and successfully built the `customers` model from scratch!

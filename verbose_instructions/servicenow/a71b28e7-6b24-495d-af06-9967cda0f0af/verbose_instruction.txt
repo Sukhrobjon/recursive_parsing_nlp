@@ -1,0 +1,10 @@
+1. Click the “Hardware” panel in the main navigation bar and wait until the catalog grid finishes loading (watch for the spinning loader to disappear).  
+2. Click inside the top-right search box labeled “Search catalog”.  
+3. Type the exact phrase Apple MacBook Pro 15" (include the double quote) and press Enter to apply the search filter.  
+4. Verify the results list now shows a single card titled “Apple MacBook Pro 15"” with an Apple logo thumbnail.  
+5. Click the product card to open the product-detail pane on the right side of the screen.  
+6. Click the Quantity dropdown inside the product-detail pane; choose the option 5 from the numeric list.  
+7. Confirm the Total updates to reflect 5 units (price × 5) just below the dropdown.  
+8. Click the blue Order Now button located at the bottom of the pane.  
+9. Wait for the success toast that reads “Request placed successfully” and note the order reference number displayed in the toast for future tracking.  
+10. Switch to the Orders tab in the main navigation bar, locate today’s entry with the same reference number, and ensure the status column shows “Pending — Supplier” to confirm the order has been logged in the system.

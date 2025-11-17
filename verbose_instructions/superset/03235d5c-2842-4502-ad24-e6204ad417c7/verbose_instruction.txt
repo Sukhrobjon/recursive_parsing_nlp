@@ -1,0 +1,33 @@
+1) Review the opened `config.yaml` in the editor so we know the credentials we will use later:  
+```
+host: db
+port: 5432
+database: superset
+username: superset
+password: superset
+```  
+We will reference these exact values in the Superset UI.
+
+2) Switch to the Superset web browser tab so we can create the connection.
+
+3) Click the gear-shaped "Settings" icon in the top-right toolbar.
+
+4) Select the submenu item "Database Connections" (sometimes shown simply as "Databases") to open the list of existing connections.
+
+5) Click the blue "+ DATABASE" button in the upper-right corner of the Databases screen.
+
+6) In the "Connect a database" modal, click the tile labeled "PostgreSQL" under the "Supported Databases" section.
+
+7) Type the credentials from `config.yaml` into the form fields exactly as below:  
+   • In the HOST field enter `db`  
+   • In the PORT field enter `5432`  
+   • In the DATABASE NAME field enter `superset`  
+   • In the USERNAME field enter `superset`  
+   • In the PASSWORD field enter `superset`  
+   • In the DISPLAY NAME field enter `MyPostgresConn` (this is the label that will appear in Superset)
+
+8) Scroll down (if necessary) and click the "CONNECT" button at the bottom of the modal. Superset will briefly run a connectivity check; a green success toast should appear in the upper-right corner.
+
+9) Click the "FINISH" button to save the configuration and close the modal.
+
+10) Observe the Databases list; verify that a new row titled "MyPostgresConn" now appears with a green status dot. This confirms that Superset can reach the local PostgreSQL instance and the connection is active.

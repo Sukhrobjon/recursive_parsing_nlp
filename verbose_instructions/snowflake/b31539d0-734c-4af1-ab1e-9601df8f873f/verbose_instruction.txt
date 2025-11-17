@@ -1,0 +1,14 @@
+1. Click the magnifying-glass icon labelled “Search” in the very top-left toolbar of the Snowflake web UI.  
+2. Type the keyword orders in the search bar that appears and press Enter; Snowflake shows a results panel with tabs such as “All”, “Worksheets”, “Databases”, etc.  
+3. Click the tab named “Worksheets” so we only see worksheet assets.  
+4. Click the small down-arrow icon next to “Sort By” (upper-right of the results pane) and select “Last Modified (Desc)”; Snowflake now lists the most recently edited worksheet at the top.  
+5. Observe the first entry—this is the latest worksheet that contains the term “orders”. Verify the “Last Updated” timestamp is the most recent.  
+6. Double-click that worksheet name; Snowflake opens the worksheet in a new browser tab inside the UI.  
+7. Click anywhere inside the SQL editor pane, then press Ctrl + A (Cmd + A on Mac) to highlight all text, followed by Ctrl + C (Cmd + C) to copy the entire set of SQL commands.  
+8. Switch to your operating system’s desktop (minimize the browser window or use Alt + Tab).  
+9. Right-click on an empty area of the Desktop and choose “New ▸ Text Document” (Windows) or “New Document” (macOS).  
+10. Type result.sql as the file name (ensure the extension is .sql) and press Enter.  
+11. Double-click the newly created result.sql file; it opens in your default text editor (typically Notepad on Windows or TextEdit on macOS).  
+12. Press Ctrl + V (Cmd + V) to paste the copied SQL commands into the file.  
+13. Press Ctrl + S (Cmd + S) to save. Confirm that the window title bar shows “result.sql” without an asterisk, indicating the file is saved.  
+14. Return to the Desktop and verify that result.sql appears; optionally double-click to reopen and make sure the SQL content is present. You have now located the latest worksheet referencing “orders” and stored its SQL into result.sql on the Desktop.

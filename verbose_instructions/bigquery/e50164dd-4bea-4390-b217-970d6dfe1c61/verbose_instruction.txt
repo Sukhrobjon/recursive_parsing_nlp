@@ -1,0 +1,39 @@
+1) Switch to the Terminal app that is already open in the bottom dock  
+2) Type the command below to move into the Desktop directory and silently unzip the archive into a sub-folder called names  
+```bash
+cd ~/Desktop
+unzip -q names.zip -d names
+```  
+3) Verify that only the 2014 file is present by listing the directory and filtering for 2014  
+```bash
+ls names | grep 2014
+```  
+   We should see exactly one file: `yob2014.txt`. We will use this later.
+
+4) Change to the Chrome tab that shows the BigQuery console (bigquery.cloud.google.com)  
+5) In the left-hand “Explorer” panel, Click the blue “+ ADD” button  
+6) Click the card labeled “Local file” in the “Create table” pop-up window that appears  
+7) Click inside the “Select file” field, browse to `~/Desktop/names`, highlight `yob2014.txt`, and click “Open”  
+8) Click the “File format” drop-down and choose “CSV”  
+9) Under “Destination”, Click the link “CREATE NEW DATASET”  
+10) In the Dataset creation dialog, type `babynames` into “Dataset ID”, leave the default location unchanged, and Click the blue “CREATE DATASET” button  
+11) Back in the table form, the “Dataset” field should now read `babynames`. Click into the “Table” field and type `names_2014`  
+12) Scroll to the “Schema” section and Click the gray “+ ADD FIELD” button three times, then fill the rows exactly:  
+   • Field name: `name` Type: STRING  
+   • Field name: `assigned_sex_at_birth` Type: STRING  
+   • Field name: `count` Type: INTEGER  
+13) Confirm “Header rows to skip” is set to 0 and “Auto detect” is NOT checked (we define schema manually)  
+14) Click the blue “CREATE TABLE” button at the bottom of the form and wait until the green toast notification “Table created successfully” appears in the lower-right corner  
+15) In the “Explorer” panel, Click the triangle to expand the `babynames` dataset, then Click `names_2014`. We can see a preview confirming columns name, assigned_sex_at_birth, count  
+16) Switch back to Terminal to run a quick row-count verification with the bq CLI  
+```bash
+bq query --use_legacy_sql=false \
+'SELECT COUNT(*) AS total_rows FROM `babynames.names_2014`'
+```  
+   The command should return a non-zero number of rows, proving the upload succeeded.
+
+17) Finally, type  
+```bash
+bq show --schema --format=prettyjson babynames.names_2014
+```  
+   and verify the schema matches the three fields we created: STRING, STRING, INTEGER. If everything looks correct, the import for 2014 is complete.

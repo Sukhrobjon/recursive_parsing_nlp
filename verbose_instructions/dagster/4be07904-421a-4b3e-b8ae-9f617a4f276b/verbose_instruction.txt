@@ -1,0 +1,68 @@
+1. Click the VS Code icon in the dock to focus the editor.  
+2. Click the tab named ​sklearn_ops.py​ at the top of the window.  
+3. Scroll (Pg Dn twice) until you see the function header ​def get_features(.  
+4. Replace the existing cols line with the new list that includes Age and Fare. Type exactly:  
+```python
+    cols = ["Parch", "Embarked", "Sex", "Name", "Age", "Fare"]
+```  
+5. Press Ctrl + S so VS Code saves ​sklearn_ops.py​ (watch the white dot on the tab disappear).  
+6. Still in ​sklearn_ops.py​, scroll up a few lines to locate the function ​encode_features​.  
+7. Verify the top-of-file imports already include SimpleImputer; if not, type on the first unused import line:  
+```python
+from sklearn.impute import SimpleImputer
+```  
+8. Inside encode_features, insert the imputer pipeline that handles Age and Fare. Highlight everything between the existing make_column_transformer parentheses and paste this block:  
+```python
+    ct = make_column_transformer(
+        (imp_ohe, ["Embarked", "Sex"]),
+        (vect, "Name"),
+        (imp, ["Age", "Fare"]),          # <- mean imputation for numeric columns
+        remainder="passthrough",
+    )
+```  
+   Note that “imp” is already defined as SimpleImputer() with default strategy="mean", so missing Age and Fare values will be filled with each column mean.  
+9. Press Ctrl + S again to save changes.  
+10. Click the tab ​sklearn_schedule.py​ at the top of VS Code. (If it is not open, press Ctrl + P, type the filename and hit Enter.)  
+11. Add the weekday-hour schedule code to the bottom of the file. Type:  
+```python
+from dagster import schedule
+
+
+@schedule(
+    cron_schedule="0 * * * 1-5",   # every hour on weekdays
+    job_name="sklearn_job",
+)
+def every_weekday_hour():
+    return {}
+```  
+12. Press Ctrl + S to save sklearn_schedule.py.  
+13. Click the tab ​sklearn_repository.py​.  
+14. Insert the schedule into the returned repository dictionary so the file now ends with:  
+```python
+from dagster import repository
+from jobs.sklearn_job import sklearn_job
+from schedules.sklearn_schedule import every_weekday_hour
+
+
+@repository
+def sklearn_repo():
+    return {
+        "jobs": {
+            "sklearn_job": lambda: sklearn_job,
+        },
+        "schedules": {
+            "every_weekday_hour": lambda: every_weekday_hour,
+        },
+    }
+```  
+15. Press Ctrl + S to save sklearn_repository.py and confirm there is no linting red bar.  
+16. Switch to Chromium by clicking the Chromium icon in the dock.  
+17. In the Dagster UI, locate the banner “Job in sklearn_repo@sklearn_repository.py” and click the circular arrow (Reload) on its right. Wait for the green toast “Repository successfully reloaded.”  
+18. Click the tab labelled “sklearn_job” in the left sidebar, then click the blue “Launchpad” button under the title.  
+19. Leave the configuration pane empty (the job’s default config is fine) and click the blue “Launch Run” button in the lower-right corner of the Launchpad.  
+20. Watch the Run page: once all solid boxes turn green and the status badge reads “Succeeded”, the model with Age and Fare features has finished.  
+21. Click “Overview” in the top navigation bar.  
+22. In the Overview page, click “Schedules” under the repository title.  
+23. Locate the row labeled ​every_weekday_hour​ in the table. Toggle the switch in the “Running” column to the right so it turns green—this activates the schedule.  
+24. Verify the text “Running” appears and “Next Tick” shows a timestamp aligned to the top of the next hour on a weekday (e.g., 14:00).  
+25. Celebrate: the Dagster pipeline now trains with Age and Fare included, fills their NaNs with mean, and will automatically run every weekday hour.

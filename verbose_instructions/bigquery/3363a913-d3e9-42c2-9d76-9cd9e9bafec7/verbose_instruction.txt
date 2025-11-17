@@ -1,0 +1,22 @@
+1. Open your browser and navigate to console.cloud.google.com/bigquery so we are in the BigQuery Web UI.  
+2. Sign in with the Google account that has BigQuery access, then wait until the Explorer panel appears on the left.
+3. Click the blue project-selector drop-down (usually shows your project name) and ensure the project where you have permission is selected—this will be the billing project for the query.  
+4. Type “austin_bikeshare” in the Explorer search bar and press Enter so BigQuery lists the public dataset that contains bike-share data.  
+5. Click the small gray triangle ▸ to the left of “bigquery-public-data” to expand it, then click the triangle next to “austin_bikeshare”; we can now see its tables.  
+6. Click the table name `bikeshare_stations`; the details panel on the right shows its schema. Note that one of the columns is “status”, which indicates whether a station is active—we will use this shortly.  
+7. Click the + Compose New Query button (white paper icon with a “+” at the top-right of the Explorer) to open a new, blank query tab.  
+8. Write the SQL query below into the editor to count active stations:  
+```sql
+SELECT
+  COUNT(*) AS active_station_count
+FROM
+  `bigquery-public-data.austin_bikeshare.bikeshare_stations`
+WHERE
+  LOWER(status) = 'active';
+```  
+9. Click the green ▸ Run button in the query toolbar; BigQuery executes the statement and displays results in the “Query results” panel at the bottom.  
+10. Verify we see a single row with the column active_station_count—this is the number of active Austin bike stations.  
+11. Click the SAVE RESULTS button located just above the “Query results” grid (right-hand side).  
+12. Choose “CSV (local file)” from the drop-down; a file download dialog appears.  
+13. When prompted, change the file name to “answer.csv” and choose the destination folder “/home/user/Downloads”, then click Save (or OK).  
+14. Open your system’s file browser, navigate to /home/user/Downloads, and confirm that answer.csv is present—we’re done!

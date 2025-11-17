@@ -1,0 +1,64 @@
+1) Click the “VS Code” icon in the left-hand dock to open the editor in your Astronomer project container.  
+2) Navigate in Explorer to README.md (located at /home/astro/README.md) and skim the “External Links” section so we know the exact templates:  
+   • Forecast Dashboard → https://meteo.example.com/forecast?dag_id={dag_id}&run_id={run_id}  
+   • S3 Weather Folder → https://s3.console.aws.amazon.com/s3/buckets/weather-data/{ds}?region=us-east-1  
+   (We will embed these placeholders in the plugin code.)  
+3) Still in VS Code, right-click the plugins folder in the Explorer tree and choose “New File”.  
+4) Type the filename my_extra_link_plugin.py and press Enter.  
+5) Write the plugin code that registers two BaseOperatorLink objects and attaches them to every task in the DAG “weather_data_dag”.  Paste the following content into the new file:  
+```python
+# my_extra_link_plugin.py
+from __future__ import annotations
+from airflow.plugins_manager import AirflowPlugin
+from airflow.models import BaseOperator
+from airflow.utils.context import Context
+from airflow.models.baseoperator import BaseOperatorLink
+
+class ForecastDashboardLink(BaseOperatorLink):
+    name = "Forecast Dashboard"
+
+    def get_link(self, operator: BaseOperator, *, ti_key: "TaskInstanceKey" | None = None, **kwargs) -> str:
+        dag_id = ti_key.dag_id if ti_key else operator.dag_id
+        run_id = ti_key.run_id if ti_key else kwargs["run_id"]
+        return f"https://meteo.example.com/forecast?dag_id={dag_id}&run_id={run_id}"
+
+class S3WeatherFolderLink(BaseOperatorLink):
+    name = "S3 Weather Folder"
+
+    def get_link(self, operator: BaseOperator, *, ti_key: "TaskInstanceKey" | None = None, **kwargs) -> str:
+        ds = kwargs["execution_date"].strftime("%Y-%m-%d")
+        return f"https://s3.console.aws.amazon.com/s3/buckets/weather-data/{ds}?region=us-east-1"
+
+class WeatherDataExtraLinksPlugin(AirflowPlugin):
+    name = "weather_data_extra_links_plugin"
+    operator_extra_links = [
+        ForecastDashboardLink(),
+        S3WeatherFolderLink(),
+    ]
+```
+   Note that operator_extra_links is a list, so every task inherits the same two hyperlinks automatically.  
+6) Press Ctrl+S (or Cmd+S) to save my_extra_link_plugin.py.  
+7) In the Explorer, confirm the file appears under plugins/.  We will use it after restarting Airflow.  
+8) Switch to the integrated terminal tab labelled “/home/astro” at the bottom of VS Code.  
+9) Execute a project restart so the new plugin is picked up:  
+```bash
+astro dev restart
+```  
+10) Wait until the terminal prints “Airflow webserver health check passed” and “scheduler heartbeat” messages, confirming the environment restarted successfully.  
+11) Click the “Chromium” icon on the left dock to open the Airflow UI running at http://localhost:8080.  
+12) In the Airflow home page, locate weather_data_dag in the DAG list.  
+13) Click the grey toggle switch left of weather_data_dag to unpause it (the switch turns blue).  
+14) Click the blue triangular “Play” button under the Action column of the same row to trigger a manual run.  
+15) In the popup, leave defaults and click “Trigger”.  
+16) Wait until a green badge appears in the “Recent Tasks” column indicating the run is “success” (or the graph view shows all green).  
+17) Click weather_data_dag in the DAG name column to enter the DAG details page.  
+18) In the Graph view, hover any task (e.g., “extract_weather”) and click the coloured square for the latest run to open its Task Instance details pane on the right.  
+19) Verify that under the “Links” section we now see two hyperlinks:  
+    • Forecast Dashboard  
+    • S3 Weather Folder  
+20) Click each link to confirm they redirect to the expected URLs (a 404 is fine in non-prod; the key is the composed URL structure).  
+21) Switch back to VS Code terminal and run:  
+```bash
+astro task logs weather_data_dag <task_id>
+```  
+   replacing <task_id> with any task name to show the logs; this extra verification demonstrates the plugin did not break operator execution.

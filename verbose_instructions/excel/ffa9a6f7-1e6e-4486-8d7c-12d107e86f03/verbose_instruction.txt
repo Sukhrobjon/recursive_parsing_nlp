@@ -1,0 +1,39 @@
+1. Click cell A12 in Sheet1.  
+2. Type “Total” and press ENTER so the label appears to the left of the totals row.  
+3. Click cell B12.  
+4. Type the formula `=SUM(B2:B11)` and press ENTER to calculate the total for the first month.  
+5. Click cell B12 again; hover over its bottom-right corner until the small black “+” (Fill Handle) appears.  
+6. Drag the Fill Handle horizontally from column B to column G, then release the mouse to auto-fill totals through G12.  
+7. Verify totals: quickly compare one or two cells (e.g., B12) with the Status Bar “Sum” after selecting B2:B11 to ensure the numbers match.  
+8. Click anywhere inside the data (for example cell B12) so Excel knows the range context.  
+9. Click the Insert tab on the Ribbon.  
+10. Click the “Bar Chart” icon in the Charts group, then choose the first 2-D Clustered Bar style. Excel inserts a temporary chart.  
+11. With the chart selected, press Ctrl+1 (or right-click and choose “Format Data Range”) to open the Chart Design tools.  
+12. Click “Select Data” on the Chart Design tab.  
+13. In the “Chart data range” box, type:  
+   `$Sheet1!$B$1:$G$1,$Sheet1!$B$12:$G$12`  
+   and click OK — this forces the chart to use the header row (months) and the Total row.  
+14. Click “Switch Row/Column” if necessary until you see one bar per month (not one long bar).  
+15. Click “Add Chart Element” → “Chart Title” → “Above Chart”.  
+16. Click directly on the title placeholder, type “Total”, and press ENTER.  
+17. Click the chart once to show the plus-sign Chart Elements button; click the plus sign and uncheck “Legend” to remove the legend.  
+18. Click an empty cell to finish the first chart.  
+19. Click cell A13.  
+20. Type “Growth” and press ENTER to label the next calculation row.  
+21. Click cell C13 (Growth for the second month – the first month has no prior period).  
+22. Type the formula `=(C12-B12)/B12` and press ENTER to compute decimal growth between months 1 and 2.  
+23. Select cell C13 again, drag the Fill Handle across to column G, then release so all growth rates C13:G13 populate.  
+24. Select growth cells C13:G13, then on the Home tab choose the “Percent Style” button if you prefer percentages; Excel automatically keeps the underlying decimal values.  
+25. Spot-check one growth value: pick D13 and mentally confirm `(D12-C12)/C12` equals the displayed rate — this validates the formula copy.  
+26. Click any cell within the growth row (for example C13).  
+27. Go back to the Insert tab.  
+28. Click the “Line Chart” icon, then choose the first 2-D Line option — a new chart appears.  
+29. Click “Select Data” on the new chart’s Chart Design tab.  
+30. Replace the “Chart data range” text with:  
+   `$Sheet1!$C$1:$G$1,$Sheet1!$C$13:$G$13`  
+   and click OK so the line references month headers and growth numbers.  
+31. Confirm the horizontal axis now shows the correct months; click “Switch Row/Column” if it does not.  
+32. Add a title: click “Add Chart Element” → “Chart Title” → “Above Chart”; type “Growth” and press ENTER.  
+33. Remove the legend again: click the plus-sign Chart Elements button, uncheck “Legend”.  
+34. Click outside the chart to deselect. Both visualizations should now be complete and placed on the worksheet.  
+35. Press Ctrl+S (or click the floppy-disk Save icon) to save your work, ensuring totals, growth calculations, and both charts are preserved.

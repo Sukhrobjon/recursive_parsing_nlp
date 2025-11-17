@@ -1,0 +1,83 @@
+1. Click the VS Code icon in the dock (or left Activity Bar) to bring the editor to the foreground.  
+2. Navigate to the EXPLORER panel and single-click the folder name file_watch_sensor to expand its tree.  
+3. Right-click the same file_watch_sensor folder and choose “New File…”.  
+4. Type directory_sensor.py and press Enter to create the file.  
+5. Write the sensor code below into the newly opened editor tab:  
+```python
+# file_watch_sensor/directory_sensor.py
+import os
+from dagster import sensor, RunRequest
+
+from .log_file_job import log_file_job, FileConfig   # <-- already exists in repo
+
+WATCH_PATH = "/home/user/file-watch-sensor/files"
+
+@sensor(job=log_file_job, minimum_interval_seconds=3)
+def directory_sensor(context):
+    """
+    Fires a run of `log_file_job` for every file present in WATCH_PATH.
+    We use the filename as the run_key so a particular file triggers
+    exactly one run.
+    """
+    for filename in os.listdir(WATCH_PATH):
+        filepath = os.path.join(WATCH_PATH, filename)
+        if os.path.isfile(filepath):
+            # skip if we've already launched a run for this file
+            if context.instance.has_run_key(directory_sensor.name, filename):
+                continue
+            yield RunRequest(
+                run_key=filename,
+                run_config={
+                    "ops": {
+                        "process_file": {
+                            "config": FileConfig(filename=filename)
+                        }
+                    }
+                },
+                tags={"source": "directory_sensor"},
+            )
+```  
+6. Press Ctrl + S to save directory_sensor.py.  
+7. In the EXPLORER, double-click file_watch_sensor/__init__.py to open it.  
+8. Append the import and update Definitions so Dagster knows about the new sensor:  
+```python
+# file_watch_sensor/__init__.py
+from dagster import Definitions, load_assets_from_modules
+
+from . import assets, log_file_job
+from .directory_sensor import directory_sensor     # <-- NEW LINE
+
+all_assets = load_assets_from_modules([assets])
+
+defs = Definitions(
+    assets=all_assets,
+    jobs=[log_file_job],
+    sensors=[directory_sensor],                     # <-- ADD SENSOR HERE
+)
+```  
+9. Press Ctrl + S again to save __init__.py.  
+10. Switch to the integrated TERMINAL panel at the bottom of VS Code.  
+11. Run the Dagster code-server reload command so the new sensor file is picked up:  
+```bash
+dagster dev
+```  
+   (If dagster dev is already running, press r in that terminal to hot-reload.)  
+12. Click the Chromium (browser) icon on the dock to bring the Dagster UI forward; the default address is http://localhost:3000.  
+13. In the top navigation bar, click Deployment to open the deployment view.  
+14. Press the dark-blue Reload all button in the upper-right corner; wait for the green toast “Workspace reloaded” to confirm the code refresh.  
+15. In the left sidebar, click file_watch_sensor to expand that module.  
+16. Select the Sensors tab; a row named directory_sensor should now appear.  
+17. Click the text link directory_sensor to open its detail page.  
+18. Toggle the Status switch from Stopped to Running (the pill turns green); Dagster should now poll the directory every 3 seconds.  
+19. Open a new TERMINAL tab (or external shell) and create a test file so the sensor has something to detect:  
+```bash
+echo "hello world" > /home/user/file-watch-sensor/files/sample_01.txt
+```  
+20. Return to the Dagster UI — within a few seconds we can see a new row under the Runs tab (top nav). Verify:  
+    a. The Run ID appears with the tag source=directory_sensor.  
+    b. The job column shows log_file_job.  
+    c. The status column eventually turns green “✔️ Success”.  
+21. Click that run’s ID to drill into its run page, then click the process_file op node in the graph view.  
+22. Review the right-hand Logs pane; confirm it prints the filename you created, e.g. “Processing file: sample_01.txt”.  
+23. Optionally, repeat step 19 with another filename (sample_02.txt) and watch another run appear to verify the sensor triggers uniquely per new file.  
+24. Celebrate — the directory_sensor is now live, automatically launching log_file_job whenever a file lands in /home/user/file-watch-sensor/files.

@@ -1,0 +1,47 @@
+1. Click the blue “+ Worksheet” button in the left sidebar of Snowsight to open a brand-new SQL worksheet tab.  
+2. Type the following statement to make sure you have full privileges, then press the blue triangular “Run” icon in the upper-right of the worksheet:  
+```sql
+USE ROLE accountadmin;
+```  
+3. Type the warehouse activation command and click “Run” again:  
+```sql
+USE WAREHOUSE compute_wh;
+```  
+4. Point the context to the correct database and default schema so we do not need to fully qualify every object name later, then execute it:  
+```sql
+USE DATABASE COMPANY;
+USE SCHEMA PUBLIC;
+```  
+5. Quickly confirm the two tables exist by listing them; copy & run:  
+```sql
+SHOW TABLES LIKE 'EMPLOYEES';
+SHOW TABLES LIKE 'DEPARTMENTS';
+```  
+   Note that seeing “EMPLOYEES” and “DEPARTMENTS” in the results tells us our context is correct.  
+6. Write the main query below the previous code block to retrieve the employee(s) who have the highest salary in each department. We will join to pull the human-readable department name. Copy everything between the code fences and click “Run”:  
+```sql
+/* Highest-paid employee(s) for every department */
+SELECT
+    d.department_id,
+    d.department_name,
+    e.employee_id,
+    e.employee_name,
+    e.salary
+FROM EMPLOYEES e
+JOIN DEPARTMENTS d
+  ON e.department_id = d.department_id
+QUALIFY e.salary = MAX(e.salary) OVER (PARTITION BY e.department_id)
+ORDER BY d.department_id;
+```  
+   Reasoning: the QUALIFY clause filters rows after the analytic MAX() window function is calculated, leaving only those employees whose salary equals the department’s maximum.  
+7. Scroll to the bottom half of the screen and verify that for each department_id only the top earner(s) appear. We should see columns department_id, department_name, employee_id, employee_name, and salary.  
+8. Click the downward-pointing arrow icon labeled “Download” located in the upper-right corner of the Results grid.  
+9. In the pop-up, choose “CSV” as the file format (it is selected by default), then click the “Download” button. A file named similar to “query_result_2024-xx-xx.csv” will be saved to your browser’s default downloads folder.  
+10. Navigate to the downloads folder on your local machine (macOS Finder → Downloads, Windows File Explorer → Downloads).  
+11. Right-click the newly downloaded file and select “Rename” (or press F2 in Windows).  
+12. Type the new name exactly as:  
+   highest_salary.csv  
+   and press Enter to save the new filename.  
+13. Switch back to Snowsight and click the floppy-disk “Save” icon at the top of the worksheet.  
+14. In the dialog, enter a name such as “Highest Salary by Department” and click “Save” so you can re-run or share this worksheet later.  
+15. You have now created the worksheet, executed the query, verified the results, downloaded the data, and renamed the file to “highest_salary.csv”.

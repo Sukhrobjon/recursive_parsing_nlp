@@ -1,0 +1,14 @@
+1) Locate and click the green Create Environment button positioned at the bottom of the Environments page.  
+2) Click inside the Environment name input field that appears in the right-hand configuration drawer.  
+3) Type dev env to overwrite the default name.  
+4) Click the Environment type dropdown; a list of options expands.  
+5) Select Development from the dropdown so the label reads “Development (dev)”.  
+6) Click the dbt version dropdown immediately below; the supported versions list opens.  
+7) Scroll (if necessary) and click 1.5 so it is highlighted and displayed as the selected version.  
+8) Verify that:  
+   • Environment name reads “dev env”  
+   • Environment type shows “Development”  
+   • dbt version shows “1.5”  
+   • Connection and Repository sections remain blank (we will configure these later).  
+9) Click the blue Save button located in the upper-right corner of the drawer; wait for the success toast “Environment saved” to appear.  
+10) Confirm the new row dev env now appears in the Environments list with Type = Development and dbt version = 1.5, indicating the environment was created successfully.

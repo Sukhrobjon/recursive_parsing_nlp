@@ -1,0 +1,82 @@
+1) Navigate to https://console.cloud.google.com/bigquery so the BigQuery Web UI opens in a new browser tab.  
+2) Click the triangle ▸ to the left of the project that holds your sales data (for example my-project) so its datasets become visible.  
+3) Click the triangle ▸ next to the dataset that contains the table (for example analytics) and then click the table name sales to display its schema in the right-hand “Table details” panel. Confirm we have at least the columns  
+   • employee_name STRING  
+   • sale_amount  NUMERIC/FLOAT  
+   • sale_date    DATE  
+   (We will use these three columns in the query.)  
+4) Click the + COMPOSE NEW QUERY button at the top of the Explorer panel; a blank SQL editor tab opens.  
+5) Write the query below, which pivots monthly sales into an employee-by-month matrix, adds a “Total” column for each employee, and appends a final “Total” row for each month:
+
+```sql
+-- ❶  Aggregate sales by month & employee
+WITH monthly_employee AS (
+  SELECT
+    FORMAT_DATE('%Y-%m', sale_date) AS month,   -- YYYY-MM so one row per calendar month
+    employee_name,
+    SUM(sale_amount) AS monthly_sales
+  FROM `my-project.analytics.sales`
+  GROUP BY month, employee_name
+),
+
+-- ❷  Pivot so every employee becomes a column
+pivot_table AS (
+  SELECT *
+  FROM monthly_employee
+  PIVOT (
+    SUM(monthly_sales)                -- value we want inside the matrix
+    FOR employee_name IN (            -- list your employees here; add/remove as needed
+      'Alice',
+      'Bob',
+      'Charlie'
+    )
+  )
+),
+
+-- ❸  Add a column called "Total" (employee grand total) and a row called "Total"
+with_totals AS (
+  SELECT
+    month,
+    `Alice`,
+    `Bob`,
+    `Charlie`,
+    -- Total across all employees for that month
+    (`Alice` + `Bob` + `Charlie`) AS Total
+  FROM pivot_table
+
+  UNION ALL                    -- append an extra row
+  SELECT
+    'Total' AS month,          -- marks the grand-total row
+    SUM(`Alice`)   AS `Alice`,
+    SUM(`Bob`)     AS `Bob`,
+    SUM(`Charlie`) AS `Charlie`,
+    SUM(`Alice` + `Bob` + `Charlie`) AS Total
+  FROM pivot_table
+)
+
+SELECT *
+FROM with_totals
+ORDER BY
+  CASE WHEN month = 'Total' THEN 1 ELSE 0 END,  -- put grand total at the bottom
+  month;
+```
+
+6) Click the blue ► RUN button in the query editor toolbar to execute the SQL. Wait for the “Query results” grid to populate beneath the editor.  
+7) Verify the last column is titled Total and the very last row is also labeled Total. We will use these when applying formatting.  
+8) Click the EXPLORE DATA button that appears in the upper-right corner of the results panel, then choose Explore with Sheets. BigQuery will create a temporary Google Sheet containing the result grid and open it in a new tab.  
+9) In Google Sheets, click the column header for the Total column (for example column F) so the entire column becomes highlighted.  
+10) From the menu bar choose Format ➔ Conditional formatting; the “Conditional format rules” panel opens on the right.  
+11) Create the “largest total” rule:  
+    a) In the dropdown “Format cells if…”, choose “Custom formula is”.  
+    b) Enter the formula  =$F1=MAX($F$2:$F)  
+       • $F$2 is the first employee row (we skip row 1 because it contains headers), $F is the whole column.  
+    c) Click the Fill color icon and pick blue.  
+    d) Click Done.  
+12) Click “+ Add another rule” in the same panel.  
+13) Create the “lowest total” rule:  
+    a) Choose “Custom formula is”.  
+    b) Enter  =$F1=MIN($F$2:$F)  
+    c) Set the Fill color to red.  
+    d) Click Done.  
+14) Visually confirm that exactly one cell in the Total column (the largest value) is filled blue and one cell (the smallest) is filled red. The grand-total row (row with Month = “Total”) is unaffected because it lies outside the $F$2:$F range we selected.  
+15) Switch back to the BigQuery tab if you need to save or re-run the query; otherwise your formatted Google Sheet is ready for presentation or download.

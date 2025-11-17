@@ -1,0 +1,15 @@
+1) Navigate to the Airbyte UI main page in your browser; you should land on the Dashboard that shows the left-hand navigation menu.  
+2) Click the menu item “Sources” (it has a database cylinder icon next to it) to open the Sources catalog.  
+3) Type `faker` into the “Search sources” bar that appears at the top-right of the catalog; Airbyte dynamically filters the list.  
+4) Observe that a single tile labeled “Sample Data (Faker)” with the Faker logo remains visible—this is the mock data generator we need.  
+5) Click the “Sample Data (Faker)” tile to open a right-side drawer containing source details.  
+6) Click the blue “Set up source” button at the bottom of the drawer; a configuration wizard appears.  
+7) Leave every field at its default value (Faker requires no credentials). Quickly review that:  
+   • Name: `Sample Data (Faker)` (auto-populated)  
+   • Source type: `Sample Data (Faker)`  
+   • Frequency: default (we will adjust later when creating the connection)  
+8) Click the “Set up source” button again inside the wizard; Airbyte now triggers the “Verifying…” spinner.  
+9) Wait until the green toast notification “Source saved” appears in the bottom-left corner—this confirms the Faker source is registered.  
+10) Verify success by looking at the Sources table: a new row with Name `Sample Data (Faker)` and status badge “Active” should be present.  
+11) Click the row once to open its overview page; ensure that the “Last sync” shows “Never” (expected, we haven’t linked a destination yet) and that the JSON configuration panel on the right displays `{}`.  
+12) Celebrate—we have finished configuring the Faker data source and are ready to proceed to destination and connection setup in later steps.

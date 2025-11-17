@@ -1,0 +1,9 @@
+1. Click the “Charts” link in the top-level navigation bar to open the list of all existing charts.  
+2. Locate the row whose Name column shows “Mychart”; confirm visually that this is the chart you no longer need.  
+3. Click the red trash-can icon (labeled “Delete” when you hover) at the right edge of the “Mychart” row.  
+4. Wait for the confirmation modal titled “Delete Chart” to appear; this prevents accidental removal.  
+5. Type the word `DELETE` in uppercase into the text input box inside the modal (the button stays disabled until the text matches exactly).  
+6. Click the red “DELETE” button at the bottom of the modal to execute the deletion.  
+7. Observe the green toast notification in the upper-right corner that reads “Chart deleted successfully” to verify the operation completed.  
+8. Scan the refreshed chart list and confirm “Mychart” no longer appears in any page of the table (use the search bar with the keyword “Mychart” for certainty).  
+9. Refresh the browser (Ctrl/⌘ + R) once more; ensure the chart list still excludes “Mychart,” confirming the deletion is persistent.

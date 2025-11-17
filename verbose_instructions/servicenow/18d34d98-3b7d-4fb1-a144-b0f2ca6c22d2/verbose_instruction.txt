@@ -1,0 +1,11 @@
+1) Navigate to the left-hand Application Navigator search box, click it, and type Incident.  
+2) Press Enter, then under the Incident module list click Create New (the icon looks like a blank paper).  
+3) Wait until the form INCIDENT ‑ New loads; confirm the blue bar at the top says Incident and the Save and Submit buttons are visible.  
+4) Click into the Short description field (it is directly under the Description banner) and type Issue with a web page on wiki.  
+5) Click the Caller reference lookup (magnifying-glass icon to the right of the Caller field), wait for the pop-up list, locate Fred Luddy, and click the Fred Luddy link so the Caller field now shows Fred Luddy.  
+6) Click the Impact drop-down, scroll if necessary, and choose 3 ‑ Low.  
+7) Click the Urgency drop-down (just below Impact) and choose 3 ‑ Low.  
+8) Leave the following fields completely blank by NOT entering any value: Service, Caused by Change, Parent Incident, Change Request, Problem (verify each shows the default empty value).  
+9) Click the Submit button (bottom-left corner of the form) to insert the record.  
+10) After the list view reloads, observe the green confirmation banner “Incident XXXXXX has been created” to confirm success.  
+11) Verify the data: in the search bar above the incident list, paste the generated Incident number from the banner, press Enter, and confirm the row shows Short description = Issue with a web page on wiki, Caller = Fred Luddy, Impact = 3 ‑ Low, Urgency = 3 ‑ Low, and all other specified fields are blank.

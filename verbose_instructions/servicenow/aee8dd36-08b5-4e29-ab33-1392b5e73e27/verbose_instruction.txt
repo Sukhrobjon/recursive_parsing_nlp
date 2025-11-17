@@ -1,0 +1,35 @@
+1. Navigate to https://console.cloud.google.com/bigquery so you land on the BigQuery Web UI.
+
+2. Locate the left-hand Resources panel and find your GCP project (for example, “my_project”).  
+   Click the small grey triangle ▸ to the left of your project name to expand the datasets inside.
+
+3. Scroll down in the expanded list, find the dataset named inventory, and again click its triangle ▸ to reveal the tables it contains.
+
+4. Click the table hardware so the Schema tab opens in the main window.  
+   (We check the column names here—notice display_name, cost_center, and stockroom. We’ll sort on those in the query.)
+
+5. Click the blue +COMPOSE NEW QUERY button located in the top-right corner of the main BigQuery header.  
+   A new blank Query Editor tab opens.
+
+6. Type (or paste) the complete SQL statement below into the editor exactly as shown:
+```sql
+SELECT
+  *
+FROM
+  `my_project.inventory.hardware`
+ORDER BY
+  display_name DESC,
+  cost_center ASC,
+  stockroom ASC;
+```
+   Note that we specified DESC for display_name to get reverse alphabetical order, while cost_center and stockroom remain ASC for normal ascending order.
+
+7. Click the green ► RUN button just above the editor to execute the query.
+
+8. Wait a few seconds; the “Query results” pane appears beneath the editor showing the hardware list, now sorted as requested.
+
+9. (Optional) If you need to keep this result, click the SAVE RESULTS button on the right side of the Query results bar, then choose one of the offered formats (e.g., “CSV (local file)”) and follow the prompts to download.
+
+10. If you want to reuse the query later, click the floppy-disk-shaped SAVE button next to RUN, select “Save query,” give it a name like “Hardware sorted list,” pick a project-wide or personal saved-query location, and click SAVE.
+
+We have successfully sorted the “hardware” list by display_name (descending), cost_center (ascending), and stockroom (ascending) in BigQuery Web UI.

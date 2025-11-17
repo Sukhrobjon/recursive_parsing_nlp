@@ -1,0 +1,55 @@
+1. Log in to Snowsight (Snowflake web UI) with your regular credentials; you should land on the “Worksheets” home page.  
+
+2. Click the blue “+ Worksheet” button in the upper-right corner to open a brand-new SQL worksheet.  
+
+3. Type the following two lines to set the correct security context and warehouse, then click the ► Run button:  
+```sql
+USE ROLE ACCOUNTADMIN;
+USE WAREHOUSE COMPUTE_WH;
+```  
+We need these so that the forthcoming filter is visible to every worksheet that uses ACCOUNTADMIN + COMPUTE_WH.
+
+4. Click the funnel-shaped “Filters” icon just above the SQL editor (left of the “History” clock). A Filters side-panel opens on the right.
+
+5. Click the grey “+ New” button inside the panel to add a custom filter.
+
+6. Fill out the filter creation dialog exactly as follows:  
+   • Display Name:  Title_Keyword  
+   • SQL Keyword:   :title_keyword   (type the colon as well)  
+   • Options Via:   Query (leave the default radio button selected)  
+   • Data Type:     STRING (Snowsight should auto-select it once a sample value appears)  
+   • Click the blue “Create” button at the bottom.  
+The new filter now appears in the Filters panel with an empty value.
+
+7. In the new filter entry, click “Add value”, type Data Analyst and press ⏎ Enter.  
+   We are setting the initial value we will query for right away.
+
+8. Verify the filter value is shown as “Data Analyst” with a checkmark. Good—we’ll reuse :title_keyword in our SQL shortly.
+
+9. Switch to the desktop file to obtain the prepared query: Click the File Explorer (or Finder on macOS), navigate to Desktop, double-click query.txt to open it.  
+   Highlight all contents (Ctrl+A) and copy to clipboard (Ctrl+C).
+
+10. Return to Snowsight (browser tab), click inside the SQL editor of the current worksheet, press Ctrl+V to paste the copied statement. The paste should look very similar to the snippet below; if the text differs, keep everything but ensure the WHERE clause references :title_keyword.
+
+```sql
+-- Pasted from Desktop/query.txt
+SELECT
+    AVG(salary) AS avg_salary
+FROM
+    DB.PUBLIC.SALARY
+WHERE
+    job_title ILIKE '%' || :title_keyword || '%';
+```
+
+11. Click the blue ► Run button (or press Ctrl+Enter).  
+    Because the filter value is “Data Analyst”, Snowsight substitutes it into :title_keyword at execution time.
+
+12. Wait for the result grid to appear. Confirm there is a single column named AVG_SALARY and exactly one row. Jot down or visually check the number to make sure it is non-null (this confirms the aggregation worked).
+
+13. Hover over the result grid; a down-arrow (“⋯ More”) icon appears in the upper-right corner of the grid. Click it and choose “Download as CSV”.
+
+14. When the file-save dialog pops up, change the filename to result.csv, choose your preferred download folder (e.g., Downloads), then click “Save”.
+
+15. Navigate to your local Downloads folder (or the folder you selected) and verify that result.csv exists and its timestamp is current. Open it quickly with any text editor to confirm the header AVG_SALARY and the numeric value we saw in step 12 are present.
+
+The average salary for the job title “Data Analyst” has been successfully queried, downloaded, and stored as result.csv.

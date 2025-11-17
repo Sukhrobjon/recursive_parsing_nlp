@@ -1,0 +1,75 @@
+1) Click the “Connections” menu item in the left panel of the Airbyte UI and then click your existing “Faker → Local JSON” connection row.  
+2) Look at the browser address bar; copy the last UUID-like string after `/connections/` (example: `b6f3d3b6-0e63-4dd9-81af-fdd2e4e91c3f`). We will call this value `${connection_id}` and use it later.  
+3) Switch to the Airflow web tab titled “DAGs ­– Airflow”.  
+4) Click “Admin” → “Connections” in the top menu.  
+5) Click the “+” button directly under the “Search” textbox to add a new connection.  
+6) Type `airbyte_conn` in the “Connection Id” field, choose “Airbyte” from the “Connection Type” dropdown, type `172.17.0.1` in “Host”, and type `8000` in “Port”. Leave “Login” and “Password” blank because Airbyte basic auth is disabled.  
+7) Click the blue “Save” button at the bottom-right corner.  
+8) Click the “+” button again to create the second connection.  
+9) Type `file_conn` in “Connection Id”, choose “File (path)” for “Connection Type”, and leave the “Path” box empty.  
+10) Click “Save”. Verify that the table now contains two rows: `airbyte_conn` and `file_conn`.  
+11) Click the Visual Studio Code icon in the left-hand Ubuntu dock to focus the editor.  
+12) Double-click `dags` in the Explorer tree, then single-click `faker_to_json_dag.py` to open it.  
+13) Select all existing contents (Ctrl+A) and overwrite with the exact code below, remembering to replace `${connection_id}` with the value copied in step 2:  
+
+```python
+from airflow import DAG
+from airflow.operators.bash import BashOperator
+from airflow.providers.airbyte.operators.airbyte import AirbyteTriggerSyncOperator
+from airflow.providers.airbyte.sensors.airbyte import AirbyteJobSensor
+from airflow.sensors.filesystem import FileSensor
+import pendulum, os
+
+AIRBYTE_CONNECTION_ID = 'b6f3d3b6-0e63-4dd9-81af-fdd2e4e91c3f'  # <-- put your real ID here
+SOURCE_RAW_PRODUCTS_FILE = '/tmp/airbyte_local/json_data/_airbyte_raw_products.jsonl'
+TARGET_RAW_PRODUCTS_FILE = f'{os.environ["AIRFLOW_HOME"]}/data/raw_products.jsonl'
+
+with DAG(
+    dag_id='faker_to_json_dag',
+    start_date=pendulum.today('UTC').add(days=-1),
+    schedule=None,               # run on demand
+    catchup=False,               # do not backfill
+    tags=['airbyte', 'faker'],
+) as dag:
+
+    trigger_airbyte_sync = AirbyteTriggerSyncOperator(
+        task_id='airbyte_trigger_sync',
+        airbyte_conn_id='airbyte_conn',
+        connection_id=AIRBYTE_CONNECTION_ID,
+        asynchronous=True
+    )
+
+    wait_for_sync_completion = AirbyteJobSensor(
+        task_id='airbyte_check_sync',
+        airbyte_conn_id='airbyte_conn',
+        airbyte_job_id=trigger_airbyte_sync.output
+    )
+
+    raw_products_file_sensor = FileSensor(
+        task_id='check_if_file_exists_task',
+        filepath=SOURCE_RAW_PRODUCTS_FILE,
+        timeout=300,
+        poke_interval=10,
+        fs_conn_id='file_conn'
+    )
+
+    raw_products_file_ops = BashOperator(
+        task_id='copy_and_rename_raw_file',
+        bash_command=f'cp {SOURCE_RAW_PRODUCTS_FILE} {TARGET_RAW_PRODUCTS_FILE}'
+    )
+
+    trigger_airbyte_sync >> wait_for_sync_completion >> raw_products_file_sensor >> raw_products_file_ops
+```
+
+14) Press Ctrl+S to save the file; confirm the blue dot on the tab disappears.  
+15) Open the integrated terminal in VS Code (Ctrl+`), type `echo $AIRFLOW_HOME` and make sure the directory printed contains a `dags/` folder; this confirms Airflow will detect the new DAG.  
+16) Switch back to the “DAGs – Airflow” browser tab.  
+17) Click the circular arrow icon (“Refresh”) to the left of the “Auto-refresh” toggle; wait a few seconds until the page reloads.  
+18) Scroll the DAG list; verify a new row named `faker_to_json_dag` appears with a gray (paused) toggle.  
+19) Click the toggle to un-pause the DAG; it should turn green.  
+20) Click the triangular “▶” (Trigger DAG) button in the Actions column of the `faker_to_json_dag` row.  
+21) Wait a moment, then click the DAG name link `faker_to_json_dag` to open the graph view.  
+22) Observe that task `airbyte_trigger_sync` turns light-green (running) and then dark-green (success) when the Airbyte API call is accepted.  
+23) Confirm that `airbyte_check_sync` waits until the Airbyte job finishes and then turns dark-green.  
+24) Watch `check_if_file_exists_task`; it will keep poking until the file `/tmp/airbyte_local/json_data/_airbyte_raw_products.jsonl` exists. When found, the task finishes successfully, and the Bash task `copy_and_rename_raw_file` should copy the file into `$AIRFLOW_HOME/data/raw_products.jsonl`.  
+25) Open a terminal, run `ls $AIRFLOW_HOME/data/raw_products.jsonl`—if the command returns the file path, the entire pipeline executed correctly.

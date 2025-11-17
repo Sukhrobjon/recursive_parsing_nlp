@@ -1,0 +1,55 @@
+1. Open your terminal application (e.g., “Terminal” on macOS/Linux or “PowerShell” on Windows).
+
+2. Type the command below to create and move into a clean project folder named dagster_local and press Enter:  
+```bash
+mkdir -p ~/dagster_local && cd ~/dagster_local
+```
+
+3. Execute a virtual-environment creation command so that Dagster’s packages remain isolated:  
+```bash
+python -m venv venv
+```
+
+4. Activate the virtual environment:  
+   • On macOS/Linux, run  
+```bash
+source venv/bin/activate
+```  
+   • On Windows, type  
+```powershell
+venv\Scripts\Activate
+```
+
+5. Install Dagster along with the Dagster UI (Dagit) by running:  
+```bash
+pip install "dagster==1.*" "dagit==1.*"
+```
+   Note that the quoted version spec guarantees you get a recent 1.x release that supports the -p / --port flag.
+
+6. Initialize a starter Dagster repository so the UI has something to load:  
+```bash
+dagster project scaffold --name demo_repo
+```
+   This command creates a demo_repo directory containing example code and a workspace.yaml file. We will use these files immediately.
+
+7. Change into the newly created repo directory:  
+```bash
+cd demo_repo
+```
+
+8. Launch the Dagster web server (Dagit) on port 8004 with the command below (the -w flag points to the workspace file that registers the repository):  
+```bash
+dagit -w workspace.yaml -p 8004
+```
+   The terminal should print a line similar to  
+   “Serving dagit on http://127.0.0.1:8004 in watch mode…”
+
+9. Switch to your web browser and in the address bar type  
+```
+http://localhost:8004
+```  
+   then press Enter.
+
+10. Verify the UI loads: you should see the Dagster navigation sidebar on the left and the “Assets” or “Pipelines” landing page on the right. A green “Server connected” dot in the bottom-left corner confirms the web server is running correctly.
+
+11. Return to the terminal and press Ctrl + C once to stop Dagit when you are finished exploring.

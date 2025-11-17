@@ -1,0 +1,30 @@
+1. Locate the “Explorer” panel on the left side of the BigQuery Web UI and scroll until you see the dataset name census.  
+2. Click the vertical three-dot icon to the right of census.  
+3. Choose Create table from the context menu that appears.  
+4. In the Create table pane, click the dropdown under Create table from and select Drive.  
+5. Switch to the other Chrome tab that has the Google Sheet open; copy the full URL in the address bar:  
+   https://docs.google.com/spreadsheets/d/1eqDu8oLJvT244r5AWPr4kPMnm7qDRpyItonPAbBwElE/edit#gid=0  
+6. Return to the BigQuery tab.  
+7. Paste the copied link into the Select Drive URI field (you should now see the exact URL in that input box).  
+8. Click the File format dropdown immediately below and choose Google Sheet.  
+9. Switch back to the Google Sheet tab, glance at the sheet tab name (population) at the bottom, and note that useful data spans columns A–C and rows 2–11.  
+10. Return once more to BigQuery.  
+11. Enter the range population!A2:C11 into the Sheet range input so BigQuery reads only rows 2 through 11.  
+12. Scroll to the Destination section and verify the Dataset field already shows census.  
+13. Type population in the Table name input box (overwriting any auto-generated value).  
+14. Make sure Table type is set to Native table (the default).  
+15. Move down to the Schema section and click the blue + Add field button.  
+16. Type ZIP in the Name column, select STRING in the Type dropdown, then click Done.  
+17. Click + Add field again; enter POPULATION as the Name, choose INTEGER as the Type, and click Done.  
+18. Click + Add field a third time; enter PCT_GROWTH for the Name, pick FLOAT for the Type, and click Done.  
+19. Confirm the three rows in the schema table now read exactly: ZIP / STRING, POPULATION / INTEGER, PCT_GROWTH / FLOAT.  
+20. Leave Partitioning and Clustering sections untouched (not needed for this simple load).  
+21. Click the blue CREATE TABLE button at the bottom of the pane.  
+22. Wait for the green “Create table complete” toast message in the lower-right corner—this indicates the load job finished successfully.  
+23. Expand the census dataset in the Explorer panel; click the newly listed population table to view its details.  
+24. Click Preview in the right-hand pane and verify that ZIP, POPULATION, and PCT_GROWTH show the expected sample rows from the sheet.  
+25. Click Query table, replace the default query with:  
+```sql
+SELECT COUNT(*) AS rows_loaded FROM `census.population`;
+```  
+26. Press Run to execute; ensure the result shows 10 (matching rows 2–11 of the sheet). If the count matches, the Google Sheet import is confirmed complete.

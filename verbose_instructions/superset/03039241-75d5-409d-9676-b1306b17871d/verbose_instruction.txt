@@ -1,0 +1,8 @@
+1. Click "Settings" (gear icon) in the upper-right corner of the Superset top bar.  
+2. Select "Action Logs" from the dropdown menu; a new page titled "Action Log List" appears.  
+3. Click the blue "FILTER LIST" button just below the title; the filter panel opens on the left.  
+4. Click the first dropdown labeled "Filter" and choose "User"; a second dropdown labeled "Select value" appears.  
+5. Click inside the "Select value" dropdown, start typing `Superset Admin`, and click the matching suggestion "Superset Admin" when it appears; the user filter pill is now shown.  
+6. Click the green "APPLY" button at the bottom of the filter panel; the table reloads and now shows only rows where user = Superset Admin.  
+7. Locate the column header "dttm" in the action-log table and click it once; a small upward-pointing triangle appears indicating ascending order on that timestamp column.  
+8. Verify success: check that the first row displays the earliest timestamp and that all rows in the list belong to user "Superset Admin".

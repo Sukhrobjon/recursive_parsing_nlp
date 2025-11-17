@@ -1,0 +1,27 @@
+1. Click the grey tab labeled “Linux” in the “Step 1: Install” section of your dbt Cloud account profile; the page expands to show the Linux installation text.  
+2. Right-click the blue hyperlink text “GitHub” that appears in the expanded instructions.  
+3. Click “Open link in new window”; a new browser window opens on the GitHub Releases page for dbt-cloud-cli.  
+4. Scroll down to the “Assets” list, locate the archive that matches your CPU architecture (e.g., `dbt-cloud-cli_1.2.4_linux_amd64.tar.gz`), and left-click its filename; the download begins.  
+5. Wait until the browser shows the download is complete (we can see the file appear in the browser’s Downloads tray), then click the “×” icon on the top-right corner of the GitHub window to close it.  
+6. Switch to the terminal by clicking the black “Terminal” icon in the left sidebar of your IDE (or press Ctrl+` if VS Code).  
+7. Type the command below, substituting the actual filename you downloaded (verify it with ls ~/Downloads first if needed); this moves the archive into the dbt project folder:  
+   ```bash
+   mv ~/Downloads/dbt-cloud-cli_1.2.4_linux_amd64.tar.gz ~/projects/analytics/
+   ```  
+8. Run the command to change into the project directory:  
+   ```bash
+   cd ~/projects/analytics
+   ```  
+9. Execute the extract command inside the project so the binary lands next to the dbt project files:  
+   ```bash
+   tar -xf dbt-cloud-cli_1.2.4_linux_amd64.tar.gz
+   ```  
+10. Optional but recommended—make the binary executable so we can run it without typing `./` each time:  
+    ```bash
+    chmod +x dbt-cloud
+    ```  
+11. Verify the installation worked by running the version command; we expect to see a semantic version string (e.g., `dbt-cloud v1.2.4`):  
+    ```bash
+    ./dbt-cloud --version
+    ```  
+12. Observe the printed version number in the terminal; if it appears without errors, we’ve successfully installed and extracted dbt-cloud-cli into the `analytics` dbt project folder.

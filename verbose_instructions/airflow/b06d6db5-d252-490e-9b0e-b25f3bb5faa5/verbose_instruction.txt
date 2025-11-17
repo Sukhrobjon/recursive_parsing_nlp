@@ -1,0 +1,35 @@
+1. Click the VS Code icon in the left-hand dock to bring the editor to the foreground.  
+2. Locate README.md in the Explorer pane and Click it; skim the “Pytest failure” section so we know exactly what broke (the failures complain about an hourly schedule and wrong dependency order).  
+3. In the Explorer pane, Double-click dags/task_today.py to open the DAG source file.  
+4. Scroll to the decorator block that starts with  @dag(…); Replace the current schedule argument so it reads `schedule="@daily"`:  
+   ```python
+   @dag(
+       start_date=datetime(2024, 4, 1),
+       schedule="@daily",
+       catchup=False,
+       tags=["bored_api", "daily_activity"],
+   )
+   ```  
+   Note that pytest expected a daily cadence, so this change will satisfy the first failing test.  
+5. Move to the bottom of the file where the TaskFlow functions are invoked; Edit the dependency order so tasks execute in the exact sequence required by the tests:  
+   ```python
+   activity = fetch_activity()
+   logged_activity = log_activity(activity)
+   analyzed_activity = analyze_activity(activity)
+
+   activity >> logged_activity >> analyzed_activity
+   ```  
+   We removed the old ordering and chained the tasks as “activity then log then analyze,” matching the README failure stack-trace.  
+6. Press Ctrl+S (or Cmd+S) to Save task_today.py. A small white dot in the tab should disappear when the file is written.  
+7. Switch to the integrated terminal at the bottom of VS Code; if it’s not open, Click Terminal → New Terminal from the top menu.  
+8. Execute the Astronomer dev restart command to rebuild the project with our code fixes:  
+   ```bash
+   astro dev restart
+   ```  
+   Wait until you see “Airflow webserver health check successful” to verify the containers are back up.  
+9. Click the Chromium icon on the dock to Switch to the Airflow Web UI (http://localhost:8080).  
+10. On the DAGs home page, Find the row labeled task_today; Click the grey toggle slider in the On/Off column so it turns blue (this Unpauses the DAG).  
+11. Move to the far-right Action column of the same row; Click the ► (triangle/run) button to Trigger a manual run. A green toast “Triggered DAG task_today” should appear in the top-right corner.  
+12. Watch the Runs column; when the spinning icon disappears, Click the blue date link (e.g., “manual__2024-…”) to open the Graph view.  
+13. Confirm that each task box (activity, logged_activity, analyzed_activity) turns solid green, showing the run is successful. If any box turns red, Click it → Click Logs → Scroll to read the stacktrace.  
+14. Return to VS Code if further edits are needed; otherwise we are done—pytest errors resolved, DAG triggered, tasks executed in the correct order.

@@ -1,0 +1,49 @@
+1. Open the VS Code editor from the left panel.  
+2. Expand the folder ​hacker_news​ in the Explorer tree and double-click ​__init__.py​ to open it in the right editor pane.  
+3. Scroll to the import block at the top, then add the two missing imports. Your updated import section should read:  
+   ```python
+   from dagster import (
+       AssetSelection,
+       Definitions,
+       ScheduleDefinition,
+       define_asset_job,
+       load_assets_from_modules,
+   )
+   ```  
+4. Locate the existing line that loads your assets (it should already be there). Immediately below it, write a job that materialises every asset:  
+   ```python
+   # Define a job that will materialize all assets
+   hacker_news_pipeline = define_asset_job(
+       name="hacker_news_pipeline",
+       selection=AssetSelection.all(),
+   )
+   ```  
+5. Directly underneath the job, create an hourly schedule for it:  
+   ```python
+   # Run the job every hour on the hour
+   hackernews_schedule = ScheduleDefinition(
+       job=hacker_news_pipeline,
+       cron_schedule="0 * * * *",   # every hour
+   )
+   ```  
+6. Scroll to the bottom of the file, replace (or extend) the Definitions object so it now includes the schedule:  
+   ```python
+   defs = Definitions(
+       assets=all_assets,
+       jobs=[hacker_news_pipeline],       # keep the job discoverable
+       schedules=[hackernews_schedule],   # attach the hourly schedule
+   )
+   ```  
+7. Press Ctrl+S (or Cmd+S) to save ​__init__.py​. Make sure the Status Bar shows “✓” (no unsaved changes).  
+8. Switch to the terminal panel at the bottom of VS Code and watch that no syntax errors are emitted by your live Dagster process. (If Dagster is not running, start it with `dagster dev` in the terminal.)  
+9. Click the Chromium (or default browser) icon on the left dock to open the Dagster web UI that is running at http://localhost:3000.  
+10. In the Dagster UI, click the Assets tab in the top navigation bar.  
+11. Hit the Reload Definitions button (circular arrow icon) in the upper-right corner; wait for the status toast “Definitions reloaded successfully” to appear.  
+12. Click the Overview tab in the top navigation bar.  
+13. Select the Schedules sub-tab beneath Overview.  
+14. Find the row whose Name column shows ​hackernews_schedule​ (Dagster automatically appends “_schedule” to the schedule id). Confirm the Cron column reads ​0 * * * *​.  
+15. Toggle the switch in the Running column for ​hackernews_schedule​ to the ON position. The light should change from grey to green, indicating it is now active.  
+16. Wait a few seconds, then look at the “Next tick” column; it should display a timestamp exactly at the top of the next hour.  
+17. (Optional verification) Click the play-button icon at the right of the row to launch an ad-hoc run and confirm that a pipeline execution opens showing the three steps completing successfully.  
+18. Return to the Overview ➜ Runs tab; observe your manual run succeeded and that a future run is queued for the hourly schedule.  
+19. We have now defined the job ​hacker_news_pipeline​, scheduled it for hourly execution, and activated the schedule in the Dagster UI. All assets will be kept continuously up-to-date.

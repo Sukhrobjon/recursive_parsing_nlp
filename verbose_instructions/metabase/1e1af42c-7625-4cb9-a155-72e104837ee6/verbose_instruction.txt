@@ -1,0 +1,25 @@
+1. Click the “New” button in the top-right corner of the Metabase window.  
+2. Choose “Question” from the drop-down panel that appears.  
+3. In the database picker modal, select “Sample Database,” then click the “Orders” table name.  
+4. Click the blue “Visualize” button at the bottom-right of the data preview.  
+5. Click the “Summarize” button (top-right, next to the filter icon).  
+6. Under “Summarize by” keep the default “Count” metric (this counts all rows).  
+7. Under “Group by,” click “+ Add grouping,” then choose “Total.”  
+8. Click the “Auto binned” pill that appears under the “Total” column. A small pop-up with preset bin sizes opens.  
+9. Select a bin size, watch the preview chart, and repeat with other presets until the y-axis (vertical axis) max label is close to 1,400 (≈1.4K). Typical choices are “10,” “20,” “25,” and “50”; pick whichever yields a maximum bar height around 1,400.  
+   • Verification: when you hover a tallest bar, the tooltip should read ~1,350–1,450—confirming the range is correct.  
+10. Click the blue “Done” button in the summarization sidebar. Metabase now shows a default bar chart.  
+11. Click the “Visualization” selector (bottom-left) and choose “Bar” if it is not already selected (Metabase uses the Bar visualization for histograms).  
+12. Click the Bar visualization thumbnail again to open the “Bar Options” side panel.  
+13. Expand the “Display” accordion.  
+14. Toggle “Show values on data points” to ON. A sub-option appears.  
+15. In “Values to show,” choose “All.” All bars now show their counts.  
+16. Under “Number formatting,” open the “Auto formatting” drop-down and choose “Compact.” Bar labels switch from “1,432” to “1.4K,” matching compact style.  
+17. Click “Done” at the bottom of the Bar Options panel to save the style changes.  
+18. Verification: glance at the y-axis—its top tick should be ≈1.4K, and each bar displays a compact value label (e.g., 1.1K).  
+19. Click the cloud-shaped “Download full results” button in the lower-right corner of the page.  
+20. In the download modal, select the “.png” option.  
+21. Metabase downloads the file to your default folder (usually /home/user/Downloads).  
+22. Open your file browser, navigate to /home/user/Downloads, locate the newly saved PNG (the name starts with the question title).  
+23. Right-click the file, choose “Rename,” and type exactly: histogram.png  
+24. Press Enter to confirm the rename. The visualization is now saved as histogram.png and ready for use.

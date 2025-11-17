@@ -1,0 +1,28 @@
+1. Click the “+” icon in the left navigation bar and choose “SQL Worksheet” to open a brand-new worksheet tab.  
+2. Type Top 10 customers from China with the most account balances in the worksheet-name field at the top-left of the tab and press Enter so the worksheet is saved with that exact name.  
+3. Click the drop-down labelled “Database” in the context bar (directly above the code editor), scroll, and select SNOWFLAKE_SAMPLE_DATA.  
+4. Click the drop-down immediately to the right labelled “Schema”, then select TPCH_SF1 from the list so the worksheet context is correctly set.  
+5. Inside the empty code editor, write the following SQL statement that will later retrieve the 10 customers from China with the highest account balances:  
+
+```sql
+/* Top 10 customers from China with the most account balances */
+USE DATABASE SNOWFLAKE_SAMPLE_DATA;
+USE SCHEMA TPCH_SF1;
+
+SELECT
+       c.c_custkey           AS customer_id,
+       c.c_name              AS customer_name,
+       c.c_acctbal           AS account_balance,
+       c.c_address           AS address,
+       c.c_phone             AS phone,
+       c.c_comment           AS comment
+FROM   customer      AS c
+JOIN   nation        AS n
+       ON c.c_nationkey = n.n_nationkey
+WHERE  n.n_name = 'CHINA'
+ORDER  BY c.c_acctbal DESC
+LIMIT  10;
+```
+
+6. Verify that the worksheet now shows the code above, the context bar reads “SNOWFLAKE_SAMPLE_DATA / TPCH_SF1”, and the tab name displays Top 10 customers from China with the most account balances. (We intentionally do not click the Run button yet.)  
+7. Leave the browser tab open and proceed with other work; the worksheet will remain available for later execution.

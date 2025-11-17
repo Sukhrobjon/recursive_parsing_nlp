@@ -1,0 +1,38 @@
+1. Run `ls` in the current terminal to verify that the repository folder exists:
+```bash
+ls
+```
+  • We should see a directory named `superset` (or `apache-superset`).  
+
+2. Change into the repository directory:
+```bash
+cd superset
+```
+
+3. Execute Docker Compose to start all Superset services (this pulls images on first run and can take several minutes):
+```bash
+docker compose -f docker-compose-image-tag.yml up
+```
+  • Watch the logs.  Wait until you see messages similar to `superset_app | Superset init done` and `gunicorn (pid: …) ready`.  
+  • Leave this terminal window running so the containers stay up.
+
+4. Open (or switch to) Chrome/Chromium.
+
+5. Type `http://localhost:8088` in the address bar and press Enter.
+
+6. On the Superset login page, click inside the Username field and type:
+   admin
+
+7. Click inside the Password field and type:
+   admin
+
+8. Click the blue “SIGN IN” button.
+
+9. Confirm you land on the Superset Welcome (Home) page; the URL should still read `http://localhost:8088/`.
+
+10. Switch back to the terminal to ensure there are no container errors (optional). You can press `Ctrl + C` and then run the stack in detached mode later with:
+```bash
+docker compose -f docker-compose-image-tag.yml up -d
+```
+
+Now Superset is running locally on port 8088, and you are logged in as the default admin user.

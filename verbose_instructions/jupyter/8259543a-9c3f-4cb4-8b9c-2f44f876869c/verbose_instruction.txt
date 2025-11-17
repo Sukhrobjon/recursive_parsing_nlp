@@ -1,0 +1,14 @@
+1. Check that the notebook you want to submit is the active tab in the JupyterLab main work area; its tab should have a blue underline showing it is selected.  
+2. Click the disk-shaped icon labeled “Save” on the top toolbar once to make sure the current edits are written to memory.  
+3. Click “File” on the JupyterLab top menu bar.  
+4. Choose “Save Notebook As…” from the dropdown list; a modal file-browser dialog opens.  
+5. Double-click the “Desktop” folder in the left directory tree so we are inside Desktop (you should see its path at the top of the dialog, e.g. “Home › Desktop”).  
+6. Click inside the “Name” text field at the bottom of the dialog, press Ctrl+A (⌘+A on Mac) to highlight the existing name, and type exactly:  
+```
+submission.ipynb
+```  
+7. Confirm the new filename by pressing the “Save” button in the lower-right corner of the dialog. The dialog closes.  
+8. Observe the notebook tab title; it now reads “submission.ipynb” confirming the rename and location change.  
+9. Verify the file really exists on the Desktop: in the left “File Browser” panel, expand “Desktop” and ensure you see “submission.ipynb” listed.  
+10. Run the notebook’s last executed cell again (Shift+Enter) to ensure the kernel still functions; this doubles as a quick integrity check.  
+11. Click the disk “Save” icon one more time; JupyterLab’s status bar should flash “All notebooks saved” confirming the final write to disk.

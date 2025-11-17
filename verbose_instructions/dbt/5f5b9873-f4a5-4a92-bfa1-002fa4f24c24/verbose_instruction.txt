@@ -1,0 +1,11 @@
+1) Log in to dbt Cloud, locate the Projects list on the left sidebar, and click the project name “test_connection”.  
+2) Click the blue Connect data button (label may read “Set up a connection”) that appears in the main panel.  
+3) In the Choose a connection modal, click the BigQuery tile once so it gets a blue outline.  
+4) Click the Next button in the lower-right corner of the modal.  
+5) Wait a second; the modal expands into the Configure your environment view. Under the Settings subtitle, click the gray Upload a Service Account JSON file button (the button has an upward-pointing arrow icon).  
+6) When your operating system’s file-picker window opens, navigate to Desktop in the left sidebar of the dialog.  
+7) Double-click the dbt-user-creds.json file to select and upload it. We can see the filename appear just below the button once it’s accepted.  
+8) Scroll down if needed and click the green Test connection button.  
+9) Watch the banner at the top of the modal; it should turn green and display “Connection test succeeded.” (If it turns red, re-check that you selected the correct JSON key file.)  
+10) Click the blue Next button to save this BigQuery connection to the “test_connection” project.  
+11) Observe that the modal closes and the Connection tile on the project overview now shows BigQuery with a green checkmark, confirming the environment is ready.

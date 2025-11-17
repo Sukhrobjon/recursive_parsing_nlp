@@ -1,0 +1,17 @@
+1. Open your web browser and navigate to the company’s “Hardware Store” homepage (e.g., https://hardware.example.com).  
+2. Click the “Hardware” navigation tile in the main landing grid and wait until the catalog grid finishes loading (progress spinner disappears).  
+3. Click the top-right search bar with placeholder text “Search catalog”.  
+4. Type `iPad Pro` in the search bar and press Enter to submit the query.  
+5. Wait for the results list to refresh; in the product grid locate the card titled “iPad Pro” (look for the thumbnail with the Apple logo). Click anywhere on that product card to open the configuration page.  
+6. In the configuration page, locate the option group labelled “Choose the colour”. Click the radio button whose label text reads “Silver”. A checkmark should appear inside the circle confirming the selection.  
+7. Scroll (if necessary) to the option group labelled “Choose the storage”. Click the radio button that begins with the text “512 GB”. Verify the blue outline now surrounds the “512 GB” choice.  
+8. In the right-side panel titled “Order this item”, click the dropdown or spinner control labelled “Quantity”. If it does not already show “1”, either type `1` directly or click the down-arrow until “1” appears.  
+9. Click the blue “Order Now” button at the bottom of the same panel. Wait until the button greys out and the confirmation modal appears.  
+10. Verify the confirmation modal lists:  
+    • Item: “iPad Pro”  
+    • Colour: “Silver”  
+    • Storage: “512 GB”  
+    • Quantity: “1”  
+    • Status: “Order placed successfully” (or equivalent).  
+11. Click “Close” (or “Done”) inside the modal to return to the catalog.  
+12. Optionally, click the shopping-cart icon (top right) and ensure exactly one line item named “iPad Pro – Silver / 512 GB (Qty: 1)” is present—this confirms the order is recorded.

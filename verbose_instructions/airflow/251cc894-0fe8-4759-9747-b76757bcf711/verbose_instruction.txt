@@ -1,0 +1,11 @@
+1. Click the Chromium icon on the left dock to bring the Airflow web-UI tab to the foreground.  
+2. Verify that the page title reads “Airflow” and that you can see the main “DAGs” table; if not, press F5 to refresh once.  
+3. Locate any row whose Owner column shows the blue text “Astro”.  
+4. Click the blue “Astro” hyperlink inside that Owner cell—Airflow immediately filters the list so that only DAGs owned by Astro remain.  
+5. Confirm the filter worked: the gray pill-shaped indicator Owner=Astro now appears above the table header.  
+6. Move your cursor to the table header row and click once on the column title “DAG” (it may read “DAG Id” on some themes).  
+7. Observe the small upward-pointing triangle that appears next to “DAG”; this indicates the list is now sorted in ascending (A→Z) order by dag_id.  
+8. Read through the filtered list—every dag_id shown should now be alphabetically ordered.  
+9. (Optional) Click “DAG” again if you need to toggle to descending and back to ascending to double-check; make sure you end with the upward triangle visible.  
+10. Take note of the first and last dag_id in the list to prove the sort order (e.g., “astro_daily_report” … “astro_weekly_summary”).  
+11. When finished, leave the Owner=Astro filter pill in place or click the small “×” inside the pill to clear the filter and return to the full DAG catalog.

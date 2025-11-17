@@ -1,0 +1,30 @@
+1) Click any single data cell inside the original data range (e.g., A1) so Excel can automatically detect the entire block A:G.  
+2) Press Ctrl + A to confirm the whole range A1:G(last row) is highlighted; this gives the PivotTable wizard the correct source.  
+3) Click the Ribbon tab “Insert”.  
+4) Click the green “PivotTable” button in the Tables group.  
+5) In the “Create PivotTable” dialog, keep “Select a table or range” selected; verify the Table/Range field shows something like “$A$1:$G$5000”.  
+6) Click the radio button “New Worksheet” so the pivot will live on its own sheet.  
+7) Click OK; Excel inserts a new sheet named “SheetX (PivotTable1)” and shows the PivotTable Field List on the right.  
+8) Drag the field “Product” from the top section down into the “Rows” quadrant of the Field List. We now see each unique product listed down the first pivot column.  
+9) Drag the field “Revenue” into the “Values” quadrant. Excel automatically names this field “Sum of Revenue” and displays one number per product.  
+10) Glance at the pivot values; if you see “Count of Revenue” instead of “Sum of Revenue”, right–click any number inside the pivot, choose “Summarize Values By”, and click “Sum”.  
+11) Verify the Grand Total at the bottom equals the original revenue column total (quick check: use =SUM(G:G) in the source sheet and compare).  
+12) Click anywhere inside the pivot so the PivotTable Analyze tab becomes active in the Ribbon (PivotTable Tools group).  
+13) Click the little paint-roller icon “PivotTable Styles” if you wish to pick a style; choose “Pivot Style Medium 9” so totals are bold (optional aesthetic step).  
+14) Click cell A3 on the pivot (first product name) just to ensure Excel knows the pivot is the active object—this affects the upcoming chart.  
+15) While still on the PivotTable Analyze tab, click the “PivotChart” button in the Tools group.  
+16) In the “Insert Chart” dialog, choose “Pie” from the list on the left.  
+17) Select the first 2-D Pie subtype (top-left icon).  
+18) Click OK; Excel inserts a default pie chart to the same worksheet.  
+19) Drag the chart to a clear area below or to the right of the pivot so both objects are visible.  
+20) With the chart selected, click the plus (+) icon that appears at the upper-right corner of the chart (Chart Elements button).  
+21) Hover over “Legend”, then click the black arrow that appears, and choose “Right” so product names appear on the right.  
+22) Still in Chart Elements, uncheck “Chart Title” if you prefer a cleaner look (optional).  
+23) Click the colorful paintbrush (Chart Styles) and pick a color palette you like; Excel automatically maps each product to a slice color.  
+24) Click any slice → press F2 → type a more descriptive label if needed (e.g., rename “ProdA” to “Product A”) and press Enter—this only updates chart labels, not pivot data.  
+25) Hover over each slice; confirm the screen-tip shows the correct product name and revenue value—this cross-checks the summarization.  
+26) Right-click a blank spot inside the chart area → choose “Format Chart Area” → in the Format pane, set “Fill” to “No Fill” if you want a transparent background (design preference).  
+27) Press Ctrl + S.  
+28) In the “Save As” dialog, navigate to your folder, type a file name like “Product_Revenue_Summary.xlsx”.  
+29) Ensure the “Save as type:” drop-down shows “Excel Workbook (*.xlsx)”; this corresponds to Excel 2007-365.  
+30) Click Save. The workbook now contains a pivot table summarizing revenue per product on its own sheet and a pie chart with legend on the right reflecting the same data.

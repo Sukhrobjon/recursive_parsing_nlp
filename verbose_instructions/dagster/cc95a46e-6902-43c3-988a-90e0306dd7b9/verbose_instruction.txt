@@ -1,0 +1,128 @@
+1. Open your terminal and navigate to (or create) a fresh Dagster project folder:  
+   ```bash
+   mkdir ~/dagster_apod && cd ~/dagster_apod
+   ```
+
+2. Scaffold a minimal Dagster project skeleton:  
+   ```bash
+   dagster project scaffold --name apod_project
+   ```  
+   Note that a new directory `apod_project` is created with starter files.
+
+3. Change to the new project directory so that every command and file you add lands inside the repo:  
+   ```bash
+   cd apod_project
+   ```
+
+4. Create an `assets` sub-package for custom code:  
+   ```bash
+   mkdir -p apod_project/assets && touch apod_project/assets/__init__.py
+   ```
+
+5. Write the partitioned APOD asset in a new Python file:  
+   ```bash
+   nano apod_project/assets/apod_asset.py
+   ```
+   Paste the complete code below, then save (Ctrl-O) and exit (Ctrl-X):
+   ```python
+   import os
+   import datetime
+   import requests
+   from dagster import asset, DailyPartitionsDefinition
+
+   # NASA public demo key – fine for low-volume usage
+   API_KEY = "DEMO_KEY"
+
+   # 1️⃣  Define daily partitions starting on 2024-04-01
+   partitions_def = DailyPartitionsDefinition(start_date="2024-04-01")
+
+   @asset(partitions_def=partitions_def, name="apod_url")
+   def apod_url_asset(partition_date: datetime.date) -> str:
+       """
+       Retrieves NASA Astronomy Picture of the Day and stores the HD image URL
+       to data/apod_url_YYYY-MM-DD.txt for the given partition_date.
+       """
+       date_str = partition_date.strftime("%Y-%m-%d")
+
+       # 2️⃣  Call NASA APOD API
+       r = requests.get(
+           "https://api.nasa.gov/planetary/apod",
+           params={"api_key": API_KEY, "date": date_str},
+           timeout=10,
+       )
+       r.raise_for_status()
+       hd_url = r.json()["hdurl"]
+
+       # 3️⃣  Persist result to local file system
+       os.makedirs("data", exist_ok=True)
+       out_path = f"data/apod_url_{date_str}.txt"
+       with open(out_path, "w") as f:
+           f.write(hd_url)
+
+       # 4️⃣  Return the URL so Dagster logs it as an output
+       return hd_url
+   ```
+
+6. Expose the new asset in the repository. Open the auto-generated `apod_project/repository.py`:  
+   ```bash
+   nano apod_project/repository.py
+   ```
+   Update its content so the asset is imported and returned:
+   ```python
+   from dagster import Definitions
+   from .assets.apod_asset import apod_url_asset
+
+   defs = Definitions(
+       assets=[apod_url_asset],
+   )
+   ```
+
+7. Launch the Dagster web server locally for interactive materialization:  
+   ```bash
+   dagster dev
+   ```
+   The terminal shows “Dagster UI running at http://localhost:3000”.
+
+8. Switch to your browser and open http://localhost:3000.
+
+9. Click “Assets” in the left navigation panel to see the asset graph.
+
+10. Select the circular node labeled “apod_url” to open the asset details drawer on the right.
+
+11. Click the “Materialize…” blue button in the drawer.
+
+12. In the “Choose partitions” pop-up:  
+    a) Click the “Range” tab at the top.  
+    b) Type “2024-04-10” in the “Start date” box.  
+    c) Type “2024-04-13” in the “End date” box.  
+    d) Confirm that four chips (2024-04-10, 11, 12, 13) appear below.  
+    e) Click the “Materialize 4 Partitions” button in the lower right.
+
+13. Observe the run status panel. Wait until the status for all four partitions turns green and reads “Succeeded”.
+
+14. Switch back to the terminal where `dagster dev` is running; you will see log lines showing successful API calls for each date.
+
+15. Open a new terminal tab (or press Ctrl-C once you’re outside the Dagster process) and verify that output files were written:  
+   ```bash
+   ls data/apod_url_2024-04-1*.txt
+   ```
+   You should see:
+   ```
+   data/apod_url_2024-04-10.txt
+   data/apod_url_2024-04-11.txt
+   data/apod_url_2024-04-12.txt
+   data/apod_url_2024-04-13.txt
+   ```
+
+16. Print one file’s content to confirm it holds the HD image URL:  
+   ```bash
+   cat data/apod_url_2024-04-10.txt
+   ```
+   The command returns something like:
+   ```
+   https://apod.nasa.gov/apod/image/2404/ExampleHDImage.jpg
+   ```
+
+17. (Optional) Clean up by stopping the local server. In the window running `dagster dev`, press Ctrl-C to terminate the process.
+
+The partitioned Dagster asset is now defined, stores each day’s HD image URL in a dated text file, and has been materialized for the requested date range (2024-04-10 to 2024-04-13).

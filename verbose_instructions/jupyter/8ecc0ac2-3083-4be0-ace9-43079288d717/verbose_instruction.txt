@@ -1,0 +1,10 @@
+1. Double-click the file name ​`notebook.ipynb`​ in the left sidebar to open the notebook.  
+2. Verify the kernel indicator (top-right, e.g., “Python 3 (ipykernel)”) shows an idle gray circle—this confirms the kernel is ready.  
+3. Click the floppy-disk icon “Save” on the toolbar so we have a checkpoint before executing anything.  
+4. Click the menu item ​Run → “Run All Cells”​.  
+5. Watch the solid black circle (busy kernel) that appears next to the kernel name; wait until it turns back to a hollow gray circle—this means every cell has finished executing.  
+6. Scroll from the top of the notebook downward and visually confirm that each code cell now shows a numbered prompt like ​`[1]`, `[2]`, … with corresponding outputs directly beneath.  
+7. If any cell shows a red error traceback, press ​Kernel → “Restart Kernel and Run All Cells…”​.  
+8. Click the “Restart” button in the popup confirmation dialog; Jupyter will restart the kernel and re-execute every cell automatically.  
+9. Once the kernel indicator returns to idle, scroll again to check that error messages are gone and all expected tables, plots, or printed results appear.  
+10. Optionally click File → “Download as” → “HTML (.html)” to save a snapshot of the executed notebook results for sharing.

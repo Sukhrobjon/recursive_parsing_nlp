@@ -1,0 +1,12 @@
+1. Log in to your Metabase instance with an account that has admin privileges so we can modify user details.  
+2. Click the grey gear icon located in the top-right corner of the navigation bar—Metabase labels this icon “Settings.”  
+3. Choose “Admin settings” from the drop-down menu that appears; this opens the Admin panel in a new view.  
+4. Click the “People” tab in the horizontal menu bar near the top of the Admin page; Metabase now lists every user account.  
+5. Locate the row that shows the user name “John Wilson.” If you do not immediately see it, type “John Wilson” in the search box at the top-left of the table to filter the list.  
+6. Click the three vertical dots (…) at the far right end of the “John Wilson” row to reveal the context menu.  
+7. Select “Edit user” from that context menu; an Edit User dialog window opens in the center of the screen.  
+8. Click inside the “Email” input field, highlight the existing address, and type the new address exactly as:  
+   johnwilson@outlook.com  
+   Note that we are replacing the previous email, so there should be no extra spaces.  
+9. Click the blue “Update” button at the bottom-right of the dialog to save changes; Metabase closes the dialog and flashes a green “User updated” toast notification in the lower-left corner, confirming success.  
+10. Verify the change: remain on the “People” tab, locate “John Wilson” again, and confirm the “Email” column now displays johnwilson@outlook.com. If it still shows the old address, refresh the page using Ctrl+R (Cmd+R on Mac) and check once more.

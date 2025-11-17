@@ -1,0 +1,37 @@
+1. Scroll to the top of the opened notebook until you find the first cell marked “# 1️⃣ TODO – Load data”.  
+2. Click inside that cell, highlight any placeholder text under the TODO comment, and Write the exact line below:  
+```python
+data = pd.read_csv(path, header=None, names=['Exam1', 'Exam2', 'Admitted'])
+```  
+
+3. Scroll down to the next cell labelled “# 2️⃣ TODO – Implement sigmoid”.  
+4. Double-click the cell, select the line `return None`, and Replace it with:  
+```python
+return 1 / (1 + np.exp(-z))
+```  
+
+5. Locate the cell titled “# 3️⃣ TODO – Add intercept term”.  
+6. Click the cell and Type the code underneath the existing comments:  
+```python
+data.insert(0, 'Ones', 1)
+```  
+
+7. Find the cell “# 4️⃣ TODO – Compute gradient”.  
+8. Highlight `return None` inside that function and Overwrite it with:  
+```python
+return (1/len(X) * X.T @ (sigmoid(X @ theta.T) - Y))
+```  
+
+9. Scroll to the prediction helper cell “# 5️⃣ TODO – Predict labels”.  
+10. Replace the line `return None` with the complete logic:  
+```python
+probability = sigmoid(X @ theta.T)
+return [1 if x >= 0.5 else 0 for x in probability]
+```  
+
+11. Click the menu bar item “Run”.  
+12. Select “Run All Cells” from the dropdown to execute the entire notebook; watch the right side of each cell for green check-marks confirming success.  
+
+13. Verify output: in the final printed accuracy or cost cell, confirm you see a numeric value (e.g., “Training Accuracy: 0.89”). This ensures every TODO was filled correctly.  
+
+14. Press Ctrl + S (or Command + S on macOS) to save the updated notebook, ensuring your completed code persists.

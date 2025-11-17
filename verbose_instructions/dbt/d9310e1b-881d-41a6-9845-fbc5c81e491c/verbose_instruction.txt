@@ -1,0 +1,50 @@
+1) Open your browser and log in to dbt Cloud with an account that has Owner or Admin rights for the workspace.  
+
+2) Click the “Environments” icon (stacked squares) in the left-hand navigation bar, then verify that an environment named “check_source” already exists.  
+   • If it is missing, Click “+ New Environment”, type `check_source` in the “Environment Name” field, select the production connection, leave the deployment type as “Deployment”, and click the blue “Save” button.  
+   • We will use this exact environment in the next steps.
+
+3) Click the “Jobs” icon (clock with arrow) in the left-hand navigation bar to switch to the Jobs page.  
+
+4) Click the blue “+ New Job” button in the upper-right corner to open the job creation form.  
+
+5) Type `check_source` into the “Job name” input so the job and the environment share the same stable identifier.  
+
+6) Open the “Environment” drop-down and choose the `check_source` environment you verified/created in step 2.  
+
+7) Scroll to the “Commands” panel and remove the pre-populated `dbt run` step by clicking the small trash-can icon to the right of that row.  
+   • We only want this job to execute freshness checks, nothing else.
+
+8) Click the “Add a command” button, choose “dbt CLI Command”, and paste the exact line below into the input field that appears:  
+```bash
+dbt source freshness --output json --target-path target/freshness
+```  
+   • `dbt source freshness` is the preferred v1+ syntax (equivalent to `dbt source snapshot-freshness`).  
+   • The `--output json` flag stores the result in a machine-readable file we can inspect later.  
+   • The `--target-path target/freshness` isolates freshness artefacts from other run artefacts.
+
+9) (Optional) Toggle OFF “Generate docs on run” to keep the job footprint small—documentation generation is not required for freshness capture.
+
+10) Scroll to the “Triggers” section and click “Schedule”.  
+    • Select “Custom cron” and paste the expression `0 */1 * * *` into the cron input.  
+      – This fires the job at minute 0 of every hour (e.g., 01:00, 02:00, 03:00, …).  
+      – With the lowest dataset SLA set to 2 hours, an hourly cadence guarantees that no freshness window exceeds 60 minutes, comfortably inside the SLA.  
+    • Confirm the timezone drop-down reads “UTC” (or your agreed standard).
+
+11) Leave “On Pull Request” and “On Merge to Main” toggles OFF so the job runs completely independently of the main CI/CD pipeline.
+
+12) Click the blue “Save Job” button (bottom-right).  dbt Cloud will redirect you to the new “check_source” job overview page.
+
+13) Click the “Run now” button (lightning icon) in the upper-right corner to launch an immediate test run.  
+
+14) Wait until the run reaches “Success”.  Then click the run ID to open its log and confirm you see a line that looks like:  
+```
+Completed successfully: dbt source freshness
+```  
+   • Scroll further down and verify a JSON file appears under `target/freshness/` in the artefact list.
+
+15) Switch to the top navigation bar and click “Run History”.  We can see the first successful row with a green check mark, proving the job captured source freshness.
+
+16) Optionally, click “Sources” in the dbt Cloud Docs site (if enabled) to view the graphical freshness indicators and confirm the timestamps align with the run you just executed.
+
+17) Your scheduled deploy job “check_source” is now live; it will automatically execute every hour and maintain an independent stream of freshness snapshots that respect the 2-hour SLA.

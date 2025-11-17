@@ -1,0 +1,15 @@
+1. Click the top-level menu item “Charts” to open the chart list page  
+2. Click the blue “+ CHART” button in the upper-right corner of the screen  
+3. Click inside the “Choose a dataset” search box that appears in the modal dialog  
+4. Type “game_sales” and press Enter, then click the returned line labeled “game_sales” to select it  
+5. Look to the panel on the right side of the modal, scroll if needed, and click the card labeled “Line Chart”  
+6. Click the blue “CREATE NEW CHART” button at the bottom of the modal to open the chart builder  
+7. Drag the field “year” from the left-hand column list into the “X-AXIS” drop zone in the control panel  
+8. Drag the field “global_sales” from the same column list into the “METRICS” drop zone  
+9. Click the small gray dropdown inside the “global_sales” metric pill that currently says “SUM” or “COUNT”  
+10. Select “AVG” from the aggregation list so the pill now reads “AVG(global_sales)”  
+11. Click the blue “RUN” button above the chart canvas to render the preview; confirm the line plot shows one point per year and the Y-axis is “AVG(global_sales)”  
+12. Click the green “SAVE” button at the top-right of the screen  
+13. Type “linechart” into the “CHART NAME” input field in the save dialog  
+14. Click the blue “SAVE” button in the dialog to persist the visualization  
+15. Observe the toast notification “Chart linechart was saved” in the lower-right corner, confirming success and adding the chart to the main chart list

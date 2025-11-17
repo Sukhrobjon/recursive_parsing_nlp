@@ -1,0 +1,74 @@
+1) Confirm the dataset exists: Click the “BigQuery” logo in the left navbar → in the Explorer panel click the gray triangle beside your project name → look for the dataset called babynames.  
+
+2) Create the dataset if it is missing: Click “+ ADD DATA” → “Create dataset” → type babynames in Dataset ID → leave Location as US → click “CREATE DATASET”.  
+
+3) Open Cloud Shell: Click the “Activate Cloud Shell” (>_) icon in the top-right of the console and wait until the terminal appears.  
+
+4) Upload the ZIP file: Type  
+```bash
+upload
+```  
+and drag-drop names.zip into the Cloud Shell upload dialog; press “Upload”.  
+
+5) Unzip the archive in Cloud Shell:  
+```bash
+unzip names.zip
+```  
+You should now see a file such as names_2014.csv (or yob2014.txt).  
+
+6) Create/choose a staging bucket: In Cloud Shell run  
+```bash
+gsutil mb -p $DEVSHELL_PROJECT_ID gs://babyname-staging-$(date +%s)/
+```  
+Copy the bucket URI printed (e.g. gs://babyname-staging-1685574287). We will use it in the next step.  
+
+7) Copy only the 2014 file to Cloud Storage:  
+```bash
+gsutil cp names_2014.csv gs://babyname-staging-1685574287/
+```  
+Verify the upload finishes with “Copying file://… -> gs://…/names_2014.csv”.  
+
+8) Switch back to the BigQuery console tab.  
+
+9) Start the table-creation wizard: In the Explorer panel click the gray triangle beside babynames → click the blue “CREATE TABLE” button in the right pane.  
+
+10) Point to the source file:  
+   a. In “Create table from” choose “Google Cloud Storage”.  
+   b. In “Select file from GCS bucket” paste gs://babyname-staging-1685574287/names_2014.csv and press Enter.  
+   c. Verify the green check-mark appears.  
+
+11) Set the destination:  
+   a. Dataset = babynames  
+   b. Table name = names_2014  
+   c. Table type = Native table (default)  
+
+12) Provide the schema:  
+   a. Uncheck “Auto detect”.  
+   b. Click “+ ADD FIELD” three times and enter the fields exactly:  
+      • name – STRING  
+      • assigned_sex_at_birth – STRING  
+      • count – INTEGER  
+
+13) Configure format details:  
+   a. File format = CSV  
+   b. Field delimiter = Comma  
+   c. Header rows to skip = 0 (assuming the file has no header; set to 1 if a header exists).  
+
+14) Load the data: Scroll down and click the blue “CREATE TABLE” button. Wait until the green toast “Job successful” appears in the lower-right corner.  
+
+15) Verify the import:  
+   a. In the Explorer panel click babynames → names_2014 → “PREVIEW” tab to visually inspect rows.  
+   b. Run a quick query: Click “COMPOSE NEW QUERY” and execute  
+```sql
+SELECT COUNT(*) AS total_rows,
+       SUM(count) AS total_births
+FROM `project_id.babynames.names_2014`;
+```  
+   c. Confirm the query returns row counts greater than zero, indicating data is present.  
+
+16) (Optional cleanup) Remove the staging file: return to Cloud Shell and run  
+```bash
+gsutil rm gs://babyname-staging-1685574287/names_2014.csv
+```  
+
+The 2014 baby-name data is now fully loaded into babynames.names_2014 and ready for analysis.

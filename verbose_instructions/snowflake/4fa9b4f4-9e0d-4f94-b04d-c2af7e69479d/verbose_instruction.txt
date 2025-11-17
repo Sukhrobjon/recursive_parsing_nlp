@@ -1,0 +1,64 @@
+1. Navigate to https://console.cloud.google.com/bigquery so the BigQuery Web UI opens in a new browser tab.  
+2. Click the triangle ▶︎ next to the project named CUSTOMER to expand its datasets.  
+3. Click the triangle ▶︎ next to the PUBLIC dataset, then click the table name CUSTOMER.  
+4. Observe the Schema tab on the right so we know all column names; we’ll need them when we re-insert the missing row(s).  
+5. Click PREVIEW in the main panel; we can already see the deleted record is gone. (This helps verify success later.)  
+
+6. Switch to the text editor window where query_id.txt is open, highlight the whole job ID inside (for example `7bc64997-f3c7-43b6-9a87-a9f4308e8113`), then press Ctrl-C / ⌘-C to copy it.  
+7. Return to the BigQuery tab and click the blue + COMPOSE NEW QUERY button at the top-right of the Explorer pane. A fresh query editor opens.  
+
+8. Type the following helper query, replacing <PASTE_JOB_ID_HERE> with the ID you just copied; keep the back-ticks and quotes intact:
+
+```sql
+-- Find the exact timestamp when the DELETE ran
+SELECT
+  job_id,
+  TIMESTAMP_MILLIS(creation_time)              AS job_start_ts,
+  TIMESTAMP_SUB(TIMESTAMP_MILLIS(creation_time), INTERVAL 1 SECOND) AS ts_before_delete
+FROM
+  `region-us`.INFORMATION_SCHEMA.JOBS_BY_PROJECT
+WHERE
+  job_id = '<PASTE_JOB_ID_HERE>';
+```
+
+9. Click the green ► RUN button in the toolbar.  
+10. Wait a few seconds; the Query results panel shows two timestamp columns. Copy the value from ts_before_delete (e.g. `2023-11-10 14:27:59 UTC`)—we’ll time-travel to that moment.  
+
+11. Click + COMPOSE NEW QUERY again to start a new tab.  
+12. Write a query that looks at the table *as it existed one second before the damaging DELETE*. Paste the timestamp you copied in step 10:
+
+```sql
+-- Retrieve the rows that existed before the delete
+SELECT *
+FROM `CUSTOMER.PUBLIC.CUSTOMER`
+FOR SYSTEM_TIME AS OF TIMESTAMP '2023-11-10 14:27:59 UTC';
+```
+
+13. Press ► RUN. Verify in the results grid that the previously deleted row(s) appear (compare with your memory or earlier export).  
+
+14. Now we’ll re-insert only what is missing. Click + COMPOSE NEW QUERY for a third tab and enter the INSERT-SELECT statement below, keeping the same timestamp:
+
+```sql
+-- Insert back only rows that are no longer present
+INSERT INTO `CUSTOMER.PUBLIC.CUSTOMER`
+SELECT *
+FROM (
+  SELECT *
+  FROM `CUSTOMER.PUBLIC.CUSTOMER`
+  FOR SYSTEM_TIME AS OF TIMESTAMP '2023-11-10 14:27:59 UTC'
+)
+WHERE NOT EXISTS (
+  SELECT 1
+  FROM `CUSTOMER.PUBLIC.CUSTOMER` c_now
+  WHERE c_now.primary_key_column = primary_key_column   -- replace with real PK column
+);
+```
+Note that we compare on `primary_key_column`; replace this placeholder with the actual primary-key or unique column(s) you identified in step 4 so duplicate rows are not created.  
+
+15. Click ► RUN to execute the INSERT. A green check mark and “# rows affected” message should appear—confirm that at least one row was inserted.  
+
+16. To double-check, click the tab showing the table name CUSTOMER in the Explorer, then choose PREVIEW again; the restored record(s) should now be present.  
+
+17. (Optional) If you want a permanent backup of the restored version, click the SAVE RESULTS button above the preview grid, choose “CSV (local file)”, and download it to your workstation.  
+
+The CUSTOMER.PUBLIC.CUSTOMER table has now been successfully restored to its correct state.

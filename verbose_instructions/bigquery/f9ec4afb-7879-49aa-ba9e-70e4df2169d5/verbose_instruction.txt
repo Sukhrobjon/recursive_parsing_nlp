@@ -1,0 +1,24 @@
+1. Open your browser, navigate to the BigQuery console (https://console.cloud.google.com/bigquery) and confirm the correct GCP project is selected in the blue project-selector bar at the top.  
+2. In the Explorer panel on the left, click the gray triangle ▸ next to bigquery-public-data to expand the public datasets.  
+3. Scroll down, locate austin_crime, and click its triangle ▸ to reveal its tables.  
+4. Click the table name crime so we can inspect the schema in the Details pane; notice the column clearance_status—we will filter on that value.  
+5. Click the plus icon + labeled Compose new query (or Create SQL query) in the toolbar to open a new query tab titled “Untitled query.”  
+6. Type or paste the SQL statement below in the blank editor:  
+```sql
+SELECT
+  COUNT(*) AS total_cleared_by_arrest
+FROM
+  `bigquery-public-data.austin_crime.crime`
+WHERE
+  clearance_status = 'Cleared by Arrest';
+```  
+7. Click the blue > RUN button in the top-right of the query editor to execute the statement.  
+8. Wait a few seconds; the Query results panel will show one row with the column total_cleared_by_arrest displaying the count of solved cases that resulted in arrest.  
+9. Click the SAVE RESULTS button that appears above the results grid (far right of the “Query results” header row).  
+10. In the dropdown menu, select BigQuery table. A side panel titled “Save results to table” slides in.  
+11. For Destination Project leave your current project selected.  
+12. Click the Dataset field, scroll or type to find and select my_dataset.  
+13. In the Table name box, type arrest (all lowercase). If a table named arrest already exists and you want to replace it, choose the “Overwrite table” write preference; otherwise keep the default “Create table.”  
+14. Leave File format as “Table” and other advanced settings at their defaults, then click the blue SAVE button at the bottom of the side panel.  
+15. Watch the Job information panel—once the green checkmark appears, the data is written.  
+16. In the Explorer panel, expand my_dataset; you should now see the new table arrest. Click it to verify the single row containing total_cleared_by_arrest appears in the Preview tab.

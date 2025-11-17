@@ -1,0 +1,44 @@
+1. Click the “VS Code” icon on the left dock to bring the editor to the foreground.  
+2. Navigate to the Explorer panel and double–click the folder named “hacker_news” to expand it.  
+3. Double–click the (currently empty) file assets.py inside the hacker_news folder so it opens in a new tab.  
+4. Type (or paste) the entire code snippet below into the empty editor pane:  
+```python
+import json
+import os
+
+import requests
+from dagster import asset  # import the `dagster` library
+
+@asset  # tell Dagster that this function defines an asset
+def top10_story_ids() -> None:
+    newstories_url = "https://hacker-news.firebaseio.com/v0/topstories.json"
+    # Retrieve list of top story IDs from the public Hacker News API
+    top_story_ids = requests.get(newstories_url, timeout=30).json()[:10]
+
+    # Ensure the data directory exists and write the IDs as JSON
+    os.makedirs("data", exist_ok=True)
+    with open("data/story_ids.json", "w") as f:
+        json.dump(top_story_ids, f)
+```
+5. Press Ctrl + S (or ⌘ + S on macOS) to save assets.py.  
+6. Switch to the integrated terminal in VS Code by clicking the “Terminal” tab at the bottom of the window (or press Ctrl + ` (back-tick)).  
+7. Type the command below to start Dagster’s local web UI so we can verify the new asset is discovered:  
+```bash
+dagster dev
+```  
+8. Wait until the terminal prints “Dagit UI running at http://127.0.0.1:3000” (or a similar URL); this means Dagster has re-loaded your code.  
+9. Click the “Chromium” (or your default browser) icon on the dock to open a browser window.  
+10. In the browser’s address bar, type http://127.0.0.1:3000 and press Enter to open Dagit.  
+11. In Dagit’s left sidebar, expand the repository that matches your project name; we should now see an asset node labeled top10_story_ids.  
+12. Click the node top10_story_ids to open its detail panel.  
+13. Click the blue “Materialize” button in the upper-right corner of the asset detail page.  
+14. In the pop-up, leave defaults as they are and click “Launch Run”.  
+15. Observe the Run page that appears; wait until the status indicator next to top10_story_ids turns green and reads “Succeeded.”  
+16. Switch back to VS Code’s integrated terminal (Ctrl + Tab from browser or click the VS Code icon).  
+17. Type the command below to confirm the output file exists and inspect its content:  
+```bash
+cat data/story_ids.json
+```  
+18. Verify the terminal prints a JSON array with exactly 10 numeric IDs (e.g., [34567890, 34567891, …]).  
+19. Press Ctrl +C in the terminal to stop the running Dagster dev server.  
+20. Celebrate—our first Dagster asset top10_story_ids is now fully implemented, materializes successfully, and saves its results to data/story_ids.json.

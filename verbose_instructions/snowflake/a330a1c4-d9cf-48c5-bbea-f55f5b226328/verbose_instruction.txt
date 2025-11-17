@@ -1,0 +1,86 @@
+1. Click the “+  ►  SQL Worksheet” button in the upper-right corner of the Snowflake web UI to open a fresh worksheet where we will run all commands.  
+2. Type the role and warehouse setup commands so we have full privileges and compute; then click the blue “► Run” button:  
+```sql
+USE ROLE accountadmin;
+USE WAREHOUSE compute_wh;
+```
+3. Write the DDL to create the requested database and immediately switch into it so every subsequent object lands in the new database. Execute the block:  
+```sql
+CREATE OR REPLACE DATABASE log_trace_db;
+USE DATABASE log_trace_db;
+USE SCHEMA public;           -- default schema inside the new DB
+```
+   Note that the worksheet status bar should now display “log_trace_db.PUBLIC”.
+
+4. Create the requested event table. We will add four columns—an autoincrementing ID, the timestamp, a free-text log level, and the actual message—to give us a useful structure for future inserts. Run:  
+```sql
+CREATE OR REPLACE TABLE event_table (
+    event_id        NUMBER        AUTOINCREMENT,
+    event_ts        TIMESTAMP_LTZ DEFAULT CURRENT_TIMESTAMP(),
+    event_level     STRING,
+    event_message   STRING
+);
+```
+ A success toast should display “Table EVENT_TABLE successfully created”.
+
+5. Verify that the table exists by querying the Snowflake catalog; click “Run” on:  
+```sql
+SHOW TABLES LIKE 'EVENT_TABLE';
+```
+   You should see one row with the name EVENT_TABLE and the schema PUBLIC.
+
+6. Still in the same worksheet, write the Python 3.8 user-defined function exactly as requested. Copy the entire block and press “Run”:  
+```sql
+CREATE OR REPLACE FUNCTION log_trace_data(level STRING, msg STRING)
+RETURNS STRING
+LANGUAGE PYTHON
+RUNTIME_VERSION = 3.8
+HANDLER='run'
+COMMENT='Logs to Snowflake console and returns SUCCESS'
+AS
+$$
+import logging
+
+# configure logger exactly once at module import
+logger = logging.getLogger("logger")
+logger.setLevel(logging.INFO)
+
+def run(level, msg):
+    """
+    level : text string such as 'INFO'
+    msg   : user message; ignored here because we emit a constant line
+    """
+    # Emit the constant log line required by the task description
+    logger.info("Logging from Python function.")
+    # Optionally emit the dynamic message too (not required)
+    logger.info("User message: %s", msg)
+    return "SUCCESS"
+$$;
+```
+ Snowflake returns “Function LOG_TRACE_DATA successfully created”.
+
+7. Confirm the function signature is correct by querying the INFORMATION_SCHEMA; execute:  
+```sql
+SELECT function_name, arguments, language, handler
+FROM information_schema.functions
+WHERE function_name = 'LOG_TRACE_DATA';
+```
+ You should see LOG_TRACE_DATA with LANGUAGE=PYTHON and HANDLER=run.
+
+8. (Optional but recommended) Test the whole chain by inserting a record into EVENT_TABLE using the function result. Run:  
+```sql
+INSERT INTO event_table(event_level, event_message)
+SELECT 'INFO', log_trace_data('INFO', 'Hello from tester');
+```
+ Snowflake should report “1 row inserted”.
+
+9. Query the table to verify the insert worked; click “Run”:  
+```sql
+SELECT * FROM event_table ORDER BY event_id DESC LIMIT 5;
+```
+ We can see the latest row with event_message = 'SUCCESS' confirming that the function executed and our table captured the log context.
+
+10. Finished! We now have:  
+   • Database: log_trace_db  
+   • Event table: event_table ready for log storage  
+   • Python 3.8 UDF: log_trace_data with INFO-level logger “logger” returning “SUCCESS”

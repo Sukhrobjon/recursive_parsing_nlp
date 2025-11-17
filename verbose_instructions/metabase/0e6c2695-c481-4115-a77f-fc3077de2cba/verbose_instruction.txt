@@ -1,0 +1,21 @@
+1. Click the blue “New” button on the Metabase top-right corner.  
+2. Select “Question” from the drop-down panel.  
+3. Click “Raw data” ➜ choose “Sample Database” ➜ click the “Products” table.  
+4. Click the teal “Visualize” button on the bottom-right; we’re now in the query builder.  
+5. Click the “Summarize” button (upper-right of the screen).  
+6. Click the “X” beside the default “Count of rows” chip to remove it.  
+7. Click “+ Add” under Summarize by ➜ choose “Sum” ➜ pick the field “Price”; a chip reading “Sum of Price” appears.  
+8. Click “+ Add” under Group by ➜ pick “Category”; a chip “Category” appears.  
+9. Click “+ Add” again under Group by ➜ pick “Created At → Quarter”; Metabase shows “Created At – Quarter” as the second grouping chip.  
+10. Click the blue “Done” button; the results preview now shows a pivoted table with each Category and its quarterly Sum of Price totals.  
+11. Click the “Visualization” button (bottom-center bar) to open the visual sidebar.  
+12. Click the “Bar” icon; Metabase immediately shows a clustered bar chart.  
+13. Toggle the “Stacked” switch (located directly under the Bar chart options) so that the bars stack by Category for each quarter.  
+14. Optionally verify: hover over one quarter segment; we can see tooltips showing each Category’s Sum of Price, confirming the aggregation is correct.  
+15. Click the blue “Done” button in the sidebar to save the visualization settings.  
+16. Click the cloud-shaped “Download” icon on the bottom-right corner of the screen.  
+17. Select “PNG” in the “Download as…” dialog ➜ click “Download”. Metabase saves the file to your browser’s default download folder (usually “~/Downloads”) with a name like “Products_by_Category_and_Quarter.png”.  
+18. Open your file browser and navigate to “~/Downloads”.  
+19. Right-click the downloaded PNG ➜ choose “Rename” ➜ type stack_chart.png ➜ press Enter.  
+20. (Optional) Drag stack_chart.png to your Desktop or desired folder for easy access.  
+21. Double-click stack_chart.png to confirm the stacked bar chart renders correctly; we can see quarterly columns with colored Category segments — task complete.

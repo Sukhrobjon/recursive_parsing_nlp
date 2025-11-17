@@ -1,0 +1,41 @@
+1) Scroll to the worksheet that contains your main data table (it should already be formatted as an Excel Table named “sales”; we will use that name in the formula).  
+2) Click any cell inside the table to activate Table Tools and confirm the “Table Name” box (top-left of the Ribbon) reads sales.  
+3) Right-click the header of the column immediately to the right of the Discount column and choose “Insert” ➔ “Table Column to the Right”.  
+4) Type Revenue in the new header cell and press Enter so the entire column adopts the name.  
+5) Click the first blank cell in the new Revenue column (row 2 if row 1 is your header).  
+6) Type the structured-reference formula below and press Enter:  
+```excel
+=[@Quantity]*([@[Retail Price]]-[@Discount])
+```  
+   • Note that the table automatically copies this formula to every row; we can see downward blue corner markers confirming the fill.  
+7) Verify a couple of rows manually: click any Revenue cell and check that the value equals Quantity × (Retail Price – Discount).  
+8) Press Ctrl+S (or Cmd+S on Mac) to save the workbook so far.
+
+9) Click any cell inside the sales table again—this ensures the Insert PivotTable dialog will automatically point to the table range.  
+10) Navigate to Ribbon ➔ Insert tab ➔ “PivotTable” button.  
+11) In the “Create PivotTable” dialog, ensure “Select a table or range” shows sales and choose “New Worksheet”.  
+12) Type Sheet2 in the “Worksheet name” box at the bottom (or, if your Excel version lacks that box, we will rename the sheet next) and click OK.  
+13) If Excel created the sheet with a generic name (e.g., “Sheet1 (2)” or “Sheet3”), double-click its tab and rename it Sheet2, then press Enter.
+
+14) Within the PivotTable Fields panel, drag Website into the Rows area.  
+15) Drag Transaction ID (or any unique field such as Order #) into the Values area; Excel defaults to “Count of Transaction ID”.  
+16) Drag Item (or Product) into the Filters area.  
+17) Click the filter dropdown that just appeared above the pivot table, un-check “(Select All)”, tick only Boomerang, and click OK.  
+   • Now the pivot table shows the count of Boomerang transactions for each Website.
+
+18) Quickly sanity-check: compare the grand total in the pivot with a manual COUNTIFS on the main table (optional but recommended).
+
+19) With any cell inside the pivot selected, navigate to Ribbon ➔ Insert tab ➔ “Bar Chart” ➔ choose “Clustered Bar”.  
+20) Excel inserts a chart; it may overlap the pivot table—drag it below or beside the table so both are visible.  
+21) While the chart is selected, go to Chart Design ➔ “Add Chart Element” ➔ “Chart Title” ➔ “Above Chart”.  
+22) Click directly in the title box, type Sales frequency by website, and press Enter.  
+23) Still on Chart Design, click “Add Chart Element” ➔ “Legend” ➔ “None” to remove the legend.  
+24) Confirm the vertical axis lists website names and the horizontal axis shows counts; adjust bar colors if desired using Format tab.
+
+25) Click outside the chart to deselect it, then press Ctrl+S to save the completed work.
+
+26) Optional verification:  
+    a) Switch back to the original data sheet, apply a filter for Item = Boomerang, and build a quick pivot or SUBTOTAL to ensure the counts match those in Sheet2.  
+    b) Return to Sheet2; if numbers differ, refresh by right-clicking inside the pivot table and choosing “Refresh”.
+
+27) Congratulations—we now have a Revenue calculation column, a pivot summarizing Boomerang sales frequency by website, and a clean bar chart titled “Sales frequency by website” with no legends.

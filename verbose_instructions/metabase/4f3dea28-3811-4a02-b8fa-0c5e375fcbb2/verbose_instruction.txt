@@ -1,0 +1,24 @@
+1. Click the editor tab that already has query.sql open and press Ctrl + A, then Ctrl + C to copy the entire SQL text (we will paste it into the BI worksheet in a moment).  
+2. Click the New button in the top-right corner of the BI web UI.  
+3. Choose SQL query from the drop-down list that appears under New; a blank worksheet titled Untitled Query opens.  
+4. Click inside the blank worksheet and press Ctrl + V to paste the SQL you copied from query.sql.  
+5. Click the green Run query button on the right edge of the worksheet header; wait until the execution status shows Finished and the results grid appears.  
+6. Click the Visualization tab located at the bottom-left of the results grid (next to Results).  
+7. Click the Bar card in the “Choose visualization type” gallery; a default bar chart appears above the configuration panel.  
+8. Click the small gear icon (⚙️) on the top-right corner of the Bar card to open the chart settings panel.  
+9. Select PRODUCT_ID from the X-axis drop-down list; the bars are now grouped by product.  
+10. Select AVG(TAX) from the Y-axis drop-down list; the bar heights now represent the average tax.  
+11. Click the blue Apply button at the bottom of the settings panel to update the preview.  
+12. Verify that the chart title reads something like “AVG(TAX) by PRODUCT_ID” and that bars display without errors (this confirms the configuration is correct).  
+13. Click the cloud-shaped Download full results icon in the bottom-right corner of the visualization area.  
+14. Choose .png in the download format dialog, then click Download; a file such as Untitled Query-Bar-Chart.png is saved to your default download folder.  
+15. Switch to the terminal (or file explorer) and navigate to the download directory:  
+   ```bash
+   cd /home/user/Downloads
+   ls -lt *.png   # confirm the most recent PNG is present
+   ```  
+16. Run the rename command to give the file the required name (replace the exact original filename if different):  
+   ```bash
+   mv "Untitled Query-Bar-Chart.png" "visualization.png"
+   ```  
+17. Type ls visualization.png and confirm the file now exists with the new name; this verifies the task is complete.

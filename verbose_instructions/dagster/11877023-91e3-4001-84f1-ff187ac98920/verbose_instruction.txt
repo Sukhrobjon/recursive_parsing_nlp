@@ -1,80 +1,51 @@
-1) Switch to VS Code. In the Explorer, expand the folder `iris_classification/assets` (or your project’s asset package that already contains `iris_dataset`).
-
-2) Open the file `__init__.py` inside that folder. Scroll to the bottom of the file so we can append the new asset definition.
-
-3) Write the following Dagster asset code that filters for the Virginica species and writes a DuckDB table. Make sure the indentation matches the file’s style:
+1. Switch to VS Code. In the left Explorer, expand the folder “iris_classification/assets”, then click the file “__init__.py” to open it in the editor.  
+2. Scroll to the bottom of “__init__.py” and type the following new asset definition. The code filters the existing `iris_dataset` Pandas DataFrame and writes the result to a DuckDB table named `iris_virginica`.  
 ```python
-from dagster import asset, AssetIn, Output
-import duckdb
-import pandas as pd
+# assets/__init__.py
 
 @asset(
     name="iris_virginica",
-    ins={"iris": AssetIn("iris_dataset")},
     group_name="classification",
-    io_manager_key="duckdb_io_manager",
-    metadata={"schema": "main", "table": "iris_virginica"},
+    io_manager_key="duckdb_io_manager",   # ← make sure your DuckDB I/O manager is already configured
+    compute_kind="python",
 )
-def iris_virginica(iris: pd.DataFrame) -> Output[pd.DataFrame]:
-    """Filter the iris_dataset for rows with species == 'Iris-virginica' and write
-    the result to the DuckDB table 'main.iris_virginica'."""
-    # We expect the incoming DataFrame to have a 'species' column.
-    virginica_df = iris[iris["species"] == "Iris-virginica"].reset_index(drop=True)
-
-    # Optional sanity-check log
-    context.log.info(f"Filtered {len(virginica_df)} virginica rows out of {len(iris)} total.")
-
-    # The Output object tells Dagster both the data and the metadata for lineage
-    return Output(
-        virginica_df,
-        metadata={
-            "num_rows": len(virginica_df),
-            "preview": virginica_df.head().to_dict(orient="records"),
-        },
-    )
+def iris_virginica(iris_dataset: pd.DataFrame) -> pd.DataFrame:
+    """
+    Filter Iris-virginica rows and persist them to DuckDB table `iris_virginica`.
+    """
+    virginica_df = iris_dataset[iris_dataset["species"] == "Iris-virginica"].reset_index(drop=True)
+    # Dagster will automatically write `virginica_df` to DuckDB via the I/O manager
+    return virginica_df
 ```
-Note that the `io_manager_key="duckdb_io_manager"` must match the IO manager configured in your project that points to your DuckDB database file. We will use this asset in the next steps.
-
-4) Press `Ctrl+S` (or `Cmd+S` on macOS) to save `__init__.py`.
-
-5) Switch to the terminal integrated in VS Code (or open a new terminal window). Run the unit linter to verify the file has no syntax errors:
+3. Press Ctrl+S to save the file.  
+4. Confirm the project’s `dagster.yaml` (located at the repo root) already has the DuckDB I/O manager registered. Quickly open it and verify you have something like:  
+```yaml
+resources:
+  duckdb_io_manager:
+    config:
+      database: "warehouse/iris.duckdb"
+```
+   If it’s missing, add the snippet, save, and close the file.  
+5. Switch to the terminal (integrated VS Code terminal or external). From the project root, run:  
 ```bash
-python -m compileall -q iris_classification/assets/__init__.py
-```
-You should see no output if the file compiles successfully.
-
-6) Change to your Dagster UI (often served at http://localhost:3000). In the left navigation bar, click “Workspace” to view your repository.
-
-7) Press the “Reload definitions” button in the top-right corner. Wait until the green toast “Workspace locations reloaded” appears. This picks up the new `iris_virginica` asset.
-
-8) Scroll the Asset Graph. We can see the new node “iris_virginica” downstream of “iris_dataset”. This confirms Dagster has registered the asset.
-
-9) Click the “iris_virginica” asset node. In the right-hand panel, verify that the metadata shows:
-   • group: `classification`
-   • schema: `main`
-   • table: `iris_virginica`
-
-10) Click the teal “Materialize” button in the upper-right of the asset detail panel. Leave the config empty (the asset relies only on its upstream). Press “Launch Run” to start the materialization.
-
-11) Observe the run page. Wait until the step “iris_virginica” shows a green check mark. Expand the step logs and confirm the log line similar to:
-```
-Filtered 50 virginica rows out of 150 total.
-```
-
-12) Switch back to the terminal. Open a DuckDB prompt pointed at your project’s database file (replace path if different):
+dagster dev
+```  
+   Wait until the local Dagster UI reports “Launched Dagit at http://127.0.0.1:3000”.  
+6. Go to your web browser and open “http://127.0.0.1:3000”.  
+7. In Dagit, look at the left sidebar and click “Assets”. Then click the “classification” asset group.  
+8. Click the button “Reload definitions” (top-right) so the newly added `iris_virginica` node appears in the lineage graph just downstream of `iris_dataset`.  
+9. Click the green “Materialize all” button. In the pop-up, verify that both “iris_dataset” and “iris_virginica” are selected, then click “Materialize”.  
+10. Wait for the run page to show the status “Succeeded” (all steps should turn green).  
+11. Expand the step “iris_virginica” in the run logs and confirm the log line that shows the output table path similar to `warehouse/iris.duckdb:iris_virginica`.  
+12. Switch back to the terminal and open a DuckDB shell to verify the data was written:  
 ```bash
-duckdb iris.duckdb
-```
-
-13) Run the verification query to confirm the table now exists and has only “Iris-virginica” records:
+duckdb warehouse/iris.duckdb
+```  
+13. At the DuckDB prompt, run the query:  
 ```sql
-SELECT species, COUNT(*) AS cnt
-FROM main.iris_virginica
+SELECT DISTINCT species, COUNT(*) AS rows
+FROM iris_virginica
 GROUP BY species;
-```
-You should see one row:
-```
-Iris-virginica | 50
-```
-
-14) Type `.quit` to exit DuckDB. Congratulations—we have successfully created and materialized the `iris_virginica` Dagster asset that writes the filtered DuckDB table.
+```  
+   You should see exactly one row with `species = 'Iris-virginica'` and the row count (usually 50).  
+14. Type `.quit` to exit DuckDB. The asset `iris_virginica` is now fully implemented, materialized, and verified.

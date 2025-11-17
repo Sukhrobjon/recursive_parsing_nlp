@@ -1,0 +1,29 @@
+1) Locate the Airbyte browser tab that is already open and displaying the Connections list (the default “Connections” page under the Airbyte logo).  
+2) Identify the row whose “Source → Destination” column reads “File (CSV, JSON, Excel, Feather, Parquet) → Snowflake”.  
+3) Click that entire row to open the connection details page.  
+4) Click the “Settings” button on the horizontal menu bar just under the connection name.  
+5) Scroll to the bottom of the Settings panel and click the red button labeled “Delete this connection”.  
+6) Wait for the confirmation dialog to appear, then type exactly:  
+```
+File (CSV, JSON, Excel, Feather, Parquet) → Snowflake
+```  
+7) Observe that the “Delete” button turns solid red; click “Delete” to permanently remove the connection. A green toast saying “Connection deleted” should appear in the lower-right corner.  
+8) Click “Sources” in the left-hand navigation panel to switch to the list of configured sources.  
+9) Find the row titled “File (CSV, JSON, Excel, Feather, Parquet)” (it will show “No connections” now).  
+10) Click that row to enter the source details page.  
+11) Scroll to the bottom of the page and click the red “Delete this source” button.  
+12) In the confirmation dialog, type exactly:  
+```
+File (CSV, JSON, Excel, Feather, Parquet)
+```  
+13) Click the red “Delete” button. A toast message confirming “Source deleted” should display.  
+14) Click “Destinations” in the left-hand navigation panel to open the list of destinations.  
+15) Locate the “Snowflake” row (it will also say “No connections”).  
+16) Click the “Snowflake” row to open the destination settings.  
+17) Scroll to the page bottom and click the red “Delete this destination” button.  
+18) When the confirmation dialog appears, type precisely:  
+```
+Snowflake
+```  
+19) Click the red “Delete” button. Look for the “Destination deleted” success toast.  
+20) Return to the “Connections” page via the left-hand menu and confirm that no row with “File … → Snowflake” is present and the counts for Sources and Destinations reflect the deletions.

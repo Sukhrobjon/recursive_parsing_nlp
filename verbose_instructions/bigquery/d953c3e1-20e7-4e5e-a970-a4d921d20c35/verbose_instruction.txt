@@ -1,0 +1,15 @@
+1. Click the blue “+ Compose new query” button in the top-left corner of the “Welcome to BigQuery Studio!” splash screen; a new tab titled “Untitled query” opens in the editor pane.  
+2. Type the following SQL exactly into the blank editor window:  
+```sql
+CREATE VIEW `census.2012_best` AS
+SELECT *
+FROM   `census.2012`
+ORDER  BY ANNUAL_RANK
+LIMIT  5;
+```  
+   Note that we order by ANNUAL_RANK ascending so rank 1 appears first; the LIMIT 5 keeps only the five best rows.  
+3. Click the green “▶ RUN” button in the toolbar above the query editor to execute the statement.  
+4. Wait until the status indicator in the Results panel shows a green check-mark and “CREATE VIEW” confirmation text; this confirms the view was created successfully.  
+5. Expand the left-hand Explorer tree: click “census”, then scroll to locate and click the newly created view name “2012_best”.  
+6. Verify the view content: in the right pane click “Preview” (magnifying-glass icon). Ensure exactly 5 rows appear and the ANNUAL_RANK column is sorted from 1 downward (or smallest to largest if ranks are numeric).  
+7. Celebrate—the view `census.2012_best` is now available for any subsequent queries.

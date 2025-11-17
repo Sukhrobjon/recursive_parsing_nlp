@@ -1,0 +1,37 @@
+1. Click the “Marketplace” icon (shopping-bag symbol) in the left navigation bar of the Snowflake web UI.  
+2. Type “American Community Survey 2016” into the top-center Search bar and press Enter.  
+3. Locate the listing named “US Census Bureau – American Community Survey (ACS) 5-Year, 2016” (publisher: Snowflake or Knoema); click the blue “Get” button on that tile.  
+4. In the pop-up, leave “Database name” as the pre-filled default (for example,  ACS_5YR_2016 or something similar) so that Snowflake will create it automatically.  
+5. Click “Get Data” at the bottom-right of the pop-up. Snowflake shows a progress bar; wait until the status displays “Available in your account.”  
+6. Click “Go to Database” in the completion dialog; Snowflake switches you to the new shared database page. (If the dialog closes, you can always open it later from the “Data” -> “Shared with Me” tab.)  
+7. Click the “... Worksheet” icon (paper-and-pencil) at the upper-right to open a new SQL Worksheet.  
+8. Type the command to set your role to one that has usage on shared DBs:  
+```sql
+USE ROLE SYSADMIN;
+```  
+9. Click the triangular “Run” (►) button in the worksheet toolbar to execute.  
+10. Type the command to use the default warehouse (replace if you have a different one):  
+```sql
+USE WAREHOUSE compute_wh;
+```  
+11. Execute the statement with the ► button.  
+12. Type the command to switch into the newly installed shared database while keeping its default schema (the listing usually delivers one schema named “PUBLIC” or similar—verify the exact name on the left Objects panel; we’ll assume PUBLIC here):  
+```sql
+USE DATABASE ACS_5YR_2016;   -- this is the default name we accepted in step 4
+USE SCHEMA PUBLIC;
+```  
+13. Click ► to run both statements.  
+14. Verify that the target table exists by listing tables that begin with the required name:  
+```sql
+SHOW TABLES LIKE 'ACS-2016-5-E-INDUSTRY_01_TABLEKEY';
+```  
+15. Confirm the SHOW output contains “ACS-2016-5-E-INDUSTRY_01_TABLEKEY” in the “name” column; this tells us the table is available.  
+16. Query the first few rows of the table to start your research:  
+```sql
+SELECT *
+FROM "ACS-2016-5-E-INDUSTRY_01_TABLEKEY"
+LIMIT 20;
+```  
+17. Execute with ►. Snowflake returns the sample data below the worksheet. Review column names, data types, and values to ensure they align with your research needs.  
+18. Optionally scroll to the right in the result grid or click “Download” (down-arrow icon) to export a CSV for offline analysis.  
+19. We have successfully accessed and previewed the American Community Survey 2016 table acs-2016-5-e-industry_01_TABLEKEY from Snowflake Marketplace using the default database provided by the listing.

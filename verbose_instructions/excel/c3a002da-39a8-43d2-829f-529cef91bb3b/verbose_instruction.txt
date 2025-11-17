@@ -1,0 +1,12 @@
+1. Click the grey column header “A” above cell A1 to highlight the entire “Invoice No.” column.  
+2. Click the “Insert” tab on the Ribbon, then click the “PivotTable…” button in the Tables group.  
+3. In the “Create PivotTable” dialog, keep “Select a table or range” and “A:A” pre-filled, choose the radio button “New Worksheet”, and click the “OK” button.  
+4. In the new PivotTable Field List pane on the right, drag the field “Invoice No.” down into the “Rows” box at the bottom-left.  
+5. Drag the same field “Invoice No.” again into the “Values” box at the bottom-right.  
+6. Observe that the entry now reads “Sum of Invoice No.”; click the small dropdown arrow to the right of this entry and choose “Value Field Settings…”.  
+7. In the “Value Field Settings” dialog, select “Count” in the list of calculation types, then click “OK”.  
+   Note that the value heading updates to “Count of Invoice No.”—this confirms we are counting occurrences rather than summing.  
+8. Verify that the PivotTable in the worksheet now lists each unique Invoice No. in the left column with its corresponding count in the right column.  
+9. Right-click the sheet tab labeled “Sheet1 (or similar)” created for the PivotTable and choose “Rename”.  
+10. Type Sheet2 and press Enter to rename the worksheet.  
+11. Press Ctrl + S to save the workbook so the new PivotTable and sheet name are retained.

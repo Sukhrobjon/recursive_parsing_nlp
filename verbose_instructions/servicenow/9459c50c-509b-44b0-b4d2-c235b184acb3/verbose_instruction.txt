@@ -1,0 +1,13 @@
+1. Click the funnel icon located in the top-center toolbar, directly beneath the page title “servicenow”; the Filter panel appears on the left side of the screen.  
+2. Click the blue Add Sort button that appears in the first row of the Filter panel. A new “Order results by” row is inserted.  
+3. Click the first empty dropdown field in this new row (it contains gray placeholder text “Select field”).  
+4. Type Residual value in the search box that opens, then click the exact match “Residual value” from the autocomplete list to lock it in.  
+5. Click the adjacent sort-direction dropdown (it currently shows “A → Z”), and select Z → A to set descending order for Residual value.  
+6. Click Add Sort again to append a second ordering rule.  
+7. In the second rule’s field dropdown, type Display name, then press Enter or click the match “Display name” when it appears.  
+8. Ensure the sort-direction dropdown for Display name remains at A → Z (ascending). If it shows a different value, click it and choose A → Z.  
+9. Verify the Sort list now reads:  
+   • 1) Residual value – Z → A  
+   • 2) Display name – A → Z  
+10. Click the green Run button situated just below the funnel icon to execute the query with the new ordering.  
+11. Wait until the results table refreshes; confirm that rows are first grouped by highest Residual value and, within identical values, alphabetically by Display name (e.g., “Zebra Printer” appears after “Apple Keyboard” when both share the same residual value).

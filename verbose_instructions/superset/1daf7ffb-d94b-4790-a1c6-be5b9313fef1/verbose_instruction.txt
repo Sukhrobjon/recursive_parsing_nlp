@@ -1,0 +1,28 @@
+1. Click any single cell inside the data range on sheet “flight” so Excel knows what area to use for the PivotTable.  
+2. Press Ctrl + A to select the entire block of data (we should see a bold outline around every populated column such as Date, Department, Travel Class, Cost, etc.).  
+3. Click the “Insert” tab on the Ribbon.  
+4. Click the first button “PivotTable” in the Tables group.  
+5. In the “Create PivotTable” dialog:  
+    a. Verify “Select a table or range” is chosen and the Table/Range box shows something like ‘flight!$A$1:$D$5000’ covering all rows.  
+    b. Select “New Worksheet” so the pivot goes to its own sheet.  
+    c. Click OK. Excel inserts a blank pivot and opens the PivotTable Fields panel at the right.  
+6. Drag the field “Cost” into the Values area. (Excel displays “Sum of Cost” by default; if you see “Count of Cost”, click the “i” / “Σ Values Settings”, choose “Sum”, and click OK.)  
+7. Drag “Department” into the COLUMNS area.  
+8. Drag “Travel Class” into the COLUMNS area and drop it just to the right of “Department” (Excel will nest it automatically so Department ➜ Travel Class).  
+9. Drag “Date” into the COLUMNS area as well; drop it beneath Travel Class so it becomes the third-level column field.  
+10. Right-click any date label that appears in the pivot header, choose “Group…”.  
+11. In the Grouping dialog box:  
+    a. Check only “Months”; uncheck “Years”, “Quarters”, and “Days”.  
+    b. Click OK. Now the third-level expands to show “Jan”, “Feb”, … “Dec”.  
+12. Remove any extra “Years” or “Quarters” fields that Excel may have added automatically: in the PivotTable Fields list, drag them out of the COLUMNS area until a small × icon appears, then release. We should now see exactly three column levels: Department (outer), Travel Class (middle), Months (inner).  
+13. Drag the field “Date” a second time—this time into the FILTERS area (top of the field list). This will let us restrict the date range.  
+14. Above the pivot, click the new Date filter drop-down (it shows “(All)” initially).  
+15. Point to “Date Filters” ➜ click “Between…”.  
+16. In the “Between” dialog, type these exact values:  
+    • From: 1/1/2011 00:00:00  
+    • To  : 6/30/2011 00:00:00  
+    Click OK. The pivot instantly recalculates to include only costs inside that window.  
+17. Verify we see months Jan through Jun only (Jul–Dec should disappear). This confirms the filter is working.  
+18. Click any cell inside the pivot. On the Ribbon, switch to the “PivotTable Analyze” (or “Options” in Excel 2010) tab.  
+19. In the very left text box labeled “PivotTable Name”, type TravelPrivot and press Enter. (Excel now refers to this pivot by that name.)  
+20. Press Ctrl + S to save the workbook so the new “TravelPrivot” pivot table and its settings are preserved.

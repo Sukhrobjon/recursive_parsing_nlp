@@ -1,0 +1,8 @@
+1. Click the Chromium icon (or your default browser) on the left dock to bring the Airflow web-UI to the foreground.  
+2. Locate the DAGs list in the Home screen and type workFlow_Echo into the Search DAGs box to filter the table.  
+3. Click the blue text workFlow_Echo in the DAG column to open the DAG Detail page.  
+4. Look at the Runs bar chart (histogram) near the top-left; verify that the first bar (furthest to the right) is labeled “most recent run” when you hover over it.  
+5. Find the row labeled processing directly beneath the histogram.  
+6. Click the right-most square in that processing row (this square corresponds to the most recent run because it is vertically aligned with the right-most bar you just identified).  
+7. Wait for the Task Instance page to load, then click the Logs tab in the right-hand details panel (it may be already selected; if so, it will be highlighted in blue).  
+8. Observe that a streaming log panel appears with a green “Task exited with return code 0” (or any other status); this confirms you are viewing the logs for task_id processing from the latest workFlow_Echo run.

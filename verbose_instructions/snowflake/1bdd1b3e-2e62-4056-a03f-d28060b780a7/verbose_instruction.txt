@@ -1,0 +1,34 @@
+1. Click the left-side navigation item “Data ▸ Databases” to open the Databases page.  
+2. Click the blue “+ Database” button in the upper-right corner of the main panel.  
+3. Type RANKINGS in the “Name” field of the pop-up dialog.  
+4. Click the “Create” button; we should now see RANKINGS appear in the databases list.  
+5. Click the “RANKINGS ▸ PUBLIC” entry in the center panel so the breadcrumb in the header reads “RANKINGS / PUBLIC”.  
+6. Click “Create ▸ Table ▸ From File” on the right-side action rail.  
+7. Click “Browse” in the File Upload dialog, navigate to Desktop, and select “National_Universities_Rankings.csv”; the file name appears under “Selected files”.  
+8. Scroll to the “Name” input field and type university_rankings to set the table name.  
+9. Click the blue “Next” button (bottom-right) so Snowsight uploads the file to a temporary stage and shows the file-format wizard.  
+10. Select “Delimited Files (CSV or TSV)” from the File Format drop-down at the top-left of the wizard.  
+11. Click “View options” just under the Format selector to expand advanced settings.  
+12. Select “First line contains header” in the Header option; Snowsight auto-detects column names and data types.  
+13. Edit invalid column names in the preview grid (right panel): double-click each header cell and replace spaces/hyphens with underscores exactly as follows:  
+    Tuition Fees  ➜  Tuition_Fees  
+    In-state      ➜  In_state  
+    Undergrad Enrollment ➜ Undergrad_Enrollment  
+14. Confirm that no red error icons remain beside any column names; this tells us all names are now valid.  
+15. Click the blue “Load” button in the bottom-right corner to start the ingest process.  
+16. Wait for the green banner “Successfully Loaded Data” to appear; note the number of rows loaded (keep the figure for sanity check).  
+17. Click “Done” to close the wizard; we’re automatically taken to the table preview page showing sample rows.  
+18. Switch to the “Worksheets” tab by clicking “Worksheets” in the left navigation.  
+19. Click “+ Worksheet” (top-right) to open a new SQL sheet.  
+20. Type the following verification commands:  
+```sql
+USE DATABASE RANKINGS;
+USE SCHEMA PUBLIC;
+
+SHOW TABLES LIKE 'UNIVERSITY_RANKINGS';
+
+SELECT COUNT(*) AS TOTAL_ROWS FROM UNIVERSITY_RANKINGS;
+```
+21. Click the ► (Run) button; verify that:  
+    • The SHOW TABLES result returns UNIVERSITY_RANKINGS with status “LOADED”.  
+    • TOTAL_ROWS matches the number of rows displayed in step 16, confirming the load succeeded.

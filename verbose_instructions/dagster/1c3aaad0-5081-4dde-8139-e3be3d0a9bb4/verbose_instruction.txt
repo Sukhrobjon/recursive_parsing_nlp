@@ -1,0 +1,15 @@
+1) Click the Chromium browser icon that is already open on the left dock to bring the Dagster UI to the foreground.  
+2) Locate the blue link named “math_sensor” next to the title “math_job” (it is immediately to the right of the link “Job in math_proj”) and click it.  
+3) Verify you are on the Sensor Details page by checking the heading now reads “Sensor: math_sensor”.  
+4) Click the teal “Test Sensor” button in the top-right corner of the page.  
+5) Type 123 into the single text box labeled “Cursor value” in the modal that appears.  
+6) Click the turquoise “Evaluate” button at the bottom-right of the modal.  
+7) Observe the results panel that appears; confirm the bold line “1 run requests” is displayed and that a small table lists exactly one row referencing “math_job”.  
+8) Click the blue “Open in Launchpad” button in that row (far-right column).  
+9) Wait while Dagster opens a new browser tab titled “Launchpad: math_job”; confirm the YAML configuration editor and run summary are visible.  
+10) Scroll to the bottom of the Launchpad panel and click the green “Launch Run” button on the bottom-right.  
+11) Observe the toast notification “Run started successfully” and automatically switch to the Runs tab that opens.  
+12) Watch the status badge in the Run view; it first shows “STARTED”, then “SUCCESS” with a green checkmark.  
+13) Refresh the page after ~5-10 seconds if the status does not update automatically by clicking the circular arrow icon to the left of the run ID.  
+14) Confirm the final state reads “Succeeded” in green text, indicating the math_job run triggered by the sensor test completed without errors.  
+15) Return to the original Dagster tab (click the first Chromium tab) to continue working or close the Launchpad tab if no longer needed—we can see the sensor test and job launch are now finished.

@@ -1,0 +1,96 @@
+This walkthrough builds the full e-commerce analytics pipeline: ­Airbyte moves synthetic Faker data into the raw_data database in Snowflake, then dbt transforms it into the transformed_data database.  
+
+1) Open the Snowflake Snowsight UI in your browser and sign in with your ACCOUNTADMIN role.  
+2) Click “Data” on the left navigation rail to open the databases panel.  
+3) Click the “+ Database” button in the upper-right corner of the main pane.  
+4) Type raw_data in the Name field, leave other options default, and click Create. (This will store the raw Airbyte‐loaded tables.)  
+5) Click “+ Database” again, enter transformed_data, and click Create to hold dbt’s models.  
+6) Verify both databases appear in the list—this confirms Snowflake objects exist for the pipeline.  
+
+7) Switch to the Airbyte UI (http://localhost:8000 if running locally) in the same or a new browser tab.  
+8) Click the “Create your first connection” (or “New connection”) button in the home screen.  
+9) Type faker in the Source search box and select “Sample Data (Faker)”.  
+10) Click Set up source to accept the default faker settings.  
+11) In the “Destination” search box type snowflake and choose “Snowflake”.  
+12) Click Set up destination to open destination credentials.  
+13) Select “Username and Password” in the Authorization Method dropdown.  
+14) Open a terminal window and run  
+```bash
+echo $SNOWFLAKE_HOST
+```  
+   (You should see something like xy12345.us-east-1.snowflakecomputing.com.)  
+15) Copy that host string; return to Airbyte and paste it into the Host field.  
+16) Run  
+```bash
+echo $SNOWFLAKE_USER
+echo $SNOWFLAKE_PASSWORD
+```  
+   and paste the resulting values into the Username and Password fields respectively.  
+17) Fill the remaining Snowflake destination fields exactly as follows:  
+   • Database: raw_data  
+   • Warehouse: COMPUTE_WH  
+   • Role: ACCOUNTADMIN  
+   • Default Schema: PUBLIC  
+18) Click Set up destination; Airbyte will test the Snowflake connection (a green check mark should appear).  
+19) In the Connection settings page change “Replication frequency” (Schedule type) to Manual so nothing runs automatically.  
+20) Leave the default namespace and stream selections unchanged and click Set up connection at the bottom.  
+21) In the newly created connection view click Sync now, then watch the job log sidebar until a green “succeeded” badge appears—this loads faker tables into RAW_DATA.PUBLIC.  
+
+22) Switch to VS Code (or your preferred editor) where the dbt project folder is already open.  
+23) Open the file profiles.yml located in the root (or ~/.dbt/profiles.yml if you keep a shared profiles file).  
+24) Replace or add the profile with the following content (be sure the top-level key matches your project name, here assumed dbt_project):  
+```yaml
+dbt_project:
+  outputs:
+    dev:
+      type: snowflake
+      account: '{{ env_var("SNOWFLAKE_ACCOUNT") }}'
+      user: '{{ env_var("SNOWFLAKE_USER") }}'
+      password: '{{ env_var("SNOWFLAKE_PASSWORD") }}'
+      role: ACCOUNTADMIN
+      database: transformed_data
+      warehouse: COMPUTE_WH
+      schema: PUBLIC
+      threads: 4
+  target: dev
+```  
+25) Press Ctrl+S (or Cmd+S) to save the file. This profile tells dbt to write models into the transformed_data database.  
+
+26) In the left Explorer, expand models → sources and double-click faker_sources.yml.  
+27) Edit (or confirm) the source configuration so it explicitly points to the raw Snowflake database:  
+```yaml
+version: 2
+
+sources:
+  - name: faker
+    database: raw_data        # points to Airbyte-loaded database
+    schema: public
+    tables:
+      - name: users
+      - name: orders
+      - name: payments
+```  
+28) Save the file (Ctrl+S). Note that dbt will now look for RAW_DATA.PUBLIC.<table>.  
+
+29) Open a terminal and cd into the dbt project root:  
+```bash
+cd dbt_project
+```  
+30) Run a connectivity check:  
+```bash
+dbt debug
+```  
+   You should see “All checks passed!”—this validates the Snowflake credentials and database references.  
+31) Execute the transformation pipeline:  
+```bash
+dbt run
+```  
+32) Watch the console; each model (e.g., stg_users, fct_orders) should finish with a green OK, and the summary line should read “Completed successfully”.  
+33) Back in Snowsight, click Data → Databases → transformed_data → PUBLIC → Tables and refresh; you will see the newly built dbt models.  
+34) Query one of the models to confirm row counts:  
+```sql
+SELECT COUNT(*) FROM transformed_data.public.fct_orders;
+```  
+   The query should return a non-zero count, confirming end-to-end data flow.  
+
+35) Celebrate—the Airbyte-to-Snowflake-to-dbt pipeline is live, and analytics teams can now query the transformed_data database for insights.

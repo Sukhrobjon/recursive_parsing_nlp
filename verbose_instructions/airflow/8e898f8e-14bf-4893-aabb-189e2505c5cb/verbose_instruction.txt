@@ -1,0 +1,15 @@
+1. Click the “Admin” button in the top navigation bar of the Airflow web-UI that Astronomer opened for you  
+2. Select “Connections” from the dropdown menu that appears  
+3. Click the blue “+” button directly under the search bar to open the “Add Connection” modal  
+4. Select “HTTP” from the “Connection Type” dropdown so Airflow knows we’re configuring an HTTP endpoint  
+5. Type the exact value http_weather_service into the “Connection Id” field (no spaces)  
+6. Type wttr.in into the “Host” field  
+7. Type https into the “Schema” field (leave “Port” blank; wttr.in defaults to 443 behind https)  
+8. Scroll to the bottom of the modal and click the green “Save” button  
+9. Verify a new row named http_weather_service now appears in the Connections table—this confirms the connection is registered and ready for DAG use  
+10. Click “DAGs” in the breadcrumb bar (upper-left corner) to go back to the main DAG list  
+11. Locate weather_data_dag in the list and click its toggle switch (gray ➜ blue) to unpause it so Airflow will allow manual runs  
+12. Click the small gray triangle (play icon) in the “Actions” column for weather_data_dag to trigger an immediate run  
+13. Wait a few seconds, then observe the “Recent Tasks” indicator change color from gray → light green → dark green; this tells us the HTTP operator successfully called https://wttr.in?format=j1 (defined in your DAG) and parsed Hong Kong’s weather  
+14. Click weather_data_dag’s name to open the DAG graph view, then click the most recent run in the “Graph” pane to inspect task status—each task box should be fully green (“success”)  
+15. Click the HTTP task box, choose the “Logs” tab on the right panel, and skim the log for a 200 status code and JSON payload containing “Hong Kong” to confirm the API returned data we expected

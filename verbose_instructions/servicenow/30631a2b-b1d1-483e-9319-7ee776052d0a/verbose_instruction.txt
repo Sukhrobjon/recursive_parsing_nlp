@@ -1,0 +1,11 @@
+1. Click the sidebar item labeled “Hardware” and wait until the catalog page finishes loading (you should see a list of physical devices).  
+2. Click the search box in the upper-right corner that displays the placeholder text “Search catalog”.  
+3. Type Standard Laptop and press Enter so the page filters to matching items; we should now see a single card or row titled “Standard Laptop”.  
+4. Click the “Standard Laptop” card to open its configuration panel.  
+5. Click each checkbox under the “Optional Software” section for Adobe Acrobat and Adobe Photoshop (both boxes must show a checkmark).  
+6. Click the wide multiline input box next to “Additional software requirements”.  
+7. Type Slack, Salesforce, QuickBooks, Google Workspace, Asana, Adobe Creative Cloud exactly as shown, then click outside the box so the text is saved.  
+8. Switch attention to the summary panel on the right; click the Quantity dropdown and select 3.  
+9. Verify that the summary now shows Quantity: 3 and lists Adobe Acrobat, Adobe Photoshop, and all additional software entries.  
+10. Click the blue “Order Now” button at the bottom-right corner of the screen.  
+11. Wait until the confirmation toast or dialog appears with a message like “Your order has been placed”; this indicates the request was successfully submitted.

@@ -1,0 +1,17 @@
+1) Double-click the folder named “Spider001” in Google Drive so we are inside that directory  
+2) Right-click (or click the three vertical dots) on the file “a2012.xlsx” to open the context menu  
+3) Hover over “Open with” without clicking so the sub-menu appears  
+4) Click “Google Sheets” in the sub-menu; the spreadsheet opens in a new browser tab  
+5) Click the top menu “Data” in the Google Sheets toolbar  
+6) Click the item “Data connectors” in the drop-down  
+7) Click “Connect to BigQuery”, then click the blue button “Get connected” in the side panel that opens  
+8) In the “Add data connection” dialog, click the listed project name “bigquery-project”; this expands its datasets  
+9) Click the dataset “customer_orders” so that its tables are shown on the right panel  
+10) Click the table “orders”; we can see a green checkmark indicating it is selected  
+11) Click the blue “Connect” button at the bottom-right of the dialog; a confirmation pop-up appears telling us the connection succeeded  
+12) Click the “×” icon (top-right of the pop-up) to close this confirmation window; the data connector panel now shows “Connected”  
+13) Click the blue “Share” button in the upper-right corner of the Google Sheets interface  
+14) Click the drop-down that currently reads “Restricted” to open the link-sharing options  
+15) Click “Anyone with the link” so the access level switches from restricted to public; Google shows “Viewer” as the default role  
+16) Click the blue “Done” button to save the new permissions; the sharing dialog closes  
+17) Click the browser tab title “a2012.xlsx” to verify we are back on the sheet; the BigQuery-connected rows will populate after a moment and the link is now publicly accessible

@@ -1,0 +1,90 @@
+1) Open the terminal that is already connected to your Python-enabled virtual environment.  
+   Reasoning: we need a place to install Dagster packages and run commands.
+
+2) Execute `pip install "dagster~=1.3" "dagster-webserver~=1.3" "dagster-dbt~=0.22" dbt-core==1.7.4 duckdb==0.10.2` to add Dagster, the Dagster webserver, the Dagster-dbt integration layer, and the same dbt/duckdb versions your jaffle_shop project already uses.  
+   Verification: when the prompt returns you should see “Successfully installed … dagster … dagster-dbt …”.
+
+3) Type `cd ~` so we are at your home directory.
+
+4) Run `dagster project scaffold --name dbt_dagster_project` to scaffold a brand-new Dagster project.  
+   Verification: the command ends with “✅ Successfully scaffolded Dagster project at dbt_dagster_project”.
+
+5) Type `cd dbt_dagster_project` to enter the new project folder.
+
+6) Remove the sample asset file so it doesn’t collide with our dbt assets: execute `rm dbt_dagster_project/assets.py`.
+
+7) Copy your existing dbt project into (or beside) the Dagster repo.  
+   • If the dbt folder is outside the Dagster repo, just remember its absolute path.  
+   • For clarity we’ll keep it side-by-side: `mv ~/jaffle_shop ./jaffle_shop`.
+
+8) Open VS Code (or your editor of choice): `code .`  
+   We will add two Python modules.
+
+9) Create a new file dbt_dagster_project/dbt_assets.py and paste the following code block:
+
+```python
+# dbt_dagster_project/dbt_assets.py
+from pathlib import Path
+
+from dagster_dbt import DbtCliResource, load_assets_from_dbt_project
+from dagster import Definitions
+
+DBT_PROJECT_DIR = Path(__file__).resolve().parent / ".." / "jaffle_shop"
+DBT_PROFILES_DIR = Path.home() / ".dbt"
+
+# 1) Convert every dbt model into a Dagster asset
+dbt_assets = load_assets_from_dbt_project(
+    project_dir=DBT_PROJECT_DIR,
+    profiles_dir=DBT_PROFILES_DIR,
+)
+
+# 2) Wire the dbt CLI into Dagster
+dbt_resource = DbtCliResource(
+    project_dir=str(DBT_PROJECT_DIR),
+    profiles_dir=str(DBT_PROFILES_DIR),
+)
+
+defs = Definitions(
+    assets=[dbt_assets],
+    resources={"dbt": dbt_resource},
+)
+```
+
+Note that load_assets_from_dbt_project will automatically pick up the “customers” model we are about to validate.
+
+10) Save the file (Ctrl+S).
+
+11) Switch back to the terminal pane and run `poetry install` or `pip install -e .` if you prefer editable installs, so Dagster can import the local package.
+
+12) Open `~/dbt-dagster-project/jaffle_shop/customers_schema.yml` in your editor to confirm the schema exists and that `models:` → `name: customers` is present.  
+    Reasoning: Dagster-dbt relies on the YAML to fetch metadata (columns, tests, docs).  
+    Verification: you should see keys like `columns:` beneath the customers model.
+
+13) Execute `dbt build --project-dir jaffle_shop --profiles-dir ~/.dbt --select customers` to validate the dbt model and test that the YAML passes.  
+    Verification: command ends with “Completed successfully” and 0 errors.
+
+14) Run `dagster dev` from the project root (dbt_dagster_project). Dagster opens a webserver at http://localhost:3000 and the terminal shows “Open http://127.0.0.1:3000 to view Dagster”.
+
+15) Switch to your browser and navigate to http://localhost:3000.
+
+16) Click the left-hand navigation icon labelled “Assets”.  
+    Reasoning: Dagster assets live in the Assets catalog.
+
+17) Type “customers” into the search box at the top of the asset list. You will see an entry that reads “jaffle_shop__customers”. Click that entry.
+
+18) Verify the asset details: we can see the column list from customers_schema.yml under the “Metadata” tab. This confirms the schema file was ingested.
+
+19) Click the blue “Materialize” button in the top-right corner of the asset page.
+
+20) A launchpad drawer appears. Leave the default asset selection at “customers” and click the “Launch run” button at the bottom.
+
+21) Watch the run page. The step graph shows a single step “dbt (build)”.  
+    Verification: after ~10–20 s the step turns green and the status badge says “Succeeded”.
+
+22) Click “View Materialization” in the right sidebar to inspect the materialization event; confirm the row count matches what you expect (e.g., metadata Row Count: 100 rows).
+
+23) Return to the “Assets” page and note that the customers asset now displays the green “Latest materialization” timestamp. We have successfully materialized it inside Dagster.
+
+24) (Optional) To materialize the entire dbt project later, click the “+” icon next to customers in the asset graph, choose “Upstream”, Cmd/Ctrl-A to select all, then click “Materialize”. This will issue `dbt build` for every model.
+
+25) Stop the dev server in the terminal with Ctrl+C when finished.

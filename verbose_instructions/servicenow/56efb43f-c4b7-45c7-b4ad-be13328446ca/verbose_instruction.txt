@@ -1,0 +1,17 @@
+1. Click the gray funnel-shaped Filter icon located just below the browser tab title “servicenow” to open the list filter panel.  
+2. Click the blue Add Sort button that appears in the first row of the panel.  
+3. Type Closed by into the empty “Field” input box that just appeared; the auto-complete dropdown will show the field—click Closed by to select it.  
+4. Click the adjacent Order dropdown (it initially shows “a to z”) and choose z to a so the Closed by field is sorted in descending order.  
+5. Click the Add Sort button again to insert a second sort row beneath the first one.  
+6. Type Planned start date in the new Field box, then click Planned start date from the dropdown list to confirm the selection.  
+7. Leave the Order dropdown next to Planned start date set to a to z (the default), which sorts dates in ascending order.  
+8. Click the Add Sort button a third time to create the final sort row.  
+9. Type Phase state into the Field box and select Phase state from the dropdown.  
+10. Click the Order dropdown for Phase state and pick z to a so Phase state is sorted in descending order.  
+11. Verify all three rows now read:  
+   • Closed by | z to a  
+   • Planned start date | a to z  
+   • Phase state | z to a  
+   (They should appear in that exact stacking order.)  
+12. Click the green Run button in the upper-right corner of the filter panel to execute the sort; the change requests list will refresh.  
+13. Confirm the list is now ordered first by Closed by (descending), then by Planned start date (ascending), and finally by Phase state (descending).

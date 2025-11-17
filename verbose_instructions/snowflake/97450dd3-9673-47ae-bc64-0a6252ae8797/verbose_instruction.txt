@@ -1,0 +1,49 @@
+1. Click the blue button labeled “New Project” in the center of the current Hasura Cloud page.  
+2. Scroll the right-hand panel to the bottom and click “Create Free Project”.  
+3. Wait until the provisioning banner shows “Project created”, then click the grey “Launch Console” button that appears in the upper-right corner of the card.  
+4. In the newly opened Hasura Console tab, click the “DATA” menu item on the top navbar.  
+5. Scroll to the bottom of the “Connect Database” page and click the “Snowflake” tile.  
+6. Click the blue “Connect Existing Database” button in the lower-right corner of the Snowflake card.  
+7. Type videos into the “Database Name” input so the label reads “videos”. (Note that Hasura converts this to lowercase automatically.)  
+8. Switch to your desktop environment and double-click information.txt to open it. Keep the file visible—we will copy values from it.  
+9. Construct the JDBC string by replacing the angular-bracket placeholders with the values in information.txt. You should obtain exactly:  
+   ```
+   jdbc:snowflake://HTEVMCF-AZ36651.snowflakecomputing.com/?user=XLANG&password=Spider2.0&warehouse=compute_wh&db=videos&schema=public
+   ```  
+   We will paste this in the next step.  
+10. Return to the Chromium tab with Hasura. Click inside the “JDBC Connection URL” textbox and paste the full string you assembled above.  
+11. Leave every other setting at its default and click the teal “Connect Database” button in the bottom-right corner.  
+12. Wait for the toast message “database added” to appear; this confirms the connection.  
+13. In the left sidebar under “Databases”, click videos. A list of Snowflake tables should appear in the main panel.  
+14. Tick the “Select All” checkbox at the top of this list so that every table is checked.  
+15. Click the yellow “Track Selected” button that appears just above the table list. A success toast (“all tables tracked”) should pop up—this lets Hasura expose them to GraphQL.  
+16. Click the “API” tab on the top navbar to switch to the GraphiQL explorer.  
+17. In the large input pane labeled “# Try out GraphQL queries here”, delete any placeholder code and type the following query exactly:  
+   ```graphql
+   query AllCustomers {
+     SUBSCRIPTIONS(
+       offset: 50
+       limit: 100
+       where: { WAS_SUBSCRIPTION_PAID: { _eq: "Yes" } }
+     ) {
+       CUSTOMER_ID
+       CREATED_DATE
+     }
+   }
+   ```  
+18. Click the triangular “Execute” button (▶) just above the input pane. Wait until the right-hand results panel renders JSON output. Verify you see exactly 100 objects (scroll if needed) and confirm each record’s WAS_SUBSCRIPTION_PAID is “Yes”.  
+19. Switch to the desktop terminal: click the Terminal icon in the Ubuntu dock (or press Ctrl+Alt+T).  
+20. Run the following commands to create and open the output file on the Desktop:  
+   ```bash
+   cd ~/Desktop
+   code result.txt
+   ```  
+   Visual Studio Code (or the default code editor) will open a new blank file named result.txt.  
+21. In Chromium, click inside the GraphQL results panel, press Ctrl+A to select all JSON, then Ctrl+C to copy.  
+22. Switch back to the editor window for result.txt. Click inside the blank document and press Ctrl+V to paste the copied JSON. A quick check ensures the file begins with “{” and ends with “}”.  
+23. Press Ctrl+S (or click File ➜ Save) to save result.txt. Verify in the Terminal that the file exists by running:  
+   ```bash
+   ls -l ~/Desktop/result.txt
+   ```  
+   A non-zero file size confirms your query results are safely stored.  
+24. Return to Hasura and optionally click “Logout” or simply close the browser tab; your free project remains online. Great job—Hasura is now connected to the Snowflake VIDEOS database, and the filtered subscription data has been exported to Desktop/result.txt for further use.

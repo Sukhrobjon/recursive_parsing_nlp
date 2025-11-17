@@ -1,0 +1,10 @@
+1) Click the profile-shaped Settings icon (⚙️) in the upper-right corner of the Superset web interface  
+2) Select the menu item “Database Connections” from the drop-down list  
+3) Locate the row whose Database column shows “SpiderDatabase”; then click the gray Edit (✏️) button at the far right of that row  
+4) In the “Edit database” modal that appears, click the tab labeled “ADVANCED” near the top of the window  
+5) Within the ADVANCED section, click the sub-tab “Security” so the security-related options become visible  
+6) Scroll down until you see the option text “Allow file uploads to database” (this is inside the Upload & Security area)  
+7) Check the checkbox directly to the left of “Allow file uploads to database” so a blue check mark appears (this grants the permission)  
+8) Click the blue “FINISH” button at the bottom-right corner of the modal to save your change  
+9) Wait for the toast notification “Database updated successfully” to appear in the lower-left corner; this confirms the setting is stored  
+10) Verify the feature is active: in the “Database Connections” list observe that, in the CSV Upload column for SpiderDatabase, a green checkmark icon is now displayed instead of the previous empty circle

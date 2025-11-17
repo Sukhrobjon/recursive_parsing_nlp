@@ -1,0 +1,94 @@
+1. Open your terminal application (iTerm, Terminal, Windows Terminal—any shell you prefer).
+
+2. Change to the projects directory so the new dbt project is created inside it by typing:  
+```bash
+cd ~/projects
+```
+
+3. Initialize a fresh dbt-core project named “jaffle_shop” by running:  
+```bash
+dbt init jaffle_shop
+```  
+Note that the command scaffolds a folder called `jaffle_shop` containing default `models`, `seeds`, and configuration files.
+
+4. When the interactive prompt appears asking “Which database would you like to use?”, type the number corresponding to DuckDB (usually `1`) and press Enter.
+
+5. Wait until dbt prints “Successfully created new project at ~/projects/jaffle_shop”. We now have a project and a default profile stub in `~/.dbt/profiles.yml`.
+
+6. Download or locate the file `jaffle-shop-data.zip`—place it in `~/projects` if it is not already there.
+
+7. Unzip the archive so the CSVs become available:  
+```bash
+unzip jaffle-shop-data.zip
+```  
+This creates a folder (often `jaffle-shop-data/`) containing several CSV files such as `customers.csv`, `orders.csv`, and `payments.csv`.
+
+8. Move those CSVs into the seed directory inside our dbt project:  
+```bash
+mv jaffle-shop-data/* ~/projects/jaffle_shop/seeds/
+```  
+Note: dbt only seeds files located in the `seeds/` sub-folder.
+
+9. Verify that the three CSV files now live in `~/projects/jaffle_shop/seeds` by listing the directory:  
+```bash
+ls ~/projects/jaffle_shop/seeds
+```  
+You should see `customers.csv`, `orders.csv`, and `payments.csv`.
+
+10. Open the dbt profile file in your editor so we can point both “dev” and “prod” to the same DuckDB file. For Vim, run:  
+```bash
+vi ~/.dbt/profiles.yml
+```  
+(If you prefer VS Code, run `code ~/.dbt/profiles.yml`—the edits are the same.)
+
+11. Scroll to the profile section named `jaffle_shop:` that was created during `dbt init`. You will see two targets already stubbed in (dev and prod).
+
+12. Replace each `path:` value under both targets with the explicit file path `~/projects/jaffle_shop.duckdb`. After editing, the profile block should look exactly like this:  
+```yaml
+jaffle_shop:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: ~/projects/jaffle_shop.duckdb
+      threads: 4
+    prod:
+      type: duckdb
+      path: ~/projects/jaffle_shop.duckdb
+      threads: 4
+```  
+Note that using the same file for dev and prod is fine for local experimentation; in an enterprise setting you would usually separate them.
+
+13. Save the file and quit the editor: in Vim press `Esc`, type `:wq`, and hit Enter. (If using VS Code, press `Cmd+S` or `Ctrl+S`, then close the tab.)
+
+14. Switch back to the terminal window (if you were in a GUI editor).
+
+15. Change into the new project directory so dbt commands run in the correct context:  
+```bash
+cd ~/projects/jaffle_shop
+```
+
+16. Verify connectivity to DuckDB and confirm the profile is valid by running:  
+```bash
+dbt debug
+```  
+Look for the green message “All checks passed!”—this indicates the `jaffle_shop.duckdb` file can be created/connected successfully.
+
+17. Execute the seed operation to load the CSVs into DuckDB tables:  
+```bash
+dbt seed
+```  
+dbt will create three tables—`seed_customers`, `seed_orders`, and `seed_payments`—and display a row count for each.
+
+18. Confirm the tables were written by opening an interactive DuckDB session:  
+```bash
+duckdb ~/projects/jaffle_shop.duckdb
+```
+
+19. Inside the DuckDB prompt, run a quick sanity SQL query:  
+```sql
+SELECT COUNT(*) FROM seed_orders;
+```  
+We expect a non-zero count (e.g., 100 or 1,000 rows depending on the dataset). Press `Ctrl+D` to exit DuckDB afterwards.
+
+20. Celebrate—the dbt project “jaffle_shop” is initialized, both dev and prod targets point to `jaffle_shop.duckdb`, and the CSV seeds have been loaded into DuckDB ready for modeling.

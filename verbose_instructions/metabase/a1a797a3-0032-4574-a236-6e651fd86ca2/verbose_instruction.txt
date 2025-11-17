@@ -1,0 +1,16 @@
+1. Click the grey gear icon in the upper-right corner of the Metabase window  
+2. Select “Admin settings” from the dropdown panel that appears  
+3. Click the “People” tab in the horizontal menu at the top of the Admin panel  
+4. Locate the user row for “John Wilson”; click the three vertical dots (…) at the far right of that row  
+5. Choose “Reset password” from the context menu  
+6. Click the blue “Reset password” button in the confirmation dialog  
+7. Click the copy-to-clipboard icon (clipboard symbol) immediately to the right of the temporary password shown next to the “Show” button; Metabase copies the temp password to your clipboard (we will use it in a moment)  
+8. Click the grey “Done” button to close the dialog  
+9. Click “Exit admin” in the upper-right corner to return to the normal interface  
+10. Click the gear icon again (upper-right)  
+11. Select “Account settings” from the dropdown panel  
+12. Click the “Password” tab in the center of the Account Settings page  
+13. Paste the copied temporary password into the “Current password” input field (Ctrl/⌘+V)  
+14. Type metabase123 in the “Create a password” input field  
+15. Retype metabase123 in the “Confirm your password” input field  
+16. Click the blue “Save” button; a green toast notification (“Your password has been updated”) should appear in the bottom-left corner, confirming the password reset was successful

@@ -1,0 +1,41 @@
+1) Open Visual Studio Code.  
+2) Click the EXPLORER icon (left sidebar) and Navigate to snapshots/orders_snapshot.sql.  
+3) Write the snapshot skeleton if the file is empty:  
+```sql
+{% snapshot orders_snapshot %}
+    {{
+        config(
+            target_schema='snapshots',
+            unique_key='order_id',
+            strategy='timestamp',
+            updated_at='updated_at'
+        )
+    }}
+
+    SELECT *
+    FROM {{ ref('stg_orders') }}  -- adjust if your staging model is named differently
+{% endsnapshot %}
+```  
+4) Press Ctrl + S to save snapshots/orders_snapshot.sql.  
+5) Switch to the integrated TERMINAL inside VS Code by pressing Ctrl + ` (back-tick).  
+6) Type `dbt debug` and press Enter to confirm the profile connects (we should see “All checks passed!”).  
+7) Execute `dbt seed` to load every CSV located in the seeds/ folder into the raw schema. Wait for the terminal to return “Completed successfully” with a green check mark.  
+8) Run `dbt run` to build all models defined under models/. Note the run should finish with status “Success  … finished in …”.  
+9) Execute `dbt snapshot` to create analytics.snapshots.orders_snapshot. Verify in the summary that 1 table was snapshotted with status “CREATE”.  
+10) Still in the terminal, type `du -h seeds/raw_orders.csv` and note the file size – we will compare later.  
+11) Move the up-to-date CSV from Desktop:  
+```bash
+mv /home/user/Desktop/raw_orders.csv seeds/raw_orders.csv
+```  
+12) Type `du -h seeds/raw_orders.csv` again; confirm the size has changed, indicating the new file is in place.  
+13) Execute `dbt seed` once more to reload the updated CSV into the database; watch that dbt logs state “1 table was replaced” for raw_orders.  
+14) Run `dbt run` again so all downstream models—including stg_orders—re-compute off the refreshed seed. Wait for “Success”.  
+15) Execute `dbt snapshot` a second time. dbt will now compare the latest stg_orders rows against the previous snapshot versions; look for “inserted: X, updated: Y” lines in the output, confirming new rows or updates were captured.  
+16) Open your database UI (or run `duckdb` / `psql` etc.) and execute:  
+```sql
+SELECT * 
+FROM analytics.snapshots.orders_snapshot
+ORDER BY dbt_valid_to DESC 
+LIMIT 10;
+```  
+We can see the most recent records have dbt_valid_to = NULL, proving the snapshot table reflects the refreshed seed data.

@@ -1,0 +1,162 @@
+1) Switch to VS Code by clicking its dock / task-bar icon so the editor becomes active.  
+2) Click “EXPLORER” in the left‐hand activity bar.  
+3) Navigate to the folder tree jaffle_shop ▸ jaffle_shop_dagster ▸ jaffle_shop_dagster and single-click it so the directory opens.  
+4) Double-click the file assets.py in that directory to open it in the right code panel.  
+
+5) Scroll to the very top of assets.py. Replace the existing import block with the exact snippet below (this adds duckdb, pandas, and several Dagster helpers).  
+
+```python
+import os
+
+import duckdb
+import pandas as pd
+from dagster import MetadataValue, AssetExecutionContext, asset
+from dagster_dbt import DbtCliResource, dbt_assets, get_asset_key_for_model
+
+from .constants import dbt_manifest_path, dbt_project_dir
+
+duckdb_database_path = dbt_project_dir.joinpath("tutorial.duckdb")
+```
+
+6) Locate the existing `jaffle_shop_dbt_assets` function. Make sure it looks exactly like the code below (unchanged except for imports now satisfied).  
+
+```python
+@dbt_assets(manifest=dbt_manifest_path)
+def jaffle_shop_dbt_assets(context: AssetExecutionContext, dbt: DbtCliResource):
+    yield from dbt.cli(["build"], context=context).stream()
+```
+
+7) Scroll to the bottom of assets.py, place the cursor on the last line, press Enter twice, and paste the new customers asset definition:  
+
+```python
+@asset(
+    compute_kind="python",
+    deps=[
+        get_asset_key_for_model([jaffle_shop_dbt_assets], "stg_customers"),
+        get_asset_key_for_model([jaffle_shop_dbt_assets], "stg_orders"),
+        get_asset_key_for_model([jaffle_shop_dbt_assets], "stg_payments"),
+    ],
+)
+def customers(context: AssetExecutionContext):
+    connection = duckdb.connect(os.fspath(duckdb_database_path))
+
+    customers = connection.sql(
+        """
+        with customers as (
+
+            select * from stg_customers
+
+        ),
+
+        orders as (
+
+            select * from stg_orders
+
+        ),
+
+        payments as (
+
+            select * from stg_payments
+
+        ),
+
+        customer_orders as (
+
+            select
+                customer_id,
+                min(order_date)      as first_order,
+                max(order_date)      as most_recent_order,
+                count(order_id)      as number_of_orders
+            from orders
+            group by customer_id
+
+        ),
+
+        customer_payments as (
+
+            select
+                orders.customer_id,
+                sum(amount) as total_amount
+            from payments
+            left join orders
+                on payments.order_id = orders.order_id
+            group by orders.customer_id
+
+        ),
+
+        final as (
+
+            select
+                customers.customer_id,
+                customers.first_name,
+                customers.last_name,
+                customer_orders.first_order,
+                customer_orders.most_recent_order,
+                customer_orders.number_of_orders,
+                customer_payments.total_amount as customer_lifetime_value
+            from customers
+            left join customer_orders
+                on customers.customer_id = customer_orders.customer_id
+            left join customer_payments
+                on customers.customer_id = customer_payments.customer_id
+
+        )
+
+        select * from final
+        """
+    ).df()
+
+    context.add_output_metadata({"num_rows": customers.shape[0]})
+    return customers
+```
+
+8) Press Ctrl+S to save assets.py. VS Code should show “✔” in the tab title after saving.  
+
+9) In the EXPLORER, double-click definitions.py (located in the same jaffle_shop_dagster package) to open it.  
+
+10) Replace its import section so it now refers to the customers asset, using the following snippet:  
+
+```python
+import os
+
+from dagster import Definitions
+from dagster_dbt import DbtCliResource
+
+from .assets import jaffle_shop_dbt_assets, customers
+from .constants import dbt_project_dir
+from .schedules import schedules
+```
+
+11) In the same file, locate the existing defs = Definitions(…) call. Modify the assets list so it includes customers:  
+
+```python
+defs = Definitions(
+    assets=[jaffle_shop_dbt_assets, customers],
+    schedules=schedules,
+    resources={
+        "dbt": DbtCliResource(project_dir=os.fspath(dbt_project_dir)),
+    },
+)
+```
+
+12) Press Ctrl+S again to save definitions.py.  
+
+13) Switch to the terminal window that is running your Dagster webserver (or start it with `dagster dev` if it is not already running). Wait until you see “Dagster UI is running at http://localhost:3000” confirming the reload watcher is active.  
+
+14) Switch to Chromium by clicking its icon. The Dagster UI should already be open; if not, open a new tab at http://localhost:3000.  
+
+15) Click the “Assets” tab in the top navigation bar so the asset graph becomes visible.  
+
+16) Click the blue “Reload definitions” button in the top-right corner. Wait for the toast message “Definitions reloaded successfully” to appear. (This ensures Dagster has picked up the customers asset we just added.)  
+
+17) Click the dropdown triangle beside “Reload definitions” and choose “Materialize all”. A modal titled “Materialize 4 assets” (or similar) should appear.  
+
+18) Click the green “Materialize” button in that modal. Dagster launches a backfill run for all dbt assets plus customers.  
+
+19) Observe the Run view. The step list should show tasks like build_stg_customers, build_stg_orders, build_stg_payments, customers. Wait until every step displays a green checkmark.  
+
+20) Verify success: in the run log pane, find the event “customers: materialized” and expand it. Confirm metadata shows “num_rows: <number>”. This validates that the Python asset executed and produced row-count metadata.  
+
+21) Click “Assets” tab again; select the customers node and confirm the sidebar shows a materialized timestamp matching your run.  
+
+22) Celebrate—your dbt project is now integrated with Dagster and the new customers downstream asset has been materialized successfully.

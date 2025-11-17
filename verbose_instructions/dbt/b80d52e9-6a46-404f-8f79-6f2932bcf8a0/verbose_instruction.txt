@@ -1,0 +1,51 @@
+1. Open VSCode and click File → Open Folder…, then select the project’s root directory so we can see the dbt folder tree in the Explorer panel.  
+2. In the Explorer panel, double-click models/schema.yml to open it in the main editor tab.  
+3. Scroll until you see the placeholder comments # 1 through # 7. One by one, replace them exactly as follows:  
+   a. Highlight # 1 and type:  
+   ```yaml
+   One record per customer
+   ```  
+   b. Highlight # 2 and type:  
+   ```yaml
+   Primary key
+   ```  
+   c. Highlight # 3 and type:  
+   ```yaml
+   NULL when a customer has not yet placed an order.
+   ```  
+   d. Highlight # 4 and type:  
+   ```yaml
+   This model cleans up customer data
+   ```  
+   e. Highlight # 5 and type:  
+   ```yaml
+   Primary key
+   ```  
+   f. Highlight # 6 and type:  
+   ```yaml
+   This model cleans up order data
+   ```  
+   g. Highlight # 7 and type:  
+   ```yaml
+   Primary key
+   ```  
+   Note that we are preserving indentation—each replacement stays exactly where its comment was.  
+4. Press Ctrl + S (or Cmd + S on macOS) to save schema.yml; the blue dot on the tab should disappear, confirming the file is written to disk.  
+5. Switch to the terminal by clicking the integrated Terminal tab at the bottom of VSCode (or press Ctrl + ` to toggle it).  
+6. Ensure you are in the project root by typing:  
+   ```bash
+   pwd
+   ```  
+   We should see the path ending in the dbt project folder; if not, run `cd <project-root>`.  
+7. Run the docs generation command:  
+   ```bash
+   dbt docs generate
+   ```  
+   Wait until the terminal prints “Done. Inspect your docs in …” and confirms manifest.json and catalog.json are created; this verifies the YAML descriptions compiled correctly.  
+8. Launch the documentation website on the requested port:  
+   ```bash
+   dbt docs serve --port 8020
+   ```  
+   The terminal will output “Serving docs at http://localhost:8020” and keep running.  
+9. Open a browser and navigate to http://localhost:8020; we should see the dbt documentation site with models → customers, orders, etc. showing the new description text.  
+10. When finished reviewing, return to the terminal and press Ctrl + C to stop the docs server.

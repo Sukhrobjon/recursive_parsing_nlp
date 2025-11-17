@@ -1,0 +1,23 @@
+1. Click the “Run” button in the top notebook menu bar  
+2. Select “Restart Kernel and Run All Cells” from the drop-down list  
+3. Click “Restart” in the confirmation pop-up to execute every existing cell from top to bottom  
+4. Wait until every code cell shows a fresh execution counter (e.g. [1], [2] …) and verify that the previously generated figures render without errors  
+5. Scroll to the bottom of the notebook until you reach the empty space that reads “Click to add a cell”  
+6. Click the grey “Click to add a cell” button to insert a new code cell at the end of the notebook  
+7. Copy-and-paste the following code block into that cell exactly as shown:
+
+```python
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+sns.countplot(data=df, x="H/A/N", order=df["H/A/N"].value_counts().index)
+plt.xticks(rotation=90)
+plt.savefig("result.png")
+plt.show()
+```
+
+8. Click the blue “Run” (▶) icon on the left side of this new cell, or press Shift + Enter to execute it  
+9. Confirm that a new bar chart appears directly below the cell and matches the styling (font, axis labels, color palette) of the earlier figures  
+10. Switch to the notebook’s left sidebar and click the “📂” (File Browser) icon  
+11. Locate and double-check that a file named “result.png” now exists in the current working directory; you should see today’s timestamp under the file name  
+12. (Optional) Click “result.png” to preview it and verify the plot has the correct bars for each H/A/N category and the x-axis labels are fully legible after rotation

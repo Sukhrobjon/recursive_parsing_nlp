@@ -1,0 +1,9 @@
+1. Click inside the empty input box next to the label “Problem statement” in the central column.  
+2. Type Issue in connecting to internet using modem. and press Tab to move focus away so the value is recorded.  
+3. Locate the drop-down list labeled “Impact” in the right-hand column (it is the first selector in that column).  
+4. Verify the displayed value shows 3 - Low; if it shows anything else, click the list, scroll (if needed), and click 3 - Low to select it.  
+5. Find the drop-down list labeled “Urgency” directly below “Priority” (third selector in the right column).  
+6. Confirm the value is 3 - Low; if it is not, click the list and choose 3 - Low from the menu.  
+7. Leave the “Service offering” and “Assignment group” fields unchanged—both should remain blank.  
+8. Move your cursor to the upper-right corner of the form and click the blue Submit button.  
+9. Wait until the page refreshes back to the problem list; absence of an error banner indicates the record was saved successfully.

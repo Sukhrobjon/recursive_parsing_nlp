@@ -1,0 +1,70 @@
+1. Open the file manager on your workstation, navigate to `~/project/configs`, and double-click `config.yaml` so we can copy the user attributes.  
+   We’ll need the following key/value pairs:  
+   ```
+   user:
+     name: analyst_jane
+     password: "Secur3Pwd!"
+     default_role: ANALYST_ROLE
+     default_warehouse: ANALYST_WH
+     default_database: SALES_DB
+     default_schema: PUBLIC
+     must_change_password: true
+   ```
+
+2. Switch to the Snowflake UI in your browser and click the “+ Worksheet” button in the upper-right corner to open a new SQL worksheet.
+
+3. Type the role switch command so we have sufficient privileges:  
+   ```sql
+   USE ROLE securityadmin;
+   ```  
+   Click the blue ► “Run” triangle to execute.
+
+4. Set the warehouse that will execute the DDL:  
+   ```sql
+   USE WAREHOUSE admin_wh;
+   ```  
+   (If `admin_wh` is suspended you will be prompted to resume; click “Resume” if needed.)
+
+5. Write the CREATE USER statement using the values we just copied from `config.yaml`. Paste the following block into the worksheet:  
+   ```sql
+   CREATE OR REPLACE USER analyst_jane
+     PASSWORD               = 'Secur3Pwd!'
+     DEFAULT_ROLE           = ANALYST_ROLE
+     DEFAULT_WAREHOUSE      = ANALYST_WH
+     DEFAULT_NAMESPACE      = SALES_DB.PUBLIC   -- <database>.<schema>
+     MUST_CHANGE_PASSWORD   = TRUE
+     COMMENT                = 'Created via config.yaml on 2024-06-14';
+   ```  
+   Execute the statement with the ► button; a green “Statement executed successfully” toast should appear.
+
+6. Grant the listed role to the new user so she can actually assume it:  
+   ```sql
+   GRANT ROLE ANALYST_ROLE TO USER analyst_jane;
+   ```
+
+7. (Optional but recommended) Grant the user the ability to change her own password later:  
+   ```sql
+   GRANT ROLE useradmin TO USER analyst_jane;
+   ```
+
+8. Verify that the user exists and has the correct attributes:  
+   ```sql
+   SELECT
+       name,
+       default_role,
+       default_warehouse,
+       default_namespace,
+       must_change_password
+   FROM snowflake.account_usage.users
+   WHERE name = 'ANALYST_JANE';
+   ```  
+   We should see one row where `DEFAULT_ROLE`=ANALYST_ROLE, `MUST_CHANGE_PASSWORD`=true, etc.
+
+9. Log out of the Snowflake UI (profile icon → “Sign Out”) and log back in using username `analyst_jane` and the temporary password `Secur3Pwd!`.  
+   You will be prompted to set a new password, confirming that step 5’s `MUST_CHANGE_PASSWORD = TRUE` flag is functioning.
+
+10. Return to your original administrator session, switch back to `accountadmin` if desired:  
+    ```sql
+    USE ROLE accountadmin;
+    ```  
+    This completes creation and validation of the new Snowflake user as specified in `config.yaml`.

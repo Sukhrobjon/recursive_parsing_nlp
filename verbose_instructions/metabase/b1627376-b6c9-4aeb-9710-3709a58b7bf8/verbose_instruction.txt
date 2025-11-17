@@ -1,0 +1,23 @@
+1. Click the blue New button in the upper-right corner of the Metabase page  
+2. Select Question from the dropdown that appears  
+3. Click the Sample Database selector, then choose Orders from the list of tables  
+4. Click Add filters to narrow your answer below the field list panel  
+5. Select # Subtotal in the field picker that opens  
+6. Change the operator dropdown from Equal to to Greater than  
+7. Type 40 into the value input, then click the blue Add filter button  
+8. Click the Row limit button that appears just below the query builder  
+9. Type 20 into the limit textbox and press Enter so we only keep 20 rows  
+10. Verify in the preview grid that every Subtotal value is above 40 and the total row count is exactly 20 – this confirms our filter and limit are correct  
+11. Click the blue Visualize button in the bottom-right to run the query  
+12. Wait until the results table finishes loading and displays 20 rows; we can see the green bar at the top indicating “All rows loaded”  
+13. Click the Download full results button (down-arrow icon) in the lower-right corner of the result pane  
+14. Choose .json from the list of available formats; the file will download to ~/Downloads by default as something like Orders-2024-06-results.json  
+15. Switch to the terminal by pressing Ctrl+Alt+T (or open your preferred file manager if you like GUIs)  
+16. Type cd ~/Downloads and press Enter to move into the downloads folder  
+17. Execute ls ‑l to list the files and locate the freshly downloaded JSON (note the exact filename)  
+18. Run the rename command, replacing <original-name>.json with the real name you saw:  
+```bash
+mv "<original-name>.json" "res.json"
+```  
+19. Type mv res.json ~/Desktop/ and press Enter to move the file to the Desktop  
+20. Execute ls ~/Desktop | grep res.json and confirm the command prints res.json – this verifies the file is now on the Desktop with the correct name

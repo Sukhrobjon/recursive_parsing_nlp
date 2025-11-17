@@ -1,0 +1,10 @@
+1) Open the Airbyte UI in your browser and wait until the dashboard finishes loading  
+2) Click the left-hand menu item “Connections” so we see the list of all configured connections  
+3) Locate the row whose Source is “HTTP File” and Destination is “Local JSON”; confirm the Status column shows the grey label “Disabled”  
+4) Click anywhere on that specific connection row (not the toggle yet) to enter the connection detail page  
+5) Find the blue toggle switch in the upper-right corner that currently shows “Disabled” with the slider on the left  
+6) Click the toggle once; it should slide to the right and the label should change to “Enabled” with a green background  
+7) Wait 2-3 seconds; verify that a green toast message “Connection enabled” appears in the lower-left corner  
+8) Observe the Schedule section: the “Next sync” timestamp should now display a future time instead of “—” confirming the connection is active  
+9) Click the “Connections” breadcrumb at the top to return to the list view  
+10) Confirm the Status column for the “HTTP File → Local JSON” connection now shows a green “Active” badge, indicating the enablement was successful

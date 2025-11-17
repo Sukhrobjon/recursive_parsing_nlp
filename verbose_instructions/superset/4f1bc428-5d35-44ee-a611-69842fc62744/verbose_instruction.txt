@@ -1,0 +1,11 @@
+1. Click the browser tab that already has your BI application open.  
+2. Locate and click the top-level menu item labeled “Dashboards”.  
+3. Scan the list and click the dashboard name “Statistics”; the page reloads and the normal view (with navigation bar, title, and filter bar) appears.  
+4. Click once inside the address bar so the full URL becomes highlighted.  
+5. Press the Right-Arrow key to move the cursor to the very end of the URL, then press Backspace to remove everything after the final “/”. We want the bare dashboard URL only (…/statistics/).  
+6. Type exactly the following query string immediately after the trailing slash:  
+   ?standalone=2&show_filters=0  
+   Your final URL will look similar to:  
+   https://your-domain.com/app/dashboards/statistics/?standalone=2&show_filters=0  
+7. Press Enter to reload the page with the new parameters.  
+8. Observe that the top navigation bar, the dashboard title, and the filter bar have disappeared, leaving only the core visualizations—confirming the parameters worked.

@@ -1,0 +1,10 @@
+1. Click the Chromium/Chrome window to bring the ServiceNow page into focus  
+2. Locate the grey Search text box next to the “All” category drop-down in the top menu bar  
+3. Type "catering service provider for office events" (include the quotes) and press Enter to execute the search  
+4. Click the blue title of the first Article result that appears in the center results pane  
+5. Press Ctrl + F to open the in-page Find search bar at the upper-right corner of the browser  
+6. Type catering service provider into the Find field and observe the highlighted match inside the article body  
+7. Read the highlighted sentence: “The catering service provider for office events is Gourmet Caterers.” – confirm the firm name is Gourmet Caterers  
+8. Press Alt + Tab (or click the taskbar icon) to switch to the already-opened answer.txt file in the text editor  
+9. Type Gourmet Caterers on the first line of the file, ensuring correct capitalization and no extra spaces  
+10. Press Ctrl + S to save, then glance at the editor status bar for the “Saved” confirmation message to verify the file update

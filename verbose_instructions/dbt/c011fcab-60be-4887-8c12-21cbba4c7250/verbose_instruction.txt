@@ -1,0 +1,25 @@
+1) Navigate to https://console.cloud.google.com/bigquery so you land on the BigQuery Explorer panel of your Google Cloud project.  
+2) Click your project’s grey triangle to expand it; verify you can see “CREATE DATASET” at the top of the Explorer list.  
+3) Click the blue “CREATE DATASET” button. A “Create dataset” configuration panel will slide in from the right.  
+4) Type Continuous_Integration into the Dataset ID field (exactly as shown, using the underscore).  
+5) Keep Default table expiration set to “Never” (the default) so nothing disappears automatically while we test.  
+6) Open the “Labels” accordion, then click “+ Add label”.  
+7) Type branch into the Key box, then type main into the Value box. This label tells collaborators (and any automated CI scripts) that this dataset belongs exclusively to the main branch.  
+8) Leave all other options at their defaults and click the blue “CREATE DATASET” button at the bottom-right of the panel. BigQuery now provisions the staging environment.  
+9) Observe a green toast notification reading “Dataset Continuous_Integration created”. The new dataset should immediately appear under your project in the Explorer tree.  
+10) Click the grey triangle next to Continuous_Integration to expand it. Because it is brand-new, the list inside should be empty; this confirms the environment is isolated and ready for branch-specific objects.  
+11) Verify the branch label was saved correctly:  
+    a. Click Continuous_Integration in the Explorer.  
+    b. In the details pane, scroll to “Labels” and confirm you can read branch: main.  
+12) Open a new Query Editor tab and run the following SQL to programmatically validate that the dataset was created with the correct label:  
+```sql
+SELECT
+  dataset_id,
+  ARRAY(SELECT AS STRUCT key, value FROM UNNEST(labels)) AS labels
+FROM
+  `region-us`.INFORMATION_SCHEMA.SCHEMATA
+WHERE
+  dataset_id = 'Continuous_Integration';
+```  
+13) Click “Run” (the dark-blue ▶ Run button). The result set should return exactly one row containing dataset_id = Continuous_Integration and a label key/value pair branch/main.  
+14) Notify your CI pipeline (or teammates) that all jobs targeting the main branch should use project_id.Continuous_Integration as their default dataset going forward.

@@ -1,0 +1,12 @@
+1. Locate the “Caller” search input in the left column (a red asterisk precedes it indicating it is required) and click inside the field.  
+2. Type “Fred Luddy” and wait a second until the autocomplete finishes populating; press Enter to lock in the selection.  
+3. Click the drop-down list labeled “Impact” (third selector in the right column).  
+4. Choose “3 – Low” from the menu.  (If “3 – Low” is already highlighted, simply confirm it and move on.)  
+5. Verify, just below, that the “Urgency” drop-down already displays “3 – Low”.  If not, click it and pick “3 – Low” to match Impact.  
+6. Scroll, if necessary, to the wide “Short description” text box that spans both columns and click inside it.  
+7. Enter the text “Issue with a web page on wiki”.  We’ll use this later to search for the record if needed.  
+8. Quickly glance at the “Service”, “Caused by Change”, “Parent Incident”, “Change Request”, and “Problem” reference fields; make sure each shows an empty value (usually displayed as “—” or a magnifier icon with no text).  No action is required if they are blank.  
+9. Review all mandatory fields—Caller and Short description now have no red error outline—confirming they are complete.  
+10. Click the blue “Submit” button in the top-right toolbar to create the incident.  
+11. Wait for the form to clear and the list view to reload; we can see a green banner saying “Incident has been submitted” indicating success.  
+12. (Optional verification) In the filter field at the top of the incidents list, type “Issue with a web page on wiki” and press Enter.  We should see our new record with Impact “3 – Low” and Caller “Fred Luddy” in the results table.

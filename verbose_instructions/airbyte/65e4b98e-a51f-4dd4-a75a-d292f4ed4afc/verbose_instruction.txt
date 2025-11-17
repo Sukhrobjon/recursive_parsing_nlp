@@ -1,0 +1,115 @@
+1. Click the VS Code icon on the left dock to bring the editor to the foreground.  
+2. Double-click the file named 𝘮𝘺𝘴𝘲𝘭_config.yaml that is already open on the desktop.  
+3. Read and note the exact values:  
+   • host: 192.168.1.55  
+   • port: 3306  
+   • schema: sales_db  
+   • user: airflow_sync  
+   • password: S3cr3tPwd!  
+   • target_tables: orders, customers, payments (we will use these three tables)
+
+4. Switch to Chromium (left dock icon) to open the Airflow web UI that is already running at http://localhost:8080.  
+5. Click the top-menu item “Admin”.  
+6. Select “Connections” in the dropdown.  
+7. Press the blue “+” button just under the search bar to add a new connection.  
+8. Type the following values in the “Add Connection” form:  
+   • Conn Id: mysql_sync_conn  
+   • Conn Type: MySQL  
+   • Host: 192.168.1.55  
+   • Schema: sales_db  
+   • Login: airflow_sync  
+   • Password: S3cr3tPwd!  
+   • Port: 3306  
+9. Scroll to the bottom and click “Save”.  
+10. Confirm that a new row with Conn Id “mysql_sync_conn” appears in the list.
+
+11. Click the VS Code icon again to return to the editor.  
+12. Right-click inside the dags/ folder in the Explorer panel and choose “New File…”.  
+13. Type mysql_to_json.py and press Enter.
+
+14. Write the DAG code below into mysql_to_json.py (replace any placeholder imports that VS Code inserted).  
+
+```python
+from airflow import DAG
+from airflow.operators.python import PythonOperator
+from airflow.providers.mysql.hooks.mysql import MySqlHook
+from datetime import datetime, timedelta
+import json, os
+
+# ---- default arguments ----
+default_args = {
+    "owner": "data_eng",
+    "depends_on_past": False,
+    "retries": 1,
+    "retry_delay": timedelta(minutes=5),
+}
+
+# ---- constants we will reuse ----
+_CONN_ID = "mysql_sync_conn"
+_OUTPUT_DIR = "/json_data"            # make sure this exists on the host
+_TABLES = ["orders", "customers", "payments"]
+
+# ---- utility function ----
+def export_tables_to_json(**context):
+    """Export each table listed in _TABLES to a separate JSON file."""
+    hook = MySqlHook(mysql_conn_id=_CONN_ID)
+    conn = hook.get_conn()
+    cursor = conn.cursor(dictionary=True)
+    os.makedirs(_OUTPUT_DIR, exist_ok=True)
+
+    for table in _TABLES:
+        cursor.execute(f"SELECT * FROM {table};")
+        rows = cursor.fetchall()
+        output_path = os.path.join(_OUTPUT_DIR, f"{table}.json")
+        with open(output_path, "w", encoding="utf-8") as f:
+            json.dump(rows, f, default=str, indent=2)
+        print(f"Wrote {len(rows)} rows from {table} to {output_path}")
+
+    cursor.close()
+    conn.close()
+
+# ---- DAG definition ----
+with DAG(
+    dag_id="mysql_to_local_json",
+    description="Sync MySQL tables to local JSON files every 12 hours",
+    start_date=datetime(2023, 1, 1),
+    schedule_interval="0 */12 * * *",   # every 12 hours at minute 0
+    catchup=False,
+    default_args=default_args,
+    max_active_runs=1,
+    tags=["mysql", "json", "sync"],
+) as dag:
+
+    dump_to_json = PythonOperator(
+        task_id="dump_mysql_to_json",
+        python_callable=export_tables_to_json,
+    )
+
+    dump_to_json
+```
+
+15. Press Ctrl + S (or ⌘ + S on Mac) to save the file.  
+16. Switch to the terminal tab named /home/user/airflow in VS Code.  
+17. Execute the Airflow container restart so the new DAG is detected:  
+   `astro dev restart`    (or `docker compose restart` if you are not on Astronomer)
+
+18. Wait until the terminal shows “Container airflow-scheduler exited with code 0” followed by “Container airflow-webserver waiting for gunicorn…”.  
+19. Return to Chromium.  
+20. In the DAGs list, locate “mysql_to_local_json”.  
+21. Click the grey toggle at the far left of the row to turn it blue (unpausing the DAG).  
+22. Click the “play” triangle in the Actions column to trigger the DAG manually for the first run.  
+
+23. Watch the coloured square under “mysql_to_local_json” → “dump_mysql_to_json”. When it turns dark-green, the task succeeded.  
+24. Click that green square.  
+25. On the right-side details panel, click “Log” to open the log view.  
+26. Verify you see output lines such as “Wrote 542 rows from orders to /json_data/orders.json”.
+
+27. Open a new terminal tab with the “+” icon at the top of the integrated terminal.  
+28. Type: `ls -l /json_data` and press Enter.  
+29. Confirm three files appear: orders.json, customers.json, payments.json with recent timestamps.  
+
+30. Type: `jq '. | length' /json_data/orders.json` and press Enter to confirm the JSON file is valid and displays the number of rows (jq is pre-installed in the dev image).  
+
+31. Observe that the DAG is now scheduled to run automatically every 12 hours. You can verify the next execution time by hovering over the clock icon in the DAG listing.  
+
+32. (Optional) To change the list of tables later, edit the `_TABLES` list in mysql_to_json.py, save, and repeat steps 16-19 to redeploy.

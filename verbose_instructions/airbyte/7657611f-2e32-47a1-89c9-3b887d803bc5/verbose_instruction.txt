@@ -1,0 +1,12 @@
+1) Open the Airbyte UI in your browser and wait until the Connections list loads  
+2) Click the row named “Sample Data (Faker) -> Local CSV” to open its Connection Overview page  
+3) Click the “Replication” tab located between “Status” and “Job History” so the replication settings appear  
+4) Click the “Configuration” accordion to expand it; we now see two editable fields: “Schedule type” and “Replication frequency”  
+5) Click the dropdown to the right of “Schedule type”, then select “Cron” (this unlocks the custom cron expression box)  
+6) Click into the cron expression text box that is now visible under “Replication frequency”, delete any existing value, and type the exact string  
+   ```
+   0 0 18 * * ?
+   ```  
+7) Observe the helper text directly below the box—Airbyte should display “At 06:00 PM” confirming the cron was parsed correctly  
+8) Scroll to the bottom-right corner of the page and click the blue “Save changes” button  
+9) Wait for the green toast message “Connection saved successfully” to appear—this verifies the new daily 18:00 schedule is active

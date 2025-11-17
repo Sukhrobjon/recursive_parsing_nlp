@@ -1,0 +1,9 @@
+1. Click the Chromium icon on the left dock of your Astronomer workspace to bring the Airflow web-UI tab to the foreground.  
+2. Hover over the Browse menu in the dark-blue top navigation bar until the drop-down list appears.  
+3. Click DAG Dependencies in that drop-down list.  
+4. Wait a second for the DAG Dependencies screen to render; the page title “DAG Dependencies” should now be visible at the top-left of the content pane.  
+5. Move your mouse over any DAG box in the graph; we can see incoming (up-stream) and outgoing (down-stream) arrows confirming the dependency relationships.  
+6. Type a DAG name into the Filter DAGs text box at the upper-right (e.g., airflow_example) and press Enter to isolate the graph for that single DAG.  
+7. Verify that only the selected DAG and its direct parents/children remain highlighted while unrelated DAGs fade to grey—this confirms the filter worked.  
+8. Click the Refresh button (blue circular arrow icon) above the graph if you need to reload the latest dependencies after changing DAG code.  
+9. Press the Esc key or click the Airflow logo to return to the main DAGs view when you are done reviewing dependencies.

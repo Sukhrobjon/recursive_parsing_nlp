@@ -1,0 +1,14 @@
+1. Click the Deploy button located in the dark-blue top navigation bar.  
+2. Select Jobs from the Deploy drop-down list that appears.  
+3. Click the blue Create job button in the upper-right corner of the Jobs page.  
+4. Select Deploy job from the small pop-up menu (this opens the New job configuration screen).  
+5. Type Sales_Summary into the Job name field under the Job settings panel on the left (you should see the name appear in the breadcrumb at the top—this confirms it registered).  
+6. Scroll down to the Triggers section and toggle on the option labeled Run when another job finishes (the trigger sub-form expands once enabled).  
+7. Click the Project drop-down inside that sub-form and choose Christmas from the list of available projects (we need the project that owns the upstream job).  
+8. Click the Job drop-down directly beneath it and select Sales_Process (this is the upstream job that must finish first).  
+9. In the Completes on chips that appear, click Success so that only Success remains highlighted (make sure Failure and Error are not selected—only green Success should stay lit).  
+10. Verify that the grey helper text now reads “Runs after Sales_Process (Success)”—this confirms the dependency is configured correctly.  
+11. Scroll back to the top of the page while keeping an eye on the blue bar; it should now show “Dirty” indicating unsaved changes.  
+12. Click the Save button in the upper-right corner (the button label switches to Saved and the Dirty indicator disappears).  
+13. Observe the toast notification “Job Sales_Summary saved” in the lower-left corner—this is our confirmation that the job configuration was persisted.  
+14. Navigate back to the main Jobs list by clicking the Jobs breadcrumb; ensure Sales_Summary now appears with “Triggered by: Sales_Process (Success)” in the Trigger column.

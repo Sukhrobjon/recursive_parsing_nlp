@@ -1,0 +1,8 @@
+1. Click your user avatar (circle icon) in the top-right corner of the Metabase window.  
+2. Click “Account settings” in the drop-down menu that opens.  
+3. Click the “Profile” tab if it is not already selected (left-hand sidebar).  
+4. Click the pencil icon next to your current email address to enter edit mode.  
+5. Type `johnwilson@outlook.com` into the Email field, replacing the old value.  
+6. Click the blue “Save changes” button at the bottom of the form.  
+7. Look for the green “Profile updated” toast notification in the lower-left corner to confirm the change was accepted.  
+8. Click the avatar again → hover over your name; verify the tooltip now displays `johnwilson@outlook.com` so we know the update succeeded.

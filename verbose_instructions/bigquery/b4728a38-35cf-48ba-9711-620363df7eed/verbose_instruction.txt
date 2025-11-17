@@ -1,0 +1,10 @@
+1. Click the caret-shaped Toggle icon to the left of your personal project name in the Explorer pane so the project tree expands and all datasets become visible.  
+2. Click the caret Toggle next to the census dataset to reveal its contained tables.  
+3. Click the table name 2012 to open its Table Details tab in the main workspace.  
+4. Click the blue EDIT SCHEMA button in the upper-right corner of the Schema panel so that each column becomes editable.  
+5. Locate the YEAR row (it should be the first row). Click inside the Default Value cell, type 2012, and press Enter to confirm.  
+6. Scroll down until you see the ABSOLUTE_CHANGE column (second-to-last row). Click its Default Value cell, type 0, and press Enter.  
+7. Scroll to the very bottom of the list and find the ANNUAL_RANK column. Click the Default Value cell, type 1, and press Enter.  
+8. Click the blue SAVE button at the bottom of the Schema editor to persist all three default values.  
+9. Wait for the green confirmation toast (“Schema updated successfully”) to appear in the lower-right corner; this verifies the change was applied.  
+10. Visually confirm each Default Value column now shows 2012, 0, and 1 respectively for YEAR, ABSOLUTE_CHANGE, and ANNUAL_RANK.

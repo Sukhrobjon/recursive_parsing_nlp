@@ -1,0 +1,23 @@
+1. Click the “+” create-sheet icon located immediately to the left of the “Sheet1” tab; a new tab named “Sheet2” appears.  
+2. Click cell A1 in “Sheet2”.  
+3. Type Month and press Enter so the header is stored.  
+4. Click cell B1.  
+5. Type Total and press Enter to complete the second header.  
+6. Switch to “Sheet1” by clicking its tab.  
+7. Drag-select the range B1:G1 (these cells contain the abbreviated month names).  
+8. Press Ctrl + C to copy the highlighted months; a moving dashed border should confirm the copy buffer is active.  
+9. Switch back to “Sheet2”.  
+10. Click cell A2 (the first body cell under the Month header).  
+11. Right-click A2 and choose Paste special ➜ Transpose; the months now fill cells A2:A13 vertically.  
+12. Switch again to “Sheet1”.  
+13. Click cell B12 (directly beneath the January sales column).  
+14. Type =SUM(B2:B11) and press Enter; cell B12 now displays January’s total.  
+15. Hover over the small square at the bottom-right corner of B12 until the cursor becomes a thin black cross (the fill handle).  
+16. Hold the mouse button down and drag horizontally to cell G12; release the button so Excel/Sheets auto-fills totals for February through June.  
+17. Verify that cells B12:G12 now contain numeric totals (no #REF! errors).  
+18. Drag-select B12:G12.  
+19. Press Ctrl + X to cut the totals (the cells will show moving borders).  
+20. Switch to “Sheet2”.  
+21. Click cell B2 (the first body cell under the Total header).  
+22. Right-click B2 and choose Paste special ➜ Transpose; the six totals are pasted vertically into B2:B13.  
+23. Press Ctrl + S to save the workbook; confirm the filename and location if prompted.

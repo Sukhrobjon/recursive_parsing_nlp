@@ -1,0 +1,33 @@
+1. Navigate to https://console.cloud.google.com/bigquery so we land in the BigQuery Web UI.  
+2. Locate your project name in the Explorer panel on the left, then click the triangle ▸ beside it to expand its datasets.  
+3. Click the triangle ▸ beside the dataset where you just uploaded the table (for example, american_baby_names) so we can see its tables.  
+4. Click names_2014 to open the Table Details tab in the right-hand pane. Here we can confirm the column names; we should see at least name (STRING), gender or sex (STRING), and count (INTEGER). Note that we will reference these columns in our query.  
+5. Click the + COMPOSE NEW QUERY button at the top of the BigQuery interface to open a blank query editor tab.  
+6. Type (or paste) the following SQL in the editor. This statement both creates the destination table and fills it with the top five male baby names and their total counts:  
+
+```sql
+-- Create a new table with the top 5 male names in 2014
+CREATE OR REPLACE TABLE
+  `YOUR_PROJECT_ID.american_baby_names.top5_male_2014` AS
+SELECT
+  name,
+  SUM(count) AS count
+FROM
+  `YOUR_PROJECT_ID.american_baby_names.names_2014`
+WHERE
+  gender = 'M'          -- adjust to 'male' or 'boy' if the column uses different codes
+GROUP BY
+  name
+ORDER BY
+  count DESC
+LIMIT
+  5;
+```
+
+7. Replace YOUR_PROJECT_ID and american_baby_names with the exact project and dataset IDs that appear in the Explorer panel so the path matches your environment.  
+8. Click the blue ▸ RUN button in the query toolbar to execute the SQL.  
+9. Observe the “Query results” pane. We should see five rows with the most common male names and their counts.  
+10. Verify in the Explorer panel that a new table named top5_male_2014 now appears under the same dataset (you might need to click the refresh arrow icon beside the dataset name). This confirms the CREATE OR REPLACE TABLE succeeded.  
+11. (Optional) Click top5_male_2014, then “Preview” to visually confirm the data—name and count columns only.  
+12. If you need to share or reuse the SQL later, click the floppy-disk icon labelled SAVE to store the query in your project, giving it an informative name like “Top-5 Male Names 2014”.  
+13. We are done: the table top5_male_2014 holds the requested result and is stored permanently in the same dataset for any downstream analysis.

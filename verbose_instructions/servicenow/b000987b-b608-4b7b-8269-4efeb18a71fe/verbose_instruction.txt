@@ -1,0 +1,35 @@
+1. Locate the Users page that is already open in your browser; confirm you can see the title text “Users” in the upper-left corner.  
+2. Hover over the three icons immediately to the left of the “Users” title until the tooltip “Filter” appears on the middle icon shaped like a funnel.  
+3. Click the funnel icon to expand the filter-builder panel.  
+4. Inspect the panel and notice two existing filter rows, each ending with a grey “×” icon.  
+5. Click the “×” icon on the first row to remove that pre-existing filter.  
+6. Click the “×” icon on the second row to clear the second pre-existing filter, leaving an empty panel that shows one blank filter line.  
+7. Click the dropdown placeholder text “-- choose field --” in that first blank line.  
+8. Type Employee into the search box that appears to narrow the field list.  
+9. Select Employee number from the filtered results; the field label now shows “Employee number”.  
+10. Click the operator dropdown (it defaults to “contains”); select is from the list.  
+11. Leave the value input box completely blank so the condition reads “Employee number is ”.  
+12. Click the blue AND button on the far right of the current row to append a second blank condition row.  
+13. Click the new row’s “-- choose field --” dropdown, type Company in the search bar, and choose Company from the results.  
+14. Click the operator dropdown for this row and choose is.  
+15. Click the value box, type ACME Japan exactly, and press Enter; the second condition now reads “Company is ACME Japan”.  
+16. Click the AND button again to add a third condition row.  
+17. In the third row, click “-- choose field --”, type Default perspective, and pick Default perspective from the dropdown.  
+18. Choose is as the operator.  
+19. Leave the value input blank so the condition states “Default perspective is ”.  
+20. Click AND to create a fourth row.  
+21. Click that row’s “-- choose field --”, type State / Province, and select State / Province.  
+22. Set the operator to is.  
+23. Leave the value box empty, producing “State / Province is ”.  
+24. Click AND once more to insert the fifth and final condition row.  
+25. Open the field selector, type Enable Multifactor Authentication, and pick Enable Multifactor Authentication from the list.  
+26. Change the operator to is.  
+27. Click the value dropdown (it lists true / false) and choose false.  
+28. Scan the five conditions to verify they read exactly:  
+    • Employee number is (blank)  
+    • Company is ACME Japan  
+    • Default perspective is (blank)  
+    • State / Province is (blank)  
+    • Enable Multifactor Authentication is false  
+29. Click the blue Run button in the upper-right corner of the filter panel to apply the filter.  
+30. Wait until the Users list refreshes (spinner disappears) and confirm the results include only users matching all five criteria; the row count should decrease accordingly.

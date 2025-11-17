@@ -1,0 +1,64 @@
+1. Double-click the file named “result.csv” in the left sidebar so we can inspect the target column headers and confirm the required output layout (typically “first_name,total_num”).  
+2. Double-click “usa_baby_names.csv” to preview the raw dataset; verify the columns are “year,first_name,sex,num” so the SQL table definition will match.  
+3. Double-click “notebook.ipynb” to open the Jupyter notebook that already has database-connection boilerplate executed earlier (you should see a Python variable named conn).  
+4. Scroll to the very bottom of the notebook until you see a faint grey “Click to add a cell.” prompt.  
+5. Click “Click to add a cell.” to insert a new empty code cell.  
+6. Write the SQL DDL code below into the new cell to create a clean staging table (we drop any previous version first so the notebook is idempotent):  
+```python
+# Re-create table so the notebook is repeatable
+cursor.execute("DROP TABLE IF EXISTS baby_names;")
+cursor.execute("""
+CREATE TABLE baby_names (
+  year        INT,
+  first_name  VARCHAR(64),
+  sex         VARCHAR(8),
+  num         INT
+);
+""")
+conn.commit()
+```  
+7. Press Shift+Enter (or click the Run ▶ triangle in the left margin) to execute the cell; no error message means the table was created successfully.  
+8. Click “Click to add a cell.” again to append a second code cell right below the first.  
+9. Paste the loading, aggregation, and export code into this new cell:  
+```python
+import pandas as pd
+
+# Load CSV into a DataFrame
+df = pd.read_csv('usa_baby_names.csv')
+
+# Bulk-insert into SQLite
+df.to_sql('baby_names', conn, if_exists='append', index=False)
+conn.commit()
+
+# SQL query: names that appear in every distinct year
+query = """
+SELECT
+    first_name,
+    SUM(num) AS total_num
+FROM
+    baby_names
+GROUP BY
+    first_name
+HAVING
+    COUNT(DISTINCT year) = (SELECT COUNT(DISTINCT year) FROM baby_names)
+ORDER BY
+    total_num DESC;
+"""
+
+result = pd.read_sql_query(query, conn)
+
+# Persist the answer for grading
+result.to_csv('result.csv', index=False)
+
+# Optional sanity check
+print(result.head(), f"\nTotal qualifying names: {len(result)}")
+```  
+10. Run the cell by pressing Shift+Enter; a short progress message from pandas should appear.  
+11. Look at the notebook’s file explorer pane: a timestamp next to “result.csv” should update. Double-click “result.csv” to open it and confirm that:  
+    a. Every name appears in descending order of total_num.  
+    b. Column headers exactly match the predefined format.  
+12. If the result looks correct, return to the notebook and execute a final clean-up cell (optional) to close the database:  
+```python
+conn.close()
+```  
+13. Save the notebook (File ➜ Save and Checkpoint) so your work persists.

@@ -1,0 +1,58 @@
+1. Open a terminal window on your workstation.
+
+2. Type the following command to display the raw contents of setup.json so we know exactly what values we’ll need in the onboarding wizard:  
+```bash
+cat ~/Downloads/setup.json
+```  
+(Adjust the path if setup.json is stored elsewhere.)
+
+3. Run a jq query to pull out the five key items we’ll need (Metabase URL, admin first name, admin last name, admin email, and admin password) so you can copy-paste more easily:  
+```bash
+jq -r '.metabase_url,
+       .admin.first_name,
+       .admin.last_name,
+       .admin.email,
+       .admin.password,
+       .site_name,
+       (.db.engine + "|" + .db.host + "|" + (.db.port|tostring) + "|" + .db.database + "|" + .db.username + "|" + .db.password)' ~/Downloads/setup.json
+```  
+Note that the last line concatenates the DB connection details with “|” separators—we’ll split those when we reach the database step.
+
+4. Copy the first line of the jq output (the Metabase URL). Switch to your browser (Chrome or Firefox).
+
+5. Paste the URL into the address bar, press Enter, and wait for the Metabase setup screen (“Welcome to Metabase”) to load.
+
+6. Click the “Let’s get started” button.
+
+7. In the “Tell us about you” page, fill the form using the admin values from setup.json:  
+   • First name: paste the value you retrieved in step 3 for admin.first_name  
+   • Last name: paste admin.last_name  
+   • Email address: paste admin.email  
+   • Password: paste admin.password  
+   • Confirm Password: paste admin.password again  
+
+8. Click the blue “Next” button at the bottom right.
+
+9. On the “Name your company or team” page, type the site_name value from setup.json (for example, “Sales Insights”).
+
+10. Click “Next”.
+
+11. On the “Add your data” page, choose your database type from the dropdown. Use the .db.engine value from setup.json, e.g. select “PostgreSQL” if the engine string is postgres.
+
+12. Split the pipe-delimited string we printed earlier in step 3 (the final jq line) into separate fields. Fill the form as follows:  
+   • Display name: type the .db.name value (e.g. prod_db)  
+   • Host: .db.host (e.g. localhost)  
+   • Port: .db.port (e.g. 5432)  
+   • Database name: .db.database (e.g. sales)  
+   • Database username: .db.username (e.g. metabase)  
+   • Database password: .db.password (e.g. dbpass)  
+
+13. Scroll down, leave SSL options at defaults unless your environment requires otherwise, then click “Next”.
+
+14. If Metabase asks about sending anonymous usage data, choose “No thanks” (or “Yes” if your organization prefers). Click “Next”.
+
+15. Metabase shows a green confirmation banner: “Setup complete”. Click “Take me to Metabase”.
+
+16. Verify you are logged in as the new admin by looking at the top-right corner: you should see the initials of the first and last name you entered (e.g. “JD”).
+
+17. Click the initials, choose “Account Settings”, and confirm the email matches admin.email from setup.json. This verifies the login setup succeeded.

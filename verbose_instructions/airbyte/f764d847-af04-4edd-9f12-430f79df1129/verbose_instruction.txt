@@ -1,0 +1,9 @@
+1) Locate the existing connection row in the Airbyte UI main panel and Click the entire row (anywhere except the three-dot menu) so that we enter its detailed view.  
+2) Click the blue “Job History” tab in the horizontal menu just beneath the connection name; this opens the chronological list of past sync jobs.  
+3) Wait until the most recent job shows the green “Sync Succeeded” badge, then Click the vertical three dots ⋮ on the far-right edge of that same row.  
+4) Choose “Download logs” from the context menu; the browser immediately starts downloading a file named something like `logs-2024-05-07T14_22_31Z.txt` (we will rename it later).  
+5) Switch to the operating-system file manager by Clicking the “Files” icon in the left-hand dock.  
+6) Double-click the “Downloads” folder in the sidebar so we can see the newly downloaded log file (it should appear at the top of the list).  
+7) Right-click that file, select “Rename…”, type exactly `airbyte_log.txt`, and press Enter to save the new name.  
+8) Right-click `airbyte_log.txt` again, choose “Move to…”, then in the location dialog Click “Desktop” in the left pane.  
+9) Click the green “Select” button (or “Move” depending on OS wording) in the upper-right corner of the dialog; the file disappears from Downloads and now shows up on the Desktop, confirming the move.

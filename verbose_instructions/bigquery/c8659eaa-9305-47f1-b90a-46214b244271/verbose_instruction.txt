@@ -1,0 +1,55 @@
+1. Open VSCode by clicking its icon in the Dock (or Alt-Tab if it is already running) so we can inspect the existing project files.  
+2. Click file name “query.py” in the Explorer panel on the left; we notice the script is only partially written and still missing the actual BigQuery call.  
+3. Switch to Google Chrome (Cmd-Tab or Alt-Tab) where the BigQuery web UI is open; the left Explorer pane lists public datasets.  
+4. Click the small triangle to the left of the dataset entry bigquery-public-data → austin_bikeshare to expand its tables.  
+5. Click the table name “bikeshare_stations”; the right-hand panel now shows its schema. We confirm the columns name, footprint_length, and footprint_width appear and are type FLOAT/NUMERIC—exactly what we need.  
+6. Click the “PREVIEW” tab in the same panel; we quickly verify that footprint_length and footprint_width contain numeric values we can multiply. (Note: we will use this later for area calculation.)  
+7. Switch back to VSCode.  
+8. Highlight any placeholder code in query.py, press Delete, and type (or paste) the complete runnable code below:  
+```python
+# query.py
+import os
+import pandas as pd
+from pathlib import Path
+from google.cloud import bigquery
+
+def query_data() -> None:
+    # Point to your service-account key; adjust the filename if needed
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "credential.json"
+
+    client = bigquery.Client()
+
+    # SQL: compute floor area then sort descending
+    query = """
+        SELECT
+          name,
+          (footprint_length * footprint_width) AS area
+        FROM
+          `bigquery-public-data.austin_bikeshare.bikeshare_stations`
+        ORDER BY
+          area DESC
+        LIMIT 10
+    """
+    # Run query
+    query_job = client.query(query)
+    results_df = query_job.result().to_dataframe()
+
+    # Ensure the project1 folder exists locally
+    Path("project1").mkdir(exist_ok=True)
+
+    # Save with required headers name, area
+    results_df.to_csv("project1/result.csv", index=False)
+    print("✅ result.csv with columns [name, area] written to project1/")
+
+if __name__ == "__main__":
+    query_data()
+```  
+9. Press Ctrl+S (Cmd+S on macOS) to save query.py.  
+10. Click the built-in Terminal panel in VSCode (or press Ctrl+` to open one) so we can execute the script.  
+11. Type the following command and press Enter:  
+```bash
+python query.py
+```  
+12. Watch the terminal output; when the script prints “✅ result.csv with columns [name, area] written to project1/” we know the query ran successfully.  
+13. Type `ls project1` (or `dir project1` on Windows) in the same terminal; we should see result.csv listed.  
+14. (Optional) Type `cat project1/result.csv` to spot-check that the headers are exactly “name,area” and that 10 rows of stations sorted by the largest area appear underneath.

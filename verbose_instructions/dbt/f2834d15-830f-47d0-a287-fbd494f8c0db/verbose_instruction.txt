@@ -1,0 +1,16 @@
+1. Click the Deploy icon in the left-hand navigation bar so the Deploy panel opens in the main window.  
+2. Click Jobs in the Deploy sidebar to open the list of existing jobs.  
+3. Click the blue Create job button in the upper-right corner, then select Deploy job from the dropdown.  
+4. Type check_source into the Job name field under the Job settings section; press Enter so the value is saved.  
+5. Select the Environment dropdown (directly under Job name) and choose the environment labeled check_source so this job runs against the correct environment.  
+6. Scroll to the Execution settings section, find the checkbox labeled Run source freshness, and click it so a blue checkmark appears. (We leave Build and Run tests unchecked because this job’s only purpose is freshness snapshots.)  
+7. Move to the Triggers section and toggle the switch labeled Run on schedule to On; additional scheduling options become visible.  
+8. Click the Timing dropdown and choose Interval so the job runs at a fixed repeating interval rather than CRON or custom window.  
+9. Click the Run every (UTC) dropdown that appears; from the list, select Every 1 hour.  
+   Note that an hourly interval ensures we capture freshness snapshots at least once inside the 2-hour SLA window for the slowest upstream dataset.  
+10. Confirm that the Schedule preview now shows “Next run in 1 hour” or similar text.  
+11. Click the blue Save button in the top-right corner to create the job.  
+12. Observe that you are redirected to the Jobs list and a new row named check_source is present with Status set to Scheduled.  
+13. Click the triangular Run ▶ button on the check_source row to launch the job immediately for validation.  
+14. Wait for the run details page to load; verify the logs show a block titled dbt source freshness and that it completes with a green checkmark and status Success.  
+15. Navigate back by clicking Jobs in the breadcrumb, and confirm the Last run column for check_source now shows a recent timestamp and a green checkmark, proving the job was created and executes correctly on demand.

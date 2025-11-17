@@ -1,0 +1,41 @@
+1) Switch to the terminal so we can run shell commands.  
+2) Type `cd ~/projects` and press Enter to ensure we create the project in the desired directory.  
+3) Execute `dbt init jaffle_shop` to scaffold a new dbt project named “jaffle_shop”.  
+4) Watch the prompt that appears asking “Which database would you like to use?”. Type `1` and press Enter to select DuckDB (option 1).  
+5) Wait until you see “Successfully created new dbt project” before moving on—this tells us the template files were generated.  
+6) Run `unzip jaffle-shop-data.zip` in the same terminal to extract the CSV seed files. You should now see a new folder called `jaffle-shop-data`.  
+7) Execute `mkdir -p jaffle_shop/seeds` to make sure the project’s seeds directory exists (dbt created it, but this guards against missing folders).  
+8) Run `mv jaffle-shop-data/* jaffle_shop/seeds/` to move the unzipped CSVs into the dbt seeds folder. We place them here so `dbt seed` can detect them automatically.  
+9) Type `vi ~/.dbt/profiles.yml` and press Enter to open the dbt profile in Vim. This file controls connection settings.  
+10) Press `i` to switch Vim into INSERT mode so we can edit the YAML.  
+11) Locate the newly created profile block named `jaffle_shop`. Under both the `dev:` and `prod:` targets, change (or add) the path entry to point to the same DuckDB file:  
+
+```yaml
+jaffle_shop:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: ~/projects/jaffle_shop.duckdb
+      threads: 4
+    prod:
+      type: duckdb
+      path: ~/projects/jaffle_shop.duckdb
+      threads: 4
+```
+
+Note that we set `path` to an absolute path (`~/projects/jaffle_shop.duckdb`) so both environments share the same database file.  
+12) Press `Esc` to exit INSERT mode.  
+13) Type `:wq` and press Enter to save the modified profile and quit Vim.  
+14) Run `cd jaffle_shop` to move into the new project directory.  
+15) Execute `dbt debug` to verify dbt can read `profiles.yml` and connect to `jaffle_shop.duckdb`. Confirm you see “All checks passed!” in the output.  
+16) Run `dbt seed` to load the CSV files located in `seeds/` into the DuckDB database. dbt will output “Finished running 3 seeds” (or similar) when successful.  
+17) Type `duckdb ~/projects/jaffle_shop.duckdb` to open an interactive DuckDB shell and verify the tables exist:  
+
+```sql
+.tables
+select count(*) from raw_customers;  -- replace with actual table names you saw in the seed output
+```
+
+If rows are returned, the seeding is complete.  
+18) Exit the DuckDB shell by typing `.quit`. We now have a working dbt project connected to DuckDB in both dev and prod targets with data successfully seeded.

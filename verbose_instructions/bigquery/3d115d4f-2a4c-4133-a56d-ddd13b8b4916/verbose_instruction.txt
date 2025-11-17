@@ -1,0 +1,46 @@
+1) Navigate to the BigQuery console in your browser (https://console.cloud.google.com/bigquery).  
+2) Click the triangle next to your project name to expand the Project Explorer.  
+3) Click the triangle next to the dataset named my_google_ads so we can see whether the tables already exist. (They should not yet be listed.)  
+4) Click the blue + CREATE TABLE button in the right-hand pane.  
+
+5) Select “Google Cloud Storage” in the Source section’s Location dropdown.  
+6) Type the full GCS URI for the first file:  
+```
+gs://xlang_gcs/google_ads/account_history_data.csv
+```  
+7) Check the “File format” dropdown and choose CSV.  
+8) Tick the checkbox “Auto detect” for schema and input parameters because the CSV has a header row. (BigQuery will infer column names and types.)  
+
+9) In the Destination section, click the Dataset dropdown and choose my_google_ads.  
+10) In the Table name field, type account_history_data (this will create my_google_ads.account_history_data).  
+11) Verify the Table type is set to Native Table.  
+12) Expand the Advanced options:  
+    • Confirm “Header rows to skip” is set to 1.  
+    • Leave “Field delimiter” as , (comma).  
+    • Make sure “Quote” is default ".  
+
+13) Click the blue CREATE TABLE button at the bottom.  
+14) Wait for the green toast message “Load job complete.”  
+15) Click the newly created table account_history_data in the Explorer and select the PREVIEW tab to confirm rows display correctly (we should see column names and sample data).  
+
+16) Click + CREATE TABLE again to load the second file.  
+17) Repeat steps 5 through 8, but this time enter the GCS URI:  
+```
+gs://xlang_gcs/google_ads/account_stats_data.csv
+```  
+18) In step 10, type the table name account_stats_data.  
+19) Keep all other settings identical (Auto detect on, skip 1 header row, CSV).  
+20) Click CREATE TABLE.  
+21) Wait for “Load job complete,” then click my_google_ads.account_stats_data and open the PREVIEW tab to ensure data appears.  
+
+22) Run a quick SQL row-count check to verify both tables loaded:  
+    a) Click the + COMPOSE NEW QUERY button.  
+    b) Paste and run:  
+```sql
+SELECT 'account_history_data' AS table_name, COUNT(1) AS row_cnt FROM `my_google_ads.account_history_data`
+UNION ALL
+SELECT 'account_stats_data', COUNT(1) FROM `my_google_ads.account_stats_data`;
+```  
+    c) Confirm the row counts are non-zero, indicating successful loads.  
+
+23) Celebrate—both CSV files are now loaded as tables in the my_google_ads dataset and ready for analysis.

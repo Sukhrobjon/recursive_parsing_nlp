@@ -1,0 +1,46 @@
+1) Right-click the tab of the existing worksheet “Sheet1”, choose “Insert” → “Worksheet” so Excel adds a new sheet named “Sheet2 (2)”.
+2) Double-click the new tab name, type “Sheet2”, and press ENTER to rename it exactly as requested.
+3) Click cell A1 on Sheet2.
+4) Hold SHIFT and click cell B1 so both A1 and B1 are selected.
+5) Click the “Merge & Center” button on the Home ribbon (Alignment group). The two cells merge and a single wide cursor remains.
+6) Type Summer sales ($) and press ENTER.  
+   Note that the text is now centered across the merged cells; we will add the pivot starting in row 3, leaving row 2 blank for spacing.
+
+7) Click any blank cell (for example A3) to deselect the header we just created.
+8) Navigate to the “Insert” tab on the ribbon and click “PivotTable” (first icon in the Tables group).
+9) In the Create PivotTable dialog, verify “Select a table or range” is chosen.
+10) Click inside the “Table/Range” box, then switch to Sheet1 by clicking its tab.
+11) Press CTRL+A (or CMD+A on Mac) to highlight the entire contiguous data block in Sheet1. The address (e.g., Sheet1!$A$1:$D$5000) appears in the selection box; we will use this range for the pivot.
+12) Ensure “New Worksheet” is unchecked, enable “Existing Worksheet”, then click inside the “Location” box.
+13) Click Sheet2’s tab. Click cell A3 so the location reads Sheet2!$A$3.
+14) Press OK. Excel inserts a blank PivotTable starting at A3 and opens the PivotTable Fields pane on the right.
+
+15) Drag the field that contains Month (e.g., “Order Month” or “Date”) to the “Rows” area.  
+ Note: If the field is a full date, right-click any date inside the pivot, choose “Group…”, select only “Months”, and click OK so we see Jan, Feb, etc. as row labels.
+
+16) Drag the field that contains “Sales Channel” (e.g., “Channel”) to the “Columns” area.
+17) Drag the field that contains revenue values (e.g., “Revenue” or “Sales $”) to the “Values” area.  
+ Excel shows “Sum of Revenue” by default; if it shows “Count”, click the drop-down in the Values area → “Value Field Settings…” → choose “Sum” → OK.
+
+18) Confirm that the PivotTable now lists months down the left side and separate columns for each sales channel with summed revenue figures.
+
+19) Click anywhere inside the PivotTable.
+20) Navigate to the “PivotTable Analyze” tab, click the “PivotChart” button (Tools group).
+21) In the “Insert Chart” window, select “Column” on the left, then choose “Stacked Column” (second icon) in the top-right preview area.
+22) Press OK. Excel adds a stacked column chart, typically floating over the sheet.
+
+23) Drag the chart so its top-left corner aligns roughly with cell A15 (below the pivot) to keep the sheet organized.
+24) Click once on the chart title placeholder, type Revenue of Each Channel ($) and press ENTER.
+
+25) Click anywhere on the chart to reveal the “Chart Design” and “Format” tabs.
+26) Click the green “+” Chart Elements button at the chart’s top-right corner, hover over “Legend” and choose “Bottom”.  
+ Verification: The legend now appears directly under the chart.
+
+27) (Optional formatting) Click the chart border and use the handles to resize it so all months and channels are clearly visible.
+
+28) Click an empty cell to deselect everything. Visually verify:  
+ • Row 1 shows the merged header “Summer sales ($)”.  
+ • Rows 3-? contain the pivot with months as rows and sales channels as columns, values summed.  
+ • A stacked column chart titled “Revenue of Each Channel ($)” appears with legend at the bottom.
+
+29) Press CTRL+S to save the workbook, ensuring all changes are stored.

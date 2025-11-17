@@ -1,0 +1,24 @@
+1) Navigate to the Airbyte UI in your browser and click the “Connections” icon in the left-hand navbar  
+2) Click the row of the connection you want to export so its detail screen opens  
+3) Look at the browser’s address bar and copy the text after `connections/` – this 32-character string is the connectionId (eg: `2dd6c9d9-6c20-4bce-82b2-1c9e2bd3e218`)  
+4) Switch to the terminal window on your workstation  
+5) Type the export command, replacing `<CONNECTION_ID>` with the value you just copied, then press Enter  
+```bash
+curl -X POST http://localhost:8000/api/v1/connections/get \
+     -H "Content-Type: application/json" \
+     -d '{"connectionId":"<CONNECTION_ID>"}' \
+| jq '.' > connection.json
+```  
+   • We use Airbyte’s REST endpoint `POST /api/v1/connections/get` to pull the full JSON config  
+   • `jq '.'` pretty–prints the response, and the final redirection writes everything to `connection.json` in the current folder  
+6) Run a quick check that the file was created correctly  
+```bash
+ls -l connection.json
+head -n 12 connection.json
+```  
+   • The first command confirms file size/date; the second shows the opening lines so you can visually verify the contents  
+7) (Optional) Send the file to your colleague with the tool of your choice, e.g.  
+```bash
+scp connection.json alice@corp.example.com:/home/alice/
+```  
+8) Return to the Airbyte UI and leave the tab open if you still need to work with the connection; otherwise you’re finished – the detailed configuration now lives in `connection.json`

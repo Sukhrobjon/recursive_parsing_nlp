@@ -1,0 +1,31 @@
+1. Click the “VS Code” icon in the left-hand dock to open the editor that already has README.md displayed.  
+2. Scroll the README.md until you locate the connection block; we can see the parameters we need:  
+```yaml
+connection_id: sqlite_conn
+conn_type   : sqlite
+host        : /tmp/sqlite.db
+```
+   (We will enter these exactly in the Airflow UI.)
+
+3. Switch to the browser by clicking “Chromium” in the dock so the Airflow web UI is visible.  
+4. Click the “Admin” menu in the Airflow top bar.  
+5. Select “Connections” from the drop-down list.  
+6. Click the blue “+” button just under the search bar to add a new connection.  
+7. In the “Add Connection” modal do the following:  
+   a. Type `sqlite_conn` into the “Connection Id” field.  
+   b. Choose `SQLite` from the “Conn Type” drop-down.  
+   c. Type `/tmp/sqlite.db` into the “Host” field.  
+   d. Leave the other fields blank and click the “Save” button at the bottom of the modal.  
+
+8. Verify the connection by checking that a new row labeled `sqlite_conn` now appears in the Connections list (this confirms the connection was created).
+
+9. Click the Airflow logo (top-left) to return to the DAGs home page.  
+10. Locate `sql_data_quality` in the list and move its toggle to the right to “Unpause” the DAG (the switch turns green).  
+11. Click the play (triangle) icon in the “Actions” column of the `sql_data_quality` row to open the “Trigger DAG” dialog, then click the blue “Trigger” button.
+
+12. Wait until one of the task boxes in the graph turns red, indicating the failure the question refers to. (If no task fails immediately, refresh the page with the browser reload button until you see a red box.)
+
+13. Click directly on the red task box inside the DAG graph; a right-side panel opens displaying the failed task instance.  
+14. In that right panel, click the “View Log” link (it is the first link just below task instance information).  
+
+15. Observe the log page that opens in a new tab. You can now scroll through or use the browser’s find feature (Ctrl/⌘+F) to locate the exact SQL error that caused the failure.

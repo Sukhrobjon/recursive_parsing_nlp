@@ -1,0 +1,27 @@
+1. Navigate to https://console.cloud.google.com/bigquery so you land on the BigQuery Web UI.  
+2. Locate the left-hand Resources panel and expand your project by clicking the grey triangle ▶ next to it.  
+3. Click the triangle ▶ next to the dataset company_dataset (replace with your actual dataset if different) so the underlying tables are listed.  
+4. Click the table financials to view its schema. Verify that the fields year, revenue, and cost_of_goods_sold (COGS) exist—we will use them in our query.  
+5. Click the + COMPOSE NEW QUERY button at the top of the editor pane to open a blank query tab.  
+6. Write the SQL below to project the Year column and calculate the Gross Profit (Revenue – COGS). The alias Gross_Profit will become the column header in your results:  
+
+```sql
+-- Year + Gross Profit calculation
+SELECT
+  year                                     AS Year,
+  (revenue - cost_of_goods_sold)           AS Gross_Profit
+FROM
+  `your-project.company_dataset.financials`
+ORDER BY
+  year;
+```  
+
+7. Click the blue ► RUN button in the query toolbar to execute the SQL.  
+8. Wait for the Query results pane to appear at the bottom. We see two columns: Year and Gross_Profit.  
+9. Click the SAVE RESULTS button on the upper-right of the Query results pane.  
+10. In the dropdown, choose Google Sheets ➞ NEW SHEET. BigQuery creates a new Google Sheet and automatically opens it in a new browser tab.  
+11. Observe that:  
+    • Column A contains the Year values (copied exactly from the table).  
+    • Column B is titled Gross_Profit and holds the calculated gross profits for each year.  
+12. (Optional) Rename the Google Sheet tab to “Year vs Gross Profit” for clarity by double-clicking the tab name at the bottom and typing the new name.  
+13. Return to the BigQuery tab if you need to adjust the query; simply edit the SQL and repeat steps 7-11.

@@ -1,0 +1,29 @@
+1. Click the menu option “Run ▸ Restart the Kernel and Run All Cells” at the top of the Jupyter notebook so every cell executes from a clean state.  
+2. Click the blue “Restart” button in the confirmation pop-up; the notebook now starts re-running all cells.  
+3. Observe the red traceback that appears: “ModuleNotFoundError: No module named 'nltk'”. This indicates the NLTK library is missing and must be installed.  
+4. Switch to the “Terminal” tab in your browser’s left panel (or click the “+” icon then choose “Terminal” if it is not already open).  
+5. Type the installation command exactly and press Enter:  
+   ```bash
+   pip install nltk
+   ```  
+   Note that a successful install ends with “Successfully installed nltk-x.y.z ...”.  
+6. Switch back to the browser tab that shows the Jupyter notebook (often labelled “notebook.ipynb”).  
+7. Click “Run ▸ Restart the Kernel and Run All Cells” again to rerun from a fresh, NLTK-enabled environment.  
+8. Click “Restart” in the dialog that appears.  
+9. Notice a new error message:  
+   ```
+   LookupError: Resource stopwords not found.
+   ```  
+   NLTK itself is installed, but its “stopwords” corpus still needs to be downloaded.  
+10. Switch to the “Terminal” window once more.  
+11. Execute this one-line Python command to download the corpus to the default NLTK data folder:  
+    ```bash
+    python -c "import nltk; nltk.download('stopwords')"
+    ```  
+    Wait for the downloader to report “Finished downloading collection stopwords”.  
+12. Return to the Jupyter notebook browser tab.  
+13. Click “Run ▸ Restart the Kernel and Run All Cells” a third time so every cell runs with both NLTK and its stopwords corpus available.  
+14. Click “Restart” in the pop-up.  
+15. Verify that all code cells now run without red error tracebacks; you should see the expected outputs (tables, charts, printed results) instead.  
+16. Press Ctrl+S (or Cmd+S on macOS) to save the notebook, ensuring your successful run is stored.  
+17. First, we check the status bar—if it briefly shows “Saving…” then “Last Checkpoint: just now,” the notebook is persisted and the task is complete.

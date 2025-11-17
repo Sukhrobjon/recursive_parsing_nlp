@@ -1,0 +1,51 @@
+1. Click the “+  »  SQL Worksheet” button in the upper-right corner of Snowsight so we have a blank worksheet for our query.  
+2. Type the command below to set the database context to IMDB, then press the blue ► Run button:  
+```sql
+USE DATABASE IMDB;
+```  
+3. Type the next command to switch to the default schema, and run it:  
+```sql
+USE SCHEMA PUBLIC;
+```  
+4. Write the full query that returns the top-20 dramatic movies released in or after 2000, satisfying every rule in requirements.txt. Copy the block exactly and click Run:  
+```sql
+SELECT
+  MOVIE_NAME                       AS "Movie Name",      -- rename for readability
+  RELEASE_YEAR                     AS "Release Year",
+  DURATION                         AS "Duration",
+  RATING                           AS "Rating",
+  NVL(TO_CHAR(META_SCORE), 'NA')   AS "Meta Score",      -- convert NULL to 'NA'
+  TO_NUMBER(REPLACE(VOTES, ',', '')) AS "Votes",         -- strip commas and cast
+  GENRE                            AS "Genre",
+  MOVIES.CAST                      AS "Cast",
+  DIRECTOR                         AS "Director",
+  NVL(TO_CHAR(GROSS), 'NA')        AS "Gross"            -- convert NULL to 'NA'
+FROM
+  MOVIES
+WHERE
+  GENRE LIKE '%Drama%'             -- keep only dramatic genres
+  AND RELEASE_YEAR >= 2000         -- 2000 or later
+ORDER BY
+  TO_NUMBER(REPLACE(VOTES, ',', '')) DESC  -- highest voted first
+LIMIT 20;
+```  
+   Note that we wrap VOTES with REPLACE and TO_NUMBER so Snowflake can sort numerically, otherwise the commas prevent correct ordering.  
+5. Verify the results grid shows exactly 20 rows and that the “Genre” column contains the word “Drama” for each row.  
+6. Hover over the results grid and click the downward-arrow “Download Results” button that appears in the top-right corner of the grid.  
+7. Select “Download as CSV”. Snowsight will automatically place a file named something like `results_2024-06-09T12_34_56Z.csv` in your `~/Downloads` folder (the exact timestamp will differ).  
+8. Switch to your Terminal application so we can rename and move the file.  
+9. Type the command below to list recently downloaded CSV files and press Enter:  
+```bash
+ls -lt ~/Downloads/*.csv | head
+```  
+   We should see the newest file at the top—remember its filename (for example, `results_2024-06-09T12_34_56Z.csv`).  
+10. Run the move + rename command, replacing `{filename}.csv` with the exact name you just observed:  
+```bash
+mv ~/Downloads/{filename}.csv ~/Desktop/top20movies.csv
+```  
+11. Type the next command to confirm the file now lives on the Desktop:  
+```bash
+ls -l ~/Desktop/top20movies.csv
+```  
+   If the file path prints without error, the operation succeeded.  
+12. Double-click `top20movies.csv` on your Desktop to open it—verify it contains 20 rows plus headers, matching the Snowsight result. We’ve now completed the task of exporting the top 20 dramatic movies since 2000 to `top20movies.csv`.

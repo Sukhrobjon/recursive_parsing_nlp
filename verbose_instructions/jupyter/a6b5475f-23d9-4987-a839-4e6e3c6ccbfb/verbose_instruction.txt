@@ -1,0 +1,47 @@
+1. Locate the browser tab that shows the open file name (for example, “notebook.ipynb”) and click anywhere inside the page so JupyterLab/Classic Notebook has focus.  
+2. Click the “Kernel” menu and select “Restart Kernel and Clear All Outputs…”, then press “Restart” in the pop-up. This guarantees we start from a clean session.  
+3. Scroll to the very top cell that contains the import statements.  
+4. Run the top cell by either clicking the grey “Run” triangle in the toolbar or pressing Shift + Enter.  
+5. Observe the output area. If you see “ModuleNotFoundError: No module named 'pandas'” (or any other package), immediately add a new cell below by clicking “+ Code” (or “Insert → Insert Cell Below”).  
+6. Type the installation command in that new cell:  
+```python
+!pip install pandas numpy sqlalchemy ipython-sql
+```  
+7. Run the new cell, wait for the green “finished” message, then return to the original import cell and run it again.  
+8. Verify that the cell now finishes without any red traceback. If additional missing-package errors appear, repeat Steps 5-7, adding the relevant package name to the !pip install line.  
+9. Scroll to the first data-loading cell. It might look like:  
+```python
+df_orders = pd.read_csv('data/orders.csv')
+```  
+10. Run this cell. If a “FileNotFoundError” appears, click the left-hand “Files” panel, expand folders, and locate the real path of the CSV (for example “datasets/orders.csv”).  
+11. Modify the code in the same cell to include the correct relative path:  
+```python
+df_orders = pd.read_csv('datasets/orders.csv')
+```  
+12. Run the cell again and confirm the blue check mark appears (no errors).  
+13. Immediately add a one-line sanity check in a new cell right below:  
+```python
+df_orders.head()
+```  
+14. Run that new cell and visually verify that a table preview renders with the expected columns (OrderID, CustomerID, etc.).  
+15. Repeat Steps 9-14 for every subsequent data-loading cell (e.g., ‘customers.csv’, ‘products.csv’). Each time, confirm with .head() or .shape() that the DataFrame is populated.  
+16. Scroll to the first SQL or pandas query cell, for example:  
+```python
+%%sql
+SELECT COUNT(*) FROM orders;
+```  
+17. Run it. If you see “sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: orders”, go back to the notebook cell where the SQLite connection is created. Confirm the correct database file name, e.g.:  
+```python
+conn = sqlite3.connect('sales.db')
+```  
+18. Open the “Files” panel again, confirm the actual file name (maybe “sales_data.db”), and update the code correspondingly:  
+```python
+conn = sqlite3.connect('sales_data.db')
+```  
+19. Rerun the connection cell, then rerun the %%sql query. Verify that a numeric result appears in the output grid.  
+20. Continue running each cell from top to bottom using Shift + Enter. If any traceback arises, stop and apply the same pattern: read the error message, correct the file path, install the missing package, or fix the SQL reference.  
+21. After the final cell executes successfully, click the “Run” menu and choose “Run All Cells” to ensure the entire notebook now executes cleanly from a fresh kernel without manual intervention.  
+22. Watch the left status bar until the solid circle (busy indicator) turns hollow, indicating execution is complete.  
+23. Scroll through the notebook once to double-check that every cell has a sequential execution number and zero red error blocks.  
+24. Press Ctrl + S (or click the floppy-disk icon) to save the workbook.  
+25. Celebrate—we have the code running smoothly and reproducibly from start to finish!

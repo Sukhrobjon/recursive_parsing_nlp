@@ -1,0 +1,31 @@
+1) Open your web browser and navigate to the Metabase URL shown on-screen (typically http://localhost:3000 if you just started the Docker container).  
+2) Wait until the “Welcome to Metabase” page renders, then click the blue button “Let’s get started”.  
+3) Choose language by clicking the drop-down, select “English”, and click “Next” in the lower-right corner.  
+4) Fill the “User profile” form exactly as listed in setup.json:  
+   • Click the “First name” field and type `John`  
+   • Click the “Last name” field and type `Wilson`  
+   • Click the “Your email” field and type `johnwilson@gmail.com`  
+   • Click the “Company or team name” field and type `Google`  
+   • Click the “Create a password” field and type `Spider2.0`  
+   • Click the “Confirm your password” field and type `Spider2.0` again (Metabase will show a green check mark when the two passwords match).  
+5) Click the “Next” button to move on.  
+6) When asked “How are you planning to use Metabase?”, click any option (e.g., the middle tile “Not sure yet”), then click “Next”.  
+7) In the “Add your data” screen, click the “PostgreSQL” card (it has the elephant logo).  
+8) Complete the PostgreSQL connection form using the values from setup.json:  
+   • Click “Display name” and type `PostgresData`  
+   • Click “Host” and type `localhost`  
+   • Click “Port” and type `5432` (verify no spaces)  
+   • Click “Database name” and type `metabase`  
+   • Click “Database username” and type `user`  
+   • Click “Database password” and type `password`  
+   (Metabase will automatically try to validate the port number; make sure the red error banner disappears before continuing.)  
+9) Scroll to the bottom of the page (or press the Page-Down key) and click the blue “Connect database” button.  
+10) Wait until you see a green success toast “Successfully connected!” at the lower-left corner—this confirms the credentials are correct.  
+11) In the “Help improve Metabase?” screen, switch the toggle off (left) so it shows grey, meaning “Disable usage data collection”, in line with step 9 of the plan.  
+12) Click the “Finish” button.  
+13) On the final splash page, click the link “Take me to Metabase” to reach the main dashboard.  
+14) Verify the setup:  
+   • Observe your name “John Wilson” in the top-right user menu.  
+   • Hover over the navigation sidebar and confirm “PostgresData” appears under the “Browse data” section.  
+   • Click “PostgresData” once; you should see schema names from the `metabase` database, proving the connection works.  
+15) (Optional) Log out by clicking the avatar → “Sign out”, then log back in with `johnwilson@gmail.com` / `Spider2.0` to ensure the credentials were stored successfully.

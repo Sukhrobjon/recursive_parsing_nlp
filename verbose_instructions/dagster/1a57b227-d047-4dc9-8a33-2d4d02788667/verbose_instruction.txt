@@ -1,0 +1,53 @@
+1. Open your terminal application so we can type shell commands.  
+2. Navigate to the folder where you want the scaffolded project to live by typing:  
+   ```bash
+   cd "$PWD"
+   ```  
+   (The $PWD variable already points to the current directory; this confirms we’re in the right place.)  
+3. Verify there is no existing folder named dagster-proj to avoid an overwrite:  
+   ```bash
+   ls -1 | grep dagster-proj || echo "✓ no existing dagster-proj directory"
+   ```  
+   You should see either nothing returned or the ✓ confirmation message.  
+4. Install Dagster’s CLI tools if they are not yet available:  
+   ```bash
+   pip install --upgrade "dagster[cli]"
+   ```  
+   Wait until the terminal shows “Successfully installed dagster …” before moving on.  
+5. Create the scaffolded Dagster project by executing:  
+   ```bash
+   dagster project scaffold -n dagster-proj
+   ```  
+   • When prompted for a description, type something like `A sample Dagster project` and press Enter.  
+   • Accept the default values for other prompts by pressing Enter repeatedly until the command finishes.  
+6. List the contents of the new directory to confirm the scaffold generated correctly:  
+   ```bash
+   tree -L 2 dagster-proj
+   ```  
+   You should see a structure similar to:  
+   ```
+   dagster-proj
+   ├── README.md
+   ├── dagster_proj
+   │   ├── __init__.py
+   │   ├── assets.py
+   │   └── jobs.py
+   ├── pyproject.toml
+   └── workspace.yaml
+   ```  
+7. Change into the project’s directory so future commands act on it:  
+   ```bash
+   cd dagster-proj
+   ```  
+8. Test that the project loads by running Dagster’s CLI project check:  
+   ```bash
+   dagster project inspect
+   ```  
+   Confirm you receive a “Your Dagster project definition loaded successfully” message with no errors.  
+9. Start Dagster locally to ensure the scaffolded project boots without issues:  
+   ```bash
+   dagster dev
+   ```  
+   • Wait until you see “Serving on http://127.0.0.1:3000” in the terminal.  
+   • Open a browser and navigate to that URL; you should see the Dagster UI listing an asset or job coming from dagster-proj.  
+10. Press Ctrl + C in the terminal to stop the dev server, confirming the scaffolded project is ready for further development.

@@ -1,0 +1,12 @@
+1) Expand your project in the left-side Explorer by clicking the triangle next to your GCP project name (e.g., bigquery-project).  
+2) Click the triangle next to the dataset census to reveal its tables.  
+3) Click the table 2012 to open its Table details pane in the right workspace.  
+4) Click the Schema tab (it’s the default, but click it to be sure).  
+5) Click the blue EDIT SCHEMA button in the upper-right corner of the schema pane.  
+6) Scroll to the bottom of the field list and click the + ADD FIELD link.  
+7) Type RANK in the Field name textbox that appears.  
+8) Leave Type set to STRING (default) or choose the datatype you prefer; because the requirement is “empty column,” STRING is acceptable and keeps the column nullable.  
+9) Ensure Mode is set to NULLABLE so the column can stay empty for existing rows.  
+10) Click the blue SAVE button at the bottom of the pane to apply the schema change.  
+11) Wait for the “Schema updated” toast notification in the lower-right, confirming the column has been added successfully.  
+12) Verify the addition: still on the Schema tab, scroll to confirm RANK now appears as the last field with Type STRING and Mode NULLABLE.

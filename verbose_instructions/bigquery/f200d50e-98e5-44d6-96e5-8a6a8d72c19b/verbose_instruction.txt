@@ -1,0 +1,31 @@
+1) Open your web browser and navigate to https://console.cloud.google.com/bigquery so we are in the BigQuery Web UI.  
+2) Verify you are in the correct billing project (shown in the blue bar at the top). If it is not the intended project, click the project-selector drop-down and pick your own project—this is where the result table will live.  
+3) In the Explorer pane on the left, scroll down to the entry called bigquery-public-data and click the small ► triangle to expand it.  
+4) Scroll further, locate the dataset census_bureau_usa, and click its own ► triangle so we can see its tables.  
+5) Click the table name population_by_zip_2010. A new tab opens in the right panel; under the Schema tab you will see two fields: zip_code (STRING) and population (INTEGER). Remember these field names, we will use them in the query.  
+6) Click the blue + Compose Query button (looks like a sheet of paper with a +) in the toolbar above the Explorer pane. A blank query editor tab appears.  
+7) Type or paste the following SQL into the editor exactly:  
+```sql
+-- Top 10 most populated ZIP codes from the 2010 census
+SELECT
+  zip_code,
+  population
+FROM
+  `bigquery-public-data.census_bureau_usa.population_by_zip_2010`
+ORDER BY
+  population DESC
+LIMIT 10;
+```  
+8) Click the ► RUN button (top-center of the query editor) to execute the query.  
+9) Wait a few seconds; the Query results grid appears at the bottom of the tab, showing 10 rows. Quickly eyeball that the first row has the largest population to confirm the ORDER BY worked.  
+10) Click the SAVE RESULTS button that sits directly above the results grid (right side). A drop-down menu opens—choose the option “Save to table”.  
+11) In the “Save result in table” dialog that pops up:  
+    a. Project: leave as your current project.  
+    b. Dataset: open the drop-down and look for census.  
+        • If census does not exist, click CREATE DATASET at the bottom of that same list, type census, leave all defaults, and click CREATE DATASET. Then return to the dialog and select census.  
+    c. Table name: type census_2010.  
+    d. Table type: leave it as Native table.  
+    e. Write preference: choose Overwrite if a table with this name might already exist.  
+12) Click the blue SAVE button in the dialog. A load job starts; watch the Job History panel until it shows a green checkmark.  
+13) In the Explorer pane, expand your project > census dataset, click census_2010, and then click Preview. You should see the same 10 rows (zip_code and population) we just saved—confirming the job succeeded.  
+14) You can now close the query tab or keep it for reference; the result table census.census_2010 is permanently stored in your project.

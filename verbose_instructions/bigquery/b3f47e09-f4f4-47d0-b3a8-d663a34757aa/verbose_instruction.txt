@@ -1,0 +1,28 @@
+1) Navigate to https://console.cloud.google.com/bigquery so the BigQuery Web UI opens in a new browser tab.  
+2) Click the triangle (▸) to the left of the project name bigquery-public-data in the Explorer pane.  
+3) Click the triangle next to the dataset austin_crime to expand its tables.  
+4) Click the table crime so the Schema tab appears in the right-hand panel; verify it contains a clearance_status column—we will filter on this in a moment.  
+5) Click the “+ COMPOSE NEW QUERY” button (white sheet icon) at the top of the main toolbar to open a blank query editor.  
+6) Write the following SQL in the editor:  
+
+```sql
+-- Count solved crime cases that resulted in an arrest
+SELECT
+  COUNT(*) AS solved_with_arrest
+FROM
+  `bigquery-public-data.austin_crime.crime`
+WHERE
+  LOWER(clearance_status) = 'cleared by arrest';
+```
+
+7) Click the blue “▶ RUN” button on the query editor’s toolbar; wait until the green check mark and the “Query results” panel appear.  
+8) Confirm a single row is returned with the field solved_with_arrest showing the total number of cases.  
+9) Click the “SAVE RESULTS” button in the top-right of the “Query results” panel.  
+10) In the drop-down menu choose “Save as table” (may be labeled “Create table”).  
+11) In the Create table dialog that opens:  
+    a. Type my_dataset in the Dataset field (switch project if necessary).  
+    b. Type arrest in the Table name field.  
+    c. Leave Table type as Native table.  
+    d. Ensure Data location is set to US (or your default).  
+12) Click the blue “CREATE TABLE” button at the bottom of the dialog; BigQuery writes the single-row result into my_dataset.arrest.  
+13) In the Explorer pane, expand your project, expand my_dataset, and click the new table arrest to verify it contains one row with the solved_with_arrest value—we can see our answer is now stored for future use.

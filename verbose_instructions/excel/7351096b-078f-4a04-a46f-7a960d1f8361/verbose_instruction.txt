@@ -1,0 +1,21 @@
+1. Click the plus-shaped Add Sheet icon next to the last sheet tab at the bottom; Excel inserts a new worksheet named “Sheet2”.  
+2. Click the Sheet2 tab so the sheet becomes active (the tab text turns white and bold).  
+3. Click cell A1.  
+4. Type Total Revenue and press Enter; Excel moves the cursor to cell A2.  
+5. Click cell B1.  
+6. Type Total Expenses and press Enter; Excel moves the cursor to cell B2.  
+7. Click once on cell A2 (this will hold the revenue sum).  
+8. Click in the Formula Bar directly above the column headers (the white input line).  
+9. Type =SUM( but do not press Enter yet.  
+10. Switch to Sheet1 by clicking its sheet tab.  
+11. Drag-select the entire Revenue data range (for example cells A2:A20; include every numeric revenue value). Excel shows the marquee “marching ants” around the range and the formula now reads =SUM(Sheet1!A2:A20.  
+12. Type ) to close the parentheses, then press Enter; Excel calculates the revenue sum and automatically returns you to the previously active cell—now Sheet1!A? is deselected.  
+13. Switch back to Sheet2 by clicking its tab. Observe the computed Total Revenue value displayed in cell A2.  
+14. Click cell B2 (this will hold the expenses sum).  
+15. Click once in the Formula Bar.  
+16. Type =SUM( and keep the cursor inside the parentheses.  
+17. Switch to Sheet1 again.  
+18. Drag-select the Total Expenses data range (for example cells B2:B20). You will see =SUM(Sheet1!B2:B20 in the bar.  
+19. Type ) and press Enter; Excel records the sum for expenses.  
+20. Return to Sheet2; confirm the value now appears in cell B2.  
+21. Press Ctrl+S to save the workbook so the calculated totals are preserved.

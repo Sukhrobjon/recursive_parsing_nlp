@@ -1,0 +1,33 @@
+1. Click the “New” button in the upper-right corner of Metabase.  
+2. Choose “Question” from the dropdown panel.  
+3. Click “Raw data” ➜ select “Sample Database” ➜ pick the “People” table.  
+4. Click the blue “SQL” button (bottom-left of the editor) so we can write a custom query for all three states at once.  
+5. Type the query below exactly as shown:  
+```sql
+SELECT state,
+       COUNT(*) AS total_people
+FROM people
+WHERE state IN ('Iowa', 'Montana', 'Texas')
+GROUP BY state
+ORDER BY state;
+```  
+6. Click the green “Run” button (triangle icon) to execute the query.  
+   Note that we should now see three rows, one each for Iowa, Montana, and Texas, with their corresponding counts in the total_people column.  
+7. Confirm the results match this pattern (example values shown for illustration only):  
+   • Iowa – 514  
+   • Montana – 493  
+   • Texas – 2,180  
+   We will use the numbers you actually see in the table.  
+8. Hover over the results table and click the cloud-download icon (bottom-right), then choose “.csv” to download the results to /home/user/Downloads as something like results.csv.  
+9. Open your file browser (Nautilus/Files).  
+10. Double-click /home/user/Downloads/results.csv to view it and confirm the three numbers again; keep the window open so you can easily reference them.  
+11. Right-click the file /home/user/people_state.xlsx in /home/user and choose “Open With ➜ LibreOffice Calc” (or Excel if available).  
+12. Locate the three blank cells that correspond to Iowa, Montana, and Texas.  
+13. Click the blank cell next to “Iowa” ➜ type the Iowa total_people value from your query.  
+14. Click the blank cell next to “Montana” ➜ type the Montana total_people value.  
+15. Click the blank cell next to “Texas” ➜ type the Texas total_people value.  
+16. Press Ctrl + S (or click the Save icon) to save the updated people_state.xlsx file.  
+17. Close LibreOffice Calc / Excel.  
+18. Return to Metabase and click the browser back button (or the “< Back” link) to exit the SQL editor if you don’t need the tab anymore.  
+19. Re-open /home/user/people_state.xlsx once more to verify that the three blanks are now filled with the correct numbers.  
+20. Confirm visually that all other cells remain unchanged, then close the spreadsheet.

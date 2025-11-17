@@ -1,0 +1,14 @@
+1. Open your browser and navigate to the BigQuery console at console.cloud.google.com/bigquery  
+2. Look to the left-hand Explorer panel and Click the blue “+ ADD DATA” button.  
+3. In the drop-down, Click “Explore public datasets.”  
+4. A “Public datasets” search window appears on the right. Click into the search bar at the top of this window and Type baseball , then press Enter.  
+5. In the results list, find the entry labelled “bigquery-public-data.baseball – MLB 2016 Pitch-by-Pitch” (Google sometimes shortens the name to just “Baseball”).  
+6. Hover over that dataset row and Click the push-pin icon (labelled “Pin” when you hover). This action adds the dataset to your Explorer tree so you can reach it quickly later.  
+7. Still in the results window, Click “VIEW DATASET” for bigquery-public-data.baseball so the Details pane opens in the main area. We can see the description, last modified date, and number of tables.  
+8. Close the Public-datasets search window (Click the “X” in its upper-right corner). You should now see a new project node called bigquery-public-data in your Explorer panel with the baseball dataset nested under it.  
+9. Click the small grey triangle to the left of bigquery-public-data to expand the project, then Click the triangle next to baseball to reveal its tables.  
+10. Click the baseball dataset name itself (not a table) to view its Dataset Info tab. Here you can read the longer description explaining that it contains pitch-by-pitch data for the 2016 MLB season. Notice the “SHARED BY” section confirming it is publicly hosted by Google.  
+11. For a quick schema look, Click the table games_wide (or any table you prefer, e.g., games_post_wide). The right-hand panel now shows two tabs: Schema and Details.  
+12. Click “Preview” at the top of the schema panel; BigQuery displays the first 100 rows so we can verify the data columns such as game_id, home_team, away_team, etc.—useful later if we want to run queries.  
+13. Repeat Step 11 for any other table (for example, seasons_summary) to learn what additional information is available.  
+14. You have now successfully added the MLB 2016 Pitch-by-Pitch dataset to the Explorer and inspected its tables and metadata.

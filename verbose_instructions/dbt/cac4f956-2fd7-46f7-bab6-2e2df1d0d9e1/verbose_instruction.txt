@@ -1,0 +1,27 @@
+1. Open your web browser and navigate to https://cloud.getdbt.com; log in with your dbt Cloud credentials if prompted.  
+2. Click the blue “Projects” button in the left-hand vertical navigation bar so we can see the full list of projects.  
+3. Locate the row that contains the current project name “DesktopEnv”; click directly on that row to open its Project Dashboard.  
+4. Click the grey gear-shaped “Settings” icon (top-right corner of the dashboard) to enter the Project Settings pane.  
+5. Click the first tab labelled “General” (it should be highlighted by default).  
+6. Click inside the text box labelled “Project Name”; delete the text DesktopEnv and type OSWorld.  
+7. Click the blue “Save” button in the lower-right corner of the pane; wait for the green toast message that reads “Project updated successfully” to confirm the UI change.  
+8. Switch to your terminal (e.g., iTerm or Windows Terminal) so we can update the repo copy of dbt_project.yml.  
+9. Type `cd path/to/desktopenv` and press Enter to move into the local git repository for this project.  
+10. Execute `code dbt_project.yml` (VS Code) or `vim dbt_project.yml`—use whichever editor you prefer—to open the project configuration file.  
+11. Find the line that currently reads:  
+    ```yaml
+    name: "DesktopEnv"
+    ```  
+    Replace it with:  
+    ```yaml
+    name: "OSWorld"
+    ```  
+12. Save the file and exit the editor (`:wq` in Vim or Ctrl+S in VS Code).  
+13. Run `git status` to confirm dbt_project.yml is the only modified file; you should see it listed in the “Changes not staged for commit” section.  
+14. Execute `git add dbt_project.yml` to stage the rename change.  
+15. Run `git commit -m "chore: rename project to OSWorld to match dbt Cloud"` to commit the update.  
+16. Execute `git push origin main` (or your default branch) so the change is sent to the remote repository connected to dbt Cloud.  
+17. Return to dbt Cloud in your browser; click the “Runs” tab in the left sidebar and then click the green “+ New Run” button to trigger a quick job.  
+18. Observe the Run page: the breadcrumb near the top-left should now show “OSWorld” instead of “DesktopEnv,” confirming the rename is fully synchronized.  
+19. Click the blue “Run” button; wait until the job completes with a “Success” status to ensure the rename did not break any paths.  
+20. Celebrate—both the dbt Cloud GUI and the underlying codebase now reflect the new project name “OSWorld.”

@@ -1,0 +1,50 @@
+1. Switch to the VS Code window that is already open in the remote workspace.  
+2. Click the tab named README.md to bring it to the front and skim the “Modeling Assets” section so we know the input and output asset names we must keep (`transformed_training_data`, `transformed_test_data`, `latest_story_data`).  
+3. Click the neighbouring tab assets.py.  
+4. Scroll until you see the existing placeholder asset definition that begins with `@asset` and is named `linear_regression_model`.  
+5. Highlight everything from the decorator line `@asset` through the end of that function and press Delete.  
+6. Type (or paste) the replacement implementation exactly:  
+```python
+# Keep the imports that are already at the top of the file
+from sklearn.linear_model import LinearRegression
+
+# Keep all code appearing above this snippet
+
+@asset
+def linear_regression_model(transformed_training_data):
+    transformed_X_train, transformed_y_train = transformed_training_data
+    # Train Linear Regression model
+    model = LinearRegression()
+    model.fit(transformed_X_train, transformed_y_train)
+    return model
+```  
+7. Locate the next two assets named `model_test_set_score` and `latest_story_comment_predictions`.  
+8. Select both entire functions (including their decorators) and delete them.  
+9. Insert the new code block for those two assets:  
+```python
+# Keep the code above
+
+@asset
+def model_test_set_score(transformed_test_data, linear_regression_model):
+    transformed_X_test, transformed_y_test = transformed_test_data
+    # Use the test set data to get a score of the Linear Regression model
+    score = linear_regression_model.score(transformed_X_test, transformed_y_test)
+    return score
+
+
+@asset
+def latest_story_comment_predictions(linear_regression_model, latest_story_data):
+    # Predict the target for the most recent story comments
+    return linear_regression_model.predict(latest_story_data)
+```  
+10. Press Ctrl+S (or Cmd+S on macOS) to save assets.py.  A blue dot on the tab should disappear, confirming the file is saved.  
+11. Switch to the Chromium browser window displaying the Dagster web UI.  
+12. Click the Assets tab in the top navigation bar to open the asset catalog.  
+13. Click the blue Reload definitions button (upper-right of the central pane).  Wait until the toast notification reads “Definitions reloaded successfully”.  
+14. Click the link View global asset lineage directly under the Assets header.  Confirm that the new assets linear_regression_model, model_test_set_score, and latest_story_comment_predictions appear and that arrows flow correctly from their upstream dependencies.  
+15. Click the green Materialize all button in the top-right corner of the page.  
+16. In the “Launchpad” dialog that pops up, leave the default config and click Launch run.  
+17. Observe the run log.  Wait until every step rectangle in the timeline turns green.  This indicates the model trained, scored, and produced predictions successfully.  
+18. Click the step named model_test_set_score in the timeline; verify the numeric R² (or other score) appears in the right-hand panel under “Outputs”.  
+19. Click the step named latest_story_comment_predictions; scroll the right-hand panel and confirm an array of numeric predictions is displayed.  
+20. Celebrate—your Linear Regression pipeline is now fully operational and materialized in Dagster!

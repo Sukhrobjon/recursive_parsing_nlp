@@ -1,0 +1,97 @@
+1) Double-click the file name diabetes.ipynb in the left File Browser so the notebook opens in the main work-area.  
+2) Scroll slowly until you reach the first empty code cell that has a gray placeholder comment like # YOUR CODE HERE.  
+3) Click once inside that cell, then paste this import block:  
+```python
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier, plot_tree
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
+import matplotlib.pyplot as plt
+import seaborn as sns
+```  
+4) Hit Shift + Enter to execute; verify no red error trace appears in the cell output area.  
+5) Scroll to the next existing cell labelled “Load dataset”. Click inside and replace the pass statement with:  
+```python
+df = pd.read_csv('diabetes.csv')
+print("Shape:", df.shape)
+df.head()
+```  
+6) Run the cell (Shift + Enter). Confirm a 768 × 9 or similar DataFrame preview appears.  
+7) Move to the “Check missing values” cell. Delete the placeholder and add:  
+```python
+missing = df.isna().sum()
+print(missing)
+```  
+8) Execute the cell. If all zeros display, continue; otherwise note which columns need imputation.  
+9) Scroll to the “Basic statistics” cell. Insert:  
+```python
+df.describe()
+```  
+10) Run the cell and observe min values of 0 for BloodPressure, SkinThickness, Insulin, BMI. We will treat zeros in these medical columns as missing.  
+11) Go to the “Replace zeros” preprocessing cell. Add:  
+```python
+cols_with_zero = ['Glucose','BloodPressure','SkinThickness','Insulin','BMI']
+df[cols_with_zero] = df[cols_with_zero].replace(0, np.nan)
+df[cols_with_zero] = df[cols_with_zero].fillna(df[cols_with_zero].median())
+df.isna().sum()
+```  
+12) Execute and verify the output is all zeros again.  
+13) Find the “Train-test split” cell. Insert:  
+```python
+X = df.drop('Outcome', axis=1)
+y = df['Outcome']
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y)
+print("Training set size:", X_train.shape)
+print("Test set size:", X_test.shape)
+```  
+14) Run the cell and check that 614 training rows and 154 test rows are shown.  
+15) Locate the “Build Decision Tree” cell. Add:  
+```python
+dt_clf = DecisionTreeClassifier(
+    criterion='gini',
+    max_depth=None,
+    min_samples_split=2,
+    random_state=42)
+dt_clf.fit(X_train, y_train)
+```  
+16) Execute; no output is fine.  
+17) Navigate to the “Evaluate model” cell, replace placeholder with:  
+```python
+y_pred = dt_clf.predict(X_test)
+acc = accuracy_score(y_test, y_pred)
+print("Accuracy:", round(acc, 4))
+print("\nConfusion Matrix")
+display(pd.DataFrame(confusion_matrix(y_test, y_pred),
+                     index=['Actual 0','Actual 1'],
+                     columns=['Pred 0','Pred 1']))
+print("\nClassification Report")
+print(classification_report(y_test, y_pred))
+```  
+18) Run the cell; verify metrics print without errors and accuracy is around 0.70–0.80.  
+19) Scroll to the “Plot Tree” visualization cell. Paste:  
+```python
+plt.figure(figsize=(18,10))
+plot_tree(
+    dt_clf,
+    feature_names=X.columns,
+    class_names=['No Diabetes','Diabetes'],
+    filled=True,
+    impurity=False,
+    rounded=True,
+    fontsize=10)
+plt.show()
+```  
+20) Execute; a colorful dendrogram should render below.  
+21) Find the “Feature Importance” cell and insert:  
+```python
+imp = pd.Series(dt_clf.feature_importances_, index=X.columns)
+imp.sort_values(ascending=False).plot(kind='bar', title='Decision Tree Feature Importance', figsize=(8,4))
+plt.ylabel('Importance Score')
+plt.show()
+```  
+22) Run; the bar plot should display.  
+23) Click the Kernel menu then choose Restart & Run All.  
+24) In the pop-up dialog click Restart to confirm. Watch all cells execute top-to-bottom; ensure no red errors appear.  
+25) After completion, press Ctrl + S (or File > Save Notebook) to save diabetes.ipynb with the trained Decision Tree model and outputs intact.

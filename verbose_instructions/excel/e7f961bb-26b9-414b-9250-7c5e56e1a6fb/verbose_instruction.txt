@@ -1,0 +1,8 @@
+1. Locate the header cell that contains the word “Revenue” (for example, cell D1 shows “Revenue”).  
+2. Click the column letter directly above that header (e.g., click the grey rectangle marked “D”) so the entire “Revenue” column is highlighted.  
+3. Press Ctrl + C to copy the column, including its header.  A dashed moving border should now surround the entire column—this confirms it’s on the clipboard.  
+4. Move your cursor to the bottom sheet-navigation bar and click the small “+” (New sheet) icon just to the left of “Sheet1”.  A fresh tab named “Sheet2” (or “SheetN” if more sheets exist) opens in the workbook.  
+5. Click cell A1 in this new sheet so it becomes the active cell.  
+6. Press Ctrl + V to paste.  The “Revenue” header should appear in A1 and the entire column’s data should fill downward below it.  
+7. Verify the paste worked correctly by confirming the header reads “Revenue” in A1 and the row counts match the original column length.  
+8. Press Ctrl + S to save the workbook, ensuring the new sheet with the copied “Revenue” column is stored.

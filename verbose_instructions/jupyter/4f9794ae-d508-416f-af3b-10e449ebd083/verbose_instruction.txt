@@ -1,0 +1,9 @@
+1) Locate the tab or browser window that already displays your target notebook (filename should end in “.ipynb”).  
+2) Confirm the notebook is in “Edit” mode—verify that the grey toolbar strip showing “File”, “Edit”, “View”, “Run”, “Kernel”, etc. is visible.  
+3) Click the “Run” menu item in that toolbar (it is between “View” and “Kernel”).  
+4) Select “Run All Cells” from the drop-down list that appears; the option label may read exactly “Run All Cells” or “Run All”.  
+5) Observe the execution status: each cell’s bracket indicator on the left will switch from “[ ]” to “[*]” while running and finally to a number like “[12]” when finished.  
+6) Wait until no brackets show “[*]” and the status line at the top right returns to “Kernel Idle”; this confirms every cell has completed.  
+7) Scroll down the notebook to quickly scan outputs—look for expected tables, plots, or printed text to ensure results rendered correctly.  
+8) If any cell shows red error text, click that cell once, then press “Shift + Enter” to re-run just that cell and read the traceback for details.  
+9) Optionally save the successful run: press “Ctrl + S” (or click “File” → “Save and Checkpoint”) so the executed outputs persist.

@@ -1,0 +1,12 @@
+1) Open Chrome (or any browser you prefer)  
+2) Navigate to lookerstudio.google.com and sign in with the Google account that owns the report  
+3) Click the “Reports” icon (the stacked-square icon on the left sidebar)  
+4) Type Statistics in the search bar at the top of the Reports list and press Enter  
+5) Click the Statistics report name to open it in Edit mode  
+6) Click the blue Share button in the upper-right corner and choose Embed report… from the dropdown  
+7) Disable three visual elements in the Embed settings panel that appears on the right:  
+   • Toggle off Show report navigation (this hides the top navigation)  
+   • Toggle off Show report title (this hides the title)  
+   • Toggle off Include filter bar (this removes the filter bar)  
+8) Click the blue COPY button under “Embed URL” (we’ll use the link in the next step)  
+9) Open a new browser tab, paste the copied URL into the address bar, and press Enter; the Statistics dashboard now renders with no top navigation, no title, and no filter bar—exactly as requested

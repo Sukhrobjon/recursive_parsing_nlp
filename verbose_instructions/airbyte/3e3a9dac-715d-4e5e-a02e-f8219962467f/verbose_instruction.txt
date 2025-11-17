@@ -1,0 +1,13 @@
+1) Switch to the Airbyte UI in your browser  
+2) Click the “Connections” item in the left-hand navigation panel  
+3) Click the blue “New connection” button in the main pane  
+4) In the “Source” dropdown, click once and select the existing source you already configured (you should see its name in the list)  
+5) In the “Destination” dropdown, click once and select the existing destination that is already set up  
+6) Click the blue “Set up connection” button at the bottom right of the modal  
+7) Leave “Replication frequency” on the default value (“Every 24 hours”) — do not change anything  
+8) Leave “Destination namespace” on the default option (“Mirror source structure”)  
+9) Scroll down past the stream table; all stream-level fields (Sync Mode, Primary Key, Cursor Field) are already populated with defaults—do not modify them  
+10) Click the blue “Set up connection” button at the very bottom of the page  
+11) Wait until Airbyte redirects you to the new connection’s detail page and shows a green “Active” status badge (this confirms the connection was created successfully)  
+12) Click the “Sync now” button once to trigger an immediate sync and verify the pipeline works with the default settings  
+13) Observe the run in the log window; a green “Succeeded” message confirms the connection is functioning correctly

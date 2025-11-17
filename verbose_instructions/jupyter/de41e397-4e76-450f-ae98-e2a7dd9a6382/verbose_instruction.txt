@@ -1,0 +1,27 @@
+1. Open your web browser and navigate to https://console.cloud.google.com/bigquery so we are working inside the BigQuery Web UI.  
+2. In the left-hand Resources panel, locate your project name (for example, my-gcp-project). Click the ▸ triangle to expand it.  
+3. Scroll down the same Resources panel until you find the dataset named training.sakila (this public sample dataset contains the classic “Sakila” movie-rental schema). Click the ▸ triangle to the left of training.sakila to reveal its tables.  
+4. Click the table training.sakila.category. The main pane shows its schema; note the columns category_id and name – we will need those shortly.  
+5. Click the table training.sakila.film_category next. The schema preview shows film_id and category_id columns, confirming this is the bridge table that links films to categories.  
+6. Click the blue + COMPOSE NEW QUERY button at the top of the BigQuery console to open a new blank query tab.  
+7. Type (or paste) the following SQL into the editor pane. This query joins category with film_category, groups by category, counts the films, and sorts the result from most films to fewest:
+
+```sql
+SELECT
+  c.name  AS category_name,
+  COUNT(fc.film_id) AS number_of_films
+FROM
+  `training.sakila.category`      AS c
+JOIN
+  `training.sakila.film_category` AS fc
+ON
+  c.category_id = fc.category_id
+GROUP BY
+  category_name
+ORDER BY
+  number_of_films DESC;
+```
+
+8. Verify the query looks correct, then click the large blue ▸ RUN button in the toolbar of the query editor.  
+9. Wait a few seconds; the Query results panel will appear below the editor. We can see each category alongside the count of films, already sorted in descending order.  
+10. (Optional) If you want to save this output locally, click the SAVE RESULTS button that appears on the right above the results grid, choose “CSV (local file),” and follow your browser’s prompt to download. Rename the downloaded file if needed.

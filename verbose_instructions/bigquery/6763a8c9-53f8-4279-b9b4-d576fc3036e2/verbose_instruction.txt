@@ -1,0 +1,22 @@
+1) Open your web browser and Navigate to your BigQuery console at https://console.cloud.google.com/bigquery so the Explorer panel appears on the left  
+2) Click the triangle (Toggle node) in front of your project name (for example, my-gcp-project) in the Explorer so that all datasets are listed  
+3) Click the triangle in front of the census dataset to expand the list of its tables  
+4) Click the table named 2012 so the Table Details page loads and the Schema tab becomes active by default  
+5) Click the blue EDIT SCHEMA button in the upper-right corner of the Schema panel to enter editing mode  
+6) Click the blue + ADD FIELD button (labelled + in some UIs under “New fields”) to append a blank row to the schema editor  
+7) Type RANK into the Field name cell of the new row  
+8) Click the drop-down in the Type column of that same row, choose STRING, then leave Mode set to NULLABLE (this keeps the column empty and optional)  
+9) Scroll to the bottom of the Schema editor and Click the blue SAVE button; wait for the green toast notification “Schema updated” to appear in the lower-right corner  
+10) Verify the change: in the Schema tab confirm a new row now lists Field name RANK, Type STRING, Mode NULLABLE; optionally run the query below to double-check in SQL  
+
+```sql
+SELECT
+  column_name
+FROM
+  `my-gcp-project.census.INFORMATION_SCHEMA.COLUMNS`
+WHERE
+  table_name = '2012'
+  AND column_name = 'RANK';
+```
+
+11) Observe the query returns exactly one row with column_name = RANK—this confirms the empty column was added successfully

@@ -1,0 +1,20 @@
+1. Click the “VS Code” icon in the left dock to bring the editor to the foreground.  
+2. Locate and click the tab titled model_query.sql; press Ctrl + A followed by Ctrl + C to copy the entire SQL statement to the clipboard (we will paste this in a minute).  
+3. Click the “Chromium” icon in the dock to switch to the web-UI where the data-modeling tool is open.  
+4. Click the blue New button in the upper-right corner of the page.  
+5. Select Model from the dropdown list that appears.  
+6. In the modal that opens, click the card labeled Use a native query (it usually has a SQL icon).  
+7. Click inside the large SQL input panel, press Ctrl + V to paste the SQL you copied from model_query.sql.  
+8. Press the Run query button on the right side of the editor.  
+9. Wait until the Results grid appears below; verify that at least one row is returned (this confirms the query runs successfully).  
+10. Click the Save button in the top-right corner of the modal.  
+11. In the Name field, type model1 exactly, then click the blue Save button at the bottom of the form.  
+12. After the modal closes, move your mouse to the bottom-right of the results grid and click the Download full results button (a down-arrow icon).  
+13. In the format selector that appears, click .json.  
+14. Observe the browser download banner; ensure a file ending in .json starts downloading.  
+15. Click the “Files” icon in the left dock to open the file manager; in the sidebar click Downloads.  
+16. Right-click the newly downloaded JSON file (its name starts with model1 or results) and choose Rename.  
+17. Type model.json and press Enter.  
+18. Press Ctrl + C to copy the renamed model.json file, then in the sidebar click Desktop.  
+19. Press Ctrl + V to paste model.json onto the Desktop.  
+20. Double-click model.json on the Desktop to open it—verify that it contains the expected JSON structure (this confirms the file copied successfully).

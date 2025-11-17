@@ -1,0 +1,124 @@
+1) Double-click the file named “schema.txt” on the Desktop to open it and review the column list we will need for the Snowflake table; keep the window open so we can copy column definitions in a moment.
+
+2) Click the Chrome/Safari browser icon and log in to your Snowflake account, then click the blue “Snowsight” button in the upper-right corner to enter the modern web UI.
+
+3) Click the “+” icon next to Worksheets in the left sidebar and choose “Python Worksheet” so we can run Snowpark code.
+
+4) In the new unnamed worksheet, click the “Environment” drop-down (top-right of the worksheet panel) and choose Python 3.9 (Snowpark) to make sure Snowflake executes Python rather than SQL.
+
+5) Replace the default comments in cell [1] with the following Python code, copying the table schema from schema.txt (assume three example columns; overwrite with the real list you saw in step 1):
+
+```python
+# code cell 1  – create DB, schema, stage, file format, and table, then load data
+from snowflake.snowpark import Session
+from snowflake.snowpark.types import StructType,StructField,IntegerType,StringType
+
+# 1. create a Snowpark session using the current worksheet context
+session = Session.builder.getOrCreate()
+
+# 2. choose names for DB and schema
+db_name = "COUNTRY_DB"
+schema_name = "PUBLIC_COUNTRY"
+
+session.sql(f"CREATE DATABASE IF NOT EXISTS {db_name}").collect()
+session.sql(f"USE DATABASE {db_name}").collect()
+session.sql(f"CREATE SCHEMA IF NOT EXISTS {schema_name}").collect()
+session.sql(f"USE SCHEMA {schema_name}").collect()
+
+# 3. create stage that points to the provided S3 bucket
+session.sql("""
+CREATE OR REPLACE STAGE country_stage
+URL='s3://sfquickstarts/tastybytes/raw_pos/country/'
+FILE_FORMAT=(FORMAT_NAME='country_csv_fmt')
+""").collect()
+
+# 4. create a CSV file-format object (no header)
+session.sql("""
+CREATE OR REPLACE FILE FORMAT country_csv_fmt
+TYPE=CSV
+FIELD_DELIMITER=','
+SKIP_HEADER=0
+""").collect()
+
+# 5. create table using schema from schema.txt
+country_schema = StructType([
+    StructField("country_id", IntegerType()),
+    StructField("country_name", StringType()),
+    StructField("country_code", StringType())
+])
+session.table("INFORMATION_SCHEMA.TABLES")  # dummy line to keep cell valid
+
+session.sql("""
+CREATE OR REPLACE TABLE country (
+    country_id   INTEGER,
+    country_name STRING,
+    country_code STRING
+)
+""").collect()
+
+# 6. load data from the stage
+session.sql("""
+COPY INTO country
+FROM @country_stage
+FILE_FORMAT = (FORMAT_NAME='country_csv_fmt')
+ON_ERROR='ABORT_STATEMENT'
+""").collect()
+```
+
+6) Click the blue “Run” ▶ button at the top of the worksheet to execute cell 1; confirm you see `SUCCESS` in the Results pane for each DDL/COPY command.
+
+7) Insert a new code cell below (click “+ Code” in the toolbar) and paste the query that filters for France:
+
+```python
+# code cell 2 – query rows where country_name = 'France'
+df_france = session.table("country").filter("country_name = 'France'")
+df_france.show()
+```
+
+8) Press Shift + Enter to run the second cell; verify in the Results grid that only French rows appear.
+
+9) Still in the same cell, append code to save the result to a Snowflake stage as a CSV so we can download it:
+
+```python
+# write to a temp stage
+output_stage = "france_result_stage"
+session.sql(f"CREATE OR REPLACE STAGE {output_stage}").collect()
+df_france.write.mode("overwrite").option("header","true").csv(f"@{output_stage}")
+```
+Then run the cell again.
+
+10) In the bottom Results panel, copy the generated file name (e.g., `france_result_stage/part_0_0_0.csv.gz`). We will download it next.
+
+11) Click the “Data” icon in the left sidebar, expand “Stages”, expand “COUNTRY_DB.PUBLIC_COUNTRY”, and click on the stage `FRANCE_RESULT_STAGE`. On the right you should see the compressed CSV file we just created.
+
+12) Hover over the file row and click the down-arrow icon labeled “Download”; save the file to your Downloads folder.
+
+13) Open the terminal (macOS Terminal, Windows PowerShell, or Linux bash). Type:
+
+```
+cd ~/Downloads
+gunzip part_0_0_0.csv.gz      # replace with the exact name you downloaded
+mv part_0_0_0.csv result.csv
+```
+and press Enter to decompress and rename the result file to result.csv.
+
+14) Switch back to the browser, click the worksheet name (top left) and rename it to “country_python_worksheet” so it is saved for future reference.
+
+15) Click “File” > “Download” in the worksheet menu, choose “Python File (.py)”, and save the file as code.py directly to your Desktop.
+
+16) Open the Desktop in Finder / Explorer and confirm you see both schema.txt and code.py.
+
+17) Double-click code.py and skim it to ensure it contains the same code you ran in the worksheet (steps 5–9). Close the editor.
+
+18) Return to the Snowflake UI, click “Activity” → “Load History”, and verify the recent COPY command shows Status = “Loaded”, indicating the country table is full.
+
+19) Finally, run an ad-hoc SQL check: click “+ Worksheet”, choose “SQL Worksheet”, and execute:
+
+```sql
+SELECT COUNT(*) AS total_rows,
+       SUM(CASE WHEN country_name='France' THEN 1 ELSE 0 END) AS france_rows
+FROM COUNTRY_DB.PUBLIC_COUNTRY.COUNTRY;
+```
+Confirm that `france_rows` equals the number of lines in result.csv.
+
+20) Celebrate: the database, schema, stage, table, load, filter, export, and code migration to Desktop are all complete!

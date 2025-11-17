@@ -1,0 +1,34 @@
+1. Click cell G1 in the Sales sheet.  
+2. Type Revenue and press Enter to create the new header.  
+3. Click cell G2.  
+4. Type the lookup-based revenue formula exactly as shown below, then press Enter:  
+
+```excel
+=E2*VLOOKUP(C2,'Retail Price'!$A$2:$B$23,2,FALSE)*(1-F2)
+```  
+   • E2 = Quantity sold (or Units)  
+   • C2 = Product name used to look up its retail price  
+   • 'Retail Price'!$A$2:$B$23 = lookup table with Product in column A and Price in column B  
+   • F2 = Discount percentage (e.g., 0.15 for 15 %)  
+
+5. Hover over the small square (fill handle) at the bottom-right corner of G2 until the cursor becomes a black plus sign.  
+6. Drag the fill handle down to the last data row (for example G36) to copy the formula for every transaction.  
+7. Press Ctrl + S once to save the updated worksheet.  
+8. Click any single cell inside the data range (A1:G36) so Excel knows what to include in the pivot table.  
+9. Navigate to the Insert tab on the Ribbon and click PivotTable (first button on the left).  
+10. Verify that “Select a table or range” is chosen and the Table/Range box shows $A$1:$G$36.  
+11. Select New Worksheet, then click OK. Excel jumps to the new PivotTable sheet.  
+12. Drag the field Web Site from the PivotTable Fields panel to the Rows area.  
+13. Drag the field Web Site again from the field list into the Values area.  
+14. Click the drop-down in the Values area (it currently reads “Sum of Web Site”), choose Value Field Settings…, select Count, and click OK.  
+15. Drag the field Product (or Item) to the Filters area.  
+16. Click the filter drop-down now visible above the pivot table, check only Boomerang, and click OK.  
+    Note that this filter ensures we count only transactions where boomerangs were sold.  
+17. Double-click the sheet tab name (probably “Sheet1”) created for the pivot, type Sheet2, and press Enter to rename it.  
+18. Click any cell inside the pivot table again to make the PivotTable Analyze tab appear.  
+19. Go to PivotTable Analyze ➜ PivotChart in the Ribbon.  
+20. Choose Clustered Bar under the Bar category and click OK. Excel inserts the chart on Sheet2.  
+21. Click the generic title on the chart, type Sales frequency by website, and press Enter.  
+22. Click once on the legend and press Delete to remove it.  
+23. Press Ctrl + S to save all changes.  
+24. Review Sheet2: we should see a bar chart without a legend and a pivot table showing the count of boomerang transactions per website, confirming success.

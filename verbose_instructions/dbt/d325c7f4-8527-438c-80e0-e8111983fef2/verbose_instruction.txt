@@ -1,0 +1,72 @@
+1) Open VS Code and click File ▸ Open Folder…, then select the root of your dbt project so the sidebar shows models/, seeds/, and dbt_project.yml.  
+
+2) In the Explorer panel, double-click models/dim_customers.sql to bring the file into the active editor tab.  
+
+3) Scroll until you see the comment that marks the existing SELECT list (e.g. `-- add new fields below`). Place the cursor on the empty line right after the last selected column.  
+
+4) Type (or paste) the new derived column exactly as shown, making sure indentation matches the surrounding code:
+
+```sql
+    -- flag indicating whether the customer’s email has a syntactically valid username
+    -- and is on our accepted TLD list
+    coalesce(
+        /* 1. regex confirms overall email shape
+           2. accepted_email_domains.tld not null means domain is approved */
+        regexp_matches(
+            customers.email,
+            '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'
+        )
+        and accepted_email_domains.tld is not null,
+        false
+    ) as is_valid_email_address
+```
+
+5) Still inside dim_customers.sql, move to the FROM / JOIN block and ensure it ends with the following join to link against the model that contains the allowed TLD list (replace any existing domain join if present):
+
+```sql
+from {{ ref('customers') }}            as customers
+left join {{ ref('top_level_email_domains') }}  as accepted_email_domains
+       on customers.email_top_level_domain = lower(accepted_email_domains.tld)
+```
+
+6) Add an ORDER BY so rows with valid email addresses appear first:
+
+```sql
+order by is_valid_email_address desc, customers.customer_id
+```
+
+7) Press Ctrl + S (Cmd + S on macOS) to save the file. Check the editor tab shows ⭘ (no white dot) indicating the file is saved.  
+
+8) Switch to the integrated terminal in VS Code by clicking Terminal ▸ New Terminal. You should land in the project root (confirm with `pwd` or `ls`).  
+
+9) Run the full build so all dependencies (including seeds and the top-level domain model) compile and run in the correct order:
+
+```bash
+dbt build --select dim_customers+
+```
+
+(Using `--select dim_customers+` builds dim_customers and anything upstream.)  
+
+10) Watch the console: dbt will show green ✔ for `seed`, `model.top_level_email_domains`, and finally `model.dim_customers`. Ensure the last line says `Completed successfully`.  
+
+11) Verify the boolean column was created and the ordering works by opening a quick query shell. In the same terminal execute:
+
+```bash
+dbt debug --store-failures  # quick connection test
+duckdb target/compiled/my_project/dev.db <<'SQL'
+select customer_id, email, is_valid_email_address
+from dim_customers
+limit 10;
+SQL
+```
+
+12) Confirm the first few rows all display `is_valid_email_address = true` and subsequent rows (scroll or run another query) show `false`. This validates both the new column logic and the ordering requirement.  
+
+13) Commit the change (optional but recommended):
+
+```bash
+git add models/dim_customers.sql
+git commit -m "feat: add is_valid_email_address flag and ordering to dim_customers"
+```
+
+We now have a complete dim_customers model that flags and prioritises customers with valid email addresses.

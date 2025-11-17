@@ -1,0 +1,23 @@
+1. Navigate to the browser tab that shows the list view of the Hardware table (the URL usually ends with `/alm_hardware_list.do`).  
+2. Click the blue New button in the top-left corner of the list to open a blank Hardware form.  
+3. Switch to the code editor / text-file viewer window that is already open. Highlight the only line in the file (it contains the serial number), press Ctrl + C to copy it to the clipboard. We will paste this in step 5.  
+4. Return to the Hardware form tab. Click in the Serial number field (first field in the top section) and press Ctrl + V to paste the value you just copied.  
+5. Click the Model category reference lookup icon (the magnifying-glass button) to the right of the Model category field. In the pop-up list, type Computer in the filter field, press Enter, and then click the Computer result row.  
+6. Click the Model reference icon next to the Model field. In the modal that appears, type Apple MacBook Pro 17" in the search box, press Enter, and click the exact match row Apple MacBook Pro 17".  
+7. Click the Vendor reference icon next to the Vendor field. Search for Apple, press Enter, and pick Apple from the list.  
+8. Leave the Owned by field blank as instructed.  
+9. Click in the Location field. Type 2-10-1 Yurakucho, Chiyoda-ku, Tokyo. When the matching location record appears in the auto-complete, click that row to populate the field.  
+10. Click the Assigned to reference icon. In the user picker, type Kira Papen, press Enter, and select the user record that matches Kira Papen.  
+11. Leave the Request line field blank.  
+12. Click the Department reference icon next to Department. Type Customer Support, press Enter, and choose the Customer Support department record.  
+13. Click the Acquisition method drop-down and select Loan.  
+14. Scroll down to the Additional comments or Comments field (label may vary). Paste the text misarray overwelt Echinoderidae Heikum upset into that field.  
+15. Scroll to the Asset tag field (usually in the lower section). Type P1000811.  
+16. Leave the Beneficiary field blank.  
+17. At the top-right of the form, click the green Submit button to insert the new hardware record.  
+18. Wait for the list view to reload. In the filter breadcrumb, click the magnifying-glass icon next to Serial number and paste the serial number you just created, then press Enter. Verify the single row appears with:  
+   • Model category = Computer  
+   • Model = Apple MacBook Pro 17"  
+   • Asset tag = P1000811  
+   • Assigned to = Kira Papen  
+19. Confirm all values look correct. You have successfully created the new hardware record.

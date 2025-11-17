@@ -1,0 +1,38 @@
+1) Click cell B2 to confirm the acceleration formula that is already present (we will replicate this formula downward in a moment).  
+2) Move your cursor to the small square “fill-handle” located at the bottom-right corner of cell B2.  
+3) Press and hold the left mouse button, drag the fill-handle straight down to the last populated row in your table (for example row 50), then release the mouse button. All cells B3:B50 are now filled with the same relative acceleration formula.  
+4) Click any one of the newly filled cells in column B (e.g., B3) to verify that the cell references updated correctly (you should see row-relative references, such as “(A3-A2)” or similar, in the formula bar).  
+
+5) Click cell D2 to select the second acceleration formula you have already created.  
+6) Move to the fill-handle of cell D2, press and hold the left mouse button, drag it downward to the same last data row (e.g., row 50), and release the mouse button. Cells D3:D50 are now populated.  
+7) Click cell D3 to confirm the formula references updated correctly for column D.  
+
+8) Scroll to the top of the sheet again and click the first blank header cell immediately to the right of column D (this should be cell E1).  
+9) Type the new header text: Combined Data, then press Enter.  
+
+10) Click cell E2 to start constructing the concatenation formula that merges the values from columns A through D with their headers.  
+11) Type the following formula exactly, ensuring you include the TEXT functions so all numeric values round to two decimal places:  
+```excel
+=CONCAT(
+"A: ",TEXT(A2,"0.00"),", ",
+"B: ",TEXT(B2,"0.00"),", ",
+"C: ",TEXT(C2,"0.00"),", ",
+"D: ",TEXT(D2,"0.00")
+)
+```  
+12) Press Enter. You should now see a single line of text in cell E2 resembling something such as “A: 1.00, B: 0.25, C: 3.40, D: 0.25”.  
+
+13) Click cell E2 again to select it.  
+14) Locate the fill-handle at the bottom-right corner of E2.  
+15) Press and hold the left mouse button, drag the fill-handle downward to the last occupied row (e.g., row 50), then release the mouse button. The concatenation formula is copied to every row in column E.  
+
+16) Scroll to the bottom of the data to verify one of the newly filled cells in column E (e.g., E50). Check that:  
+    • the text starts with “A: ” and ends with “D: ”,  
+    • all four numeric values show exactly two decimal digits,  
+    • commas and spaces match the pattern.  
+
+17) (Optional) Switch to the Home tab, click the drop-down in the Number group, and choose “Text” for column E if you want to lock the appearance of the concatenated values (this prevents Excel from interpreting them as numbers or dates).  
+
+18) Press Ctrl+S to save your workbook.  
+
+19) Review the entire worksheet visually: columns B and D now contain acceleration formulas for all rows, and column E lists the rounded, header-annotated “Combined Data” strings.

@@ -1,0 +1,65 @@
+1. Open VS Code. In the Explorer left-hand navbar, locate your Dagster project folder (e.g. “hacker_news_project”).  
+2. Click the sub-folder “hacker_news_project/hacker_news” (or whatever package holds your graphs/assets). Confirm you can already see the three solids/ops that form your 3-step pipeline.  
+3. Right-click the folder “hacker_news_project/hacker_news” and select “New File…”. Type the name `hacker_news_pipeline.py` and press Enter.  
+4. Write the Dagster job that wires the three steps together. Replace `step1`, `step2`, `step3` with your real op names:  
+
+```python
+# hacker_news_pipeline.py
+from dagster import job
+
+from .steps import step1, step2, step3   # adjust import path if needed
+
+@job(name="hacker_news_pipeline")
+def hacker_news_pipeline():
+    # dagster’s “>>” operator preserves dependency order
+    step1() >> step2() >> step3()
+```
+
+5. Press Ctrl+S to save the file.  
+6. Still in VS Code, create a scheduling module. Right-click the same package folder and choose “New File…”. Name it `schedules.py`.  
+7. Add an hourly schedule that targets the new job:
+
+```python
+# schedules.py
+from dagster import schedule
+from datetime import datetime
+from .hacker_news_pipeline import hacker_news_pipeline
+
+# 0 * * * *  ⇒ minute 0 of every hour
+@schedule(cron_schedule="0 * * * *", job=hacker_news_pipeline, execution_timezone="UTC")
+def hacker_news_hourly_schedule(_context):
+    # Return run-config if your job expects config;
+    # otherwise, return an empty dict
+    return {}
+```
+
+8. Press Ctrl+S again.  
+9. Switch to `hacker_news_project/repository.py` (or wherever your Definitions object lives). Add the schedule and job to the definitions list:
+
+```python
+# repository.py
+from dagster import Definitions
+
+from hacker_news.hacker_news_pipeline import hacker_news_pipeline
+from hacker_news.schedules import hacker_news_hourly_schedule
+
+defs = Definitions(
+    jobs=[hacker_news_pipeline],
+    schedules=[hacker_news_hourly_schedule],
+)
+```
+
+10. Save the file, then open your terminal integrated in VS Code (press ``Ctrl+` ``).  
+11. Execute Dagster in dev-server mode to reload definitions:
+
+```bash
+dagster dev -f repository.py
+```
+
+12. Switch to your browser. Navigate to http://localhost:3000.  
+13. In the left sidebar, click “Jobs”. Verify you see a tile named “hacker_news_pipeline”.  
+14. Click “Schedules” in the same sidebar. The list should contain “hacker_news_hourly_schedule” and show Status = Off.  
+15. Click the schedule name. In the page header, click the blue toggle switch “Turn On” (right side).  
+16. Observe the banner “Schedule turned on successfully”. Under “Future Ticks” the “Next tick” time should be the top of the coming hour (e.g., 14:00).  
+17. Wait one minute past the scheduled time or click “Launch run” in the upper-right to test immediately.  
+18. Navigate back to “Runs”. Confirm that a run labeled “hacker_news_pipeline” appears and finishes green, meaning all three steps materialized successfully.

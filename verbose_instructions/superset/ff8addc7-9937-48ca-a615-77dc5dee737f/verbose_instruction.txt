@@ -1,0 +1,28 @@
+1. Click the plus-sign Add icon (➕) on the top-right toolbar of the Superset web page.  
+2. Select the “Data” option in the drop-down menu that appears.  
+3. Click “Upload CSV to database…” in the secondary fly-out menu.  
+4. In the “CSV to Database configuration” modal, click the “Choose File” button.  
+5. Switch to the file-picker window that opens, click “Home” in the left sidebar, then double-click the file ​tutorial_flights.csv​ located in /home/user.  
+6. Click the “Select” (or “Open”) button in the file-picker to return to the configuration modal with the file attached.  
+7. In the “Table Name” text box, type exactly:  
+   tutorial_flights  
+8. Click the “Database” drop-down and choose the target database named ​MyDatabase​.  
+9. Click the collapsed “File Settings” accordion to expand advanced options.  
+10. Locate the “Columns To Be Parsed as Dates” input field and type:  
+    Travel Date  
+    (Note that Superset will convert this column to the DATE type on load.)  
+11. Leave delimiter, header row, and encoding at their default values unless you know they differ for this file.  
+12. Click the green “Save” button at the bottom-right of the modal to start the upload.  
+13. Wait until the toast notification in the bottom-left corner shows “CSV Uploaded” with a green success icon—this confirms the table tutorial_flights has been created in MyDatabase.  
+14. Click “Data” in the main navigation bar, then choose “Datasets” to verify the new dataset appears in the list; you should see a row titled ​tutorial_flights (MyDatabase)​.  
+15. Click the dataset name tutorial_flights, then press the blue “Explore” button; confirm that the column ​Travel Date​ displays the calendar date icon next to its name, indicating Superset recognizes it as a DATE field.  
+16. Optionally, switch to the “SQL Lab” > “SQL Editor,” select ​MyDatabase​, and run:  
+```sql
+SELECT "Travel Date", COUNT(*) AS flights
+FROM tutorial_flights
+GROUP BY 1
+ORDER BY 1
+LIMIT 5;
+```  
+   to confirm queries execute successfully against the new table.  
+17. Review the results grid; if no errors appear and dates aggregate correctly, the task is complete.

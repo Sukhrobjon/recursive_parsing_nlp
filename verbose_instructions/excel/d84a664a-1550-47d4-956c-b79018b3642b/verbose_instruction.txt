@@ -1,0 +1,18 @@
+1. Click the + (Add Sheet) icon at the bottom-left of the workbook to insert a new worksheet tab.  
+2. Double-click the new tab name (likely “Sheet2”) to highlight it, type Sheet2, and press Enter to confirm the rename.  
+3. Click the Sheet2 tab to make sure we are working inside this sheet.  
+4. Drag the mouse from cell A1 to cell C1 so that A1:C1 are highlighted (three adjacent columns in the first row).  
+5. Click the Merge cells button (it may look like two arrows converging) on the top-bar toolbar, then choose Merge & Center if a dropdown appears.  
+   Note that Excel/Sheets will display “A1:C1” in the Name Box, confirming the merge.  
+6. Type Investment Summary while the merged A1 cell is still selected, then press Enter; the text auto-centers across the merged range.  
+7. Drag from cell A2 to cell B2 to highlight A2:B2 (the first two columns in the second row).  
+8. Click the Merge cells button again and confirm Merge & Center.  
+9. Type High Interest Rate in the merged A2 cell and press Enter.  
+10. Drag from cell C2 to cell D2 to highlight C2:D2 (third and fourth columns in row 2).  
+11. Click the Merge cells button once more and choose Merge & Center.  
+12. Type Low Interest Rate in the merged C2 cell and press Enter.  
+13. Click any blank cell (e.g., E3) to deselect the merged ranges and visually verify that:  
+    • A1:C1 shows “Investment Summary”.  
+    • A2:B2 shows “High Interest Rate”.  
+    • C2:D2 shows “Low Interest Rate”.  
+    All three labels should appear centered within their respective merged regions.

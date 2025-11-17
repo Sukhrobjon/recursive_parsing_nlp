@@ -1,0 +1,32 @@
+1) Navigate to https://console.cloud.google.com/bigquery to open the BigQuery web UI (bigquery_console).  
+2) Click your GCP project name (for example, bigquery-project) in the Explorer panel to expand it.  
+3) Click the triangle next to the census dataset to reveal its tables.  
+4) Click the table named 2012 so you can see its Details/Preview/Schema tabs (this confirms you’re working on the correct object).  
+5) Click the blue button COMPOSE NEW QUERY in the upper-right of the BigQuery editor pane.  
+6) Type the following SQL exactly into the query editor to add the three default values in one statement:
+
+```sql
+-- Set default values for three existing columns
+ALTER TABLE `bigquery-project.census.2012`
+  ALTER COLUMN YEAR            SET DEFAULT 2012,
+  ALTER COLUMN ABSOLUTE_CHANGE SET DEFAULT 0,
+  ALTER COLUMN ANNUAL_RANK     SET DEFAULT 1;
+```
+
+7) Click the blue RUN button (▶) to execute the ALTER TABLE command.  
+8) Wait for the green check mark and “Query complete” message in the Results pane; this indicates the schema update succeeded.  
+9) Type a quick verification query in a new tab (or overwrite the current editor) to confirm the defaults were applied:
+
+```sql
+SELECT column_name, column_default
+FROM  `bigquery-project.census.INFORMATION_SCHEMA.COLUMNS`
+WHERE table_name = '2012'
+  AND column_name IN ('YEAR','ABSOLUTE_CHANGE','ANNUAL_RANK');
+```
+
+10) Click RUN again. In the results you should see:  
+   • YEAR → 2012  
+   • ABSOLUTE_CHANGE → 0  
+   • ANNUAL_RANK → 1  
+
+11) Review the output; if the three rows display the expected default values, the task is complete.

@@ -1,0 +1,8 @@
+1. Click the “Incidents” application tab on the left-hand navigation pane to load the incidents list view.  
+2. Confirm the list tab title reads “Incidents > All” so we know we are looking at every record.  
+3. Click the funnel icon (middle icon under the page title bar) to open the Filter and Sort panel; wait until the panel expands below the list header.  
+4. Click the blue button labeled “Add Sort” on the first row of the panel; a new row labeled “Order results by the following fields” appears.  
+5. Click the empty dropdown field inside this new row. Type “Caller” in the search box, then click the option “Caller” when it appears; the field now displays “Caller”.  
+6. Click the dropdown immediately to the right of “Caller” that currently shows “z to a”; in the menu, click “a to z” so the sort order is ascending.  
+7. Click the blue “Run” button at the far right of the panel to execute the sort.  
+8. Wait for the list to refresh; verify the Caller column now shows names in alphabetical order from A to Z (e.g., “Aaron Smith” appears before “Barbara Cho”).

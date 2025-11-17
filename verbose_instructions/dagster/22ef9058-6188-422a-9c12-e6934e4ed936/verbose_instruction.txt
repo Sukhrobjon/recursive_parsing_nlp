@@ -1,0 +1,25 @@
+1) Open Chrome (or your default browser) and go to the Dagster UI running at http://localhost:3000.
+
+2) Click the “Assets” item in the dark-blue left sidebar so we see the full asset lineage graph.
+
+3) Type top10_story_ids into the gray “Filter assets…” search box in the upper-left corner of the canvas and press Enter.  
+   • The graph now highlights a single blue bubble labelled top10_story_ids.  
+   • No other assets are selected, so we are sure we will materialize only this one.
+
+4) Click the blue bubble labeled top10_story_ids. A right-hand “Asset Details” panel slides out.
+
+5) Click the green “Materialize” button in that side panel (top-right of the panel). A “Launch materialization” dialog appears.  
+   • Verify that the checkbox list contains only top10_story_ids and that it is checked.  
+   • If any other assets appear checked, uncheck them—only top10_story_ids should remain selected.
+
+6) Click the blue “Launch Run” button at the bottom of the dialog.
+
+7) Wait while the screen automatically routes to the “Runs” page. We can see the live log stream:  
+   • Look for the line “Finished successfully” and a green check icon next to the step name top10_story_ids__materialization.  
+   • The run status in the header should switch from “STARTED” to a green “SUCCESS”.
+
+8) Click “Assets” again in the left sidebar to return to the asset graph.  
+   • Hover over the top10_story_ids bubble; the right-side panel now shows “Last materialized: a few seconds ago”.  
+   • Confirm no other assets display a new timestamp—only top10_story_ids has updated.
+
+9) Celebrate: we have materialized exactly one asset (top10_story_ids) and left all others untouched.

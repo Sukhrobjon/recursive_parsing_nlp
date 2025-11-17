@@ -1,0 +1,103 @@
+1) Open the terminal app that already has Airbyte’s octavia CLI installed  
+2) Type `cd ~/Desktop` so we are in the same directory as the configuration file mentioned in the task  
+3) Execute `ls -1 *.json *.yml` to list the exact file name; suppose we see `pg_to_pg_config.yml`  
+4) Type `cat pg_to_pg_config.yml` and read the values; note the following items because we will reuse them:  
+   • source_host, source_port, source_db, source_user, source_password  
+   • dest_host, dest_port, dest_db, dest_user, dest_password  
+   • replication_method (e.g., standard or CDC)  
+   • sync_mode (e.g., incremental | full_refresh)  
+   • schedule_cron or manual flag  
+5) Run `export AIRBYTE_URL=http://localhost:8000` so octavia knows where the Airbyte instance is running  
+6) Execute `octavia sources list | grep postgres` to make sure no conflicting Postgres source already exists  
+7) Create the Postgres source by running the command below—replace the placeholders with the actual values you noted in step 4  
+
+```bash
+octavia sources create \
+  --name "pg_source" \
+  --definitionId 435daa4c-8eee-11ec-a8a3-0242ac120002 \   # Postgres connector definition UUID
+  --workspaceId 00000000-0000-0000-0000-000000000001 \
+  --config '{
+    "host":  "<source_host>",
+    "port":  <source_port>,
+    "database": "<source_db>",
+    "username": "<source_user>",
+    "password": "<source_password>",
+    "ssl":     false
+  }'
+```
+
+8) Copy the returned `sourceId` from the terminal output; we will need it shortly  
+9) Verify the source works by running `octavia sources check --sourceId <sourceId>` and ensure the status prints `Succeeded`  
+10) Execute `octavia destinations list | grep postgres` to confirm no duplicate Postgres destination exists  
+11) Create the Postgres destination with  
+
+```bash
+octavia destinations create \
+  --name "pg_destination" \
+  --definitionId 25c5221e-8eee-11ec-a8a3-0242ac120002 \   # Postgres destination definition UUID
+  --workspaceId 00000000-0000-0000-0000-000000000001 \
+  --config '{
+    "host":  "<dest_host>",
+    "port":  <dest_port>,
+    "database": "<dest_db>",
+    "username": "<dest_user>",
+    "password": "<dest_password>",
+    "schema":  "public",
+    "ssl":     false
+  }'
+```
+
+12) Capture the returned `destinationId` from the terminal output  
+13) Check the destination with `octavia destinations check --destinationId <destinationId>` and confirm it prints `Succeeded`  
+14) Build the connection creation JSON on-the-fly by running the following command block (use backslashes to keep it readable):  
+
+```bash
+octavia connections create \
+  --name "pg_to_pg_conn" \
+  --sourceId <sourceId> \
+  --destinationId <destinationId> \
+  --namespaceDefinition "destination" \
+  --namespaceFormat "${schema}" \
+  --prefix "" \
+  --syncCatalog '{
+    "streams": [
+      {
+        "stream": {
+          "name": "public.my_table",
+          "jsonSchema": {},
+          "supportedSyncModes": ["full_refresh", "incremental"]
+        },
+        "config": {
+          "syncMode": "<sync_mode>",
+          "cursorField": [],
+          "destinationSyncMode": "append"
+        }
+      }
+    ]
+  }' \
+  --scheduleType "<manual_or_cron>" \
+  --scheduleData '{
+    "basicSchedule": {
+      "units": 24,
+      "timeUnit": "hours"
+    }
+  }' \
+  --status active
+```
+
+15) Copy the resulting `connectionId` from the success output  
+16) Trigger the first sync manually by executing `octavia connections sync --connectionId <connectionId>`  
+17) Wait until the CLI prints `status: completed`; if it shows `failed`, run `octavia jobs get --jobId <jobId>` to inspect the error message  
+18) Open psql (or any SQL client) pointed at the destination database with  
+
+```bash
+psql -h <dest_host> -U <dest_user> -d <dest_db>
+```
+
+19) Run a quick row count to validate data landed:  
+
+```sql
+SELECT COUNT(*) FROM public.my_table;
+```
+
+20) Confirm the row count is greater than zero; this indicates the Postgres-to-Postgres Airbyte connection created with octavia is working correctly

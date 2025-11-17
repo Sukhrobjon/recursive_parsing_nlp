@@ -1,0 +1,13 @@
+1. Open the Chromium (or your default browser) window that is already showing the Dagster UI running at http://localhost:3000 (the default Dev UI).  
+2. Click the “Sensors” item in the left-hand navigation bar so the Sensors overview grid appears.  
+3. Locate the row whose Name column reads math_sensor (tip: use the Filter text box in the upper-right of the grid and type math_sensor if the list is long).  
+4. Click directly on the blue math_sensor hyperlink to open the Sensor Details view in the right-hand panel.  
+5. Click the grey Test Sensor button located near the upper-right of the Sensor Details header. A “Test Sensor” modal dialog will pop up.  
+6. In the “Cursor” input field inside the dialog, type exactly: 123  
+   (Note that Dagster stores sensor cursors as strings, so we pass the number in quotes automatically; the UI will handle this.)  
+7. Leave all other fields at their defaults and click the blue Evaluate button at the bottom of the dialog.  
+8. Wait until the evaluation finishes (the loading spinner disappears) and verify we can see at least one RunRequest returned in the Results section—this confirms the cursor 123 leads to a valid job launch request.  
+9. In the same modal, click the blue Launch Run button that now appears next to the RunRequest entry. The modal will close and Dagster will switch to the Runs page automatically.  
+10. Watch the newly-created run (its Run ID will be highlighted). Confirm its Status badge changes from “Starting” to “Success” (or investigate logs if it shows “Failed”).  
+11. (Optional) Click the Run ID link, then click the Logs tab in the upper-middle of the run details page, and scroll to verify that the steps executed match the attached job’s operations (you should see each op name in the left gutter).  
+12. When the Status badge is “Success,” we have confirmed that math_sensor evaluated correctly at cursor 123 and that the attached job launched and completed.

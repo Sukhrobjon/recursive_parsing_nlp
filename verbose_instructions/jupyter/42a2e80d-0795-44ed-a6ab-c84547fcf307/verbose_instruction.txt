@@ -1,0 +1,11 @@
+1) Double-click notebook_2.ipynb in the left “Files” panel to open it in a new tab.  
+2) Hold Ctrl + A inside notebook_2 to highlight all six cells; we can see the blue line on the left of every cell confirming selection.  
+3) Press C (still in command mode) to copy the highlighted cells to the clipboard.  
+4) Click the notebook_1.ipynb tab at the top bar to switch focus back to notebook_1.  
+5) Scroll to the very bottom of notebook_1 until the last code cell is visible.  
+6) Click once on the last cell to select it, then press Esc to ensure we are in command mode (cell outline turns blue).  
+7) Press V to paste; the six copied cells from notebook_2 now appear directly beneath the previously last cell.  
+8) Verify that the new cells show the same content and execution numbers as in notebook_2 (they will display blank brackets “[]” indicating they have not yet been run).  
+9) Click the Run menu at the top menubar and choose Run All Cells; watch the brackets fill with incrementing numbers, confirming execution from top to bottom.  
+10) Confirm the last pasted cell finishes execution without errors (no red traceback appears, and any expected output is rendered).  
+11) Press Ctrl + S or click the floppy-disk Save icon in the toolbar to persist changes to disk; a small asterisk next to the filename disappears, showing the save was successful.

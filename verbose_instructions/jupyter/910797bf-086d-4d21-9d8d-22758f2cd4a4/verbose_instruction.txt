@@ -1,0 +1,28 @@
+1. Open your Terminal application (e.g., “Terminal” on macOS/Linux or “Anaconda Prompt”/“Command Prompt” on Windows).  
+2. Navigate to the Downloads directory by typing:  
+```bash
+cd ~/Downloads
+```  
+(Windows PowerShell/Command Prompt users: `cd %USERPROFILE%\Downloads`)  
+3. Verify the notebook file exists by listing the directory:  
+```bash
+ls *.ipynb
+```  
+Confirm you see exactly one `.ipynb` file (we will use this name in the next step).  
+4. Start a Jupyter Notebook server bound to port 1036 and restricted to the current directory by executing:  
+```bash
+jupyter notebook --port=1036 --no-browser --NotebookApp.notebook_dir="$PWD"
+```  
+Note that `--no-browser` prevents an automatic browser launch; we will open it manually next.  
+5. Observe the terminal output until you see a line similar to:  
+```
+http://localhost:1036/?token=abcdef123456...
+```  
+Copy the entire URL (including the token) displayed after “Or copy and paste one of these URLs:”.  
+6. Switch to your web browser (Chrome, Firefox, Edge—any modern browser).  
+7. Click the address bar, paste the copied URL, and press Enter.  
+8. Confirm the Jupyter Notebook tree view loads and shows the contents of the Downloads folder.  
+   • You should see the single notebook file listed.  
+9. Click the notebook filename (e.g., “analysis.ipynb”) to open it in a new Jupyter tab.  
+10. Verify the notebook kernel indicator (top-right circle) is showing an idle or busy status rather than “No Kernel”. If it displays “Kernel starting, please wait…”, wait until it switches to “Python 3 (ipykernel)” to confirm successful loading.  
+11. Test the environment: Click inside the first code cell, then press Shift + Enter. If the cell runs without an error, the notebook is fully operational on port 1036.

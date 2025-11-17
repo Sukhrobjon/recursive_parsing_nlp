@@ -1,0 +1,94 @@
+1) Switch to the terminal so we can work inside the dbt project root (I’ll assume the project lives in ~/projects/jaffle_shop; if yours differs, substitute accordingly).  
+   ```bash
+   cd ~/projects/jaffle_shop
+   ```
+
+2) Create a snapshots folder (skip if it already exists).  
+   ```bash
+   mkdir -p snapshots
+   ```
+
+3) Create and open the snapshot file in your editor. I’ll use VS Code for clarity.  
+   ```bash
+   code snapshots/orders_snapshot.sql
+   ```
+
+4) Write the snapshot definition that uses the timestamp strategy to detect row changes. Paste the following content and save:  
+   ```sql
+   -- snapshots/orders_snapshot.sql
+   {% snapshot orders_snapshot %}
+   
+     {{
+       config(
+         target_database = 'analytics',
+         target_schema   = 'snapshots',
+         unique_key      = 'order_id',
+         strategy        = 'timestamp',
+         updated_at      = 'updated_at',     -- column in raw_orders that tracks last change
+         invalidate_hard_deletes = True
+       )
+     }}
+   
+     SELECT *
+     FROM {{ source('raw', 'orders') }}
+   
+   {% endsnapshot %}
+   ```
+   Note that:  
+   • unique_key is order_id (adjust if your primary key column is different).  
+   • updated_at is the timestamp column we’ll monitor for changes.  
+   • We are writing into analytics.snapshots.orders_snapshot.
+
+5) Return to the terminal and verify the file exists.  
+   ```bash
+   ls snapshots
+   # you should see: orders_snapshot.sql
+   ```
+
+6) Load the existing seed files into the database.  
+   ```bash
+   dbt seed
+   ```
+
+7) Execute the transformation models to populate downstream tables that may depend on seeds.  
+   ```bash
+   dbt run
+   ```
+
+8) Take the first snapshot so dbt creates analytics.snapshots.orders_snapshot.  
+   ```bash
+   dbt snapshot
+   ```
+
+9) Confirm that the snapshot table exists and has rows.  
+   ```bash
+   dbt run-operation list_relations --args '{"database": "analytics", "schema": "snapshots"}'
+   # You should see orders_snapshot listed.
+   ```
+
+10) Switch to your OS file browser or stay in terminal; we now replace the stale seed. Copy the up-to-date raw_orders.csv located on the Desktop into the project’s seeds directory, overwriting the old file.  
+    ```bash
+    cp ~/Desktop/raw_orders.csv ./seeds/raw_orders.csv
+    ```
+
+11) Reload the seeds, forcing a full refresh so dbt truncates and repopulates the raw.orders table.  
+    ```bash
+    dbt seed --full-refresh
+    ```
+
+12) Re-run the transformation models so they consume the refreshed seed data.  
+    ```bash
+    dbt run
+    ```
+
+13) Create a new snapshot run to capture the changed rows based on the updated_at column; this will insert new records into the analytics.snapshots.orders_snapshot table with valid_from/valid_to timestamps.  
+    ```bash
+    dbt snapshot
+    ```
+
+14) Verify the snapshot table now contains additional versions (look for multiple records with identical order_id but different dbt_valid_from/dbt_valid_to).  
+    ```bash
+    dbt run-operation describe_relation --args '{"database": "analytics", "schema": "snapshots", "identifier": "orders_snapshot"}'
+    ```
+
+15) Celebrate—we have successfully configured the timestamp-based snapshot, loaded seeds twice, reran models, and ensured analytics.snapshots.orders_snapshot reflects the latest data.

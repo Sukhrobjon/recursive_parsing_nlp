@@ -1,0 +1,19 @@
+1. Locate the page title “servicenow” near the top-left; directly beneath it, Click the middle icon that looks like a Funnel to open the Filter & Sort panel.  
+2. Wait until the panel titled “Filter” and “Order results by the following fields” is fully loaded (we should see an “Add Sort” button).  
+3. Click the blue “Add Sort” button once to create the first sort rule row.  
+4. In the newly added row, Click the dropdown immediately under the text “Order results by the following fields”.  
+5. Type “Display name” in the type-ahead search box and Press Enter to select “Display name” from the list.  
+6. Move to the dropdown just to the right of “Display name”; Click it and Select “z to a” so the arrow points downward (this sets Descending order).  
+7. Click “Add Sort” again to append a second rule row.  
+8. In the second row’s field selector, Click the dropdown, Type “Cost center”, then Press Enter to pick “Cost center”.  
+9. Click the adjacent ordering dropdown for the second row and Select “a to z” (Ascending).  
+10. Click “Add Sort” a third time to create the final rule row.  
+11. In the third row, Click the field selector, Type “Stockroom”, and Press Enter to choose “Stockroom”.  
+12. Click the ordering dropdown next to “Stockroom” and Select “a to z” (Ascending).  
+13. Review all three rows: we should read  
+   • Display name – z to a  
+   • Cost center – a to z  
+   • Stockroom – a to z  
+   If any row is incorrect, Click its field or order dropdown to adjust.  
+14. Click the blue “Run” button at the bottom-right of the panel to apply the sort rules and refresh the hardware list.  
+15. Verify the list: Confirm that the first column “Display name” is sorted in reverse alphabetical order; within any identical display names, confirm the “Cost center” column shows alphabetically ascending values, and within those, the “Stockroom” column is also ascending. If the order is incorrect, Repeat steps 1-14 to correct the settings.

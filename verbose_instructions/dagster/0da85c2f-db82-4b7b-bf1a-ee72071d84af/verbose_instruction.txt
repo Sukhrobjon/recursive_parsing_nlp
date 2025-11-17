@@ -1,0 +1,57 @@
+1) Click the “VS Code” icon in the left Dock to open the code editor that contains your Dagster repository.  
+2) Navigate in the Explorer panel to `/opt/dagster_repo/pipelines/sklearn_pipeline.py` (the file that currently defines the `sklearn_job` assets/ops).  
+3) Scroll to the function (often called `train_model` or similar) where the feature matrix `X` is built. We can see something like:  
+```python
+feature_cols = ["Pclass", "Sex", "SibSp", "Parch"]   # existing list
+X = df[feature_cols]
+```  
+4) Add the two requested features by editing the code block to:  
+```python
+feature_cols = ["Pclass", "Sex", "SibSp", "Parch", "Age", "Fare"]
+X = df[feature_cols]
+```  
+5) Insert a cleaning step immediately after the dataframe slice to fill NaN values with the column mean:  
+```python
+# Fill missing numeric values with the column mean
+X = X.apply(lambda col: col.fillna(col.mean()))
+```  
+6) Verify that any label vector creation (e.g., `y = df["Survived"]`) remains unchanged.  
+7) Press `Ctrl + S` to save the file.  
+8) Still in VS Code, open `/opt/dagster_repo/schedules.py` (create the file if it does not exist).  
+9) Write a new schedule definition that points at `sklearn_job` and triggers every hour Monday-Friday. Type the following code and save:  
+```python
+from dagster import ScheduleDefinition
+from datetime import datetime
+
+sklearn_hourly_weekday_schedule = ScheduleDefinition(
+    name="sklearn_hourly_weekday_schedule",
+    job_name="sklearn_job",
+    cron_schedule="0 * * * 1-5",          # minute 0 of every hour, Mon-Fri
+    execution_timezone="UTC",             # adjust if your instance uses a different TZ
+    tags={"schedule": "hourly_weekday"},
+)
+```  
+10) Switch to the Terminal tab at the bottom of VS Code and execute the Dagster workspace reload so Dagit can pick up the changes:  
+```bash
+dagster dev
+```  
+(If `dagster dev` is already running, press `r` in that terminal window to hot-reload.)  
+11) Click the “Chromium” browser icon to switch to the opened Dagit UI (http://localhost:3000 by default).  
+12) In the left sidebar, expand the repository name (e.g., “dagster_repo”). Confirm we now see:  
+   • `sklearn_job` under “Jobs”  
+   • `sklearn_hourly_weekday_schedule` under “Schedules”  
+13) Click `sklearn_job` → in the top-right corner click “Launchpad”.  
+14) Leave the default run configuration, scroll down, and click the blue “Launch Run” button.  
+15) Wait until the Run page opens and the status circle turns green. We can see each op succeed.  
+16) Click the op that trains the model (commonly named `train_model` or `fit_model`). In the log stream on the right, locate the INFO line printing the feature names; confirm both “Age” and “Fare” are present.  
+17) Use the browser’s back arrow to return to the main Dagit page, then click “Schedules” in the left nav bar.  
+18) Find `sklearn_hourly_weekday_schedule` and toggle the grey slider to ON. The slider should turn blue, indicating the schedule is active.  
+19) Hover over the schedule line and confirm the next tick shows a timestamp at the top of the next hour that falls on a weekday (e.g., “Next: 13:00”).  
+20) Open a new Terminal tab and list the Dagster daemon logs to verify the schedule has registered:  
+```bash
+tail -f ~/.dagster/daemon/logs/scheduler.log | grep sklearn_hourly_weekday_schedule
+```  
+We should see a line like “Added schedule tick for sklearn_hourly_weekday_schedule”.  
+21) Keep the daemon log open until the next hour passes; confirm a new run is automatically started and appears in Dagit.  
+22) Click that auto-triggered run in Dagit and again inspect the `train_model` logs to ensure the NaN-filling step ran without errors and “Age”/“Fare” are listed.  
+23) Celebrate: the pipeline now uses the two new features, fills missing values with the mean, runs successfully on demand, and is scheduled to execute hourly on weekdays.

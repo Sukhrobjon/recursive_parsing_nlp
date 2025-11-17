@@ -1,0 +1,29 @@
+1. Click the sheet icon with a “+” (tooltip: New Sheet) located to the right of the “Sheet1” tab; Excel inserts a new worksheet named “Sheet2”.  
+2. Double-click the tab label “Sheet2”, type Sheet2 (if not already), and press ENTER to confirm the sheet name.  
+3. Drag to select cells A1:B1 on Sheet2.  
+4. Right-click the highlighted range and choose Merge & Center (or Merge Cells, depending on Excel version).  
+5. Type Summer sales ($) and press ENTER; the heading now spans columns A and B.  
+6. Press CTRL+S to save your file so the new sheet and merged heading are stored.  
+7. Click the Sheet1 tab at the bottom to switch back to the source data.  
+8. Press CTRL+A to highlight the entire contiguous table of data (Excel surrounds it with the moving dashed border).  
+9. Navigate to the Ribbon and Click Insert → PivotTable (first icon in the Tables group).  
+10. In the Create PivotTable dialog, verify “Select a table or range” is chosen and the Table/Range box shows the correct address (for example Sheet1!$A$1:$D$500).  
+11. Click the radio button Existing worksheet under Choose where you want the PivotTable report to be placed.  
+12. Click the Location box, then click the Sheet2 tab and single-click cell A2; the box should now show Sheet2!$A$2.  
+13. Click OK; Excel jumps to Sheet2 and inserts an empty PivotTable frame beginning at A2 with the PivotTable Fields pane open on the right.  
+14. In the PivotTable Fields pane, drag the field named Product into the Rows area.  
+15. Drag the field named Revenue into the Values area; Excel automatically displays “Sum of Revenue” next to each product row in the PivotTable at A3:B?.  
+16. Confirm the PivotTable is correct by checking the Grand Total row (last row in the PivotTable) against the sum of the Revenue column in Sheet1 (optional quick check: in Sheet1, select the Revenue column and look at the Status Bar sum).  
+17. Click anywhere inside the PivotTable range to keep it selected.  
+18. While the PivotTable is still active, go to the Ribbon and Click Insert → Bar Chart → 2-D Bar → Clustered Bar (this produces a horizontal bar chart).  
+19. Excel inserts the chart on Sheet2; with the chart still selected, press CTRL+X to cut it.  
+20. Click a blank spot (e.g., A15) on Sheet2 and press CTRL+V to paste, placing the chart beneath the PivotTable for readability.  
+21. In the Chart Tools → Design tab (or simply double-click the Chart Title), type Revenue of Each Product and press ENTER.  
+22. With the chart still selected, click the plus (+) button that appears at the upper-right corner of the chart, uncheck Legend (or from Chart Elements list, uncheck the Legend box) so the legend disappears.  
+23. Optionally, adjust bar colors or data labels if desired using the Format tab, but leave the default layout otherwise.  
+24. Click outside the chart to deselect it and visually confirm:  
+    • Row labels (products) appear on the vertical axis.  
+    • Horizontal bars represent Sum of Revenue.  
+    • Title reads Revenue of Each Product.  
+    • No legend is visible.  
+25. Press CTRL+S again and choose “Excel Workbook (*.xlsx)” or “Excel 2007–365” format in the Save dialog if prompted; click Save to preserve the pivot table, chart, and merged heading.

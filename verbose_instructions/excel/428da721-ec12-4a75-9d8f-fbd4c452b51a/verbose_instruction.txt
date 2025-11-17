@@ -1,0 +1,16 @@
+1. Click cell A2 in your spreadsheet to place the active cursor on the first data row  
+2. Drag (or Shift-Click) down to cell F36 so the range A2:F36 is highlighted  
+3. Click the Data tab on the top ribbon  
+4. Click the Sort button in the Data tools group (the icon usually shows A→Z with an arrow)  
+5. In the Sort dialog, open the “Sort by” drop-down and choose Column A  
+6. Make sure “Order” is set to “A → Z (ascending)”  
+7. Click OK; we can see the rows reorder so that Column A is now ascending from top to bottom  
+8. Hold Ctrl and click A1 to select the Date Time header, then continue holding Ctrl and drag down to A36 so A1:A36 is selected  
+9. Still holding Ctrl, click E1 and drag down to E36 so E1:E36 is also selected (you should now have two non-adjacent blocks highlighted: the Date Time column and the Quantity column)  
+10. Click the Insert tab on the ribbon  
+11. Click the Line icon in the Charts group  
+12. Choose the first Line chart style labeled “Lines Only”  
+13. Verify the preview shows Date Time along the horizontal axis and Quantity along the vertical axis; if correct, click OK (or Finish)  
+14. Double-click the chart title area, type “Quantity” and press Enter  
+15. Right-click the legend, choose Delete so the legend disappears (optional per instructions)  
+16. Click outside the chart to deselect; the sheet now contains a line chart sorted by Column A with the correct axes

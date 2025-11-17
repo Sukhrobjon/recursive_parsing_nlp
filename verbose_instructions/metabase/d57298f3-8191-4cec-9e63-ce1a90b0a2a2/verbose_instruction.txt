@@ -1,0 +1,11 @@
+1. Click your avatar (or initials) in the top-right corner of the Metabase window.  
+2. Click “Admin settings” in the dropdown panel.  
+3. Click “Databases” in the left-hand sidebar of the Admin page.  
+4. Scan the list for the row named “Sample Database”.  
+5. Click the blue “…” (three-dot) button at the far right of that “Sample Database” row.  
+6. Click “Delete” in the small menu that appears.  
+7. Type DELETE SAMPLE DATABASE in the confirmation dialog’s text box exactly as shown. (Note that Metabase asks for the database name in all caps to avoid mistakes.)  
+8. Click the red “Delete database” button to confirm.  
+9. Wait until the success toast (“Database deleted”) appears in the lower-left corner.  
+10. Press F5 (or click the browser refresh icon) to reload the Databases page and verify that “Sample Database” no longer appears in the list.  
+11. Click the Metabase logo in the top-left to return to the main homepage—your databases panel should now be empty.

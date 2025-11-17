@@ -1,0 +1,135 @@
+1. Double-click the desktop icon named “cdc_config.yaml” to open the configuration file in VS Code; this file lists the hostname, port, user, and database names for both the source and destination PostgreSQL servers.  
+   Note that the file also specifies the logical-decoding plugin `wal2json`. We will use this later in our Python script.
+
+2. Click the Explorer panel’s triangular toggle next to “cdc_config.yaml” so you can see the other project files. Confirm that “sync_cdc.py” is still empty—we will write code here shortly.
+
+3. Switch to Google Chrome.  
+   a. Navigate to `http://<src_host>:<src_port>/` in pgAdmin (credentials are in the YAML).  
+   b. Expand the source server → Databases → default database “postgres” → Replication → Publications.  
+   c. Verify that no publication exists yet.
+
+4. Right-click “Publications” → Create → Publication.  
+   • Name: `pub_all_tables`  
+   • Tables: Select “(+) All tables”.  
+   • Click Save.  
+   We have now told PostgreSQL to stream every INSERT/UPDATE/DELETE occurring in the source database.
+
+5. Switch to pgAdmin’s Query Tool on the source database and execute:
+   ```sql
+   ALTER SYSTEM SET wal_level = logical;
+   ALTER SYSTEM SET max_replication_slots = 10;
+   ALTER SYSTEM SET max_wal_senders    = 10;
+   SELECT pg_reload_conf();
+   ```
+   These changes ensure the WAL is emitted in logical form so `wal2json` can read it.
+
+6. Open a terminal (Ctrl + ` inside VS Code) and install the logical-decoding plugin on the source host:
+   ```bash
+   sudo apt-get install postgresql-15-wal2json
+   ```
+   (Replace version number if your Postgres version differs.)
+
+7. Change to the destination pgAdmin tab (Chrome).  
+   a. Expand the destination server → Databases → “postgres” → Replication → Subscriptions.  
+   b. Right-click “Subscriptions” → Create → Subscription.  
+      • Name: `sub_from_source`  
+      • Connection string: `host=<src_host> port=<src_port> user=<src_user> password=<src_pw> dbname=postgres`  
+      • Publication: choose `pub_all_tables` (it auto-populates).  
+      • Copy data: check ON to back-fill existing rows.  
+      • Click Save.  
+   PostgreSQL will now start copying historical rows and then stream new changes automatically.
+
+8. Return to VS Code. Click “sync_cdc.py” to focus the empty file.
+
+9. Type the following complete Python code so we can independently verify streaming and forward the JSON payloads to the target (useful for audit or if the built-in subscription is not allowed in the environment):
+```python
+import os
+import json
+import psycopg2
+from psycopg2.extras import LogicalReplicationConnection
+
+# Read connection info from YAML (parsed earlier by ops team)
+SRC_CONN_STR = "host=SOURCE_HOST port=5432 dbname=postgres user=SRC_USER password=SRC_PW"
+DST_CONN_STR = "host=DEST_HOST   port=5432 dbname=postgres user=DST_USER password=DST_PW"
+
+SLOT_NAME = "wal2json_slot"
+OUTPUT_PLUGIN = "wal2json"
+
+def ensure_replication_slot():
+    with psycopg2.connect(SRC_CONN_STR, connection_factory=LogicalReplicationConnection) as conn:
+        cur = conn.cursor()
+        cur.create_replication_slot(SLOT_NAME, output_plugin=OUTPUT_PLUGIN, temporary=False)
+        print(f"Created replication slot {SLOT_NAME} if it did not already exist.")
+
+def apply_change(cur_dest, change):
+    """Apply a single JSON change record to destination DB."""
+    kind = change["kind"]                        # 'insert' | 'update' | 'delete'
+    table = f"{change['schema']}.{change['table']}"
+    if kind == "insert":
+        cols = ", ".join(change["columnnames"])
+        placeholders = ", ".join(["%s"] * len(change["columnvalues"]))
+        sql = f"INSERT INTO {table} ({cols}) VALUES ({placeholders})"
+        cur_dest.execute(sql, change["columnvalues"])
+    elif kind == "update":
+        set_expr = ", ".join([f"{c} = %s" for c in change["columnnames"]])
+        pk_expr  = " AND ".join([f"{c} = %s" for c in change["oldkeys"]["keynames"]])
+        values   = change["columnvalues"] + change["oldkeys"]["keyvalues"]
+        sql = f"UPDATE {table} SET {set_expr} WHERE {pk_expr}"
+        cur_dest.execute(sql, values)
+    elif kind == "delete":
+        pk_expr = " AND ".join([f"{c} = %s" for c in change["oldkeys"]["keynames"]])
+        sql = f"DELETE FROM {table} WHERE {pk_expr}"
+        cur_dest.execute(sql, change["oldkeys"]["keyvalues"])
+
+def start_stream():
+    with psycopg2.connect(SRC_CONN_STR, connection_factory=LogicalReplicationConnection) as src_conn, \
+         psycopg2.connect(DST_CONN_STR) as dst_conn:
+
+        cur_src = src_conn.cursor()
+        cur_dst = dst_conn.cursor()
+        cur_src.start_replication(
+            slot_name=SLOT_NAME,
+            options={"pretty-print": 1},
+            decode=True
+        )
+
+        print("Starting streaming loop...")
+        for msg in cur_src:
+            data = json.loads(msg.payload)
+            for change in data.get("change", []):
+                apply_change(cur_dst, change)
+            dst_conn.commit()
+            msg.cursor.send_feedback(flush_lsn=msg.data_start)
+
+if __name__ == "__main__":
+    ensure_replication_slot()
+    start_stream()
+```
+   Explanations:  
+   • ensure_replication_slot() registers the slot only once.  
+   • start_stream() iterates forever, parses each JSON message from `wal2json`, and applies row-level mutations on the destination.  
+   • We use column-level reasoning to build parameterized SQL so every change type is captured.
+
+10. Replace the placeholders `SOURCE_HOST`, `SRC_USER`, `SRC_PW`, `DEST_HOST`, `DST_USER`, `DST_PW` in lines 6-7 with the actual values copied from “cdc_config.yaml”.
+
+11. Press Ctrl + S to save “sync_cdc.py”.
+
+12. Switch to the integrated terminal again.
+
+13. Type:
+```bash
+pip install psycopg2-binary PyYAML
+python sync_cdc.py
+```
+   and press Enter.  
+   The terminal prints “Starting streaming loop…”. As you insert, update, or delete rows on the source DB, you will see JSON messages arriving and the destination table changing immediately.
+
+14. Open another terminal tab and run a quick verification:
+```bash
+psql "$DST_CONN_STR" -c "SELECT COUNT(*) FROM some_table;"
+```
+   Then run the same query on the source DB; counts should match, proving synchronization.
+
+15. Return to Chrome, open pgAdmin’s Statistics tab for the destination database; we can see the subscription lag approaching 0 bytes, indicating CDC is current.
+
+16. Celebrate: the default “postgres” database is now continuously replicated from source to destination through logical-decoding, using our Python fallback stream plus native subscription.

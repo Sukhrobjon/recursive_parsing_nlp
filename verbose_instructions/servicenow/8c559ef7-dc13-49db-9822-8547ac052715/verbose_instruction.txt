@@ -1,0 +1,24 @@
+1) Navigate to https://console.cloud.google.com/bigquery in your browser and make sure the correct GCP project is selected in the blue project drop-down at the top of the left sidebar.  
+2) Click the small triangle ▸ to the left of your_project (replace with your actual project name) to expand its datasets.  
+3) Click the triangle ▸ next to incident_management (or the dataset that contains your incident table) so we can view its tables.  
+4) Click the table incidents to highlight it, then glance at the “Schema” tab in the right-hand panel; confirm columns named assigned_to, configuration_item, priority, and number exist. We will use them in our filter.  
+5) Click the + COMPOSE NEW QUERY button (white circle with a + icon above the Editor pane). A new SQL editor tab appears.  
+6) Type (or paste) the exact SQL filter below into the blank editor:  
+
+```sql
+-- Incidents that match the exact filter conditions
+SELECT
+  *
+FROM
+  `your_project.incident_management.incidents`
+WHERE
+  assigned_to IS NULL                -- "Assigned to" is ""
+  AND configuration_item IS NULL     -- "Configuration item" is ""
+  AND priority = '-- None --'        -- "Priority" is literal “-- None --”
+  AND number = 'INC0011939';         -- "Number" is the exact ticket
+```  
+
+7) Click the green ► RUN button in the grey toolbar of this query tab. The status bar above the Results panel will show “Running query” and then “Query complete” when finished.  
+8) Review the rows returned in the Query results grid. They should only include entries that simultaneously meet all four filter conditions.  
+9) (Optional) Click SAVE RESULTS in the top-right corner of the Results grid if you need to download the filtered data. Choose “CSV (local file)” in the drop-down, then press DOWNLOAD to save it to your computer.  
+10) Confirm the CSV is in your browser’s default download folder (e.g., ~/Downloads). If required by your workflow, rename the file to filtered_incidents_INC0011939.csv.

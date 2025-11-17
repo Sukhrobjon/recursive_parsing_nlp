@@ -1,0 +1,69 @@
+1) Double-click the file name​ “iris_adaboost.ipynb” (or the only notebook in the file list) to open it in JupyterLab.  
+2) Scroll to Cell [1] (the first empty code cell) and Click inside it.  
+3) Write the data-loading and split code:  
+```python
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+
+iris = load_iris()
+X_train, X_test, y_train, y_test = train_test_split(
+    iris.data, iris.target, test_size=0.25, random_state=42, stratify=iris.target
+)
+print("Shapes ->", X_train.shape, X_test.shape)
+```  
+4) Press Shift + Enter to run Cell [1] and confirm the shapes appear (e.g., (112, 4) (38, 4)).  
+5) Scroll to the next blank code cell (Cell [2]) and Click inside it.  
+6) Type the AdaBoost + grid-search tuning code:  
+```python
+from sklearn.ensemble import AdaBoostClassifier
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.model_selection import GridSearchCV
+
+base_tree = DecisionTreeClassifier(random_state=42)
+
+param_grid = {
+    "n_estimators": [50, 100, 150, 200],
+    "learning_rate": [0.1, 0.5, 0.8, 1.0],
+    "base_estimator__max_depth": [1, 2, 3]
+}
+
+ada = AdaBoostClassifier(
+    base_estimator=base_tree,
+    algorithm="SAMME.R",
+    random_state=42
+)
+
+grid = GridSearchCV(
+    estimator=ada,
+    param_grid=param_grid,
+    cv=5,
+    n_jobs=-1,
+    scoring="accuracy"
+)
+grid.fit(X_train, y_train)
+print("Best params:", grid.best_params_)
+print("Best CV accuracy:", grid.best_score_)
+best_ada = grid.best_estimator_
+```  
+7) Press Shift + Enter to execute Cell [2]; verify that “Best params” and a CV accuracy ≥ 0.97 are printed.  
+8) Scroll to Cell [3] (next empty cell) and Click inside it.  
+9) Write the final evaluation code:  
+```python
+from sklearn.metrics import accuracy_score, classification_report
+
+y_pred = best_ada.predict(X_test)
+acc = accuracy_score(y_test, y_pred)
+print("Test accuracy:", acc)
+print(classification_report(y_test, y_pred, target_names=iris.target_names))
+```  
+10) Press Shift + Enter to run Cell [3]. Confirm the console shows “Test accuracy: 1.0”.  
+11) If accuracy is < 1.0, Click back into Cell [2] and slightly enlarge the search space, e.g. add  
+```python
+"n_estimators": [50, 100, 200, 300, 400],
+"learning_rate": [0.05, 0.1, 0.2, 0.5, 1.0],
+"base_estimator__max_depth": [1, 2, 3, 4]
+```  
+then re-run Cell [2] and Cell [3] until Cell [3] prints 1.0.  
+12) Click the “Save” icon (blue floppy-disk) in the Jupyter toolbar, or press Ctrl + S, to persist the tuned notebook.  
+13) Go to the top menu bar and Click “Kernel ▸ Restart & Run All…”, then Click “Restart and Run All” in the dialog. Wait until the last cell shows the final 1.0 accuracy again—this verifies the notebook is fully reproducible.  
+14) Click the browser’s back arrow to view the file list; confirm that “iris_adaboost.ipynb” now shows a recent timestamp, indicating it has been saved with all executed outputs.

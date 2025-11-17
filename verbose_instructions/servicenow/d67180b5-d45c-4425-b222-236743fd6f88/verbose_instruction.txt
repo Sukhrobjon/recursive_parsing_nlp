@@ -1,0 +1,42 @@
+1) Open Chrome and navigate to the “Assets” web-application. Wait until the main table labelled “All Assets” finishes loading so we can see the column headers “Asset function”, “Serial number”, “Class”, and “Location”.
+
+2) Click the small grey funnel-shaped Filter icon located on the far-right of the header row; a “Create filter” side panel slides in from the left.
+
+3) In the side panel, click the blue “+ Add condition” button once. A new condition row appears with drop-downs for Column, Operator, and Value.
+
+4) Click the Column drop-down, scroll, and select “Asset function”.  
+   a) Click the Operator drop-down and choose “equals”.  
+   b) In the Value text box type Secondary (exact case).  
+   Note that the chip turns blue, confirming the value has been registered.
+
+5) Click “+ Add condition” again for the second rule.  
+   a) Set Column to “Serial number”.  
+   b) Leave Operator as “is empty” (or choose “equals” and leave Value blank if “is empty” is missing).  
+   This will filter rows whose serial number cell is blank.
+
+6) Click “+ Add condition” for the third rule.  
+   a) Choose Column “Class”.  
+   b) Set Operator to “equals”.  
+   c) Type Consumable in the Value box.
+
+7) Click “+ Add condition” for the fourth rule.  
+   a) Choose Column “Location”.  
+   b) Set Operator to “equals”.  
+   c) Type 30 Katharinenstr, Hamburg exactly (include the comma).
+
+8) Verify the logic connector at the top of the panel reads “AND” (the default). If it shows “OR”, click it once to toggle back to “AND” — we want all four conditions to apply simultaneously.
+
+9) Press the blue “Apply filter” button at the bottom of the panel. The panel closes and the table refreshes.
+
+10) Confirm success:  
+    a) Look at the grey bar above the table; it now shows four chips, one for each condition.  
+    b) Check the record count displayed in the top-left of the table (e.g., “Showing 3 of 742 assets”).  
+    c) Visually inspect a few rows and confirm every remaining entry has:  
+       • Asset function = Secondary  
+       • Serial number cell blank  
+       • Class = Consumable  
+       • Location = 30 Katharinenstr, Hamburg
+
+11) Click the floppy-disk icon labelled “Save view” (top-right of table) if you want to reuse this filter later. Give it a name like Secondary-Consumable-Hamburg and click “Save”.
+
+12) Done — we have created and executed the filter, and verified the results match all four criteria.

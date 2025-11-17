@@ -1,0 +1,18 @@
+1. Click the New button in the Metabase top-right toolbar.  
+2. Select Question from the dropdown that appears.  
+3. In the Choose a data source modal, click the Sample Database entry, then pick the Accounts table. We now have the Accounts dataset loaded for querying.  
+4. Click the Summarize button (blue pill) just above the result grid.  
+5. Under the Pick the metric you want to see section, click Count of rows. This tells Metabase to aggregate the total number of records.  
+6. To the right of the word by…, click pick a column to group by.  
+7. Choose Source from the list so each slice will represent a different account source.  
+8. Click the blue Visualize button in the upper-right corner. A default bar chart appears.  
+9. Click the Visualization dropdown (currently showing Bar) and select Pie from the list.  
+10. Click Pie once more to open the Pie Options side panel.  
+11. In the Display section, locate Show percentages and click the On the chart radio option. Percent values now overlay each slice, making it easy to see proportions.  
+12. Click Done at the bottom of the side panel to save the visualization settings.  
+13. Confirm we see a pie chart whose legend lists each unique Source along with both count and percentage—this verifies our aggregation worked.  
+14. Click the cloud-shaped Download full results icon in the lower-right corner of the visualization.  
+15. In the Download menu, choose .png and press Download. Metabase saves a file named something like Accounts - Source pie ...png to your browser’s default download folder.  
+16. Switch to your file manager or terminal and navigate to /home/user/Downloads (e.g., Run `cd /home/user/Downloads && ls` in a terminal).  
+17. Locate the newly downloaded PNG file (use the timestamp if multiple files exist) and rename it to pie.png (e.g., `mv "Accounts - Source pie 2024-05-12.png" pie.png`).  
+18. Run `ls -l pie.png` or visually verify in the folder that pie.png now exists; we’ve successfully created and renamed the pie-chart image.

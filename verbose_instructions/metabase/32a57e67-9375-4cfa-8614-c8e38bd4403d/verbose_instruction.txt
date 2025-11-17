@@ -1,0 +1,9 @@
+1. Click the grey gear icon located at the top-right corner of the Metabase screen  
+2. Select “Admin settings” from the drop-down panel that appears  
+3. Find the vertical menu on the left side of the Admin page and click “Authentication”  
+4. Scroll (if needed) to the “API Keys” section in the main panel and click the blue “Set up” button  
+5. Click the purple “Create API Key” button displayed in the center of the API Keys panel  
+6. Type main into the “Key name” input field near the top of the pop-up window  
+7. Click the “Select a group” drop-down, scroll (or type) until you find “Administrators,” and click that entry so it shows as the chosen group  
+8. Click the blue “Create” button at the bottom-right corner of the pop-up window  
+9. Verify a new row now appears in the API Keys list with Name = main and Group = Administrators — this confirms the API key was created successfully

@@ -1,0 +1,17 @@
+1. Click the “New” button in the upper-right corner of the Metabase top bar.  
+2. Select “Question” from the dropdown panel that appears.  
+3. Click “Orders” under the “Sample Database” section to set the data source.  
+4. Click the blue “Pick the metric you want to see” button in the middle of the canvas.  
+5. Choose “Custom Expression” from the metric options list.  
+6. Type `Share([Tax] > 5)` in the EXPRESSION input box.  
+   • Note that Share() returns the percentage of rows that meet the condition `[Tax] > 5`.  
+7. Type `tax percentage` in the NAME input box to label the new column.  
+8. Click the blue “Done” button at the bottom of the Custom Expression dialog.  
+9. Click the gray “Pick a column to group by” box directly beneath the metric summary.  
+10. Select “User ID” from the list of available columns to group the calculation per user.  
+11. Confirm the results table shows two columns: “User ID” and “tax percentage” with percentage values for each user.  
+12. Verify that the percentages look reasonable (e.g., values between 0 % and 100 %).  
+   • If numbers appear greater than 1, click the “Formatting” gear icon beside “tax percentage,” choose “Percent,” and click “Update” to correct the display.  
+13. (Optional) Hover over a cell in the “tax percentage” column to confirm the tooltip reads the same value, ensuring calculation accuracy.  
+
+You have now created a Metabase question that counts the percentage of orders where Tax > $5 for every user, with the column labeled “tax percentage.” The question does not need to be saved, so you can close or navigate away if desired.

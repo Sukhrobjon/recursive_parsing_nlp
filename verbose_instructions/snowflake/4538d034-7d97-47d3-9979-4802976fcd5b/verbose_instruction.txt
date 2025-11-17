@@ -1,0 +1,53 @@
+1. Click the blue “+” icon in the upper-right corner of Snowflake Web UI.  
+2. Select “SQL Worksheet” from the drop-down menu to open a blank worksheet tab.  
+3. Type (or paste) the complete SQL/Python block below into the worksheet editor pane:  
+```sql
+-- 1) Create a dedicated database for log traces
+CREATE OR REPLACE DATABASE log_trace_db;
+
+-- 2) Switch context so subsequent objects land in the new DB
+USE DATABASE log_trace_db;
+
+-- 3) Create an event table that will automatically capture Snowflake event metadata
+CREATE OR REPLACE EVENT TABLE event_table;
+
+-- 4) Create a Python 3.8 UDF that writes a log entry and returns SUCCESS
+CREATE OR REPLACE FUNCTION log_trace_data()
+  RETURNS VARCHAR
+  LANGUAGE PYTHON
+  RUNTIME_VERSION = 3.8          -- exact version requested
+  HANDLER = 'run'
+AS
+$$
+import logging
+
+# set up the logger once at import time
+logger = logging.getLogger("logger")
+logger.setLevel(logging.INFO)
+
+def run():
+    logger.info("Logging from Python function.")
+    return "SUCCESS"
+$$;
+```
+4. Click the small triangle on the right side of the “► Run” button and choose “Run All” so every statement executes in order.  
+5. Watch the Results pane: verify each statement shows “Status: success” and the final line displays “SUCCESS” in the “log_trace_data” result set.  
+6. Expand the left sidebar and click “Databases”, then click “log_trace_db” to confirm the new database exists.  
+7. Inside “log_trace_db”, click the “EVENT TABLES” heading and verify “EVENT_TABLE” appears.  
+8. Click “Functions” under the same database and confirm “LOG_TRACE_DATA()” is listed with language “PYTHON”.  
+9. Return to the worksheet tab, clear the editor, and type:  
+```sql
+SELECT log_trace_data();
+```
+10. Press “► Run” to execute the test call. Confirm the output column contains the value “SUCCESS”.  
+11. Run a quick query to see that the event table is populated (it may take a few seconds for the event stream to materialize):  
+```sql
+SELECT *
+FROM event_table
+ORDER BY EVENT_TIME DESC
+LIMIT 10;
+```
+12. Verify rows appear showing metadata such as EVENT_TYPE, EVENT_TIME, and USER_NAME—this confirms logging events are being captured.  
+13. (Optional) Switch to your BI or CLI tool and issue the same SELECT statements if you prefer working outside the web UI.  
+14. If any statement failed, click the red “Error” link in the Results pane, read the stack trace, correct the SQL, and repeat steps 3-4.  
+15. Close the worksheet tab or click “Save” (floppy-disk icon) to keep the script for future reference; name it “create_log_trace_objects.sql”.

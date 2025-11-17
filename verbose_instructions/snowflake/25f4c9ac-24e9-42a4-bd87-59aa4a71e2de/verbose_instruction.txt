@@ -1,0 +1,9 @@
+1. Click the “Code Versions” button located in the upper-right corner of the worksheet window.  
+2. Wait for the side panel titled “Code Versions” to slide in from the right; then click the second item in the list (it should be labeled with the second-newest timestamp).  
+3. Observe that the SQL you need appears in a read-only area inside the side panel. Drag your cursor from the very first character to the last to highlight the entire statement set.  
+4. Press Ctrl + C (Cmd + C on macOS) to copy the highlighted SQL to your clipboard.  
+5. Click the gray “Close” button at the bottom-right corner of the “Code Versions” panel to collapse the side panel and return focus to the main worksheet.  
+6. Click anywhere inside the worksheet editor, then press Ctrl + A (Cmd + A) to select all current text.  
+7. Press Ctrl + V (Cmd + V) to paste the SQL you just copied, replacing the previous contents.  
+8. Verify that the worksheet now shows the exact SQL text from version 2 (you can quickly compare the first and last lines with what you saw in the side panel).  
+9. Leave the webpage open—do not click the browser’s close button or any navigation links—so the rolled-back SQL remains in place for further edits or execution.

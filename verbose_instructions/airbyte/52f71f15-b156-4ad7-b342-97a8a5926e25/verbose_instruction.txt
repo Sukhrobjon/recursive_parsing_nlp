@@ -1,0 +1,61 @@
+1) Open a new browser tab and navigate to `http://localhost:8000` (the Airbyte UI).  
+2) Click the “Connections” item in the left-hand navigation bar.  
+3) Locate the existing connection named “faker → postgres” and click its row.  
+4) In the top-right of the connection detail page, click the blue button “Sync now”.  
+   Reasoning: this pushes the latest `users` data from Faker into the target Postgres DB before we connect Superset to it.  
+5) Wait until the Status pill turns green with the label “SUCCEEDED”. We now know the `users` table is populated.
+
+6) Switch to the terminal application.  
+7) Type the following psql command to confirm the table exists and contains data:  
+```bash
+psql "postgresql://postgres:password@172.17.0.1:2000/postgres" -c "\dt"
+```  
+8) Observe a table named either `public.users` or `airbyte_raw_users` (Airbyte appends prefixes when normalization is off).  
+9) Run a quick row count to verify non-zero records:  
+```bash
+psql "postgresql://postgres:password@172.17.0.1:2000/postgres" -c "SELECT COUNT(*) FROM public.users;"
+```  
+10) Confirm the returned count is greater than 0. We will surface this number in Superset.
+
+11) Open a new browser tab and navigate to `http://localhost:8088` (Superset UI).  
+12) Log in with your Superset credentials (admin / admin if using the default demo image).  
+13) Click “Settings” (gear icon in the upper right) → “Database Connections”.  
+14) Click the “+ Database” button in the top right corner.  
+15) In the “Connect a database” modal that appears, click the “SQLAlchemy URI” tab.  
+16) Type (or paste) the exact URI:  
+```
+postgresql://postgres:password@172.17.0.1:2000/postgres
+```  
+17) Expand the “Advanced” accordion and tick the checkbox “Expose in SQL Lab” (this makes queries possible later).  
+18) Click the blue “Test Connection” button.  
+19) Wait for the green toast message “Connection looks good!”.  
+20) Click “Connect” to save the database. Superset now knows how to reach our Postgres instance.
+
+21) Immediately after saving, a “Import tables” side panel pops up.  
+22) In the left column, scroll or type in the search box to find `users`.  
+23) Click the checkbox beside the `users` table.  
+24) Keeping “Add to new dataset” selected, click the blue “Add” button at the bottom of the panel.  
+25) On the dataset form, leave the default “Schema: public” and “Table: users” values, then click “Save”.  
+   Note: the dataset name defaults to “users”; we will use it in the chart step.
+
+26) Superset automatically opens the Explore view for this dataset.  
+27) In the “Visualization type” dropdown at the top left, scroll or type to select “Big Number”.  
+28) On the left sidebar, expand the “Metrics” section, click the “+” icon, and choose “Simple”.  
+29) In the metric pop-up, set:  
+   • Label: `user_count`  
+   • Aggregate: `COUNT`  
+   • Column: `id` (or any non-null column; Airbyte Faker names it `id`)  
+   Then click “Save”.  
+30) Back in the Explore sidebar, under “Metrics”, click to select the new `user_count`.  
+31) (Optional) Under “Formatting”, set “Y Axis Format” to “,d” so the number shows thousands separators.  
+32) Click the blue “Run” button in the upper right of the Explore screen.  
+33) Verify the big number widget now shows the same count you saw in psql.  
+34) Click the “Save” button (floppy-disk icon) next to “Run”.  
+35) In the modal, choose “Add chart to dashboard”, accept the default new dashboard name “Users Dashboard”, and click “Save”.  
+36) Superset redirects to the dashboard edit view; drag the “Users” Big Number tile to the desired position and click “Save changes” at the top right.
+
+We have:  
+• Refreshed data from Faker into Postgres via Airbyte.  
+• Registered the Postgres database in Superset with the supplied SQLAlchemy URI.  
+• Imported the `users` table as a dataset.  
+• Built a Big Number chart called “Users” that shows the live count of records in the `users` table.

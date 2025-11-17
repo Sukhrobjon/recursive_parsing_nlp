@@ -1,0 +1,57 @@
+1) Open the terminal that is already pointed at the folder where you want the project (“current directory”).  
+
+2) Type the command below to create an empty Astronomer-compatible Airflow project skeleton:  
+```bash
+astro dev init
+```  
+   • The CLI generates a new folder structure (dags/, Dockerfile, packages.txt, airflow_settings.yaml, docker-compose.yaml, etc.).  
+   • We will reuse these files without modification except for the port mapping.
+
+3) Execute the ls command to confirm the files were created:  
+```bash
+ls -1
+```  
+   You should see at least: dags, Dockerfile, docker-compose.yaml, airflow_settings.yaml.
+
+4) Open docker-compose.yaml in your preferred editor (for example, nano):  
+```bash
+nano docker-compose.yaml
+```  
+
+5) Locate the “webserver” service block. Inside that block find the ports line that maps 8080 by default:  
+```yaml
+ports:
+  - 8080:8080
+```  
+
+6) Edit that line so the host-side port becomes 8002 while the container side remains 8080:  
+```yaml
+ports:
+  - 8002:8080
+```  
+   Note that 8002 (left side) is the port on your laptop, 8080 (right side) remains the port inside the container.
+
+7) Press Ctrl+O then Enter to save, and Ctrl+X to exit nano. (If you use another editor, save the file accordingly.)
+
+8) Back in the terminal, start the local Airflow environment:  
+```bash
+astro dev start
+```  
+   • The CLI builds Docker images, then brings up three containers (webserver, scheduler, postgres).  
+   • Wait until you see “Airflow Webserver: http://localhost:8002” in the logs.
+
+9) Verify the web UI is running:  
+   a) Open a browser and navigate to http://localhost:8002  
+   b) Confirm the Airflow login screen (or the DAG home screen if auth is disabled) appears.
+
+10) Return to the terminal and run docker ps to make sure the containers are healthy:  
+```bash
+docker ps --filter "name=$(basename $PWD)"
+```  
+   We expect STATUS “Up” for webserver, scheduler, postgres.
+
+11) Keep the terminal open; Ctrl+C will not stop the containers. To shut everything down later, run:  
+```bash
+astro dev stop
+```  
+   This preserves the project files created in step 2.

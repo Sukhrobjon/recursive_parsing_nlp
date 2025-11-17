@@ -1,0 +1,24 @@
+1. Click the “New” button in the Metabase top-right toolbar.  
+2. Choose “Question” from the drop-down panel that appears.  
+3. Click “Sample Database” in the Choose a database dialog, then select the “Products” table.  
+4. Click the blue “Summarize” button near the top-right of the editor.  
+5. Click the grey “Pick the metric you want to see” pill.  
+6. Scroll or type to find “Sum of …”, then click it.  
+7. In the subsequent list, click “Price”. (Metabase now shows “Sum of Price”).  
+8. After the word “by”, click the grey “Pick a column to group by” pill.  
+9. Select “Category”. The phrase changes to “… by Category”.  
+10. Click the blue “+” icon to the right of “Category” to add another grouping.  
+11. Choose “Created At → Quarter”. We now have “… by Category and Created At – Quarter”.  
+12. Click the blue “Visualize” button. Metabase shows a preview (usually a table).  
+13. Click the “Visualization” selector at the bottom (currently “Table”) and choose “Bar”.  
+14. Click “Bar” again to open the Bar Options side panel.  
+15. In the Bar Options pane, expand “Display”.  
+16. Under “Stacking”, click “Stack”. (Bars now appear stacked by Category within each quarter).  
+17. Click “Done” at the bottom of the options pane to apply changes.  
+18. Verify the result: we should see quarterly bars on the X-axis, height representing Sum of Price, and colors representing each Product Category.  
+19. Click the cloud-shaped “Download” button at the bottom-right corner of the window.  
+20. Choose “PNG” in the download format panel. Metabase immediately downloads a file to your browser’s default folder (usually ~/Downloads).  
+21. Open your file browser and navigate to “/home/user/Downloads”.  
+22. Right-click the newly downloaded PNG (name starts with the question title) and choose “Rename”.  
+23. Type stack_chart.png and press Enter to confirm.  
+24. Double-click stack_chart.png to open it and confirm the stacked bar chart displays correctly (height, colors, quarter labels).

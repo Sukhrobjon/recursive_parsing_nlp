@@ -1,0 +1,69 @@
+1. Log in to Snowsight with your normal credentials so we land on the Worksheets home page.  
+2. Click the blue “+ Worksheet” button in the upper-left so a blank SQL worksheet opens.  
+3. Type the following to set security and compute context:```sql
+USE ROLE ACCOUNTADMIN;
+USE WAREHOUSE COMPUTE_WH;
+```  
+4. Click the triangular “► Run” button in the toolbar to execute both lines; you should see “Statement executed successfully” in the Results panel.  
+5. Write the database creation statement:```sql
+CREATE OR REPLACE DATABASE WIND_DB;
+```  
+6. Press “Run” again and verify a green “WIND_DB successfully created” message appears.  
+7. Switch the session into that database and its default PUBLIC schema:```sql
+USE DATABASE WIND_DB;
+USE SCHEMA PUBLIC;
+```  
+8. Execute the two lines and confirm the context indicator (top-right breadcrumb) now shows WIND_DB.PUBLIC.  
+9. Define the target table that will receive the CSV. Paste then run:```sql
+CREATE OR REPLACE TABLE WIND
+(
+    observation_date   DATE,
+    wind_speed_mph     FLOAT
+);
+```Note that we keep only the columns we need for yearly averages; extra CSV columns will be ignored by Snowflake if “SKIP_HEADER = 1” is set later.  
+10. Click the “Database” left-hand icon, expand WIND_DB > PUBLIC, and confirm the table WIND appears.  
+11. Switch to your local file system by clicking the “+ Data” button (top ribbon) and choose “Load Data”.  
+12. In the Load Data wizard choose:  
+    a. “Database” = WIND_DB  
+    b. “Schema”   = PUBLIC  
+    c. “Table”    = WIND  
+13. Click “Next” and, in the “Select files” step, drag the CSV file from your Desktop into the dashed upload area (or click “Browse” and locate the file). The filename will appear in the list.  
+14. Leave “File format” set to “New”. Click “Next”.  
+15. In the file-format dialog tick “Header row exists”, set “Field delimiter” to “,” and leave all other defaults. Click “Create”.  
+16. Back on the wizard summary click “Load”. Wait until the progress bar turns green and the status reads 100% loaded.  
+17. Click “Finish” to close the wizard.  
+18. Return to the worksheet tab where our SQL still lives.  
+19. Verify the load with a quick row count:```sql
+SELECT COUNT(*) FROM WIND;
+```Run it; the result should equal the total rows reported by the wizard.  
+20. Build a query to calculate yearly average wind speed. Write:```sql
+SELECT 
+        YEAR(observation_date)     AS YEAR,
+        ROUND(AVG(wind_speed_mph),2) AS AVG_WIND_SPEED
+FROM WIND
+GROUP BY YEAR
+ORDER BY YEAR;
+```  
+21. Click “Run”. In the Results grid you should see two columns: YEAR and AVG_WIND_SPEED.  
+22. Rename the worksheet in the upper-left title box to “wind_avg_query”. Press Enter to save the name.  
+23. Click the “Chart” button (small bar-chart icon just above the result grid).  
+24. In the chart pane that appears, set:  
+    a. “Chart Type” = Bar.  
+    b. “X-Axis”      = YEAR.  
+    c. “Y-Axis”      = AVG_WIND_SPEED. The preview now shows a yearly bar chart.  
+25. Click the “Save” button at the top of the chart panel; a green toast “Visualization saved” confirms.  
+26. Create a dashboard. In the left sidebar click “Dashboards” then the blue “+ Dashboard” button.  
+27. In the dialog type “wind_dashboard” for Name, leave “Folder” blank, and click “Create”. You will be taken to an empty dashboard canvas.  
+28. Add the existing worksheet to the dashboard:  
+    a. Click “Add Tile” > “Add Worksheet”.  
+    b. Select “wind_avg_query” from the list, tick the visualization (the bar chart) and also tick the query result table.  
+    c. Click “Add 2 items”. Both the table and bar chart tiles now appear on the dashboard.  
+29. Click the “Save” button in the upper-right corner of the dashboard so the tiles are persisted.  
+30. Download the query result:  
+    a. Hover over the table tile, click the three-dot menu “⋮”, then choose “Download CSV”.  
+    b. In the file dialog save the file as “avg_wind_speed.csv”.  
+31. Download the bar chart:  
+    a. Hover over the chart tile, click its “⋮” menu, choose “Download Image”.  
+    b. Save the file as “avg_speed_chart.png”.  
+32. Click the browser’s back arrow or the “wind_dashboard” breadcrumb (top-left in Snowsight) to make sure you return to the live dashboard view.  
+33. Confirm both tiles still render; the task is complete and the dashboard is ready for further use.

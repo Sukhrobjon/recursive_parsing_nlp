@@ -1,0 +1,60 @@
+1. Open the “question.sql” file in your code editor and read through the entire query.  
+   • Identify each table named in the FROM clause and every JOIN clause.  
+   • Write down the columns that appear in the SELECT list, the JOIN keys, any WHERE-filter conditions, the GROUP BY columns, and the aggregate functions (SUM, COUNT, AVG, MIN, MAX).  
+   • Keep the file open—we will switch back to it for reference.
+
+2. Switch to your browser tab that has Metabase open.
+
+3. Click the orange “New” button in the upper-right corner.
+
+4. Click “Question” in the dropdown panel.
+
+5. Select the same database used in the SQL query (the database name appears in the first line of the SQL file, e.g., `SELECT … FROM analytics.orders` ➜ choose “analytics”).
+
+6. In the table list that appears, click the first (left-most) table referenced in the SQL file’s FROM clause.  
+   Example: if the SQL begins `FROM orders o`, click the “orders” table.
+
+7. Click the gray “+ Join data” button that appears just above the results preview.
+
+8. In the “Pick your joined data” dialog:  
+   a. Select the second table named in the SQL query (e.g., “customers”).  
+   b. In “How do these tables connect?”, choose the exact column pair shown in the SQL’s ON clause (e.g., `orders.customer_id` = `customers.id`).  
+   c. Click the blue “Done” button.  
+   d. Repeat Steps 7-8 for every additional JOIN clause you saw in the SQL file, always matching the join keys and join types (Inner, Left, Right) to the SQL.
+
+9. Click the blue “Filter” button in the notebook panel (left side).  
+   • For each condition in the SQL’s WHERE section, add an equivalent filter:  
+     – Choose the correct field.  
+     – Select the appropriate operator (“equals”, “is not null”, “greater than”, “contains”, etc.).  
+     – Type the exact comparison value used in the SQL.  
+   • Click “Add filter” after each one until every WHERE line is represented.
+
+10. Click the “Summarize” button at the top of the notebook panel.
+
+11. Under “Choose a field to group by”, add every column listed in the SQL’s GROUP BY clause, in the same order.  
+    Example: add “order_date (by month)”, then “region”, etc.
+
+12. Under “Pick the metric you want to see”, remove the default “Count of rows”.  
+    • Click “Add”, choose the same aggregate function(s) used in the SQL, and pick the exact column(s).  
+      – If the SQL has `SUM(o.total_amount) AS revenue`, choose “Sum” of “total_amount”.  
+      – If the SQL also has `COUNT(DISTINCT c.id) AS customers`, click “Add” again, choose “Distinct”, then select “customers.id”.
+
+13. Click the blue “Done” button in the Summarize pop-up.
+
+14. If the SQL query specifies an ORDER BY, click the column header in the results table and choose “Sort ascending” or “Sort descending” to match.
+
+15. Verify the result count:  
+    • Switch back to your code editor, copy the entire SQL text.  
+    • In Metabase, press the keyboard shortcut Cmd + Shift + K (Mac) or Ctrl + Shift + K (Windows/Linux) to open the Native Query editor in a new tab.  
+    • Paste the SQL, click the blue “Run” button, and wait for the results.  
+    • Confirm that the row count and numeric totals match the GUI question you just built. (Small rounding differences on floats are okay.)
+
+16. Close the Native Query tab (we don’t need to save it).
+
+17. Return to your GUI question tab. Confirm one last time that:  
+    • All joins appear in the notebook panel with the correct tables and keys.  
+    • All filters mirror the SQL WHERE conditions.  
+    • The Summarize step lists every Group By and every aggregation the SQL returns.  
+    • Sorting matches the SQL ORDER BY.
+
+18. You do not need to click “Save”; simply close the browser tab or navigate away.

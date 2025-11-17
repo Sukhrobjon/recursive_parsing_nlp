@@ -1,0 +1,37 @@
+1) Switch to the open chromium tab titled ​airbyte_ui – “Airbyte | Connections”.  
+2) Click the single row that shows the existing Faker → Postgres connection to open its details panel.  
+3) Click the blue “Sync now” button on the right-hand side; wait until the status chip turns green and reads “Completed” so we know fresh data is in Postgres.  
+
+4) Switch to the chromium tab titled ​superset and, if prompted, type ​admin in “Username” and ​admin in “Password”, then click “Sign In”.  
+5) Click the gear-icon labeled “Settings” (upper-right nav bar), then click “Database Connections” in the dropdown.  
+6) Click the blue “+ Database” button (upper-right corner of the Database page).  
+7) Select “PostgreSQL” from the modal.  
+8) Scroll to the bottom of the credentials form and click the link “Connect this database with a SQLAlchemy URI string instead”.  
+9) Type the exact URI below into the “SQLALCHEMY URI” text box:  
+
+```text
+postgresql://postgres:password@172.17.0.1:2000/postgres
+```  
+
+10) Click the blue “Connect” button; wait for the toast message “Database added!” and verify a new row named “postgres” appears in the table.  
+
+11) Click “Datasets” in the left-side navigation bar.  
+12) Click the blue “+ DATASET” button (upper-right).  
+13) In the “Add dataset” modal, choose:  
+    • DATABASE: select “postgres” (or the exact name shown).  
+    • SCHEMA: select “public”.  
+    • TABLE: select “users”.  
+14) Click the blue “CREATE DATASET AND CREATE CHART” button; Superset immediately opens the Chart wizard.  
+
+15) In the “Create a new chart” wizard, click the tile named “Big Number”.  
+16) Click the blue “CREATE NEW CHART” button (bottom-right).  
+
+17) In the Chart builder page, click the pencil icon next to the placeholder title and type ​Users, then press Enter.  
+18) In the DATA panel on the left:  
+    a. Click the “+ Add metric” dropdown under “Metric”.  
+    b. Select “COUNT(*)” (Superset auto-generates this aggregate).  
+19) Click the blue “APPLY” button above the data panel to render the preview; we should see a single large number representing total rows in ​public.users.  
+
+20) Click the blue “SAVE” button at the top-right of the page.  
+21) In the “Save chart” dialog, leave the default “Overwrite existing chart” unchecked, confirm the name is ​Users, optionally choose a dashboard, then click the blue “SAVE” button (bottom-right).  
+22) Look for the green toast “Chart saved” confirming the Big Number chart is now stored and counts the number of users imported by Airbyte.

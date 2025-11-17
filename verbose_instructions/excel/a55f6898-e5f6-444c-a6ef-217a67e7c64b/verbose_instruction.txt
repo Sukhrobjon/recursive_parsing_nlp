@@ -1,0 +1,24 @@
+1. Click the “+” (Insert Sheet) icon immediately to the right of the “Sheet1” tab; Excel creates a new worksheet and automatically names it “Sheet2”.  
+2. Double-click the newly created tab name, type “Sheet2”, and press ENTER to confirm, ensuring the tab is now titled exactly “Sheet2”.  
+3. Select cell A1, hold SHIFT, and click cell B1 so that range A1:B1 is highlighted.  
+4. Right-click anywhere inside the highlighted range and choose “Merge & Center” (or “Merge Cells” depending on your ribbon); the two cells are now a single merged cell.  
+5. Type Summer sales ($) and press ENTER to store the header text in the merged cell.  
+6. Click the “Sheet1” tab to switch back to your source data sheet.  
+7. Press CTRL + A to highlight the entire contiguous data block (Excel should include the header row).  
+8. Click the Insert tab on the Ribbon, then click PivotTable in the Tables group.  
+9. Verify that “Select a table or range” is chosen and the Table/Range box correctly references your data (e.g., ‘Sheet1’!$A$1:$D$100). Leave “New Worksheet” selected for now and click OK; a blank Pivot Table Field List appears on a new sheet.  
+10. Drag the Month field from the Field List into the Rows box; months now appear as row labels in the pivot table layout area.  
+11. Drag the Sales Channel field into the Columns box; unique channel names now form column headers.  
+12. Drag the Revenue (or Sales, depending on your header) field into the Values box; Excel automatically applies “Sum of Revenue”.  
+13. Click anywhere inside the pivot table so the ribbon shows PivotTable Analyze.  
+14. Click PivotTable Analyze → Move PivotTable → Existing Worksheet.  
+15. In the dialog, click the Range selector (shrink icon), switch to Sheet2, and click cell A2 (just below your merged title). The reference box shows Sheet2!$A$2.  
+16. Click the Range selector again to expand, then click OK. The pivot table instantly relocates to Sheet2 starting at A2.  
+17. Scroll through Sheet2 and visually confirm that the first column lists months, the first row after row 1 lists channel headers, and the intersecting cells contain revenue totals—this verifies successful aggregation.  
+18. Click any cell inside the pivot table, then press CTRL + A to select the entire pivot table (optional but makes chart creation easier).  
+19. Click Insert on the Ribbon, choose the Insert Column or Bar Chart dropdown, and select Stacked Column (the second icon under 2-D Column). A default stacked column chart appears, usually overlapping the pivot table.  
+20. Drag the chart to an empty region (e.g., columns G–L) so it does not obscure the pivot table.  
+21. Double-click the generic Chart Title box; type Revenue of Each Channel ($) and press ENTER.  
+22. Click anywhere inside the chart to activate Chart Tools, then click the plus icon (Chart Elements) → Legend → Bottom; the legend now sits below the chart.  
+23. Optionally, right-click a blank region of the chart and choose “Move Chart…” if you prefer its own sheet; otherwise leave it embedded.  
+24. Press CTRL + S to save the workbook, ensuring all modifications (title merge, pivot, and chart) are preserved.

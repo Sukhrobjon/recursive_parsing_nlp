@@ -1,0 +1,73 @@
+1) Switch to the terminal you have been using for the jaffle_shop project.  
+2) Type `pwd` and press Enter to verify you are still inside `~/projects/jaffle_shop`. If any other path appears, run `cd ~/projects/jaffle_shop` and press Enter to move into the project directory.  
+3) Execute `ls` and press Enter. Confirm you can see the folders `models`, `seeds`, and the file `requirements.md` (we will open that next).  
+4) Run `cat requirements.md | less` and press Enter to scroll through the requirements. Note each rule—these will become individual dbt tests. Typical lines might read, for example, “orders.id must be unique”, “orders.user_id cannot be null”, or “payments.amount must be > 0”. Leave the pager by pressing `q`.  
+5) Launch your editor to modify the schema file. If you are comfortable with VS Code, type `code models/schema.yml` and press Enter; otherwise, use `nano models/schema.yml`. (We will assume VS Code below.)  
+6) In VS Code, locate the outline on the left. Click `models/schema.yml` to open the YAML file in the editor pane.  
+7) Scan the existing YAML. Under the `models:` key you should already have model blocks for `orders`, `customers`, and `payments`—each with `columns:` entries. We will inject tests beneath those columns.  
+8) For every rule captured from requirements.md, write a test entry. Follow the indentation pattern exactly (two spaces per level). Example additions:
+
+```yaml
+models:
+  - name: orders
+    description: '{{ doc("orders") }}'
+    columns:
+      - name: id
+        description: Primary key for orders
+        tests:
+          - unique
+          - not_null
+      - name: user_id
+        description: Foreign key to customers table
+        tests:
+          - not_null
+      - name: status
+        description: Order status flag
+        tests:
+          - accepted_values:
+              values: ['placed', 'shipped', 'completed', 'return_pending', 'returned']
+
+  - name: customers
+    description: '{{ doc("customers") }}'
+    columns:
+      - name: id
+        description: Primary key for customers
+        tests:
+          - unique
+          - not_null
+
+  - name: payments
+    description: '{{ doc("payments") }}'
+    columns:
+      - name: id
+        description: Payment primary key
+        tests:
+          - unique
+          - not_null
+      - name: amount
+        description: Payment amount (must be positive)
+        tests:
+          - not_null
+          - relationships:
+              to: ref('orders')
+              field: id
+          - dbt_utils.expression_is_true:
+              expression: "amount > 0"
+```
+
+Note that we copied the exact accepted status list from requirements.md, and we used `dbt_utils.expression_is_true` for the positive‐amount rule (you saw a similar example in requirements.md).  
+9) Press `Ctrl+S` (or `Cmd+S` on macOS) to save `schema.yml`. Verify no YAML red squiggles appear—this indicates correct indentation.  
+10) Return to the terminal. If you are still in VS Code’s integrated terminal that is fine; otherwise, switch back by clicking the `Terminal` panel.  
+11) Type `dbt compile` and press Enter. Compilation should finish without errors. If YAML indentation issues appear, go back to step 8, fix, and recompile until clean.  
+12) Run the test suite with `dbt test` and press Enter. dbt will build your models if needed and then execute the tests we just added.  
+13) Watch the test output: every line should end with `PASS`. Common final summary reads something like:
+
+```
+Completed successfully
+
+Done. PASS=10 WARN=0 ERROR=0 SKIP=0 TOTAL=10
+```
+
+If you see any `FAIL` or `ERROR`, note the failing test name, return to `models/schema.yml` (repeat steps 5–9) and adjust the test definition or underlying data. Re‐run `dbt test` until all tests pass.  
+14) Once you have “PASS” across the board, run `dbt run --select state:modified+` (optional) to regenerate models with confidence that tests are green.  
+15) Celebrate—your jaffle_shop project now has comprehensive dbt tests based on requirements.md, and the test suite passes in full.

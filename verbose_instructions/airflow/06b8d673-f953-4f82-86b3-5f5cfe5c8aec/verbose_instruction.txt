@@ -1,0 +1,138 @@
+1. Click the VS Code icon in the left dock of the Astronomer workspace to open the project files.  
+2. Locate and double-click README.md in the dags/ folder so we can reference the connection information that the team has documented.  
+3. Scroll in README.md until you find the “SQLite connection” section; note the following values (we will copy/paste them shortly):  
+   • Connection ID: sqlite_conn  
+   • Database file: /tmp/sqlite.db  
+4. Click the Chromium (Airflow) icon in the left dock to switch to the running Airflow UI.  
+5. Click the Admin menu in the top navigation bar, then click Connections in the dropdown.  
+6. Click the blue + button labelled “Create” under the Connections list to add a new entry.  
+7. Type sqlite_conn in the Connection Id field.  
+8. Select SQLite in the Connection Type drop-down (the form will collapse to show only the Host input).  
+9. Paste /tmp/sqlite.db into the Host field.  
+10. Click the Save button at the bottom of the modal; a green “Added” flash message should appear and a new row “sqlite_conn” will now be visible—this confirms the connection was created successfully.  
+
+11. Click the VS Code icon again to return to the editor.  
+12. In the dags/ directory, double-click sql_data_quality.py (or create it if it does not exist).  
+13. Replace ANY placeholder content in sql_data_quality.py with the following full DAG code, making sure indentation is preserved:  
+
+```python
+from airflow import DAG
+from airflow.providers.sqlite.operators.sqlite import SqliteOperator
+from airflow.providers.common.sql.operators.sql import SQLColumnCheckOperator, SQLTableCheckOperator
+from airflow.utils.dates import days_ago
+from datetime import timedelta
+
+_CONN_ID = "sqlite_conn"
+_TABLE_NAME = "bird_observations"
+
+default_args = {
+    "owner": "airflow",
+    "retries": 1,
+    "retry_delay": timedelta(minutes=2),
+}
+
+with DAG(
+    dag_id="sql_data_quality",
+    default_args=default_args,
+    start_date=days_ago(1),
+    schedule_interval=None,
+    catchup=False,
+    tags=["example", "data-quality"],
+) as dag:
+
+    # 1. Create table if not exists
+    create_table = SqliteOperator(
+        task_id="create_table",
+        sql=f"""
+        CREATE TABLE IF NOT EXISTS {_TABLE_NAME} (
+            bird_name TEXT,
+            observation_year INTEGER,
+            bird_happiness INTEGER
+        );
+        """,
+        sqlite_conn_id=_CONN_ID,
+    )
+
+    # 2. Populate sample data
+    insert_rows = SqliteOperator(
+        task_id="insert_rows",
+        sql=f"""
+        DELETE FROM {_TABLE_NAME};
+        INSERT INTO {_TABLE_NAME} (bird_name, observation_year, bird_happiness)
+        VALUES
+            ('sparrow', 2019, 9),
+            ('robin',   2020, 8),
+            ('eagle',   2021, 10),
+            ('owl',     2021, 7),
+            ('crow',    2022, 8);
+        """,
+        sqlite_conn_id=_CONN_ID,
+    )
+
+    # 3. Column-level checks
+    column_checks = SQLColumnCheckOperator(
+        task_id="column_checks",
+        conn_id=_CONN_ID,
+        table=_TABLE_NAME,
+        column_mapping={
+            "bird_name": {
+                "null_check": {"equal_to": 0},
+                "distinct_check": {"geq_to": 5},
+            },
+            "observation_year": {
+                "min": {"greater_than": 2018},
+                "max": {"less_than": 2024},
+            },
+            "bird_happiness": {
+                "min": {"geq_to": 1},
+                "max": {"leq_to": 10},
+            },
+        },
+    )
+
+    # 4. Table-level checks
+    table_checks = SQLTableCheckOperator(
+        task_id="table_checks",
+        conn_id=_CONN_ID,
+        table=_TABLE_NAME,
+        checks={
+            "avg_happiness_after_2018": {
+                "check_statement": "AVG(bird_happiness) >= 8",
+                "partition_clause": "observation_year > 2018",
+            },
+        },
+    )
+
+    create_table >> insert_rows >> column_checks >> table_checks
+```
+
+14. Press Ctrl + S (or ⌘ + S) to save sql_data_quality.py.  
+15. Switch to the integrated Terminal tab at the bottom of VS Code (or open a new one with Ctrl + ` if hidden).  
+16. Type the following command to restart the Astronomer local environment so Airflow reloads the new DAG:  
+```bash
+astro dev restart
+```  
+17. Wait until the terminal displays “Airflow webserver listening at …” and “scheduler started” to be sure the services are healthy.  
+
+18. Click the Chromium icon to return to the Airflow UI.  
+19. Locate sql_data_quality in the DAGs list; click the grey toggle on the far left to un-pause (it should turn blue).  
+20. Click the triangle (Play button) under the “Actions” column in the same row to trigger a manual run.  
+21. Watch the Recent Tasks column; when all squares turn dark green the DAG has completed successfully.  
+
+22. Click the sql_data_quality DAG name to open the Graph view of the most recent run.  
+23. Click the colored square for task_id column_checks (rightmost run under the Graph); a side panel will open.  
+24. Click the Logs tab in this side panel.  
+25. Click the Download button at the top-right of the log viewer; the browser will save a file named similar to 1.log (exact name varies).  
+26. Repeat steps 23-25 for task_id table_checks to download its log as well.  
+
+27. Switch to the Host OS terminal (or open a new terminal in VS Code) and move to the Downloads directory:  
+```bash
+cd ~/Downloads
+```  
+28. Type ls to list the recently downloaded files and copy their exact filenames.  
+29. Rename the two log files so they match the task_ids exactly:  
+```bash
+mv <original_column_checks_filename>.log column_checks.log
+mv <original_table_checks_filename>.log table_checks.log
+```  
+30. Execute ls once more; we should see both column_checks.log and table_checks.log—these will be provided for data-quality verification.

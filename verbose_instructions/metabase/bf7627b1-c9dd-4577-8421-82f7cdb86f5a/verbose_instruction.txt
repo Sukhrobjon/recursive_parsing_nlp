@@ -1,0 +1,10 @@
+1. Click the gear icon ⚙️ located in the upper-right corner of Metabase.  
+2. Select “Admin settings” from the drop-down menu that appears.  
+3. Click the “Databases” tab (it sits in the top navigation bar of the Admin panel).  
+4. Locate the row labeled “Sample Database” in the list; click directly on the blue text “Sample Database” to open its settings page.  
+5. Click the red link “Remove this database” on the right side of the settings page.  
+6. Type the exact text Sample Database into the confirmation field that pops up (Metabase is case-sensitive here, so make sure the capitalization matches).  
+7. Click the red “Delete” button at the bottom of the confirmation dialog.  
+8. Wait until the dialog closes and the Databases list refreshes—“Sample Database” should no longer appear in the table.  
+9. Press Ctrl + R (or ⌘ + R on macOS) to refresh the browser page once more; confirm that “Sample Database” is still absent, ensuring the deletion persisted.  
+10. Navigate back to the main Metabase home screen by clicking the Metabase logo in the upper-left corner; we can see the sidebar’s “Browse data” section is now cleared of the Sample Database, verifying the panel is clean.

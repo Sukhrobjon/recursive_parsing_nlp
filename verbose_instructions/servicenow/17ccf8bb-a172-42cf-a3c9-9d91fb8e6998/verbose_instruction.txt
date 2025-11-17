@@ -1,0 +1,18 @@
+1. Navigate to the list page that shows all asset records (the page title should read something like “Assets” or “All Hardware” in the upper-left corner).  
+2. Click the gray funnel icon labeled “Filter” directly above the table header row to open the filter builder panel.  
+3. Click the blue “Add Condition” button inside the filter panel.  
+4. In the new condition row, click the first dropdown (currently showing a field name) and select “Serial number”.  
+5. Click the operator dropdown (should default to “is”) and verify it says “is” (if not, select “is”).  
+6. Leave the value box completely empty so the condition reads: Serial number is (empty). This captures records whose Serial number field is blank.  
+7. Click “AND” at the far right of the same condition row to append another condition.  
+8. In the second condition line, choose “Model category” from the field dropdown.  
+9. Keep the operator as “is” and type Computer in the value box, then press Enter.  
+10. Click “AND” again to create the third condition.  
+11. Select “Asset function” from the field dropdown, keep operator “is”, type Shared, and press Enter.  
+12. Click “AND” once more for the fourth condition.  
+13. Choose “Display name” as the field, leave the operator as “is”, type Apple MacBook Pro 15" in the value box (include the quotation mark after 15), and press Enter.  
+14. Confirm that the top of the filter builder now displays a single chain of four conditions linked by AND statements exactly like:  
+   Serial number is (empty) AND Model category is Computer AND Asset function is Shared AND Display name is Apple MacBook Pro 15"  
+15. Click the blue “Run” or “Apply” button at the bottom-right of the filter panel to execute the query.  
+16. Wait for the list to refresh; we should now see only those records that meet all four criteria.  
+17. Verify success by checking the status bar above the list (it should say something like “Showing 1 – n of n records”) and by visually confirming each row shows a blank Serial number and “Computer”, “Shared”, “Apple MacBook Pro 15"” in their respective columns.

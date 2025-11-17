@@ -1,0 +1,50 @@
+1. Open your browser and type console.cloud.google.com/bigquery in the address bar, then press Enter so you land on the BigQuery Web UI.  
+2. Click the blue “Select project” drop-down on the left nav if necessary, then choose the project that contains your ITSM data warehouse (in this example we will use project id my-corp-proj).  
+3. Click the gray triangle (▸) to the left of dataset it_service_management so it expands and shows its tables.  
+4. Click table change_requests to highlight it, then look in the right-hand “Schema” panel; verify that the columns service_offering, number, backout_plan, justification, test_plan, short_description, implementation_plan, risk, service, description, category, and impact all exist. Note that we will insert a new row using these fields in the next step.  
+5. Click the + “Compose new query” button at the top of the Explorer pane; a new blank query tab opens in the editor.  
+6. Type the following INSERT statement exactly as shown:  
+
+```sql
+INSERT INTO `my-corp-proj.it_service_management.change_requests`
+  (service_offering,
+   number,
+   backout_plan,
+   justification,
+   test_plan,
+   short_description,
+   implementation_plan,
+   risk,
+   service,
+   description,
+   category,
+   impact)
+VALUES
+  (NULL,                                                 -- Service offering
+   'CHG0000002',                                         -- Number
+   'nonproportional reassurance inchoateness pericementum wandoo',   -- Backout plan
+   'unbigged didelphoid gigantology unimprovableness fistula',       -- Justification
+   'strette cupriferous polylinguist unambitious Ganodonta',         -- Test plan
+   'Switch Sales over to the new 555 prefix',                         -- Short description
+   'unfrocked pedunculus tensive pharmacodynamic immunology',        -- Implementation plan
+   'High',                                               -- Risk
+   NULL,                                                 -- Service
+   'Sales has their own private dialing prefix now so they''ll            always have an open outside line even if the PBX is full.', -- Description
+   'Telecom',                                            -- Category
+   '3 - Low');                                           -- Impact
+```
+
+   Note that we use NULL for blank text fields (“Service offering” and “Service”) because BigQuery stores empty text as NULL.  
+7. Click the blue “▶ RUN” button in the toolbar of the query editor; BigQuery executes the insert. Wait until the green checkmark and a message like “This statement inserted 1 row” appears in the “Query results” pane.  
+8. Click the “Query history” entry for the INSERT to confirm it shows 1 row affected; this reassures us the new change request was created.  
+9. Click the + “Compose new query” button again, then type a quick verification query:  
+
+```sql
+SELECT *
+FROM   `my-corp-proj.it_service_management.change_requests`
+WHERE  number = 'CHG0000002';
+```
+
+10. Press the “▶ RUN” button once more; in the results grid you should see exactly one row containing the values you just inserted.  
+11. Click the “SAVE RESULTS” button above the verification grid if you need a record, choose “CSV (local file),” then save it to your /Downloads folder (BigQuery will suggest results-2023-…csv—rename it to change_request_CHG0000002.csv if desired).  
+12. Close the query tabs or simply leave the browser—your new change request is now stored in table it_service_management.change_requests and ready for downstream workflows.

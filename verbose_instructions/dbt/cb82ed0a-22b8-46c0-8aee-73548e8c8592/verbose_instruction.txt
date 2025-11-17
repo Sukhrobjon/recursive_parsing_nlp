@@ -1,0 +1,59 @@
+1) Open a terminal window and navigate to your dbt project root by typing  
+```bash
+cd ~/projects/your_project_name
+```
+
+2) Create (or edit) the YAML file that stores source definitions by typing  
+```bash
+code models/src/sources.yml
+```  
+Switching to VS Code (or your editor) will open the file so we can make changes.
+
+3) Write a new `sources` block (or update the existing one) that declares the `orders` table with a freshness policy. Insert the following YAML inside the opened `sources.yml` file:  
+```yaml
+version: 2
+
+sources:
+  - name: raw            # change to your actual source database/schema if different
+    description: "Raw data coming from the operational system"
+    tables:
+      - name: orders
+        description: "E-commerce orders"
+        loaded_at_field: _loaded_at           # replace with correct timestamp column
+        freshness:
+          error_after:
+            count: 5
+            period: hour
+        tags: ["source_freshness"]
+```  
+Note that:
+   • `loaded_at_field` must match the column in the raw table that stores the ingestion timestamp.  
+   • `error_after` with `count: 5` and `period: hour` instructs dbt to raise an error as soon as the table is more than 5 hours old.
+
+4) Press `Ctrl+S` (or `⌘+S`) to save `sources.yml`, then return to the terminal.
+
+5) Run the built-in validation to ensure the YAML syntax is correct:  
+```bash
+dbt parse
+```  
+We should see “Parse results: … success” with no errors.
+
+6) Execute the source freshness command to test the new policy:  
+```bash
+dbt source freshness --select raw.orders
+```  
+dbt will query the `_loaded_at` column, calculate the age, and compare it to the 5-hour SLA.
+
+7) Observe the terminal output:  
+   • If the most recent `_loaded_at` timestamp is less than 5 hours old, dbt prints `Status: OK`.  
+   • If it is 5 hours or older, dbt prints `Status: ERROR` and the run exits with a non-zero code—exactly what we want.
+
+8) (Optional) Commit the change so teammates inherit the freshness check. Run:  
+```bash
+git add models/src/sources.yml
+git commit -m "Add 5-hour source freshness policy for raw.orders"
+```  
+
+9) Schedule or manually run this freshness check in your CI/CD pipeline or Airflow job with the same command (`dbt source freshness`) to continuously enforce the 5-hour SLA.
+
+10) Celebrate—dbt will now raise an error any time the `orders` source data is older than 5 hours, keeping downstream models safe and fresh.

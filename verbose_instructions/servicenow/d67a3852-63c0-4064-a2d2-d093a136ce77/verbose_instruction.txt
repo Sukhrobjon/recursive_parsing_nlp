@@ -1,0 +1,32 @@
+1. Open your preferred web browser (e.g., Chrome) and type the URL for the company-approved hardware supplier’s site (for example, https://store.companyhardware.com) into the address bar, then press Enter.  
+2. Click the blue “Sign In” button in the top-right corner of the homepage.  
+3. Type your corporate email in the “Email” field, enter your password in the “Password” field, and click “Log In” to authenticate.  
+4. Click the white search bar at the top center of the page, type Standard Laptop, and press Enter.  
+5. Locate the product card labeled “Standard Laptop – 16 GB / 512 GB SSD” (SKU: STD-LTP-16-512) and click the product name to open its detail page.  
+6. Click the gray “Configure” or “Customize” button beneath the main product image to open the configuration panel.  
+7. In the “Software Add-ons” section, check the boxes for the following items:  
+   • Slack  
+   • Salesforce  
+   • QuickBooks  
+   • Google Workspace  
+   • Asana  
+   • Adobe Creative Cloud  
+   Note that Adobe Creative Cloud will already include Photoshop, but we still need Acrobat separately.  
+8. Scroll to the “Adobe Products” subsection, toggle the switch next to “Adobe Acrobat” to On, and verify that “Adobe Photoshop” is already selected or toggle it On if it is not.  
+9. Click the blue “Save Configuration” button in the lower-right corner of the configuration panel to return to the main product page.  
+10. Locate the “Quantity” field just above the “Add to Cart” button, click the up-arrow or type 3 to set the quantity to three units.  
+11. Click the green “Add to Cart” button; a confirmation toast (“3 Standard Laptop added to cart”) should appear in the upper-right corner.  
+12. Click the shopping-cart icon in the top-right header bar to open the “Cart” page and verify that:  
+    • Product name: Standard Laptop  
+    • Qty: 3  
+    • Configuration list shows Slack, Salesforce, QuickBooks, Google Workspace, Asana, Adobe Creative Cloud, Adobe Acrobat, Adobe Photoshop  
+    • Price totals look correct  
+13. Click the blue “Proceed to Checkout” button on the right side of the cart page.  
+14. On the “Shipping” step, confirm the default office address (123 Corporate Dr., Suite 200) is selected, then click “Continue.”  
+15. On the “Payment” step, select the saved corporate credit card ending in 4455, review the subtotal and tax, then click “Place Order.”  
+16. Wait for the order confirmation screen; note the Order # (e.g., ORD-87934) displayed in large bold text.  
+17. Click the gray “Download PDF Invoice” link under the order number; when prompted, choose “Save File,” then click “OK.”  
+18. Open your computer’s Downloads folder, find the invoice PDF (e.g., ORD-87934.pdf), right-click and select “Rename,” then type Standard_Laptop_Order_ORD-87934.pdf for clarity.  
+19. Compose a new email to procurement@company.com, attach Standard_Laptop_Order_ORD-87934.pdf, and in the body write:  
+    “Three Standard Laptop units ordered with requested software (Slack, Salesforce, QuickBooks, Google Workspace, Asana, Adobe Creative Cloud, Acrobat, Photoshop). Order confirmation attached for reference.”  
+20. Click “Send” to notify the procurement team; lastly, log out of the hardware store website by clicking your user avatar in the top-right corner and selecting “Log Out.”

@@ -1,0 +1,62 @@
+1. Click the “VS Code” icon in the left dock to bring the editor to the foreground.  
+2. Navigate to and click the file ​assets.py​ in the Explorer panel.  
+3. Scan each @asset decorator and confirm we see the argument ​io_manager_key="parquet"​.  
+   Note that every downstream asset will therefore look for a resource named “parquet”; we will register that shortly.
+
+4. Click parquet_io_manager.py in the Explorer to open it.  
+5. Scroll to the ParquetIOManager class and place the cursor inside the existing handle_output method body.  
+6. Type (or paste) the exact implementation below, replacing any existing pass statement:
+
+```python
+    def handle_output(self, context: OutputContext, obj: pd.DataFrame):
+        # Persist a DataFrame to a parquet file
+        path = self._get_path(context)
+
+        # Create folders only for local file-system paths
+        if "://" not in self._base_path:
+            os.makedirs(os.path.dirname(path), exist_ok=True)
+
+        if isinstance(obj, pd.DataFrame):
+            row_count = len(obj)
+            context.log.info(f"Row count: {row_count}")
+            obj.to_parquet(path=path, index=False)
+        else:
+            raise Exception(f"Outputs of type {type(obj)} not supported.")
+
+        # Surface useful metadata in Dagster UI
+        context.add_output_metadata({"row_count": row_count, "path": path})
+```
+
+7. Press Ctrl+S to save parquet_io_manager.py.  A small blue dot on the file tab should disappear, confirming the save.
+
+8. In the Explorer, click __init__.py to open the repository definition file.  
+9. At the top of the file, add the import line directly beneath the existing imports:
+
+```python
+from .parquet_io_manager import ParquetIOManager
+```
+
+10. Locate the Definitions( … ) block and insert the resources dictionary so it looks exactly like this:
+
+```python
+defs = Definitions(
+    assets=all_assets,
+    resources={
+        "parquet": ParquetIOManager(),   # newly registered I/O manager
+    },
+)
+```
+
+11. Press Ctrl+S again to save __init__.py.  
+
+12. Switch to the “Chromium” icon on the left dock to bring up Dagster UI.  
+13. Click the circular arrow icon labeled “Reload all” at the top-right of the UI so the workspace picks up our code changes.  Wait until the toast message “Workspace successfully reloaded” appears.
+
+14. In the left sidebar, find and click the repository entry named “movies” (or the repository holding your assets).  The main pane now shows Deployment / movies with several tabs.
+
+15. Click the “Resources” tab just beneath the repository title.  A table of resource names appears.
+
+16. Click the row labeled “parquet”.  
+    We can now see the configuration page for our ParquetIOManager, including the base_path and any default values.  Verify the description and ensure no configuration errors are shown.
+
+17. (Optional) Click the “Show in code location” link on this page to confirm Dagster resolved the class path to parquet_io_manager.  We have successfully wired the parquet I/O manager and exposed it in the UI.

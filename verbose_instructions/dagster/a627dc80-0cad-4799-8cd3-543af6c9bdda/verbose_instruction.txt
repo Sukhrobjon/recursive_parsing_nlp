@@ -1,0 +1,28 @@
+1) Switch to the terminal window that is already pointed at the target parent folder (we need the new directory “dagster-proj” to appear right here).  
+2) Execute the Dagster libraries installation command:  
+```bash
+pip install dagster dagster-webserver
+```  
+   • Watch the console until the “Successfully installed … dagster-X.Y.Z dagster-webserver-A.B.C …” line appears – this confirms the packages are now available in your Python environment.  
+3) Run the Dagster scaffolding generator:  
+```bash
+dagster project scaffold --name dagster-proj
+```  
+   • The CLI prints several “CREATED” lines (workspace.yaml, dagster_proj/__init__.py, etc.). This means it laid down the standard folder tree.  
+4) Verify the project folder was created:  
+```bash
+ls -1
+```  
+   • Confirm you see a new entry named “dagster-proj”.  
+5) Change into the new project to check its contents:  
+```bash
+cd dagster-proj && tree -L 2
+```  
+   • We should see the core scaffold:  
+     dagster-proj  
+     ├── dagster_proj  
+     │   ├── __init__.py  
+     │   └── assets.py  
+     ├── workspace.yaml  
+     └── README.md  
+   • This confirms the scaffold completed successfully, and you are ready to develop Dagster pipelines inside this structure.

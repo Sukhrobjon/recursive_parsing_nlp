@@ -1,0 +1,39 @@
+1) Open your browser and navigate to http://localhost:8000 to reach the Airbyte local UI  
+2) Click the blue button “Sources” on the left-hand navigation bar  
+3) Click the “+ New source” button in the upper-right corner of the Sources page  
+4) Type “Postgres” in the search bar that appears and click the tile “Postgres”  
+5) Type a recognizable name in the “Name” field, e.g. `pg_orders_source`  
+6) Fill in the Postgres connection details exactly as below (adjust if your credentials differ):  
+   - Host: `localhost`  
+   - Port: `5432`  
+   - Database: `sample_db`  
+   - Schema: `public`  
+   - Username: `postgres`  
+   - Password: `postgrespw`  
+   - SSL mode: `disable`  
+7) Click the “Set up source” button; wait for “Source test succeeded” to appear, then press “Continue”  
+8) Switch to “Destinations” using the left-hand navigation bar  
+9) Click the “+ New destination” button  
+10) Type “SQLite” in the search bar and click the tile “SQLite”  
+11) Enter a destination name, e.g. `local_sqlite_dest`  
+12) Fill in the destination configuration:  
+    - Destination JDBC URL: `jdbc:sqlite:/tmp/airbyte_sqlite.db`  
+    (If the directory does not exist, Airbyte will create the database file on first sync.)  
+13) Click “Set up destination”; after “Destination test succeeded” appears, press “Continue”  
+14) Airbyte automatically opens the “Set up connection” page. Confirm that the “Source” dropdown shows `pg_orders_source` and the “Destination” dropdown shows `local_sqlite_dest`  
+15) In the “Sync frequency” section, choose “Manual” (you can change this later)  
+16) Scroll to the “Streams” table; locate the stream you want to replicate (for example `orders`)  
+17) Click the small grey pencil icon to the far right of that stream row to open the “Stream configuration” side panel  
+18) Click the “Sync mode” dropdown; select `Incremental | Append`  
+19) Click the “Cursor field” dropdown; choose the field `id` (Airbyte will now track the largest id it has synced)  
+20) Verify that “Primary key” stays empty (it is not required for Append mode)  
+21) Click the blue “Apply” button at the bottom of the side panel; the side panel closes and the row now shows “Incremental | Append” under Sync mode and “id” under Cursor field  
+22) Repeat steps 17-21 for any additional streams you want, always selecting `Incremental | Append` and cursor `id`  
+23) Scroll to the bottom of the page and click the blue “Set up connection” button  
+24) Wait for the connection overview page to appear, then click the “Sync now” button to trigger your first incremental append sync  
+25) Watch the real-time logs; once the status changes to “Completed” with a green check, the data has landed in `/tmp/airbyte_sqlite.db`  
+26) Switch to your terminal to verify the data landed correctly by running:  
+```bash
+sqlite3 /tmp/airbyte_sqlite.db "SELECT COUNT(*) FROM orders;"
+```  
+27) Confirm that the returned count matches (or is close to) the row count in your Postgres `orders` table; the incremental sync with cursor `id` is now fully operational

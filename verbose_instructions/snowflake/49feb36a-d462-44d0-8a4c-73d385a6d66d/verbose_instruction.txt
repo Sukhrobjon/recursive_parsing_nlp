@@ -1,0 +1,26 @@
+1. Click the “Marketplace” icon (shopping-bag symbol) on the left-hand vertical navigation bar of the Snowflake web UI.  
+2. Type “addresses” in the search bar at the top of the Marketplace home page and press Enter.  
+3. Locate a free listing that contains worldwide postal addresses (for example, “Global Address Data – Free Sample” offered by “XYZ_Data_Provider”). Click the blue hyper-linked listing title.  
+4. Scroll down the listing details page and confirm that the “Price” field shows “Free” and that the geographic coverage is global.  
+5. Click the blue “Get” button in the upper-right corner of the listing details page. A pop-up titled “Get Data” appears.  
+6. Select the role you want to own the database (use ACCOUNTADMIN if you are unsure) from the “Role” drop-down inside the pop-up.  
+7. Type WORLDWIDE_ADDRESSES in the “Database Name” input box to override the default suggested name.  
+8. Leave the “Grant Access to” list empty (we can add grants later) and click “Get” again at the bottom of the pop-up. Snowflake shows a toast notification “Listing successfully added.”  
+9. Click “Done” to close the pop-up, then click “Open in Worksheets” on the listing page to jump directly to a SQL worksheet that is automatically connected to the new database.  
+10. Verify the database was created by typing the following SQL in the worksheet:  
+```sql
+SHOW DATABASES LIKE 'WORLDWIDE_ADDRESSES';
+```  
+11. Click the “►” Run button. We should see a result row with name “WORLDWIDE_ADDRESSES,” owner equal to the role we chose, and a comment referencing the Marketplace listing.  
+12. Still in the worksheet, set your session context to the new database and explore its schemas:  
+```sql
+USE DATABASE WORLDWIDE_ADDRESSES;
+SHOW SCHEMAS;
+```  
+13. Run the commands with the “►” button. Confirm at least one schema (commonly PUBLIC or ADDRESS_DATA) appears.  
+14. Inspect one sample table to be sure rows are present:  
+```sql
+SELECT COUNT(*) AS total_rows
+FROM "<first_schema_name>".<sample_table_name>;
+```  
+15. After running, verify that total_rows is greater than 0. Congratulations— we now have a fully functional WORLDWIDE_ADDRESSES database sourced from Snowflake Marketplace.

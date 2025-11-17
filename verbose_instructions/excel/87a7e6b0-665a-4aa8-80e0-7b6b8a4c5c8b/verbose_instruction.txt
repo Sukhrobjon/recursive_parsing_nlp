@@ -1,0 +1,22 @@
+1. Click any single cell inside your data range (for example, A1) so Excel can automatically detect the full block (columns A-D).  
+2. Press Ctrl + A to ensure every populated row in columns A through D is highlighted.  
+3. Click the Insert tab on the Ribbon.  
+4. Click PivotTable (first icon in the Tables group).  
+5. Verify the “Table/Range” box correctly shows something like $A$1:$D$### (where ### is your last row).  
+6. Select the radio button “New Worksheet” so the pivot will be placed on a separate sheet.  
+7. Click OK. Excel jumps to “Sheet1!PivotTable1” (or a similar new sheet).  
+8. Drag the field “Expense Account” from the PivotTable Fields pane into the Rows area (lower-left quadrant).  
+9. Drag the field “Subtotal” into the Values area (lower-right quadrant). Excel automatically applies “Sum of Subtotal.”  
+10. Confirm that each unique Expense Account now appears once, with a numeric total beside it, and a “Grand Total” row is visible at the bottom.  
+11. Click anywhere inside the new PivotTable to keep it selected for charting.  
+12. Click the PivotTable Analyze tab (or just Analyze in older versions) that appears on the Ribbon.  
+13. Click PivotChart (in the Tools group).  
+14. Choose “Bar” on the left list, then select the first subtype “Clustered Bar” in the right pane.  
+15. Click OK. Excel inserts a bar chart on the same pivot-sheet.  
+16. Click the chart title once, type “Subtotal by Expense Account”, and press Enter.  
+17. Right-click any legend entry and choose Delete to remove the legend (all bars already labeled by the vertical axis).  
+18. Drag the chart if necessary so it doesn’t overlap the PivotTable; release the mouse when properly placed.  
+19. Verify the chart bars align with the PivotTable numbers: the height of the “Grand Total” bar should equal the Grand Total figure, and individual bars must match each row’s subtotal.  
+20. Press Ctrl + S.  
+21. In the “Save As” dialog, ensure “Excel Workbook (*.xlsx)” is selected (this is the 2007-365 format), choose your desired folder, type a descriptive file name like “Expense_Account_Subtotals.xlsx”, and click Save.  
+22. Reopen the saved file to confirm the pivot table and bar chart both appear and function correctly.

@@ -1,0 +1,49 @@
+1) Open a new browser tab and navigate to https://console.cloud.google.com/bigquery so we land on the BigQuery Web UI.  
+2) Verify you are in the correct project (look at the blue project-selector bar at the top). If the project shown is not the one that owns the Users table, click the drop-down and switch to that project.  
+3) In the Explorer panel on the left, click the gray triangle ▸ next to the dataset that stores user information (for example `company_hr`). This expands the list of tables.  
+4) Click the table name `users` so we can confirm the schema. The Schema tab in the main panel should list fields like `user_id`, `last_name`, `first_name`, `email`, `mobile_phone`, `date_format`, `business_phone`, `locked_out`, `title`, `time_zone`, `calendar_integration`, and `language`. Note that `user_id` is marked as Required (we will paste the value from the opened file next).  
+5) Switch to the file that was opened for you (or locate it in your downloads folder). Highlight the entire User ID string, right-click and Copy. We will paste this into the INSERT statement momentarily.  
+6) Return to the BigQuery console tab. Click the + Compose Query button (blue button with a plus sign) to open a brand-new query editor tab.  
+7) Click inside the editor pane and paste the following SQL template. Immediately replace `<PASTE_USER_ID_HERE>` with the User ID you copied in Step 5 (be sure to keep the single quotes).  
+```sql
+INSERT INTO `company_hr.users`
+  (user_id,
+   last_name,
+   first_name,
+   email,
+   mobile_phone,
+   date_format,
+   business_phone,
+   locked_out,
+   title,
+   time_zone,
+   calendar_integration,
+   language)
+VALUES
+  ('<PASTE_USER_ID_HERE>',
+   'Christophel',
+   'Robyn',
+   'robyn.christophel@example.com',
+   '(514) 703-5913',
+   'dd-MM-yyyy',
+   '(514) 386-6086',
+   FALSE,
+   'surquidry tassie Physostegia snootiness heterotopous',
+   'GMT',
+   'Outlook',
+   'English');
+```  
+8) Double-check each literal value:  
+   • `locked_out` is the Boolean FALSE (not wrapped in quotes).  
+   • All phone numbers, dates, and free-text fields are wrapped in single quotes.  
+   • Confirm the User ID you pasted has no leading/trailing spaces.  
+9) Click the green ▷ RUN button at the top of the query editor. Wait for the “Query complete” banner and confirm “1 row affected” appears in the Results pane—this tells us the new user record has been inserted.  
+10) (Optional but recommended) Click the “Job history” tab in the bottom panel and copy the Job ID to a notepad so we have an audit trail of this INSERT. We can reference this Job ID later if there are any questions.  
+11) To visually confirm the insert, click the + Compose Query button again, type  
+```sql
+SELECT *
+FROM `company_hr.users`
+WHERE user_id = '<PASTE_USER_ID_HERE>';
+```  
+    and press ▷ RUN. The single row we just inserted should appear in the Results grid with every field populated exactly as specified.  
+12) Click SAVE > Save View in the Results grid if your team keeps a “recently added users” view, or simply close the extra query tab once verification is complete—the new user “Robyn Christophel” is now in the system.

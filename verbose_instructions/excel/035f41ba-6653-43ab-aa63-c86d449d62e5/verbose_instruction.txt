@@ -1,0 +1,47 @@
+1. Navigate to https://console.cloud.google.com/bigquery so the BigQuery Web UI opens in a new browser tab.  
+2. In the Explorer panel (left‐hand side), click the triangle ▶ to the left of your project name (e.g. my-project) so its datasets become visible.  
+3. Click the triangle ▶ before dataset finance_demo to reveal the table sheet1_financials that represents “Sheet 1”.  
+4. Click sheet1_financials once; the Table info tab opens in the right panel and we can see the existing schema:  
+   • year (INTEGER)  
+   • revenue (NUMERIC)  
+   • cogs (NUMERIC)  
+   • gross_profit (NUMERIC, currently NULL) – we will fill this next.  
+5. Click the +Compose Query button (white SQL icon with a +) at the top of the main work area; a new blank query tab appears.  
+6. Type the SQL below to calculate Gross Profit (revenue − cogs) and write the result into a brand-new table called finance_demo.sheet1_filled:  
+
+```sql
+CREATE OR REPLACE TABLE `my-project.finance_demo.sheet1_filled` AS
+SELECT
+  year,
+  revenue,
+  cogs,
+  -- Fill in the missing Gross Profit
+  revenue - cogs AS gross_profit
+FROM
+  `my-project.finance_demo.sheet1_financials`;
+```
+
+7. Click the blue ► Run button in the toolbar of the query tab. Wait until “Query complete” appears in the Results pane.  
+8. Verify the column is filled: in the Job Information panel, click the Table link finance_demo.sheet1_filled, then switch to the Preview tab; we can see non-null numbers in the gross_profit column.  
+9. Return to the Explorer panel, click the triangle ▶ beside finance_demo again, and confirm sheet1_filled now exists.  
+10. Click +Compose Query once more to open a second blank tab; now we will build the “Year_Profit” column requested for the new sheet.  
+11. Type the SQL that concatenates year and gross_profit into a single text field, then save it as sheet2_year_profit:  
+
+```sql
+CREATE OR REPLACE TABLE `my-project.finance_demo.sheet2_year_profit` AS
+SELECT
+  -- Convert both pieces to STRING and join with “_”
+  CAST(year AS STRING) || '_' || CAST(gross_profit AS STRING) AS Year_Profit
+FROM
+  `my-project.finance_demo.sheet1_filled`;
+```
+
+12. Click ► Run again; once “Query complete” shows, BigQuery has created the table for the new sheet.  
+13. Click the table link finance_demo.sheet2_year_profit in the Job Information pane and preview the data: for example a row might read “2022_154387.25” in the Year_Profit column.  
+14. Optional—export to a Google Sheet if the result must live in an actual spreadsheet:  
+    a. Click the “EXPORT” button (upper-right of the Preview window).  
+    b. Choose “Export to Google Sheets”.  
+    c. Accept the suggested file name sheet2_year_profit and click Export. A confirmation dialog appears, and the Google Sheet is created containing the Year_Profit column.  
+15. We have now:  
+    • Filled the Gross Profit column inside sheet1_filled.  
+    • Created a new sheet/table containing Year_Profit strings exactly as “Year_GrossProfit”.

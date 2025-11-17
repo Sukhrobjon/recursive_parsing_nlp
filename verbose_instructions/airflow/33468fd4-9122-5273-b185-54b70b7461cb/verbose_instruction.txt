@@ -1,124 +1,139 @@
-1. Open the Terminal application on your workstation.
+1. Open a Terminal window (Ctrl + Alt + T) so we can run all installation commands from your home directory.  
 
-2. Update the APT catalog so we work with the latest package list:
-   ```bash
-   echo 'password' | sudo -S apt-get update -y
-   ```
+2. Update the local APT cache to make sure you fetch the newest package metadata:  
+```bash
+echo 'password' | sudo -S apt-get update -y
+```
 
-3. Install prerequisite tools (curl, gnupg, lsb-release, ca-certificates) that both Docker and Astronomer CLI need:
-   ```bash
-   echo 'password' | sudo -S apt-get install -y \
-     curl \
-     gnupg \
-     lsb-release \
-     ca-certificates
-   ```
+3. Install prerequisite utilities that both Docker and AstroCLI rely on:  
+```bash
+echo 'password' | sudo -S apt-get install -y \
+    ca-certificates \
+    curl \
+    gnupg \
+    lsb-release \
+    software-properties-common
+```
+Note that lsb-release helps the installers detect your Ubuntu/Debian version.
 
-4. Add Docker’s official GPG key, then set up the stable Docker repository:
-   ```bash
-   curl -fsSL https://download.docker.com/linux/$(lsb_release -is | tr 'A-Z' 'a-z')/gpg | \
-     sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+4. Add Docker’s official GPG key so APT can verify packages:  
+```bash
+sudo mkdir -p /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+```
 
-   echo \
-     "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] \
-     https://download.docker.com/linux/$(lsb_release -is | tr 'A-Z' 'a-z') \
-     $(lsb_release -cs) stable" | \
-     sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-   ```
+5. Register the stable Docker repository that matches your CPU architecture:  
+```bash
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
+  https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+```
 
-5. Update APT again to include Docker packages:
-   ```bash
-   echo 'password' | sudo -S apt-get update -y
-   ```
+6. Refresh the package cache again (now including Docker repo) and install Docker Engine, CLI and Compose plugin in one shot:  
+```bash
+echo 'password' | sudo -S apt-get update -y
+echo 'password' | sudo -S apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+```
+We will use Docker Compose later for Airflow, so installing the plugin now avoids a second download.
 
-6. Install Docker Engine, CLI, and containerd:
-   ```bash
-   echo 'password' | sudo -S apt-get install -y docker-ce docker-ce-cli containerd.io
-   ```
+7. Enable Docker to auto-start at every boot, then start the daemon immediately:  
+```bash
+echo 'password' | sudo -S systemctl enable docker
+echo 'password' | sudo -S systemctl start  docker
+```
+If you reboot later, Docker will be running automatically—no manual action needed.
 
-7. Enable Docker service to auto-start on every boot:
-   ```bash
-   echo 'password' | sudo -S systemctl enable docker
-   ```
+8. Add your current Linux user ($USER) to the docker group so you can run docker commands without sudo:  
+```bash
+echo 'password' | sudo -S usermod -aG docker $USER
+```
+Reasoning: Docker checks UNIX group membership; adding yourself removes the need to type sudo for every docker command.
 
-8. Start Docker immediately so we can keep working:
-   ```bash
-   echo 'password' | sudo -S systemctl start docker
-   ```
+9. Activate the new group membership without logging out by opening a subshell:  
+```bash
+newgrp docker
+```
+Verification:  
+```bash
+docker run --rm hello-world
+```
+You should see “Hello from Docker!” without a permission error, confirming sudo-less access is working.
 
-9. Create the docker group if it doesn’t exist and add your current user to it so we can run docker without sudo:
-   ```bash
-   echo 'password' | sudo -S groupadd -f docker
-   echo 'password' | sudo -S usermod -aG docker $USER
-   ```
+10. Install PostgreSQL from the default distro repository:  
+```bash
+echo 'password' | sudo -S apt-get install -y postgresql postgresql-contrib
+```
 
-10. Apply the new group membership in the current session:
-    ```bash
-    newgrp docker
-    ```
+11. Enable and start PostgreSQL so it is always available after a reboot:  
+```bash
+echo 'password' | sudo -S systemctl enable postgresql
+echo 'password' | sudo -S systemctl start  postgresql
+```
 
-11. Verify you can run Docker without sudo by pulling the Hello-World image:
-    ```bash
-    docker run --rm hello-world
-    ```
-    Note that seeing the “Hello from Docker!” message confirms your user permissions are correct.
+12. Verify PostgreSQL is running by connecting with the default “postgres” superuser:  
+```bash
+sudo -u postgres psql -c "SELECT version();"
+```
+We can see the server version printed, which confirms the service is up.
 
-12. Install PostgreSQL server and client packages:
-    ```bash
-    echo 'password' | sudo -S apt-get install -y postgresql postgresql-contrib
-    ```
+13. (Optional but recommended) Set a password for the postgres account so Airflow can connect later:  
+```bash
+sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD 'postgres';"
+```
+Keep this credential handy—we will use it in Airflow’s connection configuration.
 
-13. Enable PostgreSQL service to start on boot and launch it now:
-    ```bash
-    echo 'password' | sudo -S systemctl enable postgresql
-    echo 'password' | sudo -S systemctl start postgresql
-    ```
+14. Install the Astronomer CLI (astro) via the official install script:  
+```bash
+curl -sSL https://install.astronomer.io | sudo bash
+```
+Reasoning: This script auto-detects OS/arch and places the astro binary under /usr/local/bin.
 
-14. Verify PostgreSQL is running:
-    ```bash
-    sudo -u postgres psql -c "SELECT version();"
-    ```
-    We should see the version string; this also confirms local connectivity.
+15. Confirm astro is on your PATH and prints the version:  
+```bash
+astro version
+```
+You should see something like “Astro CLI Version: 1.x.x”.
 
-15. Switch back to the Terminal prompt (we are still in Terminal) and install the Astronomer CLI (astro) via the official install script:
-    ```bash
-    curl -sSL https://install.astronomer.io | sudo -E bash -
-    ```
+16. Initialize a new Airflow project in your workspace so we can wire it up to the local Postgres later:  
+```bash
+mkdir -p ~/airflow_pg_project
+cd ~/airflow_pg_project
+astro dev init
+```
+The command creates a Docker-based dev environment that will pull an Apache Airflow image the next time we start it.
 
-16. Verify Astro CLI installed correctly:
-    ```bash
-    astro version
-    ```
-    The command should print both the Astro CLI and Docker Engine versions; no sudo required here.
+17. Open the newly created docker-compose.yaml file in any text editor and locate the AIRFLOW__DATABASE__SQL_ALCHEMY_CONN environment variable. Replace its value with a connection string that points to local Postgres:  
+```yaml
+AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://postgres:postgres@host.docker.internal:5432/postgres
+```
+Note that host.docker.internal lets a container talk to the host OS; Airflow will therefore reach our local Postgres instance.
 
-17. Confirm that both auto-start services are properly enabled:
-    ```bash
-    systemctl is-enabled docker
-    systemctl is-enabled postgresql
-    ```
-    Each command should return the word `enabled`.
+18. Save the file and go back to the terminal. Start the Airflow environment in detached mode:  
+```bash
+astro dev start
+```
+Docker Compose will spin up the scheduler, webserver, and triggerer containers. Because we already configured Docker to run without sudo, no extra privileges are necessary.
 
-18. Reboot your machine to test auto-start and permission changes:
-    ```bash
-    echo 'password' | sudo -S reboot
-    ```
+19. Verify containers are healthy:  
+```bash
+docker ps --filter "name=airflow_pg_project"
+```
+We expect to see three containers (scheduler, webserver, triggerer) all with the STATUS column “Up … (healthy)”.
 
-19. After the system boots back up, open Terminal again and verify everything works without sudo:
-    a) Check Docker:
-       ```bash
-       docker ps
-       ```
-       An empty list of containers (or currently running ones) shows the Docker daemon came up automatically.
+20. Open a browser and navigate to http://localhost:8080. Use the default Astro credentials (admin / admin) to log in.  
+We can see the Airflow UI running, confirming Astro, Docker, and Postgres integration is complete.
 
-    b) Check PostgreSQL:
-       ```bash
-       psql -U postgres -c "SELECT 1;"
-       ```
-       This should return `?column? ─ 1`, confirming the database server started automatically.
+21. Reboot your computer to test auto-start settings:  
+```bash
+sudo reboot
+```
+After the machine comes back up:
 
-    c) Check Astro CLI again:
-       ```bash
-       astro version
-       ```
+    a. Log back in and reopen a terminal.  
+    b. Run `systemctl is-active docker postgresql` — both should report “active”.  
+    c. Execute `docker ps` without sudo — the command should still work.  
+    d. Navigate again to http://localhost:8080. The Airflow stack should rebuild automatically because Docker auto-started and astro leverages docker compose’s restart policies.
 
-20. Celebrate—we now have Docker, Astro, and PostgreSQL installed, auto-starting, and Docker can be used without typing sudo each time.
+22. Celebrate—the environment is fully configured! We can now focus on building DAGs that connect to the local Postgres database without further setup friction.

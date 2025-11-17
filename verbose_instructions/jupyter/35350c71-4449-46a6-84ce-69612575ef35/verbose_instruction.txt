@@ -1,0 +1,39 @@
+1) Double-click the notebook file named “california_housing_scaling.ipynb” in the left-hand file browser so it opens in the main editing pane.  
+
+2) Scroll down until you locate the first code cell that ends with the comment `#TODO 1`.  
+
+3) Click directly beneath that comment to place the cursor, then type the preview command exactly as shown:  
+```python
+df.head()
+```  
+4) Press Ctrl + Enter (or click the grey ▶ Run Cell triangle) once to verify the cell executes without error—five rows of the California Housing data should appear.  
+
+5) Scroll further until you see the cell that ends with the comment `#TODO 2`.  
+
+6) Click beneath `#TODO 2`, then paste the train / test split line:  
+```python
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=SEED)
+```  
+7) Confirm no red underline appears (indicating all required libraries such as scikit-learn are already imported). We will use `SEED` for reproducibility later.  
+
+8) Continue scrolling to the next code cell that ends with `#TODO 3`.  
+
+9) Click below that comment and add all three scaler commands in order:  
+```python
+# instantiate a standard scaler
+scaler = StandardScaler()
+
+# fit on training data
+scaler.fit(X_train)
+
+# transform train and test sets
+X_train = scaler.transform(X_train)
+X_test  = scaler.transform(X_test)
+```  
+10) Verify indentation is flush left and each statement is on its own line—this prevents syntax issues.  
+
+11) Switch to the top menu bar, click Run ➜ Run All Cells. Watch the left margin; each cell number should increment sequentially without turning into a “*”, indicating successful execution.  
+
+12) Look at the last notebook cell’s output—if you see numeric arrays with mean ≈ 0 and std ≈ 1, scaling worked. If any `NameError` appears, return to the corresponding cell, correct typos, and repeat step 11.  
+
+13) After everything finishes, click File ➜ Save All (or press Ctrl + S). A brief blue disk icon will flash, confirming the notebook is saved with your new scaling code.

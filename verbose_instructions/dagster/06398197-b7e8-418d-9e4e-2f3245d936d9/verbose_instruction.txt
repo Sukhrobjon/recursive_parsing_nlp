@@ -1,0 +1,55 @@
+1. Open VS Code. In the Explorer left-hand navbar, click the file external.py inside the orders project so the editor shows the source.  
+2. Type the two new imports at the top of the file, just below any existing imports:  
+```python
+import pandas as pd
+from dagster_pipes import PipesContext, open_dagster_pipes  # Added
+```  
+3. Scroll to the existing main() function. Replace its body so it logs the DataFrame size and performs the data-quality check:  
+```python
+def main():
+    orders_df = pd.read_csv("orders_data.csv")
+
+    total_orders = len(orders_df)                       # aggregation
+    context = PipesContext.get()                        # Dagster Pipes context
+
+    # report a materialization with structured metadata
+    context.report_asset_materialization(
+        metadata={"total_orders": total_orders}
+    )
+
+    # run and report the Item_ID null-check
+    context.report_asset_check(
+        passed=orders_df["Item_ID"].notnull().all(),
+        check_name="no_null_check",
+    )
+```  
+4. Scroll to the bottom of external.py and wrap the main() call with the Pipes context manager:  
+```python
+if __name__ == "__main__":
+    with open_dagster_pipes():  # connect to Dagster
+        main()
+```  
+5. Press Ctrl+S to save external.py. VS Code should show “external.py – Saved” in the status bar.  
+6. Still in VS Code, click assets.py in the Explorer.  
+7. Locate the subprocess_asset definition. Modify the decorator to register the asset check:  
+```python
+@asset(
+    check_specs=[AssetCheckSpec(name="no_null_check", asset="subprocess_asset")]  # Added
+)
+def subprocess_asset(
+    context: AssetExecutionContext, pipes_subprocess_client: PipesSubprocessClient
+):
+    ...
+```  
+   (Leave the remainder of the function unchanged.)  
+8. Press Ctrl+S again so assets.py is stored to disk.  
+9. Go to your Chromium browser. Activate the tab titled Dagster | Orders (or similar) that shows the lineage graph.  
+10. Click the Reload definitions button (circular arrows icon, top-right). Wait until the toaster message “Definitions reloaded” appears.  
+11. In the graph, verify that subprocess_asset is visible. Click once on empty canvas then select the node subprocess_asset to ensure it is highlighted.  
+12. Click the Materialize button (green ▶ Materialize, top-right). In the modal, leave default selections and click the second Materialize to confirm.  
+13. Watch the Run page; the step subprocess_asset should finish with a green check. Confirm the run status reads “Succeeded”.  
+14. Click Assets in the left sidebar to return to the asset graph, then click the subprocess_asset node again.  
+15. Under Latest materialization, click View logs. A log drawer opens at the bottom.  
+16. Scroll the log list until you find an event whose Type column is ASSET_CHECK_EVALUATION. In the Message column, click the blue link no_null_check.  
+17. Wait for the page to navigate to /asset-checks/subprocess_asset/no_null_check. Verify the banner shows Result: Passed and the metadata lists total_orders with the correct count.  
+18. Celebrate—both the materialization and the “no_null_check” asset check were successfully registered and passed!

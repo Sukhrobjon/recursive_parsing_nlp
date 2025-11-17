@@ -1,0 +1,78 @@
+1. Click the “VS Code” icon in the left-hand dock to open the project editor.  
+2. Navigate to README.md in the Explorer panel and skim the “Testing” section so we know which behaviours to validate (DAG loads without errors, has 3 tasks, task ids match, and dependencies are set start >> middle >> end).  
+3. In the Explorer, click tests/test_dag.py to open the unit-test skeleton.  
+4. Write the import test at the top of the file:
+
+```python
+# tests/test_dag.py
+from airflow.models import DagBag
+
+def test_dag_loaded():
+    """
+    DAG import should succeed and exactly one DAG called
+    'example_pipeline' must be present.
+    """
+    dagbag = DagBag(include_examples=False)
+    assert len(dagbag.import_errors) == 0, f"Import errors: {dagbag.import_errors}"
+    assert 'example_pipeline' in dagbag.dags
+```
+
+5. Add a function that checks the number of tasks:
+
+```python
+def test_task_count():
+    dag = DagBag(include_examples=False).dags['example_pipeline']
+    assert len(dag.tasks) == 3, "DAG must contain exactly 3 tasks"
+```
+
+6. Insert a function to verify every expected task_id exists:
+
+```python
+def test_task_ids_present():
+    dag = DagBag(include_examples=False).dags['example_pipeline']
+    expected = {"start", "middle", "end"}
+    found = {t.task_id for t in dag.tasks}
+    assert expected == found, f"Missing tasks: {expected - found}"
+```
+
+7. Create a function to validate dependencies:
+
+```python
+def test_dependencies():
+    dag = DagBag(include_examples=False).dags['example_pipeline']
+    upstream = dag.get_task('middle').upstream_task_ids
+    downstream = dag.get_task('middle').downstream_task_ids
+    assert upstream == {'start'}
+    assert downstream == {'end'}
+```
+
+8. Press Ctrl + S to save test_dag.py.  
+9. Switch to the integrated terminal tab at the bottom of VS Code (or press Ctrl + `).  
+10. Execute the test suite:
+
+```bash
+pytest tests/test_dag.py -q
+```
+
+11. Confirm all four tests return “PASSED”. If any fail, revisit the code and adjust.  
+12. Type the command below to restart the local Airflow stack so the updated code is picked up:
+
+```bash
+astro dev restart
+```
+
+13. Wait until the terminal prints “Airflow webserver is now available”.  
+14. Click the “Chromium” icon in the dock to open the Airflow web UI running at http://localhost:8080.  
+15. Locate example_pipeline in the DAGs list and click the toggle switch to “On” (blue) to unpause it.  
+16. Click the right-facing triangle icon under the “Actions” column for example_pipeline to trigger a manual run.  
+17. Watch the coloured boxes in the “Recent Tasks” column and verify all three boxes turn green (Success).  
+18. Hover over the run-id link in the DAG Runs list to ensure the run finished in “success” state.  
+19. Click example_pipeline in the DAG column to open the Grid view; visually confirm the start → middle → end dependency chain is green.  
+20. Return to VS Code’s terminal and execute:
+
+```bash
+pytest tests/test_dag.py -q
+```
+
+21. Ensure the tests still pass, demonstrating that the triggered DAG did not introduce regressions.  
+22. Celebrate; we have implemented tests, restarted the stack, and successfully triggered the DAG.

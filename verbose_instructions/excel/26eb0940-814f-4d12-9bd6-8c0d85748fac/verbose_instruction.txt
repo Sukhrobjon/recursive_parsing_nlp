@@ -1,0 +1,53 @@
+1) Click the plus-sign icon (labeled “New Sheet” or “+”) to the right of the Sheet1 tab  
+2) Type Demographic Profile! in the name box that appears and press ENTER to rename the new sheet to “Demographic Profile”  
+3) Press CTRL + A to be sure nothing is selected, then click cell A1  
+4) Drag from A1 to C1 so A1:C1 are highlighted  
+5) Click the Merge & Center button on the Home → Alignment ribbon  
+6) Click the Fill-Color drop-down (paint-bucket icon) on the Home ribbon  
+7) Choose “More Colors …”, enter RGB values 0, 0, 255 and click OK (background becomes blue)  
+8) Click the Font Color drop-down (letter A icon) and choose White  
+9) Press CTRL + B to make the font bold  
+10) Type Demographic Profile and press ENTER  
+
+11) Switch to Sheet1 by clicking its tab  
+12) Click any cell inside the data table (recommended: click any value in column B labeled “Sex”)  
+13) Navigate to Insert → PivotTable  
+14) Make sure “Select a table or range” is selected and “Sheet1!$A:$Z” (or your exact range) shows in the Table/Range box  
+15) Choose “Existing Worksheet” for the destination  
+16) Click inside the Location box, then switch back to Demographic Profile (Sheet2) by clicking its tab  
+17) Click cell A2 (just below the title—we will keep one blank row after finishing later)  
+18) Click OK (a blank PivotTable frame appears)  
+19) In the PivotTable Fields pane, drag Sex to the Rows area  
+20) Drag Sex again to the Values area (shows “Count of Sex” by default)  
+21) Click the drop-down beside “Count of Sex” → Value Field Settings → Show Values As → % of Grand Total → OK  
+22) Press CTRL + 1 (or right-click → Number Format) → Percentage → 1 decimal place → OK  
+23) Click anywhere outside the PivotTable so it finishes formatting  
+
+24) Click cell A6 (leaving one completely blank row between tables; our next pivot will begin on A8)  
+25) Switch to Sheet1 again by clicking its tab  
+26) Click any value in column C labeled “Civil Status”  
+27) Insert → PivotTable  
+28) Ensure “Select a table or range” is still correct, pick “Existing Worksheet,” click inside the Location box, switch to Demographic Profile, click A8, then OK  
+29) In PivotTable Fields, drag Civil Status to Rows  
+30) Drag Civil Status again to Values  
+31) Click the drop-down beside “Count of Civil Status” → Value Field Settings → Show Values As → % of Grand Total → OK  
+32) Press CTRL + 1 → Percentage → 1 decimal place → OK  
+
+33) Click cell A12 (one blank row under the second pivot; next table begins at A14)  
+34) Switch to Sheet1, click any value in the column labeled “Highest Educational Attainment”  
+35) Insert → PivotTable  
+36) Choose “Existing Worksheet,” Location box, switch to Demographic Profile, click A14, OK  
+37) Drag Highest Educational Attainment to Rows  
+38) Drag Highest Educational Attainment again to Values  
+39) Change “Count of Highest Educational Attainment” to Show Values As → % of Grand Total → OK  
+40) Format values: CTRL + 1 → Percentage → 1 decimal place → OK  
+
+41) Scroll up in Demographic Profile to verify layout:  
+    • Row 1: blue merged title, white bold text  
+    • Row 2–5: Sex percentage pivot  
+    • Row 7: completely blank  
+    • Row 8–11: Civil Status percentage pivot  
+    • Row 13: completely blank  
+    • Row 14–…: Highest Educational Attainment percentage pivot  
+
+42) Press CTRL + S to save the workbook; the demographic sheet is complete.

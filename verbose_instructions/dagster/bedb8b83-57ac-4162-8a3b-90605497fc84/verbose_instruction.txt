@@ -1,0 +1,50 @@
+1. Open Chromium from the left dock so the Airbyte web-UI appears on the “Connections” page.  
+2. Click the connection row labeled “MySQL → Local JSON”; its detail screen loads.  
+3. Look at the browser address bar; it now reads something like  
+   http://localhost:8000/workspaces/24b9cbe7-26fa-4f8e-8d03-7c33c2f5db5f/connections/ 9b924d6e-3fd6-4c5f-9000-7d15bd5d8c55 /status  
+   Drag-select only the UUID between the two literal strings “connections/” and “/status” (in the example that is 9b924d6e-3fd6-4c5f-9000-7d15bd5d8c55). Press Ctrl + C to copy it—we will paste this value in code as {airbyte_connection_id}.  
+4. Switch to VS Code by clicking the blue “</>” icon on the dock. The file dagster_migration.py is already open in the editor pane.  
+5. Click inside the file and paste the following entire snippet, replacing {airbyte_connection_id} with the UUID you copied in step 3 (keep the quotes):  
+   ```python
+   from dagster import job
+   from dagster_airbyte import airbyte_resource, airbyte_sync_op
+
+   # Configure the Airbyte instance that Dagster will talk to
+   my_airbyte_resource = airbyte_resource.configured(
+       {
+           "host": "localhost",
+           "port": "8000",
+       }
+   )
+
+   # Wrap the specific Airbyte connection as an op
+   mysql_to_json = airbyte_sync_op.configured(
+       {"connection_id": "9b924d6e-3fd6-4c5f-9000-7d15bd5d8c55"},  # <- replace with yours
+       name="mysql_to_json",
+   )
+
+   # Define a Dagster job that just calls that op
+   @job(resource_defs={"airbyte": my_airbyte_resource})
+   def airbyte_job():
+       mysql_to_json()
+   ```  
+   Note that the op name matches the requested connection name “mysql_to_json”; we will see this later in the UI.  
+6. Press Ctrl + S to save dagster_migration.py; confirm “●” disappears from the file tab.  
+7. Switch to the integrated terminal by clicking the “Terminal” tab at the bottom of VS Code (or press Ctrl + `). Ensure the prompt path ends with ~/airflow-mysql-to-json. If it does not, type  
+   ```bash
+   cd ~/airflow-mysql-to-json
+   ```  
+8. Run the Dagster dev server by executing:  
+   ```bash
+   dagster dev -f dagster_migration.py
+   ```  
+9. Wait until the terminal prints a line similar to:  
+   Serving dagster-webserver on http://127.0.0.1:3000 in process 12345  
+   This indicates the UI is ready.  
+10. Right-click directly on the URL http://127.0.0.1:3000 that appears in the terminal output and choose “Open Link” from the context menu. A new Chromium tab opens to the Dagster UI.  
+11. In the Dagster UI, locate the left sidebar; under “Jobs” click “airbyte_job”. The job overview screen opens showing one op “mysql_to_json”.  
+12. Click the blue “Launchpad” button near the top-right of the page (immediately below the job title).  
+13. Review the run configuration pane (it will be empty because we configured everything in code). Scroll to the bottom-right and click the green “Launch Run” button.  
+14. Observe the live logs. Wait until the status badge at the top turns green and reads “Succeeded”. The op dot next to “mysql_to_json” should also be green.  
+15. Verify data synced: under the run’s “Ops” tab click “mysql_to_json > View Raw Logs”; ensure the last log lines include “SYNC SUCCEEDED” and no error tracebacks.  
+16. Close the log dialog and pat yourself on the back—Airbyte connection “MySQL → Local JSON” has been fully migrated to Dagster as job “airbyte_job” containing the op “mysql_to_json”.

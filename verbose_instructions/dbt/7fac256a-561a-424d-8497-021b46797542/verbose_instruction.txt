@@ -1,0 +1,34 @@
+1) Navigate to https://console.cloud.google.com/bigquery so the BigQuery Web UI opens in a new browser tab.  
+2) Click the left-hand “Dataform” icon (yellow cube) so the Dataform panel appears in the navigation pane.  
+3) Locate your repository (for example “my_sales_repo”) under Dataform, then click the tiny triangle ▶ to expand it and reveal “Environments”, “Definitions”, and “Jobs”.  
+4) Click “Environments”, then click the blue-linked environment name “Christmas_Sales”. A new page with tabs (Overview, Jobs, Schedules, etc.) opens for this environment.  
+5) Click the “Jobs” tab (it sits next to Overview). We can see any existing jobs—verify “Sales_Process” already exists because we will chain our new job after it.  
+6) Click the blue “+ CREATE JOB” button in the upper-right corner of the Jobs tab. A “Create job” side panel appears.  
+7) Type Sales_Summary in the “Job name” text field.  
+8) Expand the “SQL workflow” drop-down and select “Run a custom SQL query” (we will paste the query next).  
+9) Copy-paste the following SQL into the “Query” editor box:  
+```sql
+-- Summarise total daily sales for the Christmas period
+SELECT
+  DATE(order_timestamp) AS sales_date,
+  SUM(order_amount)     AS total_sales
+FROM
+  `project_id.sales_dataset.sales_transactions`
+WHERE
+  sales_date BETWEEN '2023-12-01' AND '2023-12-31'
+GROUP BY
+  sales_date
+ORDER BY
+  sales_date;
+```  
+10) (Optional reasoning) Note that we filter only December 2023 because this will feed Christmas dashboards later.  
+11) Scroll down to the “Dependencies” section of the side panel and click “+ Add dependency”. A small selector pop-up appears.  
+12) Click the radio button next to the existing job “Sales_Process” so that Sales_Summary will wait until Sales_Process succeeds. Click the blue “Done” on that selector.  
+13) Verify the dependency now shows “Sales_Process (on success)” in grey under “Dependencies”; this confirms the new job will only run after Sales_Process finishes successfully.  
+14) Leave the “Schedule” field as “Manual” (we are triggering via dependency, not a cron).  
+15) Click the blue “Create” button at the bottom of the side panel. The panel closes and Sales_Summary now appears in the Jobs list with a little chain-link icon indicating it has a dependency.  
+16) First, we check the job graph: hover over Sales_Summary and notice the tooltip “Runs after Sales_Process succeeds”. This confirms our configuration.  
+17) (If you want to test) Click the vertical-ellipsis ⋮ on the Sales_Process row and choose “Run now”; once it completes successfully, observe that Sales_Summary automatically starts.  
+18) Click Sales_Summary’s “Query history” link to watch the live logs; the “Query” tab shows the SQL we pasted, and the “Job info” tab shows “Triggered by: Sales_Process”.  
+19) When the run finishes, click the “Query results” panel and then “SAVE RESULTS” > “CSV (local file)” if you want to download the summary numbers to your workstation.  
+20) Switch to your browser’s download bar; rename the downloaded file to Sales_Summary_results.csv and confirm it lands in ~/Downloads for future analysis.

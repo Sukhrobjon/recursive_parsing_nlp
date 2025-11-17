@@ -1,0 +1,58 @@
+1. Open Snowsight in your browser and sign in with your regular credentials.  
+
+2. Click the blue “+” button in the left-hand navigation bar, then click “Worksheet” → “Python” so we start a Snowpark Python worksheet.  
+
+3. Type (or paste) the following header commands in the blank worksheet to make sure we are working with the correct security context from the .txt requirements file:  
+```python
+# --- Set context -------------------------------------------------
+session.sql("USE ROLE sysadmin").collect()
+session.sql("USE WAREHOUSE compute_wh").collect()
+session.sql("USE DATABASE students").collect()
+session.sql("USE SCHEMA public").collect()
+# ----------------------------------------------------------------
+```
+Click the triangle ► “Run All” button in the top-right corner of the worksheet to execute the context setup.  
+We should see four result panels, each returning “Statement executed successfully”.
+
+4. Scroll to a new cell and write the Snowpark code that reads the staged CSV file.  Copy the exact block below:  
+```python
+# --- Read CSV from @stage into a Snowpark DataFrame -------------
+# The stage name is students.public.stage  (already in current database)
+df_scores = session.read.options({
+        "FIELD_DELIMITER": ",",
+        "SKIP_HEADER": 1,
+        "ON_ERROR":  "ABORT_STATEMENT"   # stop if bad rows
+    }).csv("@stage")
+
+print(f"Rows read from stage: {df_scores.count()}")
+df_scores.show(5)          # quick preview
+# ----------------------------------------------------------------
+```
+Run this cell.  
+We can see the first five rows printed in the Results pane and a count confirming the file was read.
+
+5. Still in the same worksheet, add another cell that writes the DataFrame into the target table scores.  
+```python
+# --- Write the dataframe to the scores table --------------------
+df_scores.write.mode("overwrite").save_as_table("scores")
+# ----------------------------------------------------------------
+```
+Execute the cell.  A single result row reading “Table created” or “Table overwritten” confirms success.
+
+6. Verify the load by running a SQL sanity query directly inside the worksheet (Snowpark worksheets understand raw SQL if you prepend it with session.sql):  
+```python
+# --- Verification query -----------------------------------------
+session.sql("SELECT COUNT(*) AS total_rows, * FROM scores LIMIT 10").show()
+# ----------------------------------------------------------------
+```
+After clicking ► Run, check that “total_rows” matches the value printed earlier and the sample rows look correct.
+
+7. Click the disk-shaped “Save” icon at the top-left of the worksheet tab.  Type the name “Scores_Load_Worksheet” and press Enter so the notebook is stored in Snowsight.
+
+8. Click the kebab menu (three vertical dots) next to the worksheet title → choose “Download” → “Python File (.py)”.  Snowsight saves a file named “Scores_Load_Worksheet.py” to your browser’s default downloads folder.
+
+9. Switch to your operating system’s file explorer (Finder on macOS, File Explorer on Windows).  Navigate to Downloads, locate “Scores_Load_Worksheet.py”, and rename it to “code.py”.
+
+10. Drag “code.py” to the Desktop folder (or cut-and-paste if you prefer).  Confirm the file exists on Desktop by opening it in any text editor and verifying our worksheet code is present.
+
+11. Return to Snowsight one final time and re-run the entire worksheet with the ► “Run All” button to double-check nothing broke after saving.  Successful completion with no errors finalizes the task.

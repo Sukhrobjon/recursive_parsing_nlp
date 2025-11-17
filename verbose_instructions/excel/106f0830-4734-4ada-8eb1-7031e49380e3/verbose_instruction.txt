@@ -1,0 +1,22 @@
+1. Click any cell inside your source table (columns A through G) so Excel can automatically detect the entire data block.  
+2. Press Ctrl + A to confirm the whole range is highlighted; we should see marching ants around all populated rows in columns A–G.  
+3. Click the top-menu tab Insert.  
+4. Click the PivotTable button (first icon in the ribbon group “Tables”).  
+5. In the “Create PivotTable” dialog that appears, verify that “Table/Range” shows something like $A$1:$G$[last-row].  
+6. Select the radio button “New Worksheet” so the pivot and chart will live on their own sheet.  
+7. Click OK; Excel creates “Sheet1 (2)” (or “Sheet2”) and places an empty PivotTable outline at cell A3 with a “PivotTable Fields” pane on the right.  
+8. Drag the field Week from the top field list into the Rows area at the bottom of the pane. We now see a vertical list of week labels appear in column A starting at row 4.  
+9. Drag the field Revenue ($) into the Values area. Excel automatically names the value field “Sum of Revenue ($)”; if it shows “Count of…”, click the dropdown on that field, choose Value Field Settings, select Sum, and click OK.  
+10. Hover over any number inside the pivot to verify that the tooltip reads “Sum of Revenue ($)”—this confirms aggregation is correct.  
+11. Right-click any number in the Sum of Revenue column, choose Number Format, select Currency, set decimal places to 2, and click OK so all totals display as dollars.  
+12. Click once inside the PivotTable (for example, cell B4) so the contextual ribbon tab PivotTable Analyze becomes active.  
+13. Click the Insert tab again (stay on the same worksheet).  
+14. Click the small downward triangle under the Insert Line or Area Chart icon, then select the first Line chart thumbnail (“Line”).  
+15. In the “Insert Chart” dialog that pops up because we are inside a pivot, leave “New Worksheet” unchecked (we want it on the same sheet) and click OK. Excel drops a PivotChart slightly overlapping the PivotTable.  
+16. Drag the chart so its upper-left corner sits around cell D3, then pull its resize handles so it spans roughly columns D–K and rows 3–18. This keeps the pivot on the left and the chart on the right.  
+17. Click the generic chart title (“Sum of Revenue ($)”) twice (slow double click) and type Weekly Revenue Trend, then press Enter.  
+18. Click the legend once and press Delete if you prefer a cleaner look (optional since line charts with one series don’t need legends).  
+19. Verify the x-axis shows week labels in chronological order and the y-axis displays currency values; hover over a point to see a tooltip like “Week 12, Sum of Revenue ($): $45,670.00”.  
+20. Press Ctrl + S to open the Save dialog.  
+21. Navigate to your desired folder, type WeeklyRevenueAnalysis.xlsx, make sure the “Save as type” dropdown is set to “Excel Workbook (*.xlsx)” (this is the 2007–365 file format), and click Save.  
+22. Close and reopen the file, then check Sheet2 (the new worksheet) to confirm both the PivotTable and the line chart appear exactly as configured—this final verification ensures the task is complete.

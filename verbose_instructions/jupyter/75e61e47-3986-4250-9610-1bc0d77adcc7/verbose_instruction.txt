@@ -1,0 +1,94 @@
+1) Double-click the file ​“admission_logistic_regression.ipynb” ​in the left sidebar to open the notebook.  
+
+2) Scroll to the first code cell that contains ​“# TODO: import libraries”.  
+
+3) Click inside the cell, replace the TODO comment with the following code, and make sure it stays in one cell:  
+```python
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+%matplotlib inline
+
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+```
+
+4) Press Shift+Enter to run the cell and confirm no ImportError messages appear in the output area.  
+
+5) Scroll to the next cell labeled ​“# TODO: load data”.  
+
+6) Click the cell, delete the TODO, and paste this code (adjust the CSV name only if your file is different):  
+```python
+# Load the raw admissions data
+df = pd.read_csv('student_admission.csv')  # <-- verify the CSV name in the file browser
+print("Shape:", df.shape)
+df.head()
+```
+
+7) Run the cell (Shift+Enter). Verify that the first five rows and the shape of the DataFrame appear.  
+
+8) Scroll to the ​“# TODO: data cleaning / preprocessing” ​cell.  
+
+9) Replace the TODO with:  
+```python
+# Basic NA handling
+df = df.dropna().copy()
+
+# Separate features and label
+y = df['Admitted']          # target column
+X = df.drop('Admitted', axis=1)
+
+# Train-test split (stratified so the 0/1 ratio is preserved)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+# Feature scaling (mean-std scaling is important for LR)
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled  = scaler.transform(X_test)
+```
+
+10) Run the cell and verify that no errors appear.  
+
+11) Locate the next cell marked ​“# TODO: build and train model”.  
+
+12) Replace that TODO block with:  
+```python
+# Instantiate the Logistic Regression classifier
+log_reg = LogisticRegression(max_iter=1000, solver='liblinear', random_state=42)
+
+# Fit the model
+log_reg.fit(X_train_scaled, y_train)
+```
+
+13) Execute the cell. You should see no output or possibly a convergence message with “liblinear”, which is fine.  
+
+14) Scroll to the ​“# TODO: evaluate model” ​cell.  
+
+15) Remove the TODO and insert:  
+```python
+# Predict on the held-out test set
+y_pred = log_reg.predict(X_test_scaled)
+
+# Evaluation metrics
+print("Accuracy :", accuracy_score(y_test, y_pred))
+print("\nConfusion Matrix\n", confusion_matrix(y_test, y_pred))
+print("\nClassification Report\n", classification_report(y_test, y_pred))
+```
+
+16) Run the cell. Confirm that an accuracy score, a 2×2 confusion matrix, and a full precision/recall/F1 report are printed.  
+
+17) (Optional sanity check) Scroll back to the training cell and rerun it if you changed anything; the results in step 16 should stay roughly the same.  
+
+18) Click the floppy-disk icon (or press Ctrl+S / Cmd+S) to save the notebook checkpoint. Make sure the blue circle in the filename tab disappears, indicating the notebook is saved.  
+
+19) Click the menu “Kernel ▸ Restart & Run All…”, then choose “Restart and Run All” in the dialog. This reruns every cell from a clean kernel and verifies all TODO blocks are correctly filled.  
+
+20) Wait until the star “[*]” next to the last cell turns into a number “[✓]” and the evaluation metrics re-appear. This confirms that the notebook runs end-to-end without manual intervention.  
+
+21) Click “File ▸ Save and Checkpoint” one final time to persist the executed state.  
+
+22) Close the notebook tab if desired; your completed Logistic Regression admission prediction pipeline is now fully saved.

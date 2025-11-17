@@ -1,0 +1,55 @@
+1) Switch to the browser window that is already displaying your local Airbyte UI (typically http://localhost:8000).
+
+2) Click the link “Sources” in the dark-blue left sidebar.
+
+3) Type “Faker” in the search bar at the top-right of the “Sources” page; we can see a tile named “Sample Data (Faker)” appear.
+
+4) Click the tile “Sample Data (Faker)”.
+
+5) Click the blue button “Set up source” in the upper-right corner of the page.
+
+6) Wait a few seconds until the green badge “All tests passed” is shown under “Status”; this tells us the source is valid.
+
+7) Click the link “Destinations” in the left sidebar.
+
+8) Type “local json” in the destination search bar; only one card called “Local JSON” should remain visible.
+
+9) Click the card “Local JSON”.
+
+10) In the popup form, locate the input labeled “Destination Path” and type exactly:
+/local/json_destination
+
+11) Click the blue button “Set up destination” at the bottom of the form.
+
+12) Wait until the green badge “All tests passed” confirms the destination has connected successfully.
+
+13) Click the link “Connections” in the left sidebar.
+
+14) Click the large button “Create your first connection” (or “New connection” if other connections exist) in the main panel.
+
+15) In the “Define source” step, click the dropdown “Create a new source” and choose “Select an existing source”.
+
+16) In the list that appears, click the row for “Sample Data (Faker)” (we created it seconds ago).
+
+17) Click the blue button “Next” in the bottom-right corner.
+
+18) In the “Define destination” step, click the dropdown “Create a new destination” and choose “Select an existing destination”.
+
+19) Click the row “Local JSON” in the list, then press “Next”.
+
+20) In the “Configure connection” step, scroll to the “Streams” table; locate the “products” stream and click the toggle in its “Status” column so it displays an open green icon.
+
+21) For every other stream (e.g., customers, orders, payments, users), click the same toggle so each shows a closed grey icon. Only “products” should remain enabled.
+
+22) Find the “Sync frequency” section on the right sidebar, click the dropdown that currently reads “Every hour” and change it to “Manual”.
+
+23) Quickly review that:
+   • “products” status = Enabled  
+   • All other streams = Disabled  
+   • Sync mode = Manual  
+
+24) Click the blue button “Set up connection” in the lower-right corner.
+
+25) Wait for the toast “Connection successfully created” and confirm we land on a new connection overview page that shows “Manual sync” under “Schedule”.
+
+26) (Optional verification) Click “Sync now” once to run an immediate test; the status bar should turn blue (“Running”) and then green (“Succeeded”). A JSON file will appear under /local/json_destination/products_date_time.json confirming end-to-end success.

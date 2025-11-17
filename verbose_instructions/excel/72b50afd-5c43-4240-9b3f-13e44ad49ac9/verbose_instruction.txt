@@ -1,0 +1,22 @@
+1. Click cell G1  
+2. Type the text “Revenue” and press ENTER so the column header is stored  
+3. Click cell G2  
+4. Type the formula  
+```excel
+=VLOOKUP(C2,'Retail Price'!$A$2:$B$23,2,FALSE)*E2*(1-F2)
+```  
+   and press ENTER to calculate the net revenue for the first record (Retail Price × Quantity × (1 – Discount))  
+5. Drag the small square “fill handle” at the bottom-right corner of G2 straight down to row 36, then release the mouse so the formula fills G2:G36  
+6. Verify that the last filled cell (e.g., G36) shows a numeric result rather than “#N/A”; if an error appears, re-check the VLOOKUP range and discount column references before proceeding  
+7. Click any one cell in the header row (row 1)  
+8. Press CTRL+SHIFT+→ then CTRL+SHIFT+↓ to highlight columns C through G for all occupied rows (this selects Product, …, Revenue)  
+9. Click the “Insert” tab on the Ribbon, then click the “PivotTable” button in the Tables group  
+10. Ensure the radio button “Select a table or range” is chosen and the selection box shows something like Sheet1!$C$1:$G$36; leave “New Worksheet” activated and click OK  
+11. Switch to the new worksheet that Excel adds (it will be named “Sheet1!PivotTable1” or similar)  
+12. In the PivotTable Fields pane, drag the field named “Product” into the Rows area  
+13. Drag the field named “Revenue” into the Values area; Excel automatically sets it to “Sum of Revenue” (this is what we need)  
+14. Confirm that the PivotTable now lists each distinct Product in column A and the corresponding Sum of Revenue in column B; totals should match a manual SUM of G2:G36  
+15. Right-click the sheet tab currently titled something like “Sheet1 (2)” or “Sheet1!PivotTable1” at the bottom  
+16. Choose “Rename” from the context menu  
+17. Type “Sheet2” and press ENTER to finalize the new sheet name  
+18. Press CTRL+S to save the workbook so the Revenue column and PivotTable summary are stored

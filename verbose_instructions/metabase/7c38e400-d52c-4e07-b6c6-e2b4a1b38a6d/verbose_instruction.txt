@@ -1,0 +1,36 @@
+1. Open a terminal window on your local machine (Terminal on macOS/Linux or Command Prompt/PowerShell on Windows).
+
+2. Type `java -version` and press Enter to verify Java is installed and version is 11 +:  
+   ```bash
+   java -version
+   ```  
+   Note that Metabase requires Java 11 or newer. If the command is not found or reports an older version, install a current OpenJDK first (e.g., adoptopenjdk-11) and rerun the command.
+
+3. Navigate to a folder where you want to store Metabase (for example, `~/metabase`):  
+   ```bash
+   mkdir -p ~/metabase
+   cd ~/metabase
+   ```
+
+4. Download the latest Metabase JAR directly from the official site:  
+   ```bash
+   curl -L -o metabase.jar https://downloads.metabase.com/latest/metabase.jar
+   ```  
+   We place the file as `metabase.jar` so the startup command is short.
+
+5. Start the application on port 3000 by setting the `MB_JETTY_PORT` environment variable and running the JAR:  
+   ```bash
+   MB_JETTY_PORT=3000 java -jar metabase.jar
+   ```  
+   • The terminal will show “Metabase Initialization COMPLETE” when the server is ready.  
+   • Leave this terminal running; Metabase stops if you close it.
+
+6. Switch to a web browser once you see the initialization complete message.
+
+7. Type `http://localhost:3000` in the address bar and press Enter.
+
+8. Confirm success: the Metabase “Welcome to Metabase” setup wizard page should load.  
+   First-time visitors see the language selection prompt followed by the onboarding form—this verifies the server is running on port 3000 locally.
+
+9. Return to the terminal to stop Metabase after testing by pressing `Ctrl + C`.  
+   We can later create a systemd service or use Docker for a persistent deployment, but this simple Java command meets the requirement to view the welcome page on localhost:3000.

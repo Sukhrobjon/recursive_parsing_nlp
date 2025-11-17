@@ -1,0 +1,17 @@
+1. Navigate to the browser tab that shows the Web UI’s query editor (the title usually reads “SQL Workbench” or “Query Editor”).  
+2. Click the blue “+ New Query” button in the top-left corner so we start with an empty editor window.  
+3. Type the following SQL exactly, making sure the column names match the schema (“residual_value” and “display_name” are case-sensitive in some databases):  
+```sql
+SELECT *
+FROM assets
+ORDER BY residual_value DESC,       -- highest residuals first
+         display_name  ASC;        -- alphabetical inside each residual tier
+```  
+ Note that we place `residual_value` first and tag it with `DESC` to sort in descending order, then add a comma and `display_name ASC` for the secondary alphabetical sort.  
+4. Press Ctrl + S (or Cmd + S on macOS) to save the query as “assets_sorted_by_residual_and_name” so we can reuse it later.  
+5. Click the green “Run” button (triangle icon) located in the top-right of the editor pane.  
+6. Observe the results grid that appears below the editor:  
+   • Verify that the first row shows the largest “residual_value”.  
+   • Scroll down a few rows with identical residuals to confirm their “display_name” values are listed alphabetically (A → Z).  
+   This quick check confirms the sort order is applied correctly.  
+7. If the ordering looks wrong, double-check step 3 for typos—especially the `DESC`/`ASC` keywords—then repeat steps 5-6.

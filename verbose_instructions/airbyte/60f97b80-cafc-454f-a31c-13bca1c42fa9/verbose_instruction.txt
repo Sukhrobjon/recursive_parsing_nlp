@@ -1,0 +1,38 @@
+1) Open your browser and navigate to the Airbyte UI at http://localhost:8000 (change the URL if your Airbyte instance runs elsewhere)  
+2) Click the “Connections” item in the left-hand navigation panel  
+3) Type “Postgres” in the search bar at the top of the Connections page so we can quickly find the PostgreSQL-to-PostgreSQL connection  
+4) Click the row showing the connection whose Source and Destination are both “Postgres” (it should also list the schema “public” in the streams preview)  
+5) Click the blue “Sync now” button in the upper-right of the connection details page  
+6) Wait until the job status panel turns green and shows “SUCCEEDED” (refresh with the circling arrows icon if necessary).  Note that Airbyte writes the data into the destination PostgreSQL database only after this status appears  
+7) Click the “Destination” tab inside the same connection page  
+8) Click the “Edit destination” button so that the connection form opens and reveals the credentials; keep this tab open—we will copy the values in a moment  
+9) Switch to your terminal (macOS Terminal, Windows PowerShell, or Linux shell)  
+10) Export the Postgres password you just saw so psql can connect non-interactively. Replace the placeholder with the actual value:  
+```bash
+export PGPASSWORD='<DEST_PASSWORD>'
+```  
+11) Run psql using the destination parameters you copied (host, port, database, user). Example:  
+```bash
+psql -h <DEST_HOST> -p <DEST_PORT> -U <DEST_USER> -d <DEST_DATABASE>
+```  
+12) Confirm you have reached the psql prompt that looks like `DEST_DATABASE=>`  
+13) Type the following query once to verify the data exists:  
+```sql
+SELECT city, city_code FROM public.cities LIMIT 5;
+```  
+14) Check that a few rows return without error—we know the table is populated from the recent sync  
+15) Leave psql running. Now we need a full export to a CSV on your Desktop. Execute the psql meta-command below (note the leading backslash). This writes the file locally on your machine:  
+```sql
+\copy (SELECT city, city_code FROM public.cities) TO '~/Desktop/cities.csv' WITH (FORMAT csv, HEADER);
+```  
+16) Wait until psql returns `COPY X` where X is the number of rows exported  
+17) Type `\q` and press Enter to quit psql  
+18) Switch back to the terminal command prompt and run a quick check that the file exists:  
+```bash
+ls ~/Desktop | grep cities.csv
+```  
+19) Optionally display the first few lines to verify header and data:  
+```bash
+head -n 5 ~/Desktop/cities.csv
+```  
+20) Confirm the first line reads `city,city_code` and that subsequent lines contain city names with their codes. We have successfully synced the Airbyte connection and exported the requested columns to Desktop/cities.csv

@@ -1,0 +1,9 @@
+1. Click cell D1  
+2. Type “Profit” (without quotes) and press ENTER to create the new column header  
+3. Click cell D2 (first data row under Profit)  
+4. Type the formula `=$B2-$C2` and press ENTER so Excel subtracts COGS from Sales for Week 1  
+5. Click the small fill-handle (black square) at the bottom-right corner of cell D2  
+6. Drag the fill-handle straight down to cell D11 (the last week’s row) while holding the mouse button  
+7. Release the mouse; Excel auto-fills the Profit formula for rows 2–11 so each row now shows Sales minus COGS  
+8. Glance at a few Profit cells (for example D2 and D11) to confirm the numbers match manual calculations—this verifies the formula copied correctly  
+9. Press Ctrl+S to save the updated workbook

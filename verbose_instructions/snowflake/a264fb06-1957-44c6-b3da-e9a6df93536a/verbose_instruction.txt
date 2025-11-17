@@ -1,0 +1,63 @@
+1. Click the “+ ▸ SQL Worksheet” button in the upper-right corner of the Snowflake web UI so we have a fresh worksheet to work in.  
+2. Type the following command to make sure we have full privileges, then press the “► Run” triangle:  
+```sql
+USE ROLE accountadmin;
+```  
+3. Type the warehouse selection statement and run it the same way:  
+```sql
+USE WAREHOUSE compute_wh;
+```  
+(We will need compute_wh running so the subsequent DDL and data-loading steps execute.)  
+4. Write and execute the database creation statement:  
+```sql
+CREATE OR REPLACE DATABASE tasty_bytes;
+```  
+Snowflake will respond with “Statement executed successfully” in the messages panel—this confirms the database now exists.  
+5. Create the schema inside that database by running:  
+```sql
+CREATE OR REPLACE SCHEMA tasty_bytes.food;
+```  
+6. Define the target table that will store the CSV data. Copy the code below into the worksheet and click “Run”:  
+```sql
+CREATE OR REPLACE TABLE tasty_bytes.food.menu
+(
+    menu_id                       NUMBER,
+    menu_type_id                  NUMBER,
+    menu_type                     STRING,
+    truck_brand_name              STRING,
+    menu_item_id                  NUMBER,
+    menu_item_name                STRING,
+    item_category                 STRING,
+    item_subcategory              STRING,
+    cost_of_goods_usd             NUMBER,
+    sale_price_usd                NUMBER,
+    menu_item_health_metrics_obj  OBJECT
+);
+```  
+Note that every column name matches the header structure in the incoming CSV so the COPY step will map cleanly.  
+7. Set up an external stage that points at the S3 location where the file lives. Paste the following and run it:  
+```sql
+CREATE OR REPLACE STAGE tasty_bytes.food.awsstage
+  URL = 's3://sfquickstarts/tastybytes/raw_pos/menu/menu.csv.gz'
+  FILE_FORMAT = (TYPE = csv COMPRESSION = gzip SKIP_HEADER = 1);
+```  
+The message “Stage created” should appear—this verifies Snowflake can see the bucket path.  
+8. (Optional) Check that the file is reachable by listing the stage; run:  
+```sql
+LIST @tasty_bytes.food.awsstage;
+```  
+We should see the object menu.csv.gz along with its size—good confirmation before loading.  
+9. Load the data from the stage into the table. Execute:  
+```sql
+COPY INTO tasty_bytes.food.menu
+FROM @tasty_bytes.food.awsstage
+ON_ERROR = 'ABORT_STATEMENT';
+```  
+Snowflake will show a results grid. Confirm the “status” column reads “LOADED” and the “rows_loaded” value equals 100.  
+10. Run a quick row count to double-check the table contents:  
+```sql
+SELECT COUNT(*) AS total_rows
+FROM tasty_bytes.food.menu;
+```  
+The result should return 100, matching the COPY summary.  
+11. Celebrate—our database, schema, table, stage, and data load are all complete. If desired, close the worksheet tab or leave it for further queries.

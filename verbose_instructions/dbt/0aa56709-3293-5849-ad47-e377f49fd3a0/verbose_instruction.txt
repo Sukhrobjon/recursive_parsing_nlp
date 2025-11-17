@@ -1,0 +1,44 @@
+1) Open a terminal window and make sure you are in the root of the dbt project folder that contains models/schema.yml and description.md (`pwd` should print something like …/my_dbt_project).  
+2) Type `cat description.md` and press Enter to read the description requirements.  Review the exact phrasing and pay attention to any required wording or formatting (“Note that we must use present-tense sentences … we list PK/FK …”).  Leave the terminal open—we will refer back to this file as we write the YAML descriptions.  
+3) Launch your text editor on the schema file.  For example, type `code models/schema.yml` if you use VS Code, or `nano models/schema.yml` if you prefer nano.  
+4) Scroll to the top of schema.yml and locate the first model definition under `models:`.  Insert or update a `description:` key that matches the language in description.md.  Example:  
+
+```yaml
+models:
+  - name: fct_orders
+    description: >
+      Contains one row per order placed on the e-commerce platform.
+      Each record represents an order header and is identified by order_id.
+      Primary key: order_id.
+```
+
+5) Continue down the file and add or adjust a `description:` block for every model listed, repeating the same wording style from description.md.  Make sure no model is left with the default “TODO” text.  
+6) For each model, locate the `columns:` section.  Add a `description:` field for every column, again following description.md rules.  Example:  
+
+```yaml
+    columns:
+      - name: order_id
+        description: Unique identifier for the order (PK).
+      - name: customer_id
+        description: References customers.customer_id (FK).
+      - name: order_date
+        description: Date when the order was placed in UTC.
+```
+
+7) Save the file (`Ctrl+S` in VS Code, `Ctrl+O` then `Enter` in nano).  
+8) Return to the terminal window and run the dbt documentation generation command:  
+
+```bash
+dbt docs generate
+```  
+
+9) Watch the output until you see “Done” and a green check mark.  Verify it says “Wrote manifest.json and catalog.json” without errors.  
+10) Launch the documentation site on the required port by typing:  
+
+```bash
+dbt docs serve --port 8020
+```  
+
+11) Wait for the message “Serving docs at http://0.0.0.0:8020” (or 127.0.0.1).  
+12) Open a web browser and navigate to http://localhost:8020.  Confirm you can click a model (e.g., fct_orders) and see the descriptions exactly as entered, with no missing or placeholder text.  
+13) Keep the terminal session running to continue serving the site.  When finished, press `Ctrl+C` in that terminal to stop the web server.

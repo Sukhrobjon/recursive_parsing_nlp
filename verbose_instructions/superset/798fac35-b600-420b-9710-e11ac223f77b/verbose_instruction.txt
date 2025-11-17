@@ -1,0 +1,25 @@
+1) Open your web browser and navigate to https://console.cloud.google.com/bigquery so we are inside the BigQuery Console.
+
+2) Click the project name in the Explorer pane’s left-hand tree to expand it (look for the grey triangle to the left of the project ID).
+
+3) Hover over your project name and click the blue “+ CREATE DATASET” button that appears on the right side of the Explorer header.
+
+4) Type Myannotation in the Dataset ID field exactly as shown—this will be the global annotation layer’s container.
+
+5) Leave the Data location dropdown at its default (typically “US”) unless your organization requires a different region.
+
+6) Leave the Default table expiration and Default partition expiration fields blank so tables inside Myannotation do not expire automatically.
+
+7) Ensure the Encryption option is set to “Google-managed key” unless you need customer-managed encryption (most users can keep the default).
+
+8) Click the blue “CREATE DATASET” button at the bottom; BigQuery now provisions the new dataset.
+
+9) Verify creation by looking back at the Explorer pane—Myannotation should appear alphabetically under your project node. If you do not see it, click the circular “Refresh” icon just above the Explorer tree and confirm it shows up.
+
+10) (Optional) Run a quick INFORMATION_SCHEMA query to double-check programmatically: in the Query Editor paste and execute
+```sql
+SELECT schema_name
+FROM  `region-us`.INFORMATION_SCHEMA.SCHEMATA
+WHERE schema_name = 'Myannotation';
+```
+11) Confirm the query returns exactly one row with schema_name = Myannotation. We now have a global annotation layer ready to store tables and views.

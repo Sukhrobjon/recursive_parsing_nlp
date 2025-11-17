@@ -1,0 +1,42 @@
+1) Open the terminal window that is already focused on your local machine  
+2) Type the directory-change command and press Enter:  
+```bash
+cd ~/projects/airbyte
+```  
+   We land in the root of the cloned Airbyte repository; all Docker-Compose files and helper scripts live here
+
+3) Execute the platform bootstrap script to spin up the full Airbyte stack:  
+```bash
+bash run-ab-platform.sh
+```  
+   The script pulls Docker images (if not cached) and starts about a dozen containers (webapp, server, temporal, db, etc.)
+
+4) Watch the terminal logs; after ~40 seconds you should see lines similar to  
+```
+webapp_1  | Listening on :8000
+server_1  | Started Application in 23.456 seconds
+```  
+   These lines confirm that the UI is now exposed on http://localhost:8000
+
+5) Switch to the Chromium browser (Alt + Tab or click the browser icon)
+
+6) Click the address bar, type the local URL, and hit Enter:  
+   `http://localhost:8000`
+
+7) Wait for the Airbyte onboarding form to appear; you’ll see two input boxes labelled “Work email” and “Company name”
+
+8) Click the “Work email” field, type any address, e.g.  
+   `anonymous@gmail.com`
+
+9) Click the “Company name” field, type any value, e.g.  
+   `Google`
+
+10) Click the blue “Submit” button below the form
+
+11) Observe the redirect to the Airbyte “Connections” homepage; the left sidebar shows icons “Sources”, “Destinations”, “Settings” and the top bar reads “Airbyte Open-Source” – this confirms the local instance is running correctly
+
+12) Return to the terminal and press Ctrl +C at any time to stop the logs; the containers keep running in the background, or you can shut them down with:  
+```bash
+docker compose down
+```  
+   Note that you only need to rerun steps 3-4 the next time you want to restart Airbyte

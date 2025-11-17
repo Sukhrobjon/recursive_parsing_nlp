@@ -1,0 +1,27 @@
+1) Click the “+ New Sheet” tab in the workbook’s bottom-left corner so we can stage the year-over-year (YoY) calculations without touching the raw data sheet.  
+2) Double-click cell A1 and type Year, then press Tab and type CA changes, press Tab and type FA changes, press Tab and type OA changes.  
+3) Switch to the SQL Editor panel (look for the left side icon “SQL” or “Queries”).  
+4) Write the window-function query below exactly; it assumes the raw table is called balance_sheet and its date column is fiscal_year:  
+
+```sql
+SELECT
+    fiscal_year          AS "Year",
+    ROUND( (current_assets  - LAG(current_assets)  OVER(ORDER BY fiscal_year))
+           / LAG(current_assets)  OVER(ORDER BY fiscal_year)
+          ,4)               AS "CA changes",
+    ROUND( (fixed_assets    - LAG(fixed_assets)    OVER(ORDER BY fiscal_year))
+           / LAG(fixed_assets)    OVER(ORDER BY fiscal_year)
+          ,4)               AS "FA changes",
+    ROUND( (other_assets    - LAG(other_assets)    OVER(ORDER BY fiscal_year))
+           / LAG(other_assets)    OVER(ORDER BY fiscal_year)
+          ,4)               AS "OA changes"
+FROM   balance_sheet
+ORDER  BY fiscal_year;
+```
+5) Click the blue Run button in the top-right of the editor. Confirm the preview grid shows four columns: Year, CA changes, FA changes, OA changes, and that the first year (which has no prior year) returns NULL values.  
+6) Click Save > “Save as Table” in the toolbar. Name it asset_change_yoy and choose the current workspace; press Save.  
+7) Switch back to the sheet we created (“Sheet2” if you didn’t rename it).  
+8) In the right sidebar, click Insert > Data > asset_change_yoy. A dialog appears— tick all four columns, then click Insert Data. The result grid populates starting in A2.  
+9) Drag-select columns B, C, and D. On the top ribbon choose Format > Number > Percent. The change values now display like 12.34 %.  
+10) Highlight the first row of numeric data (row 2) and verify that the percentages line up with the preview from step 5. If they match, the calculation is correct.  
+11) Optional: rename the sheet tab to YoY Assets so teammates immediately know what the sheet represents.

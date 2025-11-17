@@ -1,0 +1,30 @@
+1. Click the New button in the top-right corner of the Metabase toolbar  
+2. Select Question from the drop-down panel that appears  
+3. Choose Raw Data > Sample Database in the data picker on the left side  
+4. Click the Orders table in the list of tables so it turns blue  
+5. Click the blue Visualize button in the bottom-right corner of the screen  
+6. Click the Visualization (bar-chart) icon in the bottom-left to open the Visualization sidebar  
+7. Click the Line option in the sidebar so the preview switches to a blank line chart  
+8. Click the Summarize button (∑ icon) in the top-right of the editor panel  
+9. Click the small x next to Count in the Summarize by box to remove it  
+10. Click + Add metric, scroll, and choose Sum of Total so “Sum of Total” appears under Summarize by  
+11. Click + Add grouping, expand Created At, and choose by month so “Created At – Month” shows under Group by  
+12. Click Done at the bottom of the Summarize modal to apply the aggregation  
+13. Observe that the canvas now shows a multi-point line labeled Sum of Total by Created At – Month (confirm values look reasonable)  
+14. Click the Visualization (bar-chart) icon again to reopen the sidebar if it closed  
+15. Click Line in the sidebar to reveal Line settings tabs  
+16. Click the Display tab underneath the Line settings heading  
+17. Toggle Goal line on (slider turns blue)  
+18. Type 40000 in the Goal value input box and press Enter; verify a horizontal dotted line appears near 40 k on the y-axis  
+19. Toggle Trend line on (slider turns blue) and confirm a faint sloped line appears across the points  
+20. Click Done at the bottom of the sidebar to save the display options  
+21. Hover over several points on the chart to verify tooltips show “Sum of Total” values—this confirms grouping and metric are correct  
+22. Click the cloud-shaped Download full results button in the bottom-right corner of the question editor  
+23. Select .png from the download format list; Metabase generates the file and the browser download toast appears  
+24. Switch to the file manager (Files app) by clicking its folder icon in the dock  
+25. Navigate to /home/user/Downloads in the left sidebar; you should see a file named something like Orders-line-chart.png  
+26. Right-click that file and choose Rename  
+27. Type line_chart.png and press Enter to confirm the new name  
+28. Press Ctrl + C (or right-click > Copy) on line_chart.png to copy the file  
+29. Click Desktop in the left sidebar, then press Ctrl + V (or right-click > Paste) to place the file on the Desktop  
+30. Double-click line_chart.png on the Desktop to open it and visually verify it shows the goal line at 40 k and a slanted trend line—now the task is complete

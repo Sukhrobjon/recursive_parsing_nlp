@@ -1,0 +1,33 @@
+1. Open the integrated terminal that is already pointed at your current working directory  
+2. Type the command below to scaffold a brand-new, empty Astronomer Airflow project and press Enter  
+```bash
+astro dev init
+```  
+   Note that this creates a default directory structure containing `dags/`, `Dockerfile`, and `airflow_settings.yaml`; we will use them shortly  
+
+3. Wait until you see the confirmation message “Project initialized” in the terminal; this confirms the files were generated successfully  
+
+4. Execute the following command to change the default Airflow webserver port from 8080 to 8002 so the UI won’t collide with any other service  
+```bash
+astro config set webserver.port 8002
+```  
+   The terminal should echo back: “Config set: webserver.port → 8002”  
+
+5. Run the project locally with Docker by typing the start command and pressing Enter  
+```bash
+astro dev start
+```  
+
+6. Watch the container logs; when you see the line “The scheduler is up and running” followed by “Starting gunicorn on port 8002”, the Airflow webserver is ready  
+
+7. Switch to your web browser and in the address bar type  
+```
+http://localhost:8002
+```  
+   Press Enter to load the Airflow UI; the DAGs page should appear, confirming the instance is live on the requested port  
+
+8. Return to the terminal and press Ctrl + C once to stop viewing the logs, then confirm that all containers listed by  
+```bash
+docker ps
+```  
+   include `astro-webserver` and `astro-scheduler`; this double-checks the environment is running as expected

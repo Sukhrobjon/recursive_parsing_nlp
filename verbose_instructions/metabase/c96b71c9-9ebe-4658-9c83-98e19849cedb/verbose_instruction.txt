@@ -1,0 +1,24 @@
+1) Navigate to https://console.cloud.google.com/bigquery to open BigQuery in your browser.  
+2) Click the project name that contains the Sample Database (for example, “my-project”) in the Explorer panel on the left.  
+3) Click the small triangle ▶︎ to the left of the dataset name sample_database to expand its tables list.  
+4) Click the table name orders so we can inspect its schema in the right-hand “Table details” pane. Confirm that a numeric column called Subtotal exists—we will filter on it next.  
+5) Click the blue + Compose new query button at the top of the BigQuery console to open a blank query editor tab.  
+6) Write the following SQL exactly as shown in the editor:  
+
+```sql
+-- Sample 20 rows whose Subtotal is greater than 40
+SELECT *
+FROM   `my-project.sample_database.orders`
+WHERE  Subtotal > 40
+ORDER BY RAND()      -- randomize the order
+LIMIT 20;
+```  
+
+   Note that ORDER BY RAND() produces a random 20-row sample each time.  
+7) Click the light-blue ▷ Run button in the toolbar of the query editor to execute the SQL.  
+8) Wait until the green checkmark and “Query complete” message appear; the results grid will show 20 rows.  
+9) Click the Save Results button located directly above the results grid, on the right side of the “Query results” bar.  
+10) Select the option JSON (local file) from the dropdown menu.  
+11) When the browser’s file-save dialog opens, navigate to Desktop.  
+12) Type res.json in the File name field and click Save (or Download, depending on your browser).  
+13) Verify on your Desktop that res.json now contains the 20 sampled order records—we’ll use this file for any further analysis.

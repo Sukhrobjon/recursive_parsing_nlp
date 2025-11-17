@@ -1,0 +1,93 @@
+1. Click the VS Code icon in the left dock to bring the editor to the foreground.  
+2. Locate and click the tab assets.py that is already open (it contains the original top10_story_ids asset).  
+3. Scroll to the bottom of the file and confirm you can see the existing top10_story_ids function that writes data/story_ids.json.  
+4. Type from the keyboard the additional imports you need directly under the current import block:  
+```python
+import json
+import requests
+import pandas as pd  # we will need DataFrame later
+from dagster import asset
+```  
+5. Press Ctrl + S to save the file so far — we will reuse these imports in the new assets.  
+6. Click one empty line after the top10_story_ids definition to position the cursor.  
+7. Write the new top10_stories asset exactly as shown below, paying attention to the dependency decorator:  
+```python
+# --- NEW ASSET ---------------------------------
+@asset(deps=[top10_story_ids])  # depends on the IDs we just downloaded
+def top10_stories() -> None:
+    # Load the list of IDs produced by the upstream asset
+    with open("data/story_ids.json", "r") as f:
+        story_ids = json.load(f)
+
+    results = []
+    for item_id in story_ids:
+        item = requests.get(
+            f"https://hacker-news.firebaseio.com/v0/item/{item_id}.json"
+        ).json()
+        results.append(item)
+
+        # Progress print every 5 records
+        if len(results) % 5 == 0:
+            print(f"Got {len(results)} items so far.")
+
+    # Persist the 10 story payloads
+    json.dump(results, open("data/stories.json", "w"), indent=4, ensure_ascii=False)
+    print("Written data/stories.json")
+```  
+8. Hit Enter twice after the closing brace to insert another blank line.  
+9. Copy-paste the final asset top5_mfw under the cursor:  
+```python
+# --- FINAL ASSET ---------------------------------
+@asset(deps=[top10_stories])
+def top5_mfw() -> None:
+    # Load stopwords first
+    with open("stopwords.txt", "r") as inf:
+        stopwords = [line.strip().lower() for line in inf if line.strip()]
+
+    # Load the stories downloaded by the previous asset
+    with open("data/stories.json", "r") as f:
+        stories = json.load(f)
+
+    word_counts = {}
+    for story in stories:
+        title = story.get("title", "").lower()
+        for word in title.split():
+            if word and word not in stopwords:
+                word_counts[word] = word_counts.get(word, 0) + 1
+
+    # Pick top-5 most frequent words
+    top_words = {
+        w: c for w, c in sorted(word_counts.items(),
+                                key=lambda x: x[1],
+                                reverse=True)[:5]
+    }
+
+    with open("data/mfw.json", "w") as f:
+        json.dump(top_words, f, indent=4, ensure_ascii=False)
+
+    print("Top-5 MFW written to data/mfw.json")
+```  
+10. Press Ctrl + S again to save all changes in assets.py.  
+11. Switch to the terminal by clicking the Terminal tab at the bottom of VS Code (or press Ctrl + `).  
+12. Execute the command to make sure Python syntax passes:  
+```
+python -m py_compile assets.py
+```  
+13. Confirm that the command finishes without error messages (this verifies imports and indentation).  
+14. Go to the web browser window that already shows Dagster UI (it may be labelled “localhost:3000” or similar).  
+15. Click the blue button Reload definitions in the top right corner to pull the new code.  
+16. Wait until the toast notification “Definitions reloaded successfully” appears.  
+17. Click Assets on the main navigation bar.  
+18. Observe that three assets now display: top10_story_ids, top10_stories, and top5_mfw, each with a grey NEVER status.  
+19. Click View global asset lineage beneath the Reload definitions button to switch to the graph.  
+20. Verify the linear dependency chain visually: top10_story_ids → top10_stories → top5_mfw.  
+21. Click the green Materialize all button in the top right of the graph panel.  
+22. In the modal, leave default tags and click Launch run.  
+23. Watch the run logs; wait until all three steps show a green SUCCESS badge.  
+24. Switch back to VS Code’s terminal and list the output directory to confirm files exist:  
+```
+ls -lh data
+```  
+25. Type cat data/stories.json | head -n 20 and press Enter — you should see JSON objects of Hacker News stories.  
+26. Type cat data/mfw.json and press Enter — you should see a dictionary with exactly five word:count pairs, none of which are in stopwords.txt.  
+27. Celebrate — the 3-step Dagster asset pipeline is now fully operational and verified.
